@@ -6,12 +6,12 @@ namespace DiagramDesigner
 {
     abstract class Entity
     {
-        public Geometry geometry { get; protected set; }
+        public Geometry Geometry { get; protected set; }
 
         public void Draw()
         {
             // TODO: stub
-            this.geometry.Draw();
+            this.Geometry.Draw();
         }
     }
 }

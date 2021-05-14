@@ -4,8 +4,9 @@ using System.Text;
 
 namespace DiagramDesigner
 {
-    class Polygon : Geometry
+    class PolygonGeometry : Geometry
     {
+        public Point[] PathsDefinedByPoints { get; set; }
         public override void Draw()
         {
             // TODO: stub

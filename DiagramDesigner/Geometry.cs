@@ -6,9 +6,9 @@ namespace DiagramDesigner
 {
     abstract class Geometry
     {
-        public Double translationX = 0;
-        public Double translationY = 0;
-        public Double rotation = 0;
+        public double TranslationX = 0;
+        public double TranslationY = 0;
+        public double Rotation = 0;
         abstract public void Draw();
     }
 }
