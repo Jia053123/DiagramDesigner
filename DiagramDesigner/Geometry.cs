@@ -10,6 +10,6 @@ namespace DiagramDesigner
         public double TranslationY = 0;
         public double Rotation = 0;
         abstract public void Draw();
-        abstract public bool isClosed();
+        abstract public bool IsClosed();
     }
 }

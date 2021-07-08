@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Button Content="Start Test" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Button Content="Start Test" Width="60" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,10,10,10" Command="{Binding TestCommand}"/>
 
     </Grid>
 </Window>

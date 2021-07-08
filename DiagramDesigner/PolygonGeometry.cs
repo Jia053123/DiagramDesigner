@@ -12,7 +12,7 @@ namespace DiagramDesigner
             // TODO: stub
         }
 
-        public override bool isClosed()
+        public override bool IsClosed()
         {
             // TODO: stub
             return false;
