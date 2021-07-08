@@ -4,8 +4,7 @@ using System.Text;
 
 namespace DiagramDesigner
 {
-    abstract class Entity
-    {
+    abstract class Entity {        
         public Geometry Geometry { get; protected set; }
 
         public void Draw()

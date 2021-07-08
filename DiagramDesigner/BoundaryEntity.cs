@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DiagramDesigner
 {
-    class Figure : Entity
+    class BoundaryEntity : Entity
     {
     }
 }
