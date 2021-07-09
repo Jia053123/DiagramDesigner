@@ -5,9 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DiagramDesigner"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="720" Width="1280">
     <Grid>
         <Button Content="Start Test" Width="60" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,10,10,10" Command="{Binding TestCommand}"/>
-
     </Grid>
 </Window>
