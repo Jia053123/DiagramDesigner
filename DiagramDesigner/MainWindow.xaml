@@ -6,7 +6,10 @@
         xmlns:local="clr-namespace:DiagramDesigner"
         mc:Ignorable="d"
         Title="MainWindow" Height="720" Width="1280">
-    <Grid>
-        <Button Content="Start Test" Width="60" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,10,10,10" Command="{Binding TestCommand}"/>
-    </Grid>
+    <DockPanel>
+        <StackPanel Width="300" DockPanel.Dock="Left" Background="Aqua">
+            <Button Content="Run Test" Width="60" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding TestCommand}"/>    
+        </StackPanel>
+        <Border Name="PrimaryWindow" Background="Beige"></Border>
+    </DockPanel>
 </Window>
