@@ -10,6 +10,6 @@
         <StackPanel Width="300" DockPanel.Dock="Left" Background="Aqua">
             <Button Content="Run Test" Width="60" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding TestCommand}"/>    
         </StackPanel>
-        <Border Name="PrimaryWindow" Background="Beige"></Border>
+        <local:DiagramRenderingCanvas x:Name="PrimaryDiagramCanvas"></local:DiagramRenderingCanvas>
     </DockPanel>
 </Window>
