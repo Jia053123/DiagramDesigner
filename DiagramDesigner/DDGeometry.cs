@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DiagramDesigner
 {
-    abstract class Geometry
+    abstract class DDGeometry
     {
         public double TranslationX = 0;
         public double TranslationY = 0;
