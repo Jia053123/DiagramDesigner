@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DiagramDesigner
+namespace DiagramDesignerEngine
 {
-    abstract class Entity {        
-        public DDGeometry Geometry { get; protected set; }
+    public abstract class Entity {        
+        public Geometry Geometry { get; protected set; }
 
         public void Draw()
         {

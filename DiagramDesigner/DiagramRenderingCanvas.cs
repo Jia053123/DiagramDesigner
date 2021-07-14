@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows;
+using DiagramDesignerEngine;
 
 namespace DiagramDesigner
 {
@@ -18,15 +18,15 @@ namespace DiagramDesigner
             AddLogicalChild(sourceVisual);
         }
 
-        public void RenderVisual(List<DDPoint> pointsToRender)
+        public void RenderVisual(List<Point> pointsToRender)
         {
             using (DrawingContext dc = sourceVisual.RenderOpen())
             {
                 //TODO: draw!
                 for (int i = 0; i < pointsToRender.Count-1; i++)
                 {
-                    var startPoint = new Point((int)pointsToRender[i].coordinateX, (int)pointsToRender[i].coordinateY);
-                    var endPoint = new Point((int)pointsToRender[i+1].coordinateX, (int)pointsToRender[i+1].coordinateY);
+                    var startPoint = new System.Windows.Point((int)pointsToRender[i].coordinateX, (int)pointsToRender[i].coordinateY);
+                    var endPoint = new System.Windows.Point((int)pointsToRender[i + 1].coordinateX, (int)pointsToRender[i + 1].coordinateY);
                     dc.DrawLine(new Pen(Brushes.Black, 1), startPoint, endPoint);
                 }
             }

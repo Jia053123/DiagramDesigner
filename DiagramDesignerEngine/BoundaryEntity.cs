@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DiagramDesigner
+namespace DiagramDesignerEngine
 {
     class BoundaryEntity : Entity
     {

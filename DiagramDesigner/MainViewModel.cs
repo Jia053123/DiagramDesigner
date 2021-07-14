@@ -4,15 +4,16 @@ using System.Text;
 using System.ComponentModel;
 using System.Windows.Input;
 using System.Runtime.CompilerServices;
+using DiagramDesignerEngine;
 
 namespace DiagramDesigner
 {
     class MainViewModel : INotifyPropertyChanged
     {
-        private List<DDPoint> defaultPointsToRender = new List<DDPoint> { new DDPoint(10, 10), new DDPoint(20, 30), new DDPoint(50, 45), new DDPoint(100, 100) };
-        private List<DDPoint> _pointsToRender = null;
-        public List<DDPoint> PointsToRender { // TODO: stub
-            get { return this._pointsToRender == null ? this.defaultPointsToRender : this.PointsToRender;  }
+        private List<Point> DefaultPointsToRender = new List<Point> { new Point(10, 10), new Point(20, 30), new Point(50, 45), new Point(100, 100) };
+        private List<Point> _pointsToRender = null;
+        public List<Point> PointsToRender { // TODO: stub
+            get { return this._pointsToRender == null ? this.DefaultPointsToRender : this.PointsToRender;  }
             private set { this._pointsToRender = value; }
         }
 

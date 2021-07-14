@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DiagramDesigner
+namespace DiagramDesignerEngine
 {
-    class PolygonGeometry : DDGeometry
+    class PolygonGeometry : Geometry
     {
-        public DDPoint[] PathsDefinedByPoints { get; set; }
+        public Point[] PathsDefinedByPoints { get; set; }
         public override void Draw()
         {
             // TODO: stub

@@ -6,4 +6,8 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DiagramDesignerEngine\DiagramDesignerEngine.csproj" />
+  </ItemGroup>
+
 </Project>
