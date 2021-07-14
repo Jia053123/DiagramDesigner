@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DiagramDesigner
 {
-    struct DDPoint
+    class DDPoint
     {
         public double coordinateX { get; set; }
         public double coordinateY { get; set; }

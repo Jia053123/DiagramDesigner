@@ -29,7 +29,26 @@ namespace DiagramDesigner
         {
             InitializeComponent();
             this.mainViewModel = new MainViewModel();
+            this.mainViewModel.PropertyChanged += OnPointsChanged;
             this.DataContext = mainViewModel;
+
+            this.UpdateRendering();
+        }
+
+        private void OnPointsChanged(object sender, PropertyChangedEventArgs args)
+        {
+            System.Diagnostics.Debug.WriteLine("OnPointsChanged");
+            switch (args.PropertyName)
+            {
+                case "PointsToRender":
+                    this.UpdateRendering();
+                    break;
+            }
+        }
+
+        public void UpdateRendering()
+        {
+            primaryDiagramCanvas.RenderVisual(this.mainViewModel.PointsToRender);
         }
     }
 }
