@@ -34,7 +34,7 @@ namespace DiagramDesigner
                 p.coordinateX += 10;
                 p.coordinateY += 10;
             }
-            this.GeometriesChanged();
+            this.PointsToRenderChanged();
         }
 
         private void ExecuteTestCommand(object obj)
@@ -43,7 +43,7 @@ namespace DiagramDesigner
             this.testTranslate();
         }
 
-        private void GeometriesChanged()
+        private void PointsToRenderChanged()
         {
             this.OnPropertyChanged("PointsToRender");
         }

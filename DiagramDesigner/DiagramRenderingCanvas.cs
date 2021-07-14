@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using DiagramDesignerEngine;
 
@@ -13,6 +14,7 @@ namespace DiagramDesigner
 
         public DiagramRenderingCanvas()
         {
+            this.Background = Brushes.White;
             this.sourceVisual = new DrawingVisual();
             AddVisualChild(sourceVisual);
             AddLogicalChild(sourceVisual);
@@ -44,6 +46,14 @@ namespace DiagramDesigner
                 throw new ArgumentOutOfRangeException("index");
             }
             return sourceVisual;
+        }
+
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonDown(e);
+            System.Windows.Point location = e.GetPosition(this);
+
+            System.Diagnostics.Debug.WriteLine("mouse at location: {0}, {1}", location.X, location.Y);
         }
     }
 }
