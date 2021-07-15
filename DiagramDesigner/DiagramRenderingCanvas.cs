@@ -1,15 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using DiagramDesignerEngine;
+using Point = DiagramDesignerEngine.Point;
 
 namespace DiagramDesigner
 {
-    class DiagramRenderingCanvas: Canvas 
+    class DiagramRenderingCanvas: Canvas, ICommandSource
     {
+        private System.Windows.Point LastClickedLocation = new System.Windows.Point(0, 0);
+
+        public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(
+            "Command",
+            typeof(ICommand),
+            typeof(DiagramRenderingCanvas),
+            new PropertyMetadata((ICommand)null, new PropertyChangedCallback(CommandChanged)));
+        public ICommand Command 
+        {
+            get { return (ICommand)GetValue(CommandProperty); }
+            set { SetValue(CommandProperty, value); }
+        }
+
+        public object CommandParameter { get { return this.LastClickedLocation; } }
+        public IInputElement CommandTarget { get { return null; } }
+
         private DrawingVisual sourceVisual = null;
 
         public DiagramRenderingCanvas()
@@ -46,8 +64,8 @@ namespace DiagramDesigner
                 throw new ArgumentOutOfRangeException("index");
             }
             return sourceVisual;
-        }
-
+        }        
+        
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
@@ -55,5 +73,76 @@ namespace DiagramDesigner
 
             System.Diagnostics.Debug.WriteLine("mouse at location: {0}, {1}", location.X, location.Y);
         }
+        // Command dependency property change callback.
+        private static void CommandChanged(DependencyObject d,
+            DependencyPropertyChangedEventArgs e)
+        {
+            DiagramRenderingCanvas drc = (DiagramRenderingCanvas)d;
+            drc.HookUpCommand((ICommand)e.OldValue, (ICommand)e.NewValue);
+        }
+
+        // Add a new command to the Command Property.
+        private void HookUpCommand(ICommand oldCommand, ICommand newCommand)
+        {
+            // If oldCommand is not null, then we need to remove the handlers.
+            if (oldCommand != null)
+            {
+                RemoveCommand(oldCommand, newCommand);
+            }
+            AddCommand(oldCommand, newCommand);
+        }
+
+        // Remove an old command from the Command Property.
+        private void RemoveCommand(ICommand oldCommand, ICommand newCommand)
+        {
+            EventHandler handler = CanExecuteChanged;
+            oldCommand.CanExecuteChanged -= handler;
+        }
+
+        // Add the command.
+        private void AddCommand(ICommand oldCommand, ICommand newCommand)
+        {
+            EventHandler handler = new EventHandler(CanExecuteChanged);
+            EventHandler canExecuteChangedHandler = handler;
+            if (newCommand != null)
+            {
+                newCommand.CanExecuteChanged += canExecuteChangedHandler;
+            }
+        }
+
+        private void CanExecuteChanged(object sender, EventArgs e)
+        {
+
+            if (this.Command != null)
+            {
+                RoutedCommand command = this.Command as RoutedCommand;
+
+                // If a RoutedCommand.
+                if (command != null)
+                {
+                    if (command.CanExecute(CommandParameter, CommandTarget))
+                    {
+                        //this.IsEnabled = true;
+                    }
+                    else
+                    {
+                        //this.IsEnabled = false;
+                    }
+                }
+                // If a not RoutedCommand.
+                else
+                {
+                    if (Command.CanExecute(CommandParameter))
+                    {
+                        //this.IsEnabled = true;
+                    }
+                    else
+                    {
+                        //this.IsEnabled = false;
+                    }
+                }
+            }
+        }
     }
 }
+
