@@ -10,23 +10,9 @@ using Point = DiagramDesignerEngine.Point;
 
 namespace DiagramDesigner
 {
-    class DiagramRenderingCanvas: Canvas, ICommandSource
+    partial class DiagramRenderingCanvas: Canvas
     {
         private System.Windows.Point LastClickedLocation = new System.Windows.Point(0, 0);
-
-        public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(
-            "Command",
-            typeof(ICommand),
-            typeof(DiagramRenderingCanvas),
-            new PropertyMetadata((ICommand)null, new PropertyChangedCallback(CommandChanged)));
-        public ICommand Command 
-        {
-            get { return (ICommand)GetValue(CommandProperty); }
-            set { SetValue(CommandProperty, value); }
-        }
-
-        public object CommandParameter { get { return this.LastClickedLocation; } }
-        public IInputElement CommandTarget { get { return null; } }
 
         private DrawingVisual sourceVisual = null;
 
@@ -73,6 +59,25 @@ namespace DiagramDesigner
 
             System.Diagnostics.Debug.WriteLine("mouse at location: {0}, {1}", location.X, location.Y);
         }
+
+    }
+
+    partial class DiagramRenderingCanvas : ICommandSource
+    {
+        public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(
+            "Command",
+            typeof(ICommand),
+            typeof(DiagramRenderingCanvas),
+            new PropertyMetadata((ICommand)null, new PropertyChangedCallback(CommandChanged)));
+        public ICommand Command
+        {
+            get { return (ICommand)GetValue(CommandProperty); }
+            set { SetValue(CommandProperty, value); }
+        }
+
+        public object CommandParameter { get { return this.LastClickedLocation; } }
+        public IInputElement CommandTarget { get { return null; } }
+
         // Command dependency property change callback.
         private static void CommandChanged(DependencyObject d,
             DependencyPropertyChangedEventArgs e)
@@ -111,8 +116,7 @@ namespace DiagramDesigner
         }
 
         private void CanExecuteChanged(object sender, EventArgs e)
-        {
-
+        { 
             if (this.Command != null)
             {
                 RoutedCommand command = this.Command as RoutedCommand;
