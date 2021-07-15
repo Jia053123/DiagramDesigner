@@ -56,10 +56,15 @@ namespace DiagramDesigner
         {
             base.OnMouseLeftButtonDown(e);
             System.Windows.Point location = e.GetPosition(this);
+            this.LastClickedLocation = location;
 
             System.Diagnostics.Debug.WriteLine("mouse at location: {0}, {1}", location.X, location.Y);
+            
+            if (this.Command != null)
+            {
+                this.Command.Execute(this.LastClickedLocation);
+            }
         }
-
     }
 
     partial class DiagramRenderingCanvas : ICommandSource
