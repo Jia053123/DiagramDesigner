@@ -20,41 +20,46 @@ namespace DiagramDesigner
             private set { this._pointsToRender = value; }
         }
 
-        public ICommand TestCommand { protected set; get; }
-        public ICommand HandleMouseClick { protected set; get; }       
+        private bool _isInDrawingState = false;
+        public bool IsInDrawingState
+        {
+            private set { SetProperty(ref _isInDrawingState, value); }
+            get { return this._isInDrawingState; }
+        }
+
+        public ICommand StartDrawingCommand { set; get; }
+        public ICommand EndDrawingCommand { set; get; }
+        public ICommand HandleMouseClickCommand { set; get; }       
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MainViewModel()
         {
-            this.TestCommand = new DelegateCommand(ExecuteTestCommand);
-            this.HandleMouseClick = new DelegateCommand(ExecuteHandleMouseClick);
+            this.StartDrawingCommand = new DelegateCommand(ExecuteStartDrawing);
+            this.EndDrawingCommand = new DelegateCommand(ExecuteEndDrawing);
+            this.HandleMouseClickCommand = new DelegateCommand(ExecuteHandleMouseClick);
         }
-        private void ExecuteTestCommand(object obj)
+        private void ExecuteStartDrawing(object obj)
         {
-            System.Diagnostics.Debug.WriteLine("test running");
-            this.testTranslate();
+            this.IsInDrawingState = true;
+        }
+
+        private void ExecuteEndDrawing(object obj)
+        {
+            this.IsInDrawingState = false;
         }
 
         private void ExecuteHandleMouseClick(object obj)
         {
-            var location = (System.Windows.Point)obj;
-            if (this.PointsToRender != null) {
-                this.PointsToRender[0].coordinateX = location.X;
-                this.PointsToRender[0].coordinateY = location.Y;
-            }
-            this.PointsToRenderChanged();
-        }
-
-        public void testTranslate()
-        {
-            for (int i=0; i < this.PointsToRender.Count; i++)
+            if (this.IsInDrawingState)
             {
-                var p = this.PointsToRender[i];
-                p.coordinateX += 10;
-                p.coordinateY += 10;
+                var location = (System.Windows.Point)obj;
+                if (this.PointsToRender != null) {
+                    this.PointsToRender[0].coordinateX = location.X;
+                    this.PointsToRender[0].coordinateY = location.Y;
+                }
+                this.PointsToRenderChanged();
             }
-            this.PointsToRenderChanged();
         }
 
         private void PointsToRenderChanged()

@@ -23,32 +23,35 @@ namespace DiagramDesigner
     /// </summary>
     public partial class MainWindow : Window
     {
-        private MainViewModel mainViewModel;
+        private MainViewModel MainViewModel;
 
         public MainWindow()
         {
             InitializeComponent();
-            this.mainViewModel = new MainViewModel();
-            this.mainViewModel.PropertyChanged += OnPointsChanged;
-            this.DataContext = mainViewModel;
+            this.MainViewModel = new MainViewModel();
+            this.MainViewModel.PropertyChanged += OnPropertyChanged;
+            this.DataContext = MainViewModel;
 
             this.UpdateRendering();
         }
 
-        private void OnPointsChanged(object sender, PropertyChangedEventArgs args)
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            System.Diagnostics.Debug.WriteLine("OnPointsChanged");
+            System.Diagnostics.Debug.WriteLine("OnPropertyChanged");
             switch (args.PropertyName)
             {
                 case "PointsToRender":
                     this.UpdateRendering();
+                    break;
+                case "IsInDrawingState":
+                    this.primaryDiagramCanvas.Cursor = this.MainViewModel.IsInDrawingState ? Cursors.Cross : Cursors.Arrow;
                     break;
             }
         }
 
         public void UpdateRendering()
         {
-            primaryDiagramCanvas.RenderVisual(this.mainViewModel.PointsToRender);
+            primaryDiagramCanvas.RenderVisual(this.MainViewModel.PointsToRender);
         }
     }
 }

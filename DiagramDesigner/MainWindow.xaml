@@ -8,8 +8,9 @@
         Title="MainWindow" Height="720" Width="1280">
     <DockPanel>
         <StackPanel Width="300" DockPanel.Dock="Left" Background="Aqua">
-            <Button Content="Run Test" Width="60" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding TestCommand}"/>    
+            <Button Content="Start Drawing" Width="60" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding StartDrawingCommand}"/>
+            <Button Content="End Drawing" Width="60" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding EndDrawingCommand}"/>
         </StackPanel>
-        <local:DiagramRenderingCanvas x:Name="primaryDiagramCanvas" Command="{Binding HandleMouseClick}"></local:DiagramRenderingCanvas>
+        <local:DiagramRenderingCanvas x:Name="primaryDiagramCanvas" Command="{Binding HandleMouseClickCommand}"></local:DiagramRenderingCanvas>
     </DockPanel>
 </Window>
