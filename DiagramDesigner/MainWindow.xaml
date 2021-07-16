@@ -7,10 +7,13 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="720" Width="1280">
     <DockPanel>
-        <StackPanel Width="300" DockPanel.Dock="Left" Background="Aqua">
+        <StackPanel Orientation="Vertical" Width="300" DockPanel.Dock="Left" Background="Aqua">
             <Button Content="Start Drawing" Width="60" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding StartDrawingCommand}"/>
             <Button Content="End Drawing" Width="60" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding EndDrawingCommand}"/>
         </StackPanel>
-        <local:DiagramRenderingCanvas x:Name="primaryDiagramCanvas" Command="{Binding HandleMouseClickCommand}"></local:DiagramRenderingCanvas>
+        <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Height="50" DockPanel.Dock="Bottom" Background="Azure">
+            <TextBlock Text="test" VerticalAlignment="Center" Margin="10,10,10,10"></TextBlock>
+        </StackPanel>
+        <local:DiagramRenderingCanvas x:Name="primaryDiagramCanvas" Command="{Binding HandleMouseEventCommand}"></local:DiagramRenderingCanvas>
     </DockPanel>
 </Window>

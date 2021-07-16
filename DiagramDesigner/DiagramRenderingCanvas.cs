@@ -12,9 +12,12 @@ namespace DiagramDesigner
 {
     partial class DiagramRenderingCanvas: Canvas
     {
-        private System.Windows.Point LastClickedLocation = new System.Windows.Point(0, 0);
+        private System.Windows.Point MouseCursorLocation = new System.Windows.Point(0, 0);
+        private bool IsMouseButtonDown = false;
 
-        private DrawingVisual sourceVisual = null;
+        private DrawingVisual sourceVisual = null;  
+        
+        protected override int VisualChildrenCount { get { return 1; } }
 
         public DiagramRenderingCanvas()
         {
@@ -38,11 +41,6 @@ namespace DiagramDesigner
             }
         }
 
-        protected override int VisualChildrenCount
-        {
-            get { return 1; }
-        }
-
         protected override Visual GetVisualChild(int index)
         {
             if (index != 0)
@@ -50,21 +48,36 @@ namespace DiagramDesigner
                 throw new ArgumentOutOfRangeException("index");
             }
             return sourceVisual;
-        }        
-        
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+
+            System.Windows.Point location = e.GetPosition(this);
+            this.MouseCursorLocation = location;
+            this.IsMouseButtonDown = false;
+            
+            if (this.Command != null)
+            {
+                // TODO
+            }
+        }
+
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
+
             System.Windows.Point location = e.GetPosition(this);
-            this.LastClickedLocation = location;
+            this.MouseCursorLocation = location;
+            this.IsMouseButtonDown = true;
 
             if (this.Command != null)
             {
-                this.Command.Execute(this.LastClickedLocation);
+                this.Command.Execute(this.MouseCursorLocation);
             }
         }
     }
-
 
 
     partial class DiagramRenderingCanvas : ICommandSource
@@ -80,7 +93,7 @@ namespace DiagramDesigner
             set { SetValue(CommandProperty, value); }
         }
 
-        public object CommandParameter { get { return this.LastClickedLocation; } }
+        public object CommandParameter { get { return this.MouseCursorLocation; } }
         public IInputElement CommandTarget { get { return null; } }
 
         // Command dependency property change callback.

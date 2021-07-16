@@ -29,7 +29,7 @@ namespace DiagramDesigner
 
         public ICommand StartDrawingCommand { set; get; }
         public ICommand EndDrawingCommand { set; get; }
-        public ICommand HandleMouseClickCommand { set; get; }       
+        public ICommand HandleMouseEventCommand { set; get; }       
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -37,7 +37,7 @@ namespace DiagramDesigner
         {
             this.StartDrawingCommand = new DelegateCommand(ExecuteStartDrawing);
             this.EndDrawingCommand = new DelegateCommand(ExecuteEndDrawing);
-            this.HandleMouseClickCommand = new DelegateCommand(ExecuteHandleMouseClick);
+            this.HandleMouseEventCommand = new DelegateCommand(ExecuteHandleMouseEvent);
         }
         private void ExecuteStartDrawing(object obj)
         {
@@ -49,7 +49,7 @@ namespace DiagramDesigner
             this.IsInDrawingState = false;
         }
 
-        private void ExecuteHandleMouseClick(object obj)
+        private void ExecuteHandleMouseEvent(object obj)
         {
             if (this.IsInDrawingState)
             {
