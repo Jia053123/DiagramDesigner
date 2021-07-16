@@ -58,14 +58,14 @@ namespace DiagramDesigner
             System.Windows.Point location = e.GetPosition(this);
             this.LastClickedLocation = location;
 
-            System.Diagnostics.Debug.WriteLine("mouse at location: {0}, {1}", location.X, location.Y);
-            
             if (this.Command != null)
             {
                 this.Command.Execute(this.LastClickedLocation);
             }
         }
     }
+
+
 
     partial class DiagramRenderingCanvas : ICommandSource
     {
@@ -112,8 +112,8 @@ namespace DiagramDesigner
         // Add the command.
         private void AddCommand(ICommand oldCommand, ICommand newCommand)
         {
-            EventHandler handler = new EventHandler(CanExecuteChanged);
-            EventHandler canExecuteChangedHandler = handler;
+            EventHandler canExecuteChangedHandler = new EventHandler(CanExecuteChanged);
+
             if (newCommand != null)
             {
                 newCommand.CanExecuteChanged += canExecuteChangedHandler;

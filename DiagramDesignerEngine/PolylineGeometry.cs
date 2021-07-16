@@ -4,12 +4,13 @@ using System.Text;
 
 namespace DiagramDesignerEngine
 {
-    class PolygonGeometry : Geometry
+    public class PolylineGeometry : Geometry
     {
         public Point[] PathsDefinedByPoints { get; set; }
-        public override void Draw()
+
+        public override PolylineGeometry GetPolylineApproximation()
         {
-            // TODO: stub
+            return this;
         }
 
         public override bool IsClosed()

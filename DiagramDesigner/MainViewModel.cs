@@ -8,6 +8,9 @@ using DiagramDesignerEngine;
 
 namespace DiagramDesigner
 {
+    /// <summary>
+    /// Manage events between the UI and the engine
+    /// </summary>
     class MainViewModel : INotifyPropertyChanged
     {
         private List<Point> DefaultPointsToRender = new List<Point> { new Point(10, 10), new Point(20, 30), new Point(50, 45), new Point(100, 100) };

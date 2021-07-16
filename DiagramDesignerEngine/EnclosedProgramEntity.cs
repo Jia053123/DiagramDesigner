@@ -4,11 +4,19 @@ using System.Text;
 
 namespace DiagramDesignerEngine
 {
-    class WallEntity : Entity
+    class EnclosedProgramEntity : Entity
     {
-        public double WallThickness;
-
         public override Geometry Geometry => throw new NotImplementedException();
+
+        public double CalculateEnclosedArea()
+        {
+            throw new NotImplementedException();
+        }
+
+        public double CalculatePerimeterLength()
+        {
+            throw new NotImplementedException();
+        }
 
         public override void Draw()
         {
