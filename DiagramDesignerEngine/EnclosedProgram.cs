@@ -4,9 +4,10 @@ using System.Text;
 
 namespace DiagramDesignerEngine
 {
-    class EnclosedProgramEntity : Entity
+    class EnclosedProgram
     {
-        public override Geometry Geometry => throw new NotImplementedException();
+        public bool IsAlsoCirculation;
+        public Geometry Geometry => throw new NotImplementedException();
 
         public double CalculateEnclosedArea()
         {
@@ -14,11 +15,6 @@ namespace DiagramDesignerEngine
         }
 
         public double CalculatePerimeterLength()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Draw()
         {
             throw new NotImplementedException();
         }

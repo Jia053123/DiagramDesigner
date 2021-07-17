@@ -12,7 +12,7 @@ namespace DiagramDesignerEngine
     {
         private List<BoundaryEntity> BoundaryEntities;
         private List<WallEntity> WallEntities;
-        private List<EnclosedProgramEntity> EnclosedProgramEntities;
+        private List<EnclosedProgram> EnclosedProgramEntities;
 
         public double TotalEnclosedArea()
         {

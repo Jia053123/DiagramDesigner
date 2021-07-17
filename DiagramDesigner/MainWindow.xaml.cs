@@ -32,8 +32,8 @@ namespace DiagramDesigner
             this.MainViewModel.PropertyChanged += OnPropertyChanged;
 
             this.DataContext = MainViewModel;
-            this.primaryDiagramCanvas.MouseMovedEventHandler += this.MainViewModel.HandleMouseMovedEvent;
-            this.primaryDiagramCanvas.MouseLeftClickedEventHandler += this.MainViewModel.HandleMouseLeftClickedEvent;
+            this.PrimaryDiagramCanvas.MouseMovedEventHandler += this.MainViewModel.HandleMouseMovedEvent;
+            this.PrimaryDiagramCanvas.MouseLeftClickedEventHandler += this.MainViewModel.HandleMouseLeftClickedEvent;
 
             this.UpdateRendering();
         }
@@ -47,14 +47,14 @@ namespace DiagramDesigner
                     this.UpdateRendering();
                     break;
                 case "IsInDrawingState":
-                    this.primaryDiagramCanvas.Cursor = this.MainViewModel.IsInDrawingState ? Cursors.Cross : Cursors.Arrow;
+                    this.PrimaryDiagramCanvas.Cursor = this.MainViewModel.IsInDrawingState ? Cursors.Cross : Cursors.Arrow;
                     break;
             }
         }
 
         public void UpdateRendering()
         {
-            primaryDiagramCanvas.RenderVisual(this.MainViewModel.PointsToRender);
+            PrimaryDiagramCanvas.RenderVisual(this.MainViewModel.PointsToRender);
         }
     }
 }
