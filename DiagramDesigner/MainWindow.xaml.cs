@@ -30,7 +30,10 @@ namespace DiagramDesigner
             InitializeComponent();
             this.MainViewModel = new MainViewModel();
             this.MainViewModel.PropertyChanged += OnPropertyChanged;
+
             this.DataContext = MainViewModel;
+            this.primaryDiagramCanvas.MouseMovedEventHandler += this.MainViewModel.HandleMouseMovedEvent;
+            this.primaryDiagramCanvas.MouseLeftClickedEventHandler += this.MainViewModel.HandleMouseLeftClickedEvent;
 
             this.UpdateRendering();
         }

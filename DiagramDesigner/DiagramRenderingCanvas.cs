@@ -12,12 +12,12 @@ namespace DiagramDesigner
 {
     partial class DiagramRenderingCanvas: Canvas
     {
-        private System.Windows.Point MouseCursorLocation = new System.Windows.Point(0, 0);
-        private bool IsMouseButtonDown = false;
-
         private DrawingVisual sourceVisual = null;  
         
         protected override int VisualChildrenCount { get { return 1; } }
+
+        public event EventHandler MouseMovedEventHandler;
+        public event EventHandler MouseLeftClickedEventHandler;
 
         public DiagramRenderingCanvas()
         {
@@ -50,17 +50,17 @@ namespace DiagramDesigner
             return sourceVisual;
         }
 
-        protected override void OnMouseMove(MouseEventArgs e)
+        protected override void OnMouseMove(System.Windows.Input.MouseEventArgs e)
         {
             base.OnMouseMove(e);
 
             System.Windows.Point location = e.GetPosition(this);
-            this.MouseCursorLocation = location;
-            this.IsMouseButtonDown = false;
-            
-            if (this.Command != null)
+
+            var boundedLocation = this.BoundCursorPositionWithinControl(location);
+
+            if (this.MouseMovedEventHandler != null)
             {
-                // TODO
+                this.MouseMovedEventHandler.Invoke(this, new MouseEventArgs(boundedLocation.X, boundedLocation.Y));
             }
         }
 
@@ -69,101 +69,38 @@ namespace DiagramDesigner
             base.OnMouseLeftButtonDown(e);
 
             System.Windows.Point location = e.GetPosition(this);
-            this.MouseCursorLocation = location;
-            this.IsMouseButtonDown = true;
 
-            if (this.Command != null)
+            var boundedLocation = this.BoundCursorPositionWithinControl(location);
+
+            if (this.MouseLeftClickedEventHandler != null)
             {
-                this.Command.Execute(this.MouseCursorLocation);
-            }
-        }
-    }
-
-
-    partial class DiagramRenderingCanvas : ICommandSource
-    {
-        public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(
-            "Command",
-            typeof(ICommand),
-            typeof(DiagramRenderingCanvas),
-            new PropertyMetadata((ICommand)null, new PropertyChangedCallback(CommandChanged)));
-        public ICommand Command
-        {
-            get { return (ICommand)GetValue(CommandProperty); }
-            set { SetValue(CommandProperty, value); }
-        }
-
-        public object CommandParameter { get { return this.MouseCursorLocation; } }
-        public IInputElement CommandTarget { get { return null; } }
-
-        // Command dependency property change callback.
-        private static void CommandChanged(DependencyObject d,
-            DependencyPropertyChangedEventArgs e)
-        {
-            DiagramRenderingCanvas drc = (DiagramRenderingCanvas)d;
-            drc.HookUpCommand((ICommand)e.OldValue, (ICommand)e.NewValue);
-        }
-
-        // Add a new command to the Command Property.
-        private void HookUpCommand(ICommand oldCommand, ICommand newCommand)
-        {
-            // If oldCommand is not null, then we need to remove the handlers.
-            if (oldCommand != null)
-            {
-                RemoveCommand(oldCommand, newCommand);
-            }
-            AddCommand(oldCommand, newCommand);
-        }
-
-        // Remove an old command from the Command Property.
-        private void RemoveCommand(ICommand oldCommand, ICommand newCommand)
-        {
-            EventHandler handler = CanExecuteChanged;
-            oldCommand.CanExecuteChanged -= handler;
-        }
-
-        // Add the command.
-        private void AddCommand(ICommand oldCommand, ICommand newCommand)
-        {
-            EventHandler canExecuteChangedHandler = new EventHandler(CanExecuteChanged);
-
-            if (newCommand != null)
-            {
-                newCommand.CanExecuteChanged += canExecuteChangedHandler;
+                this.MouseLeftClickedEventHandler.Invoke(this, new MouseEventArgs(boundedLocation.X, boundedLocation.Y));
             }
         }
 
-        private void CanExecuteChanged(object sender, EventArgs e)
-        { 
-            if (this.Command != null)
-            {
-                RoutedCommand command = this.Command as RoutedCommand;
+        private System.Windows.Point BoundCursorPositionWithinControl(System.Windows.Point location)
+        {
+            var locationWithinBound = new System.Windows.Point(location.X, location.Y);
 
-                // If a RoutedCommand.
-                if (command != null)
-                {
-                    if (command.CanExecute(CommandParameter, CommandTarget))
-                    {
-                        //this.IsEnabled = true;
-                    }
-                    else
-                    {
-                        //this.IsEnabled = false;
-                    }
-                }
-                // If a not RoutedCommand.
-                else
-                {
-                    if (Command.CanExecute(CommandParameter))
-                    {
-                        //this.IsEnabled = true;
-                    }
-                    else
-                    {
-                        //this.IsEnabled = false;
-                    }
-                }
+            if (locationWithinBound.X < 0)
+            {
+                locationWithinBound.X = 0;
             }
+            else if (locationWithinBound.X > this.Width)
+            {
+                locationWithinBound.X = this.Width;
+            }
+
+            if (locationWithinBound.Y < 0)
+            {
+                locationWithinBound.Y = 0;
+            }
+            else if (locationWithinBound.Y > this.Height)
+            {
+                locationWithinBound.Y = this.Height;
+            }
+
+            return locationWithinBound;
         }
     }
 }

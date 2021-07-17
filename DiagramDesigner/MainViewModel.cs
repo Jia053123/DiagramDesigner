@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Windows.Input;
 using System.Runtime.CompilerServices;
 using DiagramDesignerEngine;
+using System.Linq;
 
 namespace DiagramDesigner
 {
@@ -29,7 +30,6 @@ namespace DiagramDesigner
 
         public ICommand StartDrawingCommand { set; get; }
         public ICommand EndDrawingCommand { set; get; }
-        public ICommand HandleMouseEventCommand { set; get; }       
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -37,7 +37,6 @@ namespace DiagramDesigner
         {
             this.StartDrawingCommand = new DelegateCommand(ExecuteStartDrawing);
             this.EndDrawingCommand = new DelegateCommand(ExecuteEndDrawing);
-            this.HandleMouseEventCommand = new DelegateCommand(ExecuteHandleMouseEvent);
         }
         private void ExecuteStartDrawing(object obj)
         {
@@ -49,14 +48,29 @@ namespace DiagramDesigner
             this.IsInDrawingState = false;
         }
 
-        private void ExecuteHandleMouseEvent(object obj)
+        public void HandleMouseMovedEvent(object sender, EventArgs e)
         {
             if (this.IsInDrawingState)
             {
-                var location = (System.Windows.Point)obj;
-                if (this.PointsToRender != null) {
-                    this.PointsToRender[0].coordinateX = location.X;
-                    this.PointsToRender[0].coordinateY = location.Y;
+                var mea = (MouseEventArgs)e;
+                if (this.PointsToRender != null)
+                {
+                    this.PointsToRender.Last().coordinateX = mea.LocationX;
+                    this.PointsToRender.Last().coordinateY = mea.LocationY;
+                }
+                this.PointsToRenderChanged();
+            }
+        }
+
+        public void HandleMouseLeftClickedEvent(object sender, EventArgs e)
+        {
+            if (this.IsInDrawingState)
+            {
+                var mea = (MouseEventArgs)e;
+                if (this.PointsToRender != null)
+                {
+                    var newPoint = new Point(mea.LocationX, mea.LocationY);
+                    this.PointsToRender.Add(newPoint);
                 }
                 this.PointsToRenderChanged();
             }
