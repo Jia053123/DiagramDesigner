@@ -33,12 +33,15 @@ namespace DiagramDesigner
         public ICommand StartDrawingCommand { set; get; }
         public ICommand EndDrawingCommand { set; get; }
 
+        public ICommand AddNewProgramRequirementCommand { set; get; }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MainViewModel()
         {
             this.StartDrawingCommand = new DelegateCommand(ExecuteStartDrawing);
             this.EndDrawingCommand = new DelegateCommand(ExecuteEndDrawing);
+            this.AddNewProgramRequirementCommand = new DelegateCommand(ExecuteAddNewRowToRequirementsTable);
         }
         private void ExecuteStartDrawing(object obj)
         {
@@ -48,6 +51,11 @@ namespace DiagramDesigner
         private void ExecuteEndDrawing(object obj)
         {
             this.IsInDrawingState = false;
+        }
+
+        private void ExecuteAddNewRowToRequirementsTable(object obj)
+        {
+            this.ProgramsTable.Rows.Add(this.ProgramsTable.NewRow());
         }
 
         public void HandleMouseMovedEvent(object sender, EventArgs e) // TODO: should view model care about this? 

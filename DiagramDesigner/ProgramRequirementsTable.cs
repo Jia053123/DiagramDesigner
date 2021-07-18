@@ -14,6 +14,7 @@ namespace DiagramDesigner
             nameColumn.ColumnName = "Name";
             nameColumn.ReadOnly = false;
             nameColumn.Unique = true;
+            nameColumn.DefaultValue = "Unnamed";
             this.Columns.Add(nameColumn);
 
             var countColumn = new DataColumn();
@@ -21,6 +22,7 @@ namespace DiagramDesigner
             countColumn.ColumnName = "Count";
             countColumn.ReadOnly = false;
             countColumn.Unique = false;
+            countColumn.DefaultValue = 1;
             this.Columns.Add(countColumn);
 
             var areaColumn = new DataColumn();
@@ -28,13 +30,16 @@ namespace DiagramDesigner
             areaColumn.ColumnName = "Area";
             areaColumn.ReadOnly = false;
             areaColumn.Unique = false;
+            areaColumn.DefaultValue = 0;
             this.Columns.Add(areaColumn);
 
             var totalAreaColumn = new DataColumn();
             totalAreaColumn.DataType = System.Type.GetType("System.Double");
             totalAreaColumn.ColumnName = "TotalArea";
+            totalAreaColumn.Expression = "Count * Area";
             totalAreaColumn.ReadOnly = true;
             totalAreaColumn.Unique = false;
+            totalAreaColumn.DefaultValue = 0;
             this.Columns.Add(totalAreaColumn);
 
             var tagColumn = new DataColumn();
@@ -42,7 +47,16 @@ namespace DiagramDesigner
             tagColumn.ColumnName = "Tag";
             tagColumn.ReadOnly = false;
             tagColumn.Unique = false;
+            tagColumn.DefaultValue = "NotTagged";
             this.Columns.Add(tagColumn);
+
+            //var isMechanicalColumn = new DataColumn();
+            //isMechanicalColumn.DataType = System.Type.GetType("System.Bool");
+            //isMechanicalColumn.ColumnName = "Mechanical?";
+            //isMechanicalColumn.ReadOnly = false;
+            //isMechanicalColumn.Unique = false;
+            //isMechanicalColumn.DefaultValue = false;
+            //this.Columns.Add(isMechanicalColumn);
 
             //var isCirculationColumn = new DataColumn();
             //isCirculationColumn.DataType = System.Type.GetType("System.Bool");
