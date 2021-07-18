@@ -14,6 +14,8 @@ namespace DiagramDesigner
     /// </summary>
     class MainViewModel : INotifyPropertyChanged
     {
+        public ProgramRequirementsTable ProgramsTable = new ProgramRequirementsTable();
+
         private List<Point> DefaultPointsToRender = new List<Point> { new Point(10, 10), new Point(20, 30), new Point(50, 45), new Point(100, 100) };
         private List<Point> _pointsToRender = null;
         public List<Point> PointsToRender { // TODO: stub
@@ -48,7 +50,7 @@ namespace DiagramDesigner
             this.IsInDrawingState = false;
         }
 
-        public void HandleMouseMovedEvent(object sender, EventArgs e)
+        public void HandleMouseMovedEvent(object sender, EventArgs e) // TODO: should view model care about this? 
         {
             if (this.IsInDrawingState)
             {
