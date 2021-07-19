@@ -14,9 +14,10 @@ namespace DiagramDesigner
         private DataTable DataSource { get; set; }
         private String KeyColumnName;
         private String ValueColumnName;
+
         private double ChartRadius { get { return this.Width > this.Height ? this.Height / 2 * 0.8 : this.Width / 2 * 0.8; } }
-        private const double PenWidth = 1;
-        private WinPoint ChartCenter { get { return new System.Windows.Point(this.Width / 2, this.Height / 2); } }
+        private WinPoint ChartCenter { get { return new WinPoint(this.Width / 2, this.Height / 2); } }
+        private Pen PieChartPen { get { return new Pen(Brushes.Black, 1); } }
 
         private DrawingVisual sourceVisual = null;
         protected override int VisualChildrenCount { get { return 1; } }
@@ -38,7 +39,7 @@ namespace DiagramDesigner
             using (DrawingContext dc = sourceVisual.RenderOpen())
             {
                 // draw circle
-                dc.DrawEllipse(null, new Pen(Brushes.Black, PieChartCanvas.PenWidth), this.ChartCenter, this.ChartRadius, this.ChartRadius);
+                dc.DrawEllipse(null, this.PieChartPen, this.ChartCenter, this.ChartRadius, this.ChartRadius);
 
                 // draw sections
                 var testSum = this.DataSource.Compute("Sum(" + ValueColumnName + ")", null);
@@ -46,9 +47,7 @@ namespace DiagramDesigner
 
                 double sum = (double) testSum;
 
-                dc.DrawLine(new Pen(Brushes.Black, PieChartCanvas.PenWidth), 
-                    this.ChartCenter, 
-                    new WinPoint(this.ChartCenter.X + this.ChartRadius, this.ChartCenter.Y));
+                dc.DrawLine(this.PieChartPen, this.ChartCenter, new WinPoint(this.ChartCenter.X + this.ChartRadius, this.ChartCenter.Y));
 
                 double angle = 0;
                 for (int i = 0; i < this.DataSource.Rows.Count; i++)
@@ -58,7 +57,7 @@ namespace DiagramDesigner
                     double ratio = value / sum;
                     double angleDelta = 2 * Math.PI * ratio;
 
-                    dc.DrawLine(new Pen(Brushes.Black, PieChartCanvas.PenWidth),
+                    dc.DrawLine(this.PieChartPen,
                         this.ChartCenter,
                         new WinPoint(this.ChartCenter.X + this.ChartRadius * Math.Cos(angle+angleDelta), this.ChartCenter.Y - this.ChartRadius * Math.Sin(angle+angleDelta)));
 
