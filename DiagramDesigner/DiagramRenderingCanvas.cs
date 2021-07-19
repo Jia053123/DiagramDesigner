@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using DiagramDesignerEngine;
+using WinPoint = System.Windows.Point;
 using Point = DiagramDesignerEngine.Point;
 
 namespace DiagramDesigner
@@ -34,8 +35,8 @@ namespace DiagramDesigner
                 //TODO: draw!
                 for (int i = 0; i < pointsToRender.Count-1; i++)
                 {
-                    var startPoint = new System.Windows.Point((int)pointsToRender[i].coordinateX, (int)pointsToRender[i].coordinateY);
-                    var endPoint = new System.Windows.Point((int)pointsToRender[i + 1].coordinateX, (int)pointsToRender[i + 1].coordinateY);
+                    var startPoint = new WinPoint((int)pointsToRender[i].coordinateX, (int)pointsToRender[i].coordinateY);
+                    var endPoint = new WinPoint((int)pointsToRender[i + 1].coordinateX, (int)pointsToRender[i + 1].coordinateY);
                     dc.DrawLine(new Pen(Brushes.Black, 1), startPoint, endPoint);
                 }
             }
@@ -54,7 +55,7 @@ namespace DiagramDesigner
         {
             base.OnMouseMove(e);
 
-            System.Windows.Point location = e.GetPosition(this);
+            WinPoint location = e.GetPosition(this);
 
             var boundedLocation = this.BoundCursorPositionWithinControl(location);
 
@@ -68,7 +69,7 @@ namespace DiagramDesigner
         {
             base.OnMouseLeftButtonDown(e);
 
-            System.Windows.Point location = e.GetPosition(this);
+            WinPoint location = e.GetPosition(this);
 
             var boundedLocation = this.BoundCursorPositionWithinControl(location);
 
@@ -78,9 +79,9 @@ namespace DiagramDesigner
             }
         }
 
-        private System.Windows.Point BoundCursorPositionWithinControl(System.Windows.Point location)
+        private WinPoint BoundCursorPositionWithinControl(WinPoint location)
         {
-            var locationWithinBound = new System.Windows.Point(location.X, location.Y);
+            var locationWithinBound = new WinPoint(location.X, location.Y);
 
             if (locationWithinBound.X < 0)
             {

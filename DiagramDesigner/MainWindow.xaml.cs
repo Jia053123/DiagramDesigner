@@ -38,6 +38,7 @@ namespace DiagramDesigner
             this.UpdateRendering();
 
             this.ProgramRequirementsTable.DataContext = this.MainViewModel.ProgramsTable;
+            this.ReqChart.DataContext = this.MainViewModel.ProgramsTable;
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
