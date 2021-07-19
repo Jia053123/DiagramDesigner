@@ -37,6 +37,11 @@ namespace DiagramDesigner
             this.UpdateDiagramRendering();
 
             this.ProgramRequirementsTable.DataContext = this.MainViewModel.ProgramsTable;
+            this.MainViewModel.ProgramsTable.ColumnChanged += this.OnProgramRequirementsTableChanged;
+            this.MainViewModel.ProgramsTable.RowChanged += this.OnProgramRequirementsTableChanged;
+            this.MainViewModel.ProgramsTable.TableNewRow += this.OnProgramRequirementsTableChanged;
+            this.MainViewModel.ProgramsTable.RowDeleted += this.OnProgramRequirementsTableChanged;
+            this.MainViewModel.ProgramsTable.TableCleared += this.OnProgramRequirementsTableChanged;
             this.UpdateProgramsRequirementsPieChart();
         }
 
@@ -52,6 +57,11 @@ namespace DiagramDesigner
                     this.PrimaryDiagramCanvas.Cursor = this.MainViewModel.IsInDrawingState ? Cursors.Cross : Cursors.Arrow;
                     break;
             }
+        }
+
+        private void OnProgramRequirementsTableChanged(object sender, EventArgs e)
+        {
+            this.UpdateProgramsRequirementsPieChart();
         }
 
         public void UpdateDiagramRendering()
