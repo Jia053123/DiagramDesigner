@@ -44,25 +44,26 @@ namespace DiagramDesigner
                 var testSum = this.DataSource.Compute("Sum(" + ValueColumnName + ")", null);
                 if (! (testSum is double)) { return; }
 
-                var sum = (double) testSum;
+                double sum = (double) testSum;
 
                 dc.DrawLine(new Pen(Brushes.Black, PieChartCanvas.PenWidth), 
                     this.ChartCenter, 
-                    new WinPoint(this.ChartCenter.X, this.ChartCenter.Y + this.ChartRadius));
+                    new WinPoint(this.ChartCenter.X + this.ChartRadius, this.ChartCenter.Y));
 
                 double angle = 0;
                 for (int i = 0; i < this.DataSource.Rows.Count; i++)
                 {
                     // draw line
-                    var value = this.DataSource.Rows[i].Field<double>(ValueColumnName);
-                    var ratio = value / sum;
-                    var angleDelta = 2 * Math.PI * ratio;
+                    double value = this.DataSource.Rows[i].Field<double>(ValueColumnName);
+                    double ratio = value / sum;
+                    double angleDelta = 2 * Math.PI * ratio;
+
                     dc.DrawLine(new Pen(Brushes.Black, PieChartCanvas.PenWidth),
                         this.ChartCenter,
-                        new WinPoint(this.ChartCenter.X + this.ChartRadius * Math.Cos(angle+angleDelta), this.ChartCenter.Y + this.ChartRadius * Math.Sin(angle+angleDelta)));
+                        new WinPoint(this.ChartCenter.X + this.ChartRadius * Math.Cos(angle+angleDelta), this.ChartCenter.Y - this.ChartRadius * Math.Sin(angle+angleDelta)));
 
                     // draw label
-                    var labelText = this.DataSource.Rows[i].Field<String>(KeyColumnName) + (ratio*100).ToString() + "%";
+                    var labelText = this.DataSource.Rows[i].Field<String>(KeyColumnName) + " " + ((int)(ratio*100)).ToString() + "%";
 
                     var formattedText = new FormattedText(labelText, 
                         CultureInfo.GetCultureInfo("en-us"), 
@@ -73,7 +74,8 @@ namespace DiagramDesigner
                         VisualTreeHelper.GetDpi(this).PixelsPerDip);
 
                     dc.DrawText(formattedText,
-                        new WinPoint(this.ChartCenter.X + (this.ChartRadius * Math.Cos(angle + angleDelta / 2))/2, this.ChartCenter.Y + (this.ChartRadius * Math.Sin(angle + angleDelta / 2))/2));
+                        new WinPoint(this.ChartCenter.X + (this.ChartRadius * Math.Cos(angle + angleDelta / 2))/2 - formattedText.Width / 2, 
+                            this.ChartCenter.Y - (this.ChartRadius * Math.Sin(angle + angleDelta / 2))/2));
 
                     // offset angle starting point
                     angle += angleDelta;

@@ -47,7 +47,6 @@ namespace DiagramDesigner
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            System.Diagnostics.Debug.WriteLine("OnPropertyChanged");
             switch (args.PropertyName)
             {
                 case "PointsToRender":
