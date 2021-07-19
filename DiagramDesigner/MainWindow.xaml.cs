@@ -34,11 +34,10 @@ namespace DiagramDesigner
             this.DataContext = MainViewModel;
             this.PrimaryDiagramCanvas.MouseMovedEventHandler += this.MainViewModel.HandleMouseMovedEvent;
             this.PrimaryDiagramCanvas.MouseLeftClickedEventHandler += this.MainViewModel.HandleMouseLeftClickedEvent;
-
-            this.UpdateRendering();
+            this.UpdateDiagramRendering();
 
             this.ProgramRequirementsTable.DataContext = this.MainViewModel.ProgramsTable;
-            this.ReqChart.DataContext = this.MainViewModel.ProgramsTable;
+            this.UpdateProgramsRequirementsPieChart();
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
@@ -47,7 +46,7 @@ namespace DiagramDesigner
             switch (args.PropertyName)
             {
                 case "PointsToRender":
-                    this.UpdateRendering();
+                    this.UpdateDiagramRendering();
                     break;
                 case "IsInDrawingState":
                     this.PrimaryDiagramCanvas.Cursor = this.MainViewModel.IsInDrawingState ? Cursors.Cross : Cursors.Arrow;
@@ -55,9 +54,14 @@ namespace DiagramDesigner
             }
         }
 
-        public void UpdateRendering()
+        public void UpdateDiagramRendering()
         {
             PrimaryDiagramCanvas.RenderVisual(this.MainViewModel.PointsToRender);
+        }
+
+        public void UpdateProgramsRequirementsPieChart()
+        {
+            ProgramRequirementsChart.RenderPieChart(this.MainViewModel.ProgramsTable, "Name", "TotalArea");
         }
     }
 }

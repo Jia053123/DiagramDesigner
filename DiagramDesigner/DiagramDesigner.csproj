@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="WPFToolkit.DataVisualization" Version="3.5.50211.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\DiagramDesignerEngine\DiagramDesignerEngine.csproj" />
   </ItemGroup>
 

@@ -9,41 +9,44 @@ using WinPoint = System.Windows.Point;
 
 namespace DiagramDesigner
 {
-    class PieChart : Canvas
+    class PieChartCanvas : Canvas
     {
         private DataTable DataSource { get; set; }
         private String KeyColumnName;
         private String ValueColumnName;
-        private double ChartRadius { get { return this.Width > this.Height ? this.Height / 2 : this.Width / 2; } }
+        private double ChartRadius { get { return this.Width > this.Height ? this.Height / 2 * 0.8 : this.Width / 2 * 0.8; } }
         private const double PenWidth = 1;
         private WinPoint ChartCenter { get { return new System.Windows.Point(this.Width / 2, this.Height / 2); } }
 
         private DrawingVisual sourceVisual = null;
+        protected override int VisualChildrenCount { get { return 1; } }
 
-        public PieChart(DataTable source, String keyColumnName, String valueColumnName)
+        public PieChartCanvas()
+        {
+            this.Background = Brushes.Transparent;
+            this.sourceVisual = new DrawingVisual();
+            AddVisualChild(sourceVisual);
+            AddLogicalChild(sourceVisual);
+        }
+
+        public void RenderPieChart(DataTable source, String keyColumnName, String valueColumnName)
         {
             this.DataSource = source;
             this.KeyColumnName = keyColumnName;
             this.ValueColumnName = valueColumnName;
 
-            this.sourceVisual = new DrawingVisual();
-            AddVisualChild(sourceVisual);
-            AddLogicalChild(sourceVisual);
-
-            this.RenderPieChart();
-        }
-
-        public void RenderPieChart()
-        {
             using (DrawingContext dc = sourceVisual.RenderOpen())
             {
                 // draw circle
-                dc.DrawEllipse(null, new Pen(Brushes.Black, PieChart.PenWidth), this.ChartCenter, this.ChartRadius, this.ChartRadius);
+                dc.DrawEllipse(null, new Pen(Brushes.Black, PieChartCanvas.PenWidth), this.ChartCenter, this.ChartRadius, this.ChartRadius);
 
                 // draw sections
-                var sum = (double)this.DataSource.Compute("Sum(ValueName)", "");
+                var testSum = this.DataSource.Compute("Sum(" + ValueColumnName + ")", null);
+                if (! (testSum is double)) { return; }
 
-                dc.DrawLine(new Pen(Brushes.Black, PieChart.PenWidth), 
+                var sum = (double) testSum;
+
+                dc.DrawLine(new Pen(Brushes.Black, PieChartCanvas.PenWidth), 
                     this.ChartCenter, 
                     new WinPoint(this.ChartCenter.X, this.ChartCenter.Y + this.ChartRadius));
 
@@ -54,7 +57,7 @@ namespace DiagramDesigner
                     var value = this.DataSource.Rows[i].Field<double>(ValueColumnName);
                     var ratio = value / sum;
                     var angleDelta = 2 * Math.PI * ratio;
-                    dc.DrawLine(new Pen(Brushes.Black, PieChart.PenWidth),
+                    dc.DrawLine(new Pen(Brushes.Black, PieChartCanvas.PenWidth),
                         this.ChartCenter,
                         new WinPoint(this.ChartCenter.X + this.ChartRadius * Math.Cos(angle+angleDelta), this.ChartCenter.Y + this.ChartRadius * Math.Sin(angle+angleDelta)));
 
@@ -76,6 +79,14 @@ namespace DiagramDesigner
                     angle += angleDelta;
                 }
             }
+        }
+        protected override Visual GetVisualChild(int index)
+        {
+            if (index != 0)
+            {
+                throw new ArgumentOutOfRangeException("index");
+            }
+            return sourceVisual;
         }
     }
 }
