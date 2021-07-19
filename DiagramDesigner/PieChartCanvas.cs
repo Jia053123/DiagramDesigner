@@ -44,9 +44,8 @@ namespace DiagramDesigner
                 // draw sections
                 var testSum = this.DataSource.Compute("Sum(" + ValueColumnName + ")", null);
                 if (! (testSum is double)) { return; }
-
                 double sum = (double) testSum;
-
+                // draw starting line
                 dc.DrawLine(this.PieChartPen, this.ChartCenter, new WinPoint(this.ChartCenter.X + this.ChartRadius, this.ChartCenter.Y));
 
                 double angle = 0;

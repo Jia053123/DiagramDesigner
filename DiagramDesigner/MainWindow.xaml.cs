@@ -36,6 +36,7 @@ namespace DiagramDesigner
             this.PrimaryDiagramCanvas.MouseLeftClickedEventHandler += this.MainViewModel.HandleMouseLeftClickedEvent;
             this.UpdateDiagramRendering();
 
+            this.ProgramRequirementsTable.IsReadOnly = false; // unlock table
             this.ProgramRequirementsTable.DataContext = this.MainViewModel.ProgramsTable;
             this.MainViewModel.ProgramsTable.ColumnChanged += this.OnProgramRequirementsTableChanged;
             this.MainViewModel.ProgramsTable.RowChanged += this.OnProgramRequirementsTableChanged;
