@@ -47,7 +47,7 @@ namespace DiagramDesigner
             tagColumn.ColumnName = "Tag";
             tagColumn.ReadOnly = false;
             tagColumn.Unique = false;
-            tagColumn.DefaultValue = "NotTagged";
+            tagColumn.DefaultValue = "NoTag";
             this.Columns.Add(tagColumn);
 
             //var isMechanicalColumn = new DataColumn();

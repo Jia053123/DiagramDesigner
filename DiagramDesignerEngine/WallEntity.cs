@@ -8,7 +8,7 @@ namespace DiagramDesignerEngine
     {
         public double WallThickness;
 
-        public override Geometry Geometry => throw new NotImplementedException();
+        public override PolylineGeometry Geometry => throw new NotImplementedException();
 
         public override void Draw()
         {

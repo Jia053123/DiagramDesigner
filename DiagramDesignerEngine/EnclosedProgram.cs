@@ -7,7 +7,7 @@ namespace DiagramDesignerEngine
     class EnclosedProgram
     {
         public bool IsAlsoCirculation;
-        public Geometry Geometry => throw new NotImplementedException();
+        public PolylineGeometry Geometry => throw new NotImplementedException();
 
         public double CalculateEnclosedArea()
         {

@@ -6,7 +6,7 @@ namespace DiagramDesignerEngine
 {
     class BoundaryEntity : Entity
     {
-        public override Geometry Geometry => throw new NotImplementedException();
+        public override PolylineGeometry Geometry => throw new NotImplementedException();
 
         public double CalculateEnclosedArea()
         {

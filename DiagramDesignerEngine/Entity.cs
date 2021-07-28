@@ -12,7 +12,7 @@ namespace DiagramDesignerEngine
         public Double translationX = 0;
         public Double translationY = 0;
         public Double rotation = 0;
-        public abstract Geometry Geometry { get; }
+        public abstract PolylineGeometry Geometry { get; }
         public abstract void Draw();
     }
 }

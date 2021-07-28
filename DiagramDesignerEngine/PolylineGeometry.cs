@@ -4,16 +4,11 @@ using System.Text;
 
 namespace DiagramDesignerEngine
 {
-    public class PolylineGeometry : Geometry
+    public class PolylineGeometry
     {
         public Point[] PathsDefinedByPoints { get; set; }
 
-        public override PolylineGeometry GetPolylineApproximation()
-        {
-            return this;
-        }
-
-        public override bool IsClosed()
+        public bool IsClosed()
         {
             // TODO: stub
             return false;
