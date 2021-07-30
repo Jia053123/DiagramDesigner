@@ -16,10 +16,11 @@ namespace DiagramDesigner
     {
         public ProgramRequirementsTable ProgramsTable = new ProgramRequirementsTable();
 
-        private List<Point> DefaultPointsToRender = new List<Point> { new Point(10, 10), new Point(20, 30), new Point(50, 45), new Point(100, 100) };
-        private List<Point> _pointsToRender = null;
-        public List<Point> PointsToRender { // TODO: stub
-            get { return this._pointsToRender == null ? this.DefaultPointsToRender : this.PointsToRender; }
+        private List<List<Point>> _pointsToRender = new List<List<Point>>();
+
+
+        public List<List<Point>> PolylinesToRender {
+            get { return _pointsToRender; }
             private set { this._pointsToRender = value; }
         }
 
@@ -63,10 +64,10 @@ namespace DiagramDesigner
             if (this.IsInDrawingState)
             {
                 var mea = (MouseEventArgs)e;
-                if (this.PointsToRender != null)
+                if (this.PolylinesToRender.Count != 0 && this.PolylinesToRender.First().Count != 0)
                 {
-                    this.PointsToRender.Last().coordinateX = mea.LocationX;
-                    this.PointsToRender.Last().coordinateY = mea.LocationY;
+                    this.PolylinesToRender.First().Last().coordinateX = mea.LocationX;
+                    this.PolylinesToRender.First().Last().coordinateY = mea.LocationY;
                 }
                 this.PointsToRenderChanged();
             }
@@ -77,10 +78,16 @@ namespace DiagramDesigner
             if (this.IsInDrawingState)
             {
                 var mea = (MouseEventArgs)e;
-                if (this.PointsToRender != null)
+                if (this.PolylinesToRender != null)
                 {
                     var newPoint = new Point(mea.LocationX, mea.LocationY);
-                    this.PointsToRender.Add(newPoint);
+
+                    if (this.PolylinesToRender.Count == 0)
+					{
+                        this.PolylinesToRender.Add(new List<Point>());
+					}
+
+                    this.PolylinesToRender.First().Add(newPoint);
                 }
                 this.PointsToRenderChanged();
             }

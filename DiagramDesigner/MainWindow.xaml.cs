@@ -66,7 +66,7 @@ namespace DiagramDesigner
 
         public void UpdateDiagramRendering()
         {
-            PrimaryDiagramCanvas.RenderVisual(this.MainViewModel.PointsToRender);
+            PrimaryDiagramCanvas.RenderPolylines(this.MainViewModel.PolylinesToRender);
         }
 
         public void UpdateProgramsRequirementsPieChart()

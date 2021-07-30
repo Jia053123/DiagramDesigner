@@ -28,16 +28,18 @@ namespace DiagramDesigner
             AddLogicalChild(sourceVisual);
         }
 
-        public void RenderVisual(List<Point> pointsToRender)
+        public void RenderPolylines(List<List<Point>> polylinesToRender)
         {
             using (DrawingContext dc = sourceVisual.RenderOpen())
             {
-                //TODO: draw!
-                for (int i = 0; i < pointsToRender.Count-1; i++)
+                for (int i = 0; i < polylinesToRender.Count; i++)
                 {
-                    var startPoint = new WinPoint((int)pointsToRender[i].coordinateX, (int)pointsToRender[i].coordinateY);
-                    var endPoint = new WinPoint((int)pointsToRender[i + 1].coordinateX, (int)pointsToRender[i + 1].coordinateY);
-                    dc.DrawLine(new Pen(Brushes.Black, 1), startPoint, endPoint);
+                    for (int j = 0; j < polylinesToRender[i].Count-1; j++)
+					{
+                        var startPoint = new WinPoint((int)polylinesToRender[i][j].coordinateX, (int)polylinesToRender[i][j].coordinateY);
+                        var endPoint = new WinPoint((int)polylinesToRender[i][j+1].coordinateX, (int)polylinesToRender[i][j+1].coordinateY);
+                        dc.DrawLine(new Pen(Brushes.Black, 1), startPoint, endPoint);
+                    }
                 }
             }
         }
