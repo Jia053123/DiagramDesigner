@@ -52,6 +52,7 @@ namespace DiagramDesigner
         }
         private void ExecuteStartDrawing(object obj)
         {
+			this.PolylinesToRender.Add(new List<Point>());
             this.IsInDrawingState = true;
         }
 
@@ -72,7 +73,7 @@ namespace DiagramDesigner
             if (this.IsInDrawingState)
             {
                 var mea = (MouseEventArgs)e;
-                if (this.PolylinesToRender.Count != 0 && this.PolylinesToRender.First().Count != 0)
+                if (this.PolylinesToRender.Count != 0 && this.PolylinesToRender.Last().Count != 0)
                 {
                     this.NewEdgePreview = (this.NewEdgePreview.startPoint, new Point(mea.LocationX, mea.LocationY));
                 }
@@ -88,13 +89,7 @@ namespace DiagramDesigner
                 if (this.PolylinesToRender != null)
                 {
                     var newPoint = new Point(mea.LocationX, mea.LocationY);
-
-                    if (this.PolylinesToRender.Count == 0)
-					{
-                        this.PolylinesToRender.Add(new List<Point>());
-					}
-
-                    this.PolylinesToRender.First().Add(newPoint);
+                    this.PolylinesToRender.Last().Add(newPoint);
                     this.NewEdgePreview = (newPoint, newPoint);
                 }
                 this.GraphicsModified();
