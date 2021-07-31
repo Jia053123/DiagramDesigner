@@ -28,10 +28,11 @@ namespace DiagramDesigner
             AddLogicalChild(sourceVisual);
         }
 
-        public void RenderPolylines(List<List<Point>> polylinesToRender)
+		public void RenderVisual(List<List<Point>> polylinesToRender, (Point startPoint, Point endPoint) newEdgePreview)
         {
             using (DrawingContext dc = sourceVisual.RenderOpen())
             {
+                // draw polyline
                 for (int i = 0; i < polylinesToRender.Count; i++)
                 {
                     for (int j = 0; j < polylinesToRender[i].Count-1; j++)
@@ -41,6 +42,10 @@ namespace DiagramDesigner
                         dc.DrawLine(new Pen(Brushes.Black, 1), startPoint, endPoint);
                     }
                 }
+                // draw the preview line
+                dc.DrawLine(new Pen(Brushes.Blue, 1), 
+                    new WinPoint(newEdgePreview.startPoint.coordinateX, newEdgePreview.startPoint.coordinateY), 
+                    new WinPoint(newEdgePreview.endPoint.coordinateX, newEdgePreview.endPoint.coordinateY));
             }
         }
 
@@ -59,11 +64,9 @@ namespace DiagramDesigner
 
             WinPoint location = e.GetPosition(this);
 
-            var boundedLocation = this.BoundCursorPositionWithinControl(location);
-
             if (this.MouseMovedEventHandler != null)
             {
-                this.MouseMovedEventHandler.Invoke(this, new MouseEventArgs(boundedLocation.X, boundedLocation.Y));
+                this.MouseMovedEventHandler.Invoke(this, new MouseEventArgs(location.X, location.Y));
             }
         }
 
@@ -73,37 +76,10 @@ namespace DiagramDesigner
 
             WinPoint location = e.GetPosition(this);
 
-            var boundedLocation = this.BoundCursorPositionWithinControl(location);
-
             if (this.MouseLeftClickedEventHandler != null)
             {
-                this.MouseLeftClickedEventHandler.Invoke(this, new MouseEventArgs(boundedLocation.X, boundedLocation.Y));
+                this.MouseLeftClickedEventHandler.Invoke(this, new MouseEventArgs(location.X, location.Y));
             }
-        }
-
-        private WinPoint BoundCursorPositionWithinControl(WinPoint location)
-        {
-            var locationWithinBound = new WinPoint(location.X, location.Y);
-
-            if (locationWithinBound.X < 0)
-            {
-                locationWithinBound.X = 0;
-            }
-            else if (locationWithinBound.X > this.Width)
-            {
-                locationWithinBound.X = this.Width;
-            }
-
-            if (locationWithinBound.Y < 0)
-            {
-                locationWithinBound.Y = 0;
-            }
-            else if (locationWithinBound.Y > this.Height)
-            {
-                locationWithinBound.Y = this.Height;
-            }
-
-            return locationWithinBound;
         }
     }
 }

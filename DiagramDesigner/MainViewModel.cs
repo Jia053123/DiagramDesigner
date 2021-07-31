@@ -16,13 +16,19 @@ namespace DiagramDesigner
     {
         public ProgramRequirementsTable ProgramsTable = new ProgramRequirementsTable();
 
-        private List<List<Point>> _pointsToRender = new List<List<Point>>();
-
-
-        public List<List<Point>> PolylinesToRender {
-            get { return _pointsToRender; }
-            private set { this._pointsToRender = value; }
+        private List<List<Point>> _polylinesToRender = new List<List<Point>>();
+        public List<List<Point>> PolylinesToRender 
+        {
+            get { return _polylinesToRender; }
+            private set { _polylinesToRender = value; }
         }
+
+        private (Point startPoint, Point endPoint) _newEdgePreview = ( new Point(0, 0), new Point(0, 0) );
+        public (Point startPoint, Point endPoint) NewEdgePreview
+		{
+            get { return _newEdgePreview; }
+            private set { _newEdgePreview = value; }
+		}
 
         private bool _isInDrawingState = false;
         public bool IsInDrawingState
@@ -52,6 +58,8 @@ namespace DiagramDesigner
         private void ExecuteEndDrawing(object obj)
         {
             this.IsInDrawingState = false;
+            this.NewEdgePreview = (new Point(0, 0), new Point(0, 0));
+            this.GraphicsModified();
         }
 
         private void ExecuteAddNewRowToRequirementsTable(object obj)
@@ -66,10 +74,9 @@ namespace DiagramDesigner
                 var mea = (MouseEventArgs)e;
                 if (this.PolylinesToRender.Count != 0 && this.PolylinesToRender.First().Count != 0)
                 {
-                    this.PolylinesToRender.First().Last().coordinateX = mea.LocationX;
-                    this.PolylinesToRender.First().Last().coordinateY = mea.LocationY;
+                    this.NewEdgePreview = (this.NewEdgePreview.startPoint, new Point(mea.LocationX, mea.LocationY));
                 }
-                this.PointsToRenderChanged();
+                this.GraphicsModified();
             }
         }
 
@@ -88,14 +95,15 @@ namespace DiagramDesigner
 					}
 
                     this.PolylinesToRender.First().Add(newPoint);
+                    this.NewEdgePreview = (newPoint, newPoint);
                 }
-                this.PointsToRenderChanged();
+                this.GraphicsModified();
             }
         }
 
-        private void PointsToRenderChanged()
+        private void GraphicsModified()
         {
-            this.OnPropertyChanged("PointsToRender");
+            this.OnPropertyChanged("GraphicsToRender");
         }
 
         protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)

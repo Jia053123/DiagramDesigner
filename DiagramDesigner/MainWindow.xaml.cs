@@ -50,7 +50,7 @@ namespace DiagramDesigner
         {
             switch (args.PropertyName)
             {
-                case "PointsToRender":
+                case "GraphicsToRender":
                     this.UpdateDiagramRendering();
                     break;
                 case "IsInDrawingState":
@@ -66,7 +66,7 @@ namespace DiagramDesigner
 
         public void UpdateDiagramRendering()
         {
-            PrimaryDiagramCanvas.RenderPolylines(this.MainViewModel.PolylinesToRender);
+            PrimaryDiagramCanvas.RenderVisual(this.MainViewModel.PolylinesToRender, this.MainViewModel.NewEdgePreview);
         }
 
         public void UpdateProgramsRequirementsPieChart()
