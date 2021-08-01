@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using DiagramDesignerEngine;
 using WinPoint = System.Windows.Point;
-using Point = DiagramDesignerEngine.Point;
 using System.Globalization;
 
 namespace DiagramDesigner
 {
-    partial class DiagramRenderingCanvas: Canvas
+	partial class DiagramRenderingCanvas: Canvas
     {
         private DrawingVisual sourceVisual = null;  
         
@@ -33,7 +30,7 @@ namespace DiagramDesigner
             AddLogicalChild(sourceVisual);
         }
 
-		public void RenderVisual(List<List<Point>> polylinesToRender, (Point startPoint, Point endPoint) newEdgePreview, double scaleBarUnitLength)
+		public void RenderVisual(List<List<WinPoint>> polylinesToRender, (WinPoint startPoint, WinPoint endPoint) newEdgePreview, double scaleBarUnitLength)
         {
             using (DrawingContext dc = sourceVisual.RenderOpen())
             {
@@ -73,15 +70,13 @@ namespace DiagramDesigner
                 {
                     for (int j = 0; j < polylinesToRender[i].Count-1; j++)
 					{
-                        var startPoint = new WinPoint((int)polylinesToRender[i][j].coordinateX, (int)polylinesToRender[i][j].coordinateY);
-                        var endPoint = new WinPoint((int)polylinesToRender[i][j+1].coordinateX, (int)polylinesToRender[i][j+1].coordinateY);
+                        var startPoint = new WinPoint((int)polylinesToRender[i][j].X, (int)polylinesToRender[i][j].Y);
+                        var endPoint = new WinPoint((int)polylinesToRender[i][j+1].X, (int)polylinesToRender[i][j+1].Y);
                         dc.DrawLine(new Pen(Brushes.Black, 1), startPoint, endPoint);
                     }
                 }
                 // draw the preview line
-                dc.DrawLine(new Pen(Brushes.Blue, 1), 
-                    new WinPoint(newEdgePreview.startPoint.coordinateX, newEdgePreview.startPoint.coordinateY), 
-                    new WinPoint(newEdgePreview.endPoint.coordinateX, newEdgePreview.endPoint.coordinateY));
+                dc.DrawLine(new Pen(Brushes.Blue, 1), newEdgePreview.startPoint, newEdgePreview.endPoint);
             }
         }
 
