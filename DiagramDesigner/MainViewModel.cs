@@ -14,6 +14,13 @@ namespace DiagramDesigner
     /// </summary>
     class MainViewModel : INotifyPropertyChanged
     {
+        private double _displayUnitOverRealUnit = 2;
+        public double DisplayUnitOverRealUnit
+		{
+            get { return _displayUnitOverRealUnit; }
+            set { _displayUnitOverRealUnit = value; }
+		}
+
         public ProgramRequirementsTable ProgramsTable = new ProgramRequirementsTable();
 
         private List<List<Point>> _polylinesToRender = new List<List<Point>>();

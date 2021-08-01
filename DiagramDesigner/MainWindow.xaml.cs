@@ -34,7 +34,7 @@ namespace DiagramDesigner
             this.DataContext = MainViewModel;
             this.PrimaryDiagramCanvas.MouseMovedEventHandler += this.MainViewModel.HandleMouseMovedEvent;
             this.PrimaryDiagramCanvas.MouseLeftClickedEventHandler += this.MainViewModel.HandleMouseLeftClickedEvent;
-            this.UpdateDiagramRendering();
+            //this.UpdateDiagramRendering();
 
             this.ProgramRequirementsTable.IsReadOnly = false; // unlock table
             this.ProgramRequirementsTable.DataContext = this.MainViewModel.ProgramsTable;
@@ -43,8 +43,14 @@ namespace DiagramDesigner
             this.MainViewModel.ProgramsTable.TableNewRow += this.OnProgramRequirementsTableChanged;
             this.MainViewModel.ProgramsTable.RowDeleted += this.OnProgramRequirementsTableChanged;
             this.MainViewModel.ProgramsTable.TableCleared += this.OnProgramRequirementsTableChanged;
-            this.UpdateProgramsRequirementsPieChart();
+            //this.UpdateProgramsRequirementsPieChart();
         }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+		{
+            this.UpdateDiagramRendering();
+            this.UpdateProgramsRequirementsPieChart();
+		} 
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
@@ -66,7 +72,7 @@ namespace DiagramDesigner
 
         public void UpdateDiagramRendering()
         {
-            PrimaryDiagramCanvas.RenderVisual(this.MainViewModel.PolylinesToRender, this.MainViewModel.NewEdgePreview);
+            PrimaryDiagramCanvas.RenderVisual(this.MainViewModel.PolylinesToRender, this.MainViewModel.NewEdgePreview, this.MainViewModel.DisplayUnitOverRealUnit);
         }
 
         public void UpdateProgramsRequirementsPieChart()

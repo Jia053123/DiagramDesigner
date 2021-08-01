@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DiagramDesigner"
         mc:Ignorable="d"
-        Title="MainWindow" Height="720" Width="1280">
+        Title="MainWindow" Height="720" Width="1280" Loaded="Window_Loaded">
     <DockPanel>
         
         <StackPanel Orientation="Vertical" Width="300" DockPanel.Dock="Left" Background="LemonChiffon">
@@ -20,7 +20,7 @@
         </StackPanel>
         
         <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Height="30" DockPanel.Dock="Bottom" Background="Azure">
-            <TextBlock Text="cursor location x y" VerticalAlignment="Center" Margin="10,10,10,10"></TextBlock>
+            <TextBlock Name="StatusLabel" Text="Status: " VerticalAlignment="Center" Margin="10,10,10,10"></TextBlock>
         </StackPanel>
         
         <local:DiagramRenderingCanvas x:Name="PrimaryDiagramCanvas" ></local:DiagramRenderingCanvas>
