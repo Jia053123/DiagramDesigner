@@ -6,6 +6,7 @@ using System.Windows.Input;
 using System.Runtime.CompilerServices;
 using DiagramDesignerEngine;
 using System.Linq;
+using WinPoint = System.Windows.Point;
 
 namespace DiagramDesigner
 {
@@ -23,15 +24,15 @@ namespace DiagramDesigner
 
         public ProgramRequirementsTable ProgramsTable = new ProgramRequirementsTable();
 
-        private List<List<Point>> _polylinesToRender = new List<List<Point>>();
-        public List<List<Point>> PolylinesToRender 
+        private List<List<WinPoint>> _polylinesToRender = new List<List<WinPoint>>();
+        public List<List<WinPoint>> PolylinesToRender 
         {
             get { return _polylinesToRender; }
             private set { _polylinesToRender = value; }
         }
 
-        private (Point startPoint, Point endPoint) _newEdgePreview = ( new Point(0, 0), new Point(0, 0) );
-        public (Point startPoint, Point endPoint) NewEdgePreview
+        private (WinPoint startPoint, WinPoint endPoint) _newEdgePreview = ( new WinPoint(0, 0), new WinPoint(0, 0) );
+        public (WinPoint startPoint, WinPoint endPoint) NewEdgePreview
 		{
             get { return _newEdgePreview; }
             private set { _newEdgePreview = value; }
@@ -59,14 +60,14 @@ namespace DiagramDesigner
         }
         private void ExecuteStartDrawing(object obj)
         {
-			this.PolylinesToRender.Add(new List<Point>());
+			this.PolylinesToRender.Add(new List<WinPoint>());
             this.IsInDrawingState = true;
         }
 
         private void ExecuteEndDrawing(object obj)
         {
             this.IsInDrawingState = false;
-            this.NewEdgePreview = (new Point(0, 0), new Point(0, 0));
+            this.NewEdgePreview = (new WinPoint(0, 0), new WinPoint(0, 0));
             this.GraphicsModified();
         }
 
@@ -82,7 +83,7 @@ namespace DiagramDesigner
                 var mea = (MouseEventArgs)e;
                 if (this.PolylinesToRender.Count != 0 && this.PolylinesToRender.Last().Count != 0)
                 {
-                    this.NewEdgePreview = (this.NewEdgePreview.startPoint, new Point(mea.LocationX, mea.LocationY));
+                    this.NewEdgePreview = (this.NewEdgePreview.startPoint, new WinPoint(mea.LocationX, mea.LocationY));
                 }
                 this.GraphicsModified();
             }
@@ -95,7 +96,7 @@ namespace DiagramDesigner
                 var mea = (MouseEventArgs)e;
                 if (this.PolylinesToRender != null)
                 {
-                    var newPoint = new Point(mea.LocationX, mea.LocationY);
+                    var newPoint = new WinPoint(mea.LocationX, mea.LocationY);
                     this.PolylinesToRender.Last().Add(newPoint);
                     this.NewEdgePreview = (newPoint, newPoint);
                 }

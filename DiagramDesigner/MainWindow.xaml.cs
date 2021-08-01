@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
+using WinPoint = System.Windows.Point;
 
 namespace DiagramDesigner
 {
