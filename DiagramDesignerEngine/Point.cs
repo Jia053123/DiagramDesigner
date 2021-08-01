@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using WinPoint = System.Windows.Point;
 
 namespace DiagramDesignerEngine
 {
@@ -15,15 +14,5 @@ namespace DiagramDesignerEngine
             this.coordinateX = x;
             this.coordinateY = y;
         }
-
-        public static explicit operator WinPoint (Point p)
-		{
-            return new WinPoint(p.coordinateX, p.coordinateY);
-		}
-
-        public static explicit operator Point (WinPoint wp)
-		{
-            return new Point(wp.X, wp.Y);
-		}
     }
 }

@@ -5,7 +5,11 @@ VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiagramDesigner", "DiagramDesigner\DiagramDesigner.csproj", "{AB09A8C0-8B58-4730-B3F2-09F4267AFDED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiagramDesignerEngine", "DiagramDesignerEngine\DiagramDesignerEngine.csproj", "{0AB1A17B-4274-4026-A521-E6C481789B00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiagramDesignerEngine", "DiagramDesignerEngine\DiagramDesignerEngine.csproj", "{0AB1A17B-4274-4026-A521-E6C481789B00}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiagramDesigner.UnitTests", "DiagramDesigner.UnitTests\DiagramDesigner.UnitTests.csproj", "{5DA65613-686B-4703-BEA8-1B7E5AB533EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiagramDesignerEngine.UnitTests", "DiagramDesignerEngine.UnitTests\DiagramDesignerEngine.UnitTests.csproj", "{5EF8A75B-D578-4725-B3D0-D795B8793385}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +45,30 @@ Global
 		{0AB1A17B-4274-4026-A521-E6C481789B00}.Release|x64.Build.0 = Release|Any CPU
 		{0AB1A17B-4274-4026-A521-E6C481789B00}.Release|x86.ActiveCfg = Release|Any CPU
 		{0AB1A17B-4274-4026-A521-E6C481789B00}.Release|x86.Build.0 = Release|Any CPU
+		{5DA65613-686B-4703-BEA8-1B7E5AB533EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DA65613-686B-4703-BEA8-1B7E5AB533EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DA65613-686B-4703-BEA8-1B7E5AB533EF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5DA65613-686B-4703-BEA8-1B7E5AB533EF}.Debug|x64.Build.0 = Debug|Any CPU
+		{5DA65613-686B-4703-BEA8-1B7E5AB533EF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5DA65613-686B-4703-BEA8-1B7E5AB533EF}.Debug|x86.Build.0 = Debug|Any CPU
+		{5DA65613-686B-4703-BEA8-1B7E5AB533EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DA65613-686B-4703-BEA8-1B7E5AB533EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DA65613-686B-4703-BEA8-1B7E5AB533EF}.Release|x64.ActiveCfg = Release|Any CPU
+		{5DA65613-686B-4703-BEA8-1B7E5AB533EF}.Release|x64.Build.0 = Release|Any CPU
+		{5DA65613-686B-4703-BEA8-1B7E5AB533EF}.Release|x86.ActiveCfg = Release|Any CPU
+		{5DA65613-686B-4703-BEA8-1B7E5AB533EF}.Release|x86.Build.0 = Release|Any CPU
+		{5EF8A75B-D578-4725-B3D0-D795B8793385}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EF8A75B-D578-4725-B3D0-D795B8793385}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EF8A75B-D578-4725-B3D0-D795B8793385}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5EF8A75B-D578-4725-B3D0-D795B8793385}.Debug|x64.Build.0 = Debug|Any CPU
+		{5EF8A75B-D578-4725-B3D0-D795B8793385}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5EF8A75B-D578-4725-B3D0-D795B8793385}.Debug|x86.Build.0 = Debug|Any CPU
+		{5EF8A75B-D578-4725-B3D0-D795B8793385}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EF8A75B-D578-4725-B3D0-D795B8793385}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EF8A75B-D578-4725-B3D0-D795B8793385}.Release|x64.ActiveCfg = Release|Any CPU
+		{5EF8A75B-D578-4725-B3D0-D795B8793385}.Release|x64.Build.0 = Release|Any CPU
+		{5EF8A75B-D578-4725-B3D0-D795B8793385}.Release|x86.ActiveCfg = Release|Any CPU
+		{5EF8A75B-D578-4725-B3D0-D795B8793385}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
