@@ -41,12 +41,13 @@ namespace DiagramDesigner
                 // draw circle
                 dc.DrawEllipse(null, this.PieChartPen, this.ChartCenter, this.ChartRadius, this.ChartRadius);
 
+                // draw starting line
+                dc.DrawLine(this.PieChartPen, this.ChartCenter, new WinPoint(this.ChartCenter.X + this.ChartRadius, this.ChartCenter.Y));
+
                 // draw sections
                 var testSum = this.DataSource.Compute("Sum(" + ValueColumnName + ")", null);
                 if (! (testSum is double)) { return; }
                 double sum = (double) testSum;
-                // draw starting line
-                dc.DrawLine(this.PieChartPen, this.ChartCenter, new WinPoint(this.ChartCenter.X + this.ChartRadius, this.ChartCenter.Y));
 
                 double angle = 0;
                 for (int i = 0; i < this.DataSource.Rows.Count; i++)
