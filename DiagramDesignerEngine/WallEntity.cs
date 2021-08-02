@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DiagramDesignerEngine
 {
-    class WallEntity : Entity
+    public class WallEntity : Entity
     {
         public double WallThickness;
 

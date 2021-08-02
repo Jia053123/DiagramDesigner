@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DiagramDesignerEngine
 {
-    class BoundaryEntity : Entity
+    public class BoundaryEntity : Entity
     {
         public override PolylineGeometry Geometry => throw new NotImplementedException();
 

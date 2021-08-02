@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DiagramDesignerEngine
 {
-    class EnclosedProgram
+    public class EnclosedProgram
     {
         public bool IsAlsoCirculation;
         public PolylineGeometry Geometry => throw new NotImplementedException();

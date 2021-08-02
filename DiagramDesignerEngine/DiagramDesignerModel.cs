@@ -8,11 +8,13 @@ namespace DiagramDesignerEngine
     /// In the context of shape grammar, the collection of entities reflects the current description of the diagram. 
     /// A change in the collection reflects a change of the description but not necessarily a change of the appearance of the diagram. 
     /// </summary>
-    class DiagramDesignerModel
+    public class DiagramDesignerModel
     {
-        private List<BoundaryEntity> BoundaryEntities;
-        private List<WallEntity> WallEntities;
-        private List<EnclosedProgram> EnclosedProgramEntities;
+        public List<BoundaryEntity> BoundaryEntities { get; } = new List<BoundaryEntity>();
+        public List<WallEntity> WallEntities { get; } = new List<WallEntity>();
+        public List<EnclosedProgram> EnclosedProgramEntities { get; } = new List<EnclosedProgram>();
+
+        public event EventHandler ModelChanged;
 
         public double TotalEnclosedArea()
         {

@@ -15,28 +15,12 @@ namespace DiagramDesigner
     /// </summary>
     class MainViewModel : INotifyPropertyChanged
     {
-        private double _displayUnitOverRealUnit = 2;
-        public double DisplayUnitOverRealUnit
-		{
-            get { return _displayUnitOverRealUnit; }
-            set { _displayUnitOverRealUnit = value; }
-		}
+        private DiagramDesignerModel model = new DiagramDesignerModel();
 
-        public ProgramRequirementsTable ProgramsTable = new ProgramRequirementsTable();
-
-        private List<List<WinPoint>> _polylinesToRender = new List<List<WinPoint>>();
-        public List<List<WinPoint>> PolylinesToRender 
-        {
-            get { return _polylinesToRender; }
-            private set { _polylinesToRender = value; }
-        }
-
-        private (WinPoint startPoint, WinPoint endPoint) _newEdgePreview = ( new WinPoint(0, 0), new WinPoint(0, 0) );
-        public (WinPoint startPoint, WinPoint endPoint) NewEdgePreview
-		{
-            get { return _newEdgePreview; }
-            private set { _newEdgePreview = value; }
-		}
+        public double DisplayUnitOverRealUnit { get; set; } = 2;
+        public ProgramRequirementsTable ProgramsTable { get; } = new ProgramRequirementsTable();
+        public List<List<WinPoint>> PolylinesToRender { get; } = new List<List<WinPoint>>();
+        public (WinPoint startPoint, WinPoint endPoint) NewEdgePreview { get; private set; } = (new WinPoint(0, 0), new WinPoint(0, 0));
 
         private bool _isInDrawingState = false;
         public bool IsInDrawingState
@@ -51,6 +35,8 @@ namespace DiagramDesigner
         public ICommand AddNewProgramRequirementCommand { set; get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public MainViewModel()
         {
@@ -73,7 +59,14 @@ namespace DiagramDesigner
 
         private void ExecuteAddNewRowToRequirementsTable(object obj)
         {
-            this.ProgramsTable.Rows.Add(this.ProgramsTable.NewRow());
+            try
+			{
+                this.ProgramsTable.Rows.Add(this.ProgramsTable.NewRow());
+            }
+            catch (System.Data.ConstraintException ex)
+			{
+                Logger.Error(ex, "Program Requirement Table Constraint Failed");
+			}
         }
 
         public void HandleMouseMovedEvent(object sender, EventArgs e) // TODO: should view model care about this? 
