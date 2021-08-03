@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-[assembly: InternalsVisibleToAttribute("DiagramDesignerEngine.UnitTests")]
+[assembly: InternalsVisibleTo("DiagramDesignerEngine.UnitTests")]
 namespace DiagramDesignerEngine
 {
     public class Point
@@ -32,8 +32,6 @@ namespace DiagramDesignerEngine
         public static bool operator != (Point lhs, Point rhs) => !(lhs == rhs);
 
         public override bool Equals(object obj) => this.Equals(obj as Point);
-
-        public override int GetHashCode() => (this.coordinateX, this.coordinateY).GetHashCode();
 
         private bool Equals(Point p)
 		{

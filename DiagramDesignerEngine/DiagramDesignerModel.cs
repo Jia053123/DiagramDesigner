@@ -12,7 +12,7 @@ namespace DiagramDesignerEngine
     {
         //public List<BoundaryEntity> BoundaryEntities { get; private set; } = new List<BoundaryEntity>();
         public List<WallEntity> WallEntities { get; private set; } = new List<WallEntity>();
-        private List<PolylineGeometry> CollapsedWallGeometries = null;
+        private List<PolylineGeometry> CollapsedWallSegments = null;
 
         public List<EnclosedProgram> EnclosedProgramEntities { get; private set; } = new List<EnclosedProgram>();
 
