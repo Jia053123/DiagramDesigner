@@ -9,10 +9,9 @@ namespace DiagramDesignerEngine
     /// </summary>
     public abstract class Entity {
         public bool Isfixed;
-        public Double translationX = 0;
-        public Double translationY = 0;
-        public Double rotation = 0;
-        public abstract PolylineGeometry Geometry { get; }
-        public abstract void Draw();
+        public Double translationX { get; internal set; } = 0;
+        public Double translationY { get; internal set; } = 0;
+        public Double rotation { get; internal set; } = 0;
+        public abstract PolylineGeometry Geometry { get; internal set; }
     }
 }

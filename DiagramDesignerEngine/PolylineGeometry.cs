@@ -6,7 +6,7 @@ namespace DiagramDesignerEngine
 {
     public class PolylineGeometry
     {
-        public List<Point> PathsDefinedByPoints { get; set; }
+        public List<Point> PathsDefinedByPoints { get; internal set; }
 
         public bool IsClosed()
         {

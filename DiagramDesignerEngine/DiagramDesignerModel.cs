@@ -16,6 +16,16 @@ namespace DiagramDesignerEngine
 
         public event EventHandler ModelChanged;
 
+        public void CreateNewWallEntity()
+		{
+            
+		}
+
+        public void AddPointToWallEntityAtIndex(Point point, int index)
+		{
+
+		}
+
         public double TotalEnclosedArea()
         {
             // TODO: stub

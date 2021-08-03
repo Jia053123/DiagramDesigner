@@ -6,13 +6,12 @@ namespace DiagramDesignerEngine
 {
     public class WallEntity : Entity
     {
-        public double WallThickness;
+        public double WallThickness { get; internal set; }
+        public override PolylineGeometry Geometry { get; internal set; }
 
-        public override PolylineGeometry Geometry => throw new NotImplementedException();
-
-        public override void Draw()
-        {
-            throw new NotImplementedException();
-        }
+        public WallEntity(double thickness)
+		{
+            this.WallThickness = thickness;
+		}
     }
 }

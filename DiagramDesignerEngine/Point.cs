@@ -6,8 +6,9 @@ namespace DiagramDesignerEngine
 {
     public class Point
     {
-        public double coordinateX { get; set; }
-        public double coordinateY { get; set; }
+        // setting these to internal in order to make them readonly to the ViewModel
+        public double coordinateX { get; internal set; }
+        public double coordinateY { get; internal set; }
 
         public Point(double x, double y)
         {
