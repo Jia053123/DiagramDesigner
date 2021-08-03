@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using WinPoint = System.Windows.Point;
 using DiagramDesignerEngine;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleToAttribute("DiagramDesigner.UnitTests")]
 namespace DiagramDesigner
 {
 	static class Utilities
