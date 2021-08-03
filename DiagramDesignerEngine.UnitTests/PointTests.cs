@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace DiagramDesignerEngine.UnitTests
 {
-	public class Tests
+	public class PointTests
 	{
 		[SetUp]
 		public void Setup()

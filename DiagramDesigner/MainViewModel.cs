@@ -22,7 +22,7 @@ namespace DiagramDesigner
         public List<List<WinPoint>> PolylinesToRender { get; private set; }
 
         private readonly (WinPoint startPoint, WinPoint endPoint) NewEdgePreviewDefault = (new WinPoint(0, 0), new WinPoint(0, 0));
-        public (WinPoint startPoint, WinPoint endPoint) NewEdgePreview => NewEdgePreviewData == null ? NewEdgePreviewDefault : (NewEdgePreviewData.StartPoint, NewEdgePreviewData.EndPoint);
+        public (WinPoint startPoint, WinPoint endPoint) NewEdgePreview => NewEdgePreviewData is null ? NewEdgePreviewDefault : (NewEdgePreviewData.StartPoint, NewEdgePreviewData.EndPoint);
         private DirectedLine NewEdgePreviewData { get; set; } = null; 
 
         private bool _isInDrawingState = false;
@@ -73,7 +73,7 @@ namespace DiagramDesigner
         private void ExecuteEndDrawing(object obj)
         {
             this.IsInDrawingState = false;
-            this.NewEdgePreviewData = null; //= (new WinPoint(0, 0), new WinPoint(0, 0));
+            this.NewEdgePreviewData = null; 
             this.HandelGraphicsModified(this, null);
         }
 
@@ -94,7 +94,7 @@ namespace DiagramDesigner
             if (this.IsInDrawingState)
             {
                 var mea = (MouseEventArgs)e;
-                if (this.NewEdgePreviewData != null)//(this.PolylinesToRender.Count != 0 && this.PolylinesToRender.Last().Count != 0)
+                if (this.NewEdgePreviewData != null)
                 {
                     this.NewEdgePreviewData.EndPoint = new WinPoint(mea.LocationX, mea.LocationY);
                     this.HandelGraphicsModified(this, null);
@@ -111,7 +111,7 @@ namespace DiagramDesigner
                 {
                     var newPoint = new WinPoint(mea.LocationX, mea.LocationY);
                     this.Model.AddPointToWallEntityAtIndex(Utilities.ConvertWindowsPointToPoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count-1);
-                    if (this.NewEdgePreviewData == null)
+                    if (this.NewEdgePreviewData is null)
 					{
                         this.NewEdgePreviewData = new DirectedLine(newPoint, newPoint);
 					} 

@@ -12,6 +12,8 @@ namespace DiagramDesignerEngine
     {
         //public List<BoundaryEntity> BoundaryEntities { get; private set; } = new List<BoundaryEntity>();
         public List<WallEntity> WallEntities { get; private set; } = new List<WallEntity>();
+        private List<PolylineGeometry> CollapsedWallGeometries = null;
+
         public List<EnclosedProgram> EnclosedProgramEntities { get; private set; } = new List<EnclosedProgram>();
 
         public event EventHandler ModelChanged;
@@ -29,7 +31,7 @@ namespace DiagramDesignerEngine
 			}
             this.WallEntities[index].AddPointToGeometry(point);
 
-            this.OnModelChanged();
+            this.OnEntitiesChanged();
 		}
 
         public double TotalEnclosedArea()
@@ -44,7 +46,7 @@ namespace DiagramDesignerEngine
             return 0;
         }
 
-        private void OnModelChanged()
+        private void OnEntitiesChanged()
 		{
             if (this.ModelChanged != null)
             {
