@@ -15,12 +15,15 @@ namespace DiagramDesigner
     /// </summary>
     class MainViewModel : INotifyPropertyChanged
     {
-        private DiagramDesignerModel model = new DiagramDesignerModel();
+        private DiagramDesignerModel Model = new DiagramDesignerModel();
 
         public double DisplayUnitOverRealUnit { get; set; } = 2;
         public ProgramRequirementsTable ProgramsTable { get; } = new ProgramRequirementsTable();
-        public List<List<WinPoint>> PolylinesToRender { get; } = new List<List<WinPoint>>();
-        public (WinPoint startPoint, WinPoint endPoint) NewEdgePreview { get; private set; } = (new WinPoint(0, 0), new WinPoint(0, 0));
+        public List<List<WinPoint>> PolylinesToRender { get; private set; }
+
+        private readonly (WinPoint startPoint, WinPoint endPoint) NewEdgePreviewDefault = (new WinPoint(0, 0), new WinPoint(0, 0));
+        public (WinPoint startPoint, WinPoint endPoint) NewEdgePreview => NewEdgePreviewData == null ? NewEdgePreviewDefault : (NewEdgePreviewData.StartPoint, NewEdgePreviewData.EndPoint);
+        private DirectedLine NewEdgePreviewData { get; set; } = null; 
 
         private bool _isInDrawingState = false;
         public bool IsInDrawingState
@@ -43,18 +46,35 @@ namespace DiagramDesigner
             this.StartDrawingCommand = new DelegateCommand(ExecuteStartDrawing);
             this.EndDrawingCommand = new DelegateCommand(ExecuteEndDrawing);
             this.AddNewProgramRequirementCommand = new DelegateCommand(ExecuteAddNewRowToRequirementsTable);
+
+            this.Model.ModelChanged += this.HandelGraphicsModified;
+            this.RebuildGraphicsDataFromModel();
         }
+
+        private void RebuildGraphicsDataFromModel()
+		{
+            this.PolylinesToRender = new List<List<WinPoint>>();
+            foreach (WallEntity we in this.Model.WallEntities)
+			{
+                this.PolylinesToRender.Add(new List<WinPoint>());
+                foreach (Point p in we.Geometry.PathsDefinedByPoints)
+				{
+                    this.PolylinesToRender.Last().Add(Utilities.ConvertPointToWindowsPoint(p, this.DisplayUnitOverRealUnit));
+				}
+			}
+		}
+
         private void ExecuteStartDrawing(object obj)
         {
-			this.PolylinesToRender.Add(new List<WinPoint>());
+            this.Model.CreateNewWallEntity();
             this.IsInDrawingState = true;
         }
 
         private void ExecuteEndDrawing(object obj)
         {
             this.IsInDrawingState = false;
-            this.NewEdgePreview = (new WinPoint(0, 0), new WinPoint(0, 0));
-            this.GraphicsModified();
+            this.NewEdgePreviewData = null; //= (new WinPoint(0, 0), new WinPoint(0, 0));
+            this.HandelGraphicsModified(this, null);
         }
 
         private void ExecuteAddNewRowToRequirementsTable(object obj)
@@ -69,16 +89,16 @@ namespace DiagramDesigner
 			}
         }
 
-        public void HandleMouseMovedEvent(object sender, EventArgs e) // TODO: should view model care about this? 
+        public void HandleMouseMovedEvent(object sender, EventArgs e)
         {
             if (this.IsInDrawingState)
             {
                 var mea = (MouseEventArgs)e;
-                if (this.PolylinesToRender.Count != 0 && this.PolylinesToRender.Last().Count != 0)
+                if (this.NewEdgePreviewData != null)//(this.PolylinesToRender.Count != 0 && this.PolylinesToRender.Last().Count != 0)
                 {
-                    this.NewEdgePreview = (this.NewEdgePreview.startPoint, new WinPoint(mea.LocationX, mea.LocationY));
+                    this.NewEdgePreviewData.EndPoint = new WinPoint(mea.LocationX, mea.LocationY);
+                    this.HandelGraphicsModified(this, null);
                 }
-                this.GraphicsModified();
             }
         }
 
@@ -90,15 +110,25 @@ namespace DiagramDesigner
                 if (this.PolylinesToRender != null)
                 {
                     var newPoint = new WinPoint(mea.LocationX, mea.LocationY);
-                    this.PolylinesToRender.Last().Add(newPoint);
-                    this.NewEdgePreview = (newPoint, newPoint);
+                    this.Model.AddPointToWallEntityAtIndex(Utilities.ConvertWindowsPointToPoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count-1);
+                    if (this.NewEdgePreviewData == null)
+					{
+                        this.NewEdgePreviewData = new DirectedLine(newPoint, newPoint);
+					} 
+                    else
+					{
+                        this.NewEdgePreviewData.StartPoint = newPoint;
+                    }
                 }
-                this.GraphicsModified();
             }
         }
 
-        private void GraphicsModified()
+        private void HandelGraphicsModified(object sender, EventArgs e)
         {
+            if (sender == this.Model)
+			{
+                this.RebuildGraphicsDataFromModel();
+            }
             this.OnPropertyChanged("GraphicsToRender");
         }
 

@@ -94,7 +94,10 @@ namespace DiagramDesigner
             base.OnMouseMove(e);
 
             WinPoint location = e.GetPosition(this);
-
+            if (!this.IsLocationInside(location.X, location.Y))
+            {
+                return;
+            }
             if (this.MouseMovedEventHandler != null)
             {
                 this.MouseMovedEventHandler.Invoke(this, new MouseEventArgs(location.X, location.Y));
@@ -106,12 +109,20 @@ namespace DiagramDesigner
             base.OnMouseLeftButtonDown(e);
 
             WinPoint location = e.GetPosition(this);
-
+            if (! this.IsLocationInside(location.X, location.Y))
+			{
+                return;
+			}
             if (this.MouseLeftClickedEventHandler != null)
             {
                 this.MouseLeftClickedEventHandler.Invoke(this, new MouseEventArgs(location.X, location.Y));
             }
         }
+
+        private bool IsLocationInside(double xLoc, double yLoc)
+		{
+            return (xLoc > 0 && xLoc < this.ActualWidth && yLoc > 0 && yLoc < this.ActualHeight);
+		}
     }
 }
 
