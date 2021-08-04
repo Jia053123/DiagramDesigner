@@ -13,10 +13,10 @@ namespace DiagramDesignerEngine
 		public Point EndPoint2 { get; private set; }
 
 		internal LineSegment(Point endPoint1, Point endPoint2)
-		{
-			if (endPoint1 is null || endPoint2 is null || endPoint1 == endPoint2)
+		{		
+			if (endPoint1 == endPoint2)
 			{
-				throw new ArgumentException("Parameters cannot be null or identical");
+				throw new ArgumentException("Parameters cannot be identical");
 			}
 
 			this.EndPoint1 = endPoint1;
@@ -29,7 +29,7 @@ namespace DiagramDesignerEngine
 		/// </summary>
 		/// <param name="ls"> A non-null LineSegment to check for intersection </param>
 		/// <returns> the point of intersection; null if not found </returns>
-		internal Point FindIntersection(LineSegment ls)
+		internal Point? FindIntersection(LineSegment ls)
 		{
 			if (ls is null)
 			{
@@ -78,9 +78,9 @@ namespace DiagramDesignerEngine
 			}
 		}
 
-		internal List<LineSegment> SplitAtPoints(List<Point> pointsToSplit)
-		{
+		//internal List<LineSegment> SplitAtPoints(List<Point> pointsToSplit)
+		//{
 			
-		}
+		//}
 	}
 }

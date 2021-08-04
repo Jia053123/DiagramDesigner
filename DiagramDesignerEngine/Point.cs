@@ -6,41 +6,35 @@ using System.Text;
 [assembly: InternalsVisibleTo("DiagramDesignerEngine.UnitTests")]
 namespace DiagramDesignerEngine
 {
-    public class Point
+    public readonly struct Point: IEquatable<Point>
     {
-        public const double EQUALITY_TOLERANCE = 0.001;
+        public const int DIGITS_FOR_ROUNDING = 3;
 
         // setting these to internal in order to make them readonly to the ViewModel
-        public double coordinateX { get; internal set; }
-        public double coordinateY { get; internal set; }
+        public double coordinateX { get; }
+        public double coordinateY { get; }
 
         public Point(double x, double y)
         {
-            this.coordinateX = x;
-            this.coordinateY = y;
+            this.coordinateX = (Math.Round(x, DIGITS_FOR_ROUNDING));
+            this.coordinateY = (Math.Round(y, DIGITS_FOR_ROUNDING));
         }
 
-        public static bool operator == (Point lhs, Point rhs)
+
+
+		public static bool operator == (Point lhs, Point rhs)
 		{
-            if (lhs is null)
-			{
-                return false;
-			}
-            return lhs.Equals(rhs);
+			return lhs.Equals(rhs);
 		}
 
-        public static bool operator != (Point lhs, Point rhs) => !(lhs == rhs);
+		public static bool operator != (Point lhs, Point rhs) => !(lhs == rhs);
 
-        public override bool Equals(object obj) => this.Equals(obj as Point);
+		public override bool Equals(object obj) => obj is Point other && this.Equals(other);
+		bool IEquatable<Point>.Equals(Point other) => this.Equals(other);
 
-        private bool Equals(Point p)
+		private bool Equals(Point p)
 		{
-            if (p is null)
-			{
-                return false;
-			}
-            return (Math.Abs(this.coordinateX - p.coordinateX) < EQUALITY_TOLERANCE) &&
-                (Math.Abs(this.coordinateY - p.coordinateY) < EQUALITY_TOLERANCE);
-        }
-    }
+			return (this.coordinateX == p.coordinateX && this.coordinateY == p.coordinateY);
+		}
+	}
 }

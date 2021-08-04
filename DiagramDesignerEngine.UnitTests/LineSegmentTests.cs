@@ -15,7 +15,7 @@ namespace DiagramDesignerEngine.UnitTests
 			var p2 = new Point(1, -2);
 			var p3 = new Point(2, -1);
 			var p4 = new Point(2, 3);
-			Assert.Throws<ArgumentException>(() => new LineSegment(null, p1));
+			//Assert.Throws<ArgumentException>(() => new LineSegment(null, p1));
 			Assert.Throws<ArgumentException>(() => new LineSegment(p1, p2));
 			Assert.Throws<ArgumentException>(() => new LineSegment(p4, p4));
 			Assert.DoesNotThrow(() => new LineSegment(p1, p3));

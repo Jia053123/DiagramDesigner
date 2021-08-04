@@ -19,10 +19,10 @@ namespace DiagramDesignerEngine.UnitTests
 			var p3 = new Point(1, 2.02);
 			var p4 = new Point(0.9, 2);
 
-			var p5 = new Point(1.0004, 1.9991);
+			var p5 = new Point(1.0004, 1.9995);
 
-			Point p6 = null;
-
+			Point? p6 = null;
+			
 			Assert.AreEqual(p1, p2);
 			Assert.AreNotEqual(p3, p1);
 			Assert.AreNotEqual(p1, p4);

@@ -57,13 +57,13 @@ namespace DiagramDesignerEngine
                 for (int j = i+1; j < allSegments.Count; j++)
 				{
                     // If intersection is found, remember which segment should be split at what point
-                    Point pointToSplit = allSegments[i].FindIntersection(allSegments[j]);
-                    if (!(pointToSplit is null))
-                    {
-                        positionsToSplit[i].Add(pointToSplit);
-                        positionsToSplit[j].Add(pointToSplit);
-                    }					
-				}
+                    Point? pointToSplit = allSegments[i].FindIntersection(allSegments[j]);
+					if (pointToSplit != null)
+					{
+						positionsToSplit[i].Add((Point)pointToSplit);
+                        positionsToSplit[j].Add((Point)pointToSplit);
+			    	}
+		    	}
 			}
 
             // split segments at points identified
