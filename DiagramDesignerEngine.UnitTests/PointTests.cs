@@ -39,6 +39,11 @@ namespace DiagramDesignerEngine.UnitTests
 			Assert.IsTrue(p1.Equals(p2));
 			Assert.IsFalse(p1.Equals(p3));
 			Assert.IsFalse(p1.Equals(p6));
+
+			Assert.AreEqual(p1.GetHashCode(), p2.GetHashCode());
+			Assert.AreNotEqual(p3.GetHashCode(), p1.GetHashCode());
+			Assert.AreNotEqual(p1.GetHashCode(), p4.GetHashCode());
+			Assert.AreEqual(p1.GetHashCode(), p5.GetHashCode());
 		}
 	}
 }

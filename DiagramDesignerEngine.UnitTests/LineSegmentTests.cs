@@ -29,7 +29,7 @@ namespace DiagramDesignerEngine.UnitTests
 			Assert.AreEqual(ls1.FindIntersection(ls2), new Point(0, 0));
 			Assert.AreEqual(ls2.FindIntersection(ls1), new Point(0, 0));
 
-			Assert.Throws<ArgumentException>(() => ls1.FindIntersection(null));
+			//Assert.Throws<ArgumentException>(() => ls1.FindIntersection(null));
 
 			var ls3 = new LineSegment(new Point(-2, -1), new Point(0, 3));
 			var ls4 = new LineSegment(new Point(1, -1), new Point(-3, 3));

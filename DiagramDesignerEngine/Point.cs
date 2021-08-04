@@ -20,7 +20,7 @@ namespace DiagramDesignerEngine
             this.coordinateY = (Math.Round(y, DIGITS_FOR_ROUNDING));
         }
 
-
+		public override int GetHashCode() => (this.coordinateX, this.coordinateY).GetHashCode();
 
 		public static bool operator == (Point lhs, Point rhs)
 		{
