@@ -47,14 +47,28 @@ namespace DiagramDesignerEngine
 			}
 
             // find intersections and breakdown corresponding segments
-            this.CollapsedWallSegments = new List<LineSegment>();
+            List<HashSet<Point>> positionsToSplit = new List<HashSet<Point>>();
+            for (int i = 0; i < allSegments.Count; i++)
+			{
+                positionsToSplit.Add(new HashSet<Point>());
+			}
             for (int i = 0; i < allSegments.Count; i++)
 			{
                 for (int j = i+1; j < allSegments.Count; j++)
 				{
-                    // TODO
+                    // If intersection is found, remember which segment should be split at what point
+                    Point pointToSplit = allSegments[i].FindIntersection(allSegments[j]);
+                    if (!(pointToSplit is null))
+                    {
+                        positionsToSplit[i].Add(pointToSplit);
+                        positionsToSplit[j].Add(pointToSplit);
+                    }					
 				}
 			}
+
+            // split segments at points identified
+            this.CollapsedWallSegments = new List<LineSegment>();
+            
 		}
 
         public double TotalEnclosedArea()

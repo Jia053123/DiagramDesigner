@@ -77,5 +77,10 @@ namespace DiagramDesignerEngine
 				return null;
 			}
 		}
+
+		internal List<LineSegment> SplitAtPoints(List<Point> pointsToSplit)
+		{
+			
+		}
 	}
 }

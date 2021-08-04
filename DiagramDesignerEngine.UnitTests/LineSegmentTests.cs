@@ -24,7 +24,6 @@ namespace DiagramDesignerEngine.UnitTests
 		[Test]
 		public void TestFindIntersection()
 		{
-			
 			var ls1 = new LineSegment(new Point(-1, 0), new Point(1, 0));
 			var ls2 = new LineSegment(new Point(0, -1), new Point(0, 1));
 			Assert.AreEqual(ls1.FindIntersection(ls2), new Point(0, 0));
@@ -32,9 +31,9 @@ namespace DiagramDesignerEngine.UnitTests
 
 			Assert.Throws<ArgumentException>(() => ls1.FindIntersection(null));
 
-			var ls3 = new LineSegment(new Point(-1, -2), new Point(1, 2));
-			var ls4 = new LineSegment(new Point(2, -2), new Point(-2, 2));
-			Assert.AreEqual(ls3.FindIntersection(ls4), new Point(0, 0));
+			var ls3 = new LineSegment(new Point(-2, -1), new Point(0, 3));
+			var ls4 = new LineSegment(new Point(1, -1), new Point(-3, 3));
+			Assert.AreEqual(ls3.FindIntersection(ls4), new Point(-1, 1));
 
 			// sharing end point
 			var ls5 = new LineSegment(new Point(-1, 0), new Point(0, 0));
