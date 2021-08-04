@@ -73,9 +73,61 @@ namespace DiagramDesignerEngine
 			}
 		}
 
+		/// <summary>
+		/// Check whether the point is on the segment inbetween the two endpoints
+		/// </summary>
+		/// <param name="p"> The point to check </param>
+		/// <returns> false if the point is not on the segment or is an endpoint </returns>
+		internal bool ContainsPoint(Point p)
+		{
+			// check p is not one of the endpoints
+			if (p == EndPoint1 || p == EndPoint2)
+			{
+				return false;
+			}
+
+			var crossProduct = (p.coordinateY - EndPoint1.coordinateY) * (EndPoint2.coordinateX - EndPoint1.coordinateX) -
+				(p.coordinateX - EndPoint1.coordinateX) * (EndPoint2.coordinateY - EndPoint1.coordinateY);
+			if (Math.Abs(crossProduct) > double.Epsilon)
+			{
+				// the three points are not aligned
+				return false;
+			}
+
+			var dotProduct = (p.coordinateX - EndPoint1.coordinateX) * (EndPoint2.coordinateX - EndPoint1.coordinateX) +
+				(p.coordinateY - EndPoint1.coordinateY) * (EndPoint2.coordinateY - EndPoint1.coordinateY);
+			if (dotProduct < 0)
+			{
+				return false;
+			}
+
+			var squaredDistance = Math.Pow(EndPoint2.coordinateX - EndPoint1.coordinateX, 2) + 
+				Math.Pow(EndPoint2.coordinateY - EndPoint1.coordinateY, 2);
+			if (dotProduct > squaredDistance)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		private (LineSegment, LineSegment)? SplitAtPoint(Point pointToSplit)
+		{
+			if (!this.ContainsPoint(pointToSplit))
+			{
+				throw new ArgumentException("Point not on segment");
+			}
+			return (new LineSegment(EndPoint1, pointToSplit), new LineSegment(pointToSplit, EndPoint2));
+		}
+
 		//internal List<LineSegment> SplitAtPoints(List<Point> pointsToSplit)
 		//{
-			
+		//	var splitSegments = new List<LineSegment>();
+
+		//	void SplitSegment(LineSegment ls)
+		//	{
+
+		//	}
 		//}
 	}
 }

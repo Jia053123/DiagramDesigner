@@ -47,10 +47,10 @@ namespace DiagramDesignerEngine
 			}
 
             // find intersections and breakdown corresponding segments
-            List<HashSet<Point>> positionsToSplit = new List<HashSet<Point>>();
+            List<HashSet<Point>> pointToSplitForAllLines = new List<HashSet<Point>>();
             for (int i = 0; i < allSegments.Count; i++)
 			{
-                positionsToSplit.Add(new HashSet<Point>());
+                pointToSplitForAllLines.Add(new HashSet<Point>());
 			}
             for (int i = 0; i < allSegments.Count; i++)
 			{
@@ -60,8 +60,8 @@ namespace DiagramDesignerEngine
                     Point? pointToSplit = allSegments[i].FindIntersection(allSegments[j]);
 					if (pointToSplit != null)
 					{
-						positionsToSplit[i].Add((Point)pointToSplit);
-                        positionsToSplit[j].Add((Point)pointToSplit);
+						pointToSplitForAllLines[i].Add((Point)pointToSplit);
+                        pointToSplitForAllLines[j].Add((Point)pointToSplit);
 			    	}
 		    	}
 			}

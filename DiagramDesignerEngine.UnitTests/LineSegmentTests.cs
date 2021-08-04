@@ -51,5 +51,23 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls8 = new LineSegment(new Point(-1, -1.6), new Point(1, -1.2));
 			Assert.IsNull(ls1.FindIntersection(ls8));
 		}
+
+		[Test]
+		public void TestContainsPoint()
+		{
+			var ls1 = new LineSegment(new Point(-1, 0), new Point(1, 0));
+			Assert.IsTrue(ls1.ContainsPoint(new Point(0, 0)));
+			Assert.IsFalse(ls1.ContainsPoint(new Point(0, 1)));
+			Assert.IsFalse(ls1.ContainsPoint(new Point(-1, 0)));
+			Assert.IsFalse(ls1.ContainsPoint(new Point(1, 0)));
+
+			var ls2 = new LineSegment(new Point(0, -1), new Point(0, 1));
+			Assert.IsTrue(ls2.ContainsPoint(new Point(0, 0)));
+			Assert.IsFalse(ls2.ContainsPoint(new Point(1, 0)));
+
+			var ls3 = new LineSegment(new Point(-1, -2), new Point(1, 2));
+			Assert.IsTrue(ls1.ContainsPoint(new Point(0, 0)));
+			Assert.IsFalse(ls1.ContainsPoint(new Point(1, 1)));
+		}
 	}
 }
