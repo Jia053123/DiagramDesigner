@@ -39,7 +39,22 @@ namespace DiagramDesignerEngine
 
         public void ResolvePrograms()
 		{
-            // TODO
+            // make a collection of all geometry segments
+            var allSegments = new List<LineSegment>();
+            foreach (WallEntity we in this.WallEntities)
+			{
+                allSegments.AddRange(we.Geometry.ConvertToLineSegments());
+			}
+
+            // find intersections and breakdown corresponding segments
+            this.CollapsedWallSegments = new List<LineSegment>();
+            for (int i = 0; i < allSegments.Count; i++)
+			{
+                for (int j = i+1; j < allSegments.Count; j++)
+				{
+                    // TODO
+				}
+			}
 		}
 
         public double TotalEnclosedArea()
