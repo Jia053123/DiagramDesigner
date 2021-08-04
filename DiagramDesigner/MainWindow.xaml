@@ -20,7 +20,8 @@
         </StackPanel>
         
         <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Height="30" DockPanel.Dock="Bottom" Background="Azure">
-            <TextBlock Name="StatusLabel" Text="Status: " VerticalAlignment="Center" Margin="10,10,10,10"></TextBlock>
+            <!--<TextBlock Name="StatusLabel" Text="Status: " VerticalAlignment="Center" Margin="10,10,10,10"></TextBlock>-->
+            <Button Content="Resolve Programs" Width="130" Height="20" Command="{Binding ResolveProgramsCommand}"></Button>
         </StackPanel>
         
         <local:DiagramRenderingCanvas x:Name="PrimaryDiagramCanvas" ></local:DiagramRenderingCanvas>

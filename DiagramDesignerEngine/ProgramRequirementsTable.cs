@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace DiagramDesigner
+namespace DiagramDesignerEngine
 {
-    class ProgramRequirementsTable : DataTable
+    public class ProgramRequirementsTable : DataTable
     {
         public ProgramRequirementsTable()
         {

@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using DiagramDesignerEngine;
 using System.Linq;
 using WinPoint = System.Windows.Point;
+using System.Data;
 
 namespace DiagramDesigner
 {
@@ -18,7 +19,7 @@ namespace DiagramDesigner
         private DiagramDesignerModel Model = new DiagramDesignerModel();
 
         public double DisplayUnitOverRealUnit { get; set; } = 2;
-        public ProgramRequirementsTable ProgramsTable { get; } = new ProgramRequirementsTable();
+        public DataTable ProgramRequirementsDataTable => this.Model.ProgramRequirements; //{ get; } = new ProgramRequirementsTable();
         public List<List<WinPoint>> PolylinesToRender { get; private set; }
 
         private readonly (WinPoint startPoint, WinPoint endPoint) NewEdgePreviewDefault = (new WinPoint(0, 0), new WinPoint(0, 0));
@@ -34,7 +35,7 @@ namespace DiagramDesigner
 
         public ICommand StartDrawingCommand { set; get; }
         public ICommand EndDrawingCommand { set; get; }
-
+        public ICommand ResolveProgramsCommand { get; set; }
         public ICommand AddNewProgramRequirementCommand { set; get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -45,6 +46,7 @@ namespace DiagramDesigner
         {
             this.StartDrawingCommand = new DelegateCommand(ExecuteStartDrawing);
             this.EndDrawingCommand = new DelegateCommand(ExecuteEndDrawing);
+            this.ResolveProgramsCommand = new DelegateCommand(ExecuteResolvePrograms);
             this.AddNewProgramRequirementCommand = new DelegateCommand(ExecuteAddNewRowToRequirementsTable);
 
             this.Model.ModelChanged += this.HandelGraphicsModified;
@@ -77,11 +79,16 @@ namespace DiagramDesigner
             this.HandelGraphicsModified(this, null);
         }
 
+        private void ExecuteResolvePrograms(object obj)
+		{
+            this.Model.ResolvePrograms();
+		}
+
         private void ExecuteAddNewRowToRequirementsTable(object obj)
         {
             try
 			{
-                this.ProgramsTable.Rows.Add(this.ProgramsTable.NewRow());
+                this.ProgramRequirementsDataTable.Rows.Add(this.ProgramRequirementsDataTable.NewRow());
             }
             catch (System.Data.ConstraintException ex)
 			{

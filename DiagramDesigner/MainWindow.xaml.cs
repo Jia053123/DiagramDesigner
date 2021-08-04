@@ -37,12 +37,12 @@ namespace DiagramDesigner
             this.PrimaryDiagramCanvas.MouseLeftClickedEventHandler += this.MainViewModel.HandleMouseLeftClickedEvent;
 
             this.ProgramRequirementsTable.IsReadOnly = false; // unlock table
-            this.ProgramRequirementsTable.DataContext = this.MainViewModel.ProgramsTable;
-            this.MainViewModel.ProgramsTable.ColumnChanged += this.OnProgramRequirementsTableChanged;
-            this.MainViewModel.ProgramsTable.RowChanged += this.OnProgramRequirementsTableChanged;
-            this.MainViewModel.ProgramsTable.TableNewRow += this.OnProgramRequirementsTableChanged;
-            this.MainViewModel.ProgramsTable.RowDeleted += this.OnProgramRequirementsTableChanged;
-            this.MainViewModel.ProgramsTable.TableCleared += this.OnProgramRequirementsTableChanged;
+            this.ProgramRequirementsTable.DataContext = this.MainViewModel.ProgramRequirementsDataTable;
+            this.MainViewModel.ProgramRequirementsDataTable.ColumnChanged += this.OnProgramRequirementsTableChanged;
+            this.MainViewModel.ProgramRequirementsDataTable.RowChanged += this.OnProgramRequirementsTableChanged;
+            this.MainViewModel.ProgramRequirementsDataTable.TableNewRow += this.OnProgramRequirementsTableChanged;
+            this.MainViewModel.ProgramRequirementsDataTable.RowDeleted += this.OnProgramRequirementsTableChanged;
+            this.MainViewModel.ProgramRequirementsDataTable.TableCleared += this.OnProgramRequirementsTableChanged;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -76,7 +76,7 @@ namespace DiagramDesigner
 
         public void UpdateProgramsRequirementsPieChart()
         {
-            ProgramRequirementsChart.RenderPieChart(this.MainViewModel.ProgramsTable, "Name", "TotalArea");
+            ProgramRequirementsChart.RenderPieChart(this.MainViewModel.ProgramRequirementsDataTable, "Name", "TotalArea");
         }
     }
 }
