@@ -9,18 +9,21 @@
     <DockPanel>
         
         <StackPanel Orientation="Vertical" Width="300" DockPanel.Dock="Left" Background="LemonChiffon">
-            <Button Content="Start Drawing" Width="60" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding StartDrawingCommand}"/>
-            <Button Content="End Drawing" Width="60" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding EndDrawingCommand}"/>
+            <TextBlock Name="ShapeGrammarLabel" Text="Shape Grammar Panel" HorizontalAlignment="Center" Margin="10,10,10,10"></TextBlock>
+            <Button Content="Add New Shape" Width="100" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding StartDrawingCommand}"/>
+            <Button Content="End of Shape" Width="100" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding EndDrawingCommand}"/>
         </StackPanel>
         
         <StackPanel Orientation="Vertical" Width="300" DockPanel.Dock="Right" Background="LightGray">
-            <DataGrid x:Name="ProgramRequirementsTable" ItemsSource="{Binding}" AutoGenerateColumns="True" IsReadOnly="False"> </DataGrid>
-            <Button Content="Add New Row" Width="100" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding AddNewProgramRequirementCommand}"/>
+            <TextBlock Name="ProgramsLabel" Text="Programs Panel" HorizontalAlignment="Center" Margin="10,10,10,10"></TextBlock>
+            <DataGrid x:Name="ProgramRequirementsTable" ItemsSource="{Binding}" AutoGenerateColumns="True" IsReadOnly="False" Margin="10,10,10,10"> </DataGrid>
+            <Button Content="Add New Program" Width="100" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding AddNewProgramRequirementCommand}"/>
             <local:PieChartCanvas x:Name="ProgramRequirementsChart" Width="250" Height="200"></local:PieChartCanvas>
         </StackPanel>
         
         <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Height="30" DockPanel.Dock="Bottom" Background="Azure">
-            <TextBlock Name="StatusLabel" Text="Status: " VerticalAlignment="Center" Margin="10,10,10,10"></TextBlock>
+            <TextBlock Name="StatusLabel" Text="Status Bar" VerticalAlignment="Center" Margin="10,10,10,10"></TextBlock>
+            <Button Content="Resolve Programs" Width="130" Height="20" Command="{Binding ResolveProgramsCommand}"></Button>
         </StackPanel>
         
         <local:DiagramRenderingCanvas x:Name="PrimaryDiagramCanvas" ></local:DiagramRenderingCanvas>

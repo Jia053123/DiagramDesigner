@@ -10,11 +10,14 @@ namespace DiagramDesignerEngine
     /// </summary>
     public class DiagramDesignerModel
     {
+        public ProgramRequirementsTable ProgramRequirements { get; } = new ProgramRequirementsTable();
+
         //public List<BoundaryEntity> BoundaryEntities { get; private set; } = new List<BoundaryEntity>();
         public List<WallEntity> WallEntities { get; private set; } = new List<WallEntity>();
-        private List<PolylineGeometry> CollapsedWallSegments = null;
+        private List<LineSegment> CollapsedWallSegments = null;
+        private Stack<List<LineSegment>> SegmentsToResolve;
 
-        public List<EnclosedProgram> EnclosedProgramEntities { get; private set; } = new List<EnclosedProgram>();
+        public List<EnclosedProgram> Programs { get; private set; } = new List<EnclosedProgram>();
 
         public event EventHandler ModelChanged;
 
@@ -32,6 +35,11 @@ namespace DiagramDesignerEngine
             this.WallEntities[index].AddPointToGeometry(point);
 
             this.OnEntitiesChanged();
+		}
+
+        public void ResolvePrograms()
+		{
+            // TODO
 		}
 
         public double TotalEnclosedArea()
