@@ -7,10 +7,10 @@ namespace DiagramDesignerEngine
 	/// <summary>
 	/// A straight line segment defined by its two end points. The two end points cannot be the same point. 
 	/// </summary>
-	class LineSegment
+	readonly struct LineSegment
 	{
-		public Point EndPoint1 { get; private set; }
-		public Point EndPoint2 { get; private set; }
+		public Point EndPoint1 { get; }
+		public Point EndPoint2 { get; }
 
 		internal LineSegment(Point endPoint1, Point endPoint2)
 		{		
@@ -27,15 +27,10 @@ namespace DiagramDesignerEngine
 		/// Line segments do not intersect if they overlap or merely share an endpoint. 
 		/// They do intersect if they form a T shape. 
 		/// </summary>
-		/// <param name="ls"> A non-null LineSegment to check for intersection </param>
+		/// <param name="ls"> A LineSegment to check for intersection </param>
 		/// <returns> the point of intersection; null if not found </returns>
 		internal Point? FindIntersection(LineSegment ls)
 		{
-			if (ls is null)
-			{
-				throw new ArgumentException("Parameter cannot be null");
-			}
-
 			if (this.EndPoint1 == ls.EndPoint1 || this.EndPoint1 == ls.EndPoint2 || 
 				this.EndPoint2 == ls.EndPoint1 || this.EndPoint2 == ls.EndPoint2)
 			{
