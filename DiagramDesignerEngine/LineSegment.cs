@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 namespace DiagramDesignerEngine
@@ -111,7 +113,7 @@ namespace DiagramDesignerEngine
 			return true;
 		}
 
-		private (LineSegment, LineSegment)? SplitAtPoint(Point pointToSplit)
+		private (LineSegment, LineSegment) SplitAtPoint(Point pointToSplit)
 		{
 			if (!this.ContainsPoint(pointToSplit))
 			{
@@ -120,14 +122,42 @@ namespace DiagramDesignerEngine
 			return (new LineSegment(EndPoint1, pointToSplit), new LineSegment(pointToSplit, EndPoint2));
 		}
 
-		//internal List<LineSegment> SplitAtPoints(List<Point> pointsToSplit)
-		//{
-		//	var splitSegments = new List<LineSegment>();
+		/// <summary>
+		/// Split the segment at every point in the list
+		/// </summary>
+		/// <param name="pointsToSplit"> A list of points on the segment at which to split; the do not have to be unique. </param>
+		/// <returns></returns>
+		internal List<LineSegment> SplitAtPoints(List<Point> pointsToSplit)
+		{
+			var splitSegments = new List<LineSegment>();
 
-		//	void SplitSegment(LineSegment ls)
-		//	{
+			// make sure all points are distinct and ordered in ascending or descending order by X or Y coordinate so that the elements at the front are closer to EndPoint1
+			List<Point> sortedPointsToSplit;
+			if (EndPoint1.coordinateX != EndPoint2.coordinateX)
+			{
+				sortedPointsToSplit = EndPoint1.coordinateX < EndPoint2.coordinateX ?
+							pointsToSplit.OrderBy(o => o.coordinateX).ToList() :
+							pointsToSplit.OrderByDescending(o => o.coordinateX).ToList();
+			} 
+			else
+			{
+				Debug.Assert(EndPoint1.coordinateY != EndPoint2.coordinateY);
+				sortedPointsToSplit = EndPoint1.coordinateY < EndPoint2.coordinateY ?
+										pointsToSplit.OrderBy(o => o.coordinateY).ToList() :
+										pointsToSplit.OrderByDescending(o => o.coordinateY).ToList();
+			}
+			List<Point> uniqueSortedPointsToSplit = sortedPointsToSplit.Distinct().ToList();
 
-		//	}
-		//}
+			var remainingSegment = this;
+			for (int i = 0; i < uniqueSortedPointsToSplit.Count; i++)
+			{
+				var result = remainingSegment.SplitAtPoint(uniqueSortedPointsToSplit[i]);
+				splitSegments.Add(result.Item1); 
+				remainingSegment = result.Item2;
+			}
+			splitSegments.Add(remainingSegment); // the last segment
+
+			return splitSegments;
+		}
 	}
 }

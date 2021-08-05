@@ -60,14 +60,41 @@ namespace DiagramDesignerEngine.UnitTests
 			Assert.IsFalse(ls1.ContainsPoint(new Point(0, 1)));
 			Assert.IsFalse(ls1.ContainsPoint(new Point(-1, 0)));
 			Assert.IsFalse(ls1.ContainsPoint(new Point(1, 0)));
-
+			
 			var ls2 = new LineSegment(new Point(0, -1), new Point(0, 1));
 			Assert.IsTrue(ls2.ContainsPoint(new Point(0, 0)));
 			Assert.IsFalse(ls2.ContainsPoint(new Point(1, 0)));
 
 			var ls3 = new LineSegment(new Point(-1, -2), new Point(1, 2));
-			Assert.IsTrue(ls1.ContainsPoint(new Point(0, 0)));
-			Assert.IsFalse(ls1.ContainsPoint(new Point(1, 1)));
+			Assert.IsTrue(ls3.ContainsPoint(new Point(0, 0)));
+			Assert.IsFalse(ls3.ContainsPoint(new Point(1, 1)));
+		}
+
+		[Test]
+		public void TestSplitAtPoints()
+		{
+			var ls1 = new LineSegment(new Point(-2, 0), new Point(2, 0));
+			var ps1 = new List<Point> { new Point(-1, 0), new Point(1, 0), new Point(0, 0) };
+			var result1 = ls1.SplitAtPoints(ps1);
+			Assert.AreEqual(result1.Count, 4);
+
+			var ls2 = new LineSegment(new Point(0, 2), new Point(0, -2));
+			var ps2 = new List<Point> { new Point(0, 1), new Point(0, -1), new Point(0, 0) };
+			var result2 = ls2.SplitAtPoints(ps2);
+			Assert.AreEqual(result2.Count, 4);
+
+			var ls3 = new LineSegment(new Point(-4, 2), new Point(4, -2));
+			var ps3 = new List<Point> { new Point(-2, 1), new Point(0, 0), new Point(2, -1), new Point(0, 0) };
+			var result3 = ls3.SplitAtPoints(ps3);
+			Assert.AreEqual(result3.Count, 4);
+			Assert.IsTrue(result3.Contains(new LineSegment(new Point(-4, 2), new Point(-2, 1))));
+			Assert.IsTrue(result3.Contains(new LineSegment(new Point(-2, 1), new Point(0, 0))));
+			Assert.IsTrue(result3.Contains(new LineSegment(new Point(0, 0), new Point(2, -1))));
+			Assert.IsTrue(result3.Contains(new LineSegment(new Point(2, -1), new Point(4, -2))));
+
+			var ls4 = new LineSegment(new Point(-4, 2), new Point(4, -2));
+			var ps4 = new List<Point> { new Point(-2, 1), new Point(0, 0), new Point(2, -2), new Point(2, -1), new Point(0, 0) };
+			Assert.Throws<ArgumentException>(() => ls4.SplitAtPoints(ps4));
 		}
 	}
 }
