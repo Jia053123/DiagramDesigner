@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using DiagramDesignerEngine;
+using System.Diagnostics;
 
 namespace DiagramDesignerEngine.UnitTests
 {
@@ -140,7 +141,7 @@ namespace DiagramDesignerEngine.UnitTests
 		}
 
 		[Test]
-		public void TestSplitIfOverlap()
+		public void TestSplitIfOverlap_X()
 		{
 			var ls1 = new LineSegment(new Point(-2, 0), new Point(2, 0));
 			var ls2 = ls1;
@@ -149,7 +150,49 @@ namespace DiagramDesignerEngine.UnitTests
 			Assert.AreEqual(result1[0], ls1);
 
 			var ls3 = new LineSegment(new Point(-1, 0), new Point(1, 0));
+			var result2 = LineSegment.SplitIfOverlap(ls1, ls3);
+			TestContext.WriteLine(result2[0]);
+			TestContext.WriteLine(result2[1]);
+			Assert.AreEqual(result2.Count, 3);
+			Assert.IsTrue(result2.Contains(new LineSegment(new Point(-2, 0), new Point(-1, 0))));
+			Assert.IsTrue(result2.Contains(new LineSegment(new Point(-1, 0), new Point(1, 0))));
+			Assert.IsTrue(result2.Contains(new LineSegment(new Point(1, 0), new Point(2, 0))));
 
+			var result3 = LineSegment.SplitIfOverlap(ls3, ls1);
+			Assert.AreEqual(result3.Count, 3);
+			Assert.IsTrue(result3.Contains(new LineSegment(new Point(-2, 0), new Point(-1, 0))));
+			Assert.IsTrue(result3.Contains(new LineSegment(new Point(-1, 0), new Point(1, 0))));
+			Assert.IsTrue(result3.Contains(new LineSegment(new Point(1, 0), new Point(2, 0))));
+
+			var ls4 = new LineSegment(new Point(-4, 0), new Point(1, 0));
+			var result4 = LineSegment.SplitIfOverlap(ls1, ls4);
+			Assert.AreEqual(result4.Count, 3);
+			Assert.IsTrue(result4.Contains(new LineSegment(new Point(-4, 0), new Point(-2, 0))));
+			Assert.IsTrue(result4.Contains(new LineSegment(new Point(-2, 0), new Point(1, 0))));
+			Assert.IsTrue(result4.Contains(new LineSegment(new Point(1, 0), new Point(2, 0))));
+
+			var result5 = LineSegment.SplitIfOverlap(ls4, ls1);
+			Assert.AreEqual(result5.Count, 3);
+			Assert.IsTrue(result5.Contains(new LineSegment(new Point(-4, 0), new Point(-2, 0))));
+			Assert.IsTrue(result5.Contains(new LineSegment(new Point(-2, 0), new Point(1, 0))));
+			Assert.IsTrue(result5.Contains(new LineSegment(new Point(1, 0), new Point(2, 0))));
+
+			var ls5 = new LineSegment(new Point(-2, 0), new Point(1, 0));
+			var result6 = LineSegment.SplitIfOverlap(ls1, ls5);
+			Assert.AreEqual(result6.Count, 2);
+			Assert.IsTrue(result6.Contains(new LineSegment(new Point(-2, 0), new Point(1, 0))));
+			Assert.IsTrue(result6.Contains(new LineSegment(new Point(1, 0), new Point(2, 0))));
+
+			var result7 = LineSegment.SplitIfOverlap(ls5, ls1);
+			Assert.AreEqual(result7.Count, 2);
+			Assert.IsTrue(result7.Contains(new LineSegment(new Point(-2, 0), new Point(1, 0))));
+			Assert.IsTrue(result7.Contains(new LineSegment(new Point(1, 0), new Point(2, 0))));
+
+			var ls7 = new LineSegment(new Point(-1, 0), new Point(2, 0));
+			var result8 = LineSegment.SplitIfOverlap(ls1, ls7);
+			Assert.AreEqual(result8.Count, 2);
+			Assert.IsTrue(result8.Contains(new LineSegment(new Point(-2, 0), new Point(-1, 0))));
+			Assert.IsTrue(result8.Contains(new LineSegment(new Point(-1, 0), new Point(2, 0))));
 		}
 	}
 }

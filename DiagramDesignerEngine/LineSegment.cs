@@ -218,7 +218,7 @@ namespace DiagramDesignerEngine
 		{
 			var splitSegments = new List<LineSegment>();
 			
-			if (ls1.FirstPoint == ls2.FirstPoint && ls1.SecondPoint == ls2.SecondPoint)
+			if (ls1 == ls2)
 			{
 				// complete overlap
 				splitSegments.Add(ls1);
@@ -266,6 +266,11 @@ namespace DiagramDesignerEngine
 		private bool Equals(LineSegment ls)
 		{
 			return (this.FirstPoint == ls.FirstPoint && this.SecondPoint == ls.SecondPoint);
+		}
+
+		public override string ToString()
+		{
+			return String.Concat(this.FirstPoint.ToString(), " ", this.SecondPoint.ToString());
 		}
 	}
 }

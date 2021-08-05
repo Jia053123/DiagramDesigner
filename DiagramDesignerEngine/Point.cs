@@ -36,5 +36,10 @@ namespace DiagramDesignerEngine
 		{
 			return (this.coordinateX == p.coordinateX && this.coordinateY == p.coordinateY);
 		}
+
+		public override string ToString()
+		{
+			return String.Concat("(", this.coordinateX.ToString(), " ", this.coordinateY.ToString(), ")");
+		}
 	}
 }
