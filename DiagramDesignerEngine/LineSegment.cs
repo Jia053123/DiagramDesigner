@@ -8,11 +8,14 @@ namespace DiagramDesignerEngine
 {
 	/// <summary>
 	/// A straight line segment defined by its two end points. The two end points cannot be the same point. 
+	/// FirstPoint always has smaller or equal X coordinate compared to SecondPoint; 
+	/// if they are equal, FirstPoint always has smaller Y coordinate.
 	/// </summary>
+	/// 
 	readonly struct LineSegment
 	{
-		public Point EndPoint1 { get; }
-		public Point EndPoint2 { get; }
+		public Point FirstPoint { get; }
+		public Point SecondPoint { get; }
 
 		internal LineSegment(Point endPoint1, Point endPoint2)
 		{		
@@ -21,8 +24,31 @@ namespace DiagramDesignerEngine
 				throw new ArgumentException("Parameters cannot be identical");
 			}
 
-			this.EndPoint1 = endPoint1;
-			this.EndPoint2 = endPoint2;
+			if (endPoint1.coordinateX < endPoint2.coordinateX)
+			{
+				this.FirstPoint = endPoint1;
+				this.SecondPoint = endPoint2;
+			}
+			else if (endPoint1.coordinateX > endPoint2.coordinateX)
+			{
+				this.FirstPoint = endPoint2;
+				this.SecondPoint = endPoint1;
+			}
+			else
+			{
+				Debug.Assert(endPoint1.coordinateX == endPoint2.coordinateX);
+				if (endPoint1.coordinateY < endPoint2.coordinateY)
+				{
+					this.FirstPoint = endPoint1;
+					this.SecondPoint = endPoint2;
+				}
+				else
+				{
+					Debug.Assert(endPoint1.coordinateY > endPoint2.coordinateY);
+					this.FirstPoint = endPoint2;
+					this.SecondPoint = endPoint1;
+				}
+			} 
 		}
 
 		/// <summary>
@@ -33,29 +59,29 @@ namespace DiagramDesignerEngine
 		/// <returns> the point of intersection; null if not found </returns>
 		internal Point? FindIntersection(LineSegment ls)
 		{
-			if (this.EndPoint1 == ls.EndPoint1 || this.EndPoint1 == ls.EndPoint2 || 
-				this.EndPoint2 == ls.EndPoint1 || this.EndPoint2 == ls.EndPoint2)
+			if (this.FirstPoint == ls.FirstPoint || this.FirstPoint == ls.SecondPoint || 
+				this.SecondPoint == ls.FirstPoint || this.SecondPoint == ls.SecondPoint)
 			{
 				// end points overlap
 				return null;
 			}
 
-			var p1x = this.EndPoint1.coordinateX;
-			var p1y = this.EndPoint1.coordinateY;
-			var p2x = this.EndPoint2.coordinateX;
-			var p2y = this.EndPoint2.coordinateY;
+			var p1x = this.FirstPoint.coordinateX;
+			var p1y = this.FirstPoint.coordinateY;
+			var p2x = this.SecondPoint.coordinateX;
+			var p2y = this.SecondPoint.coordinateY;
 
-			var p3x = ls.EndPoint1.coordinateX;
-			var p3y = ls.EndPoint1.coordinateY;
-			var p4x = ls.EndPoint2.coordinateX;
-			var p4y = ls.EndPoint2.coordinateY;
+			var p3x = ls.FirstPoint.coordinateX;
+			var p3y = ls.FirstPoint.coordinateY;
+			var p4x = ls.SecondPoint.coordinateX;
+			var p4y = ls.SecondPoint.coordinateY;
 
 			var s1x = p2x - p1x;
 			var s1y = p2y - p1y;
 			var s2x = p4x - p3x;
 			var s2y = p4y - p3y;
 
-			if (s1x / s1y == s2x / s2y)
+			if (Math.Abs(s1x / s1y - s2x / s2y) < double.Epsilon)
 			{
 				// slops are the same: they are parallel or overlap
 				return null;
@@ -83,28 +109,28 @@ namespace DiagramDesignerEngine
 		internal bool ContainsPoint(Point p)
 		{
 			// check p is not one of the endpoints
-			if (p == EndPoint1 || p == EndPoint2)
+			if (p == FirstPoint || p == SecondPoint)
 			{
 				return false;
 			}
 
-			var crossProduct = (p.coordinateY - EndPoint1.coordinateY) * (EndPoint2.coordinateX - EndPoint1.coordinateX) -
-				(p.coordinateX - EndPoint1.coordinateX) * (EndPoint2.coordinateY - EndPoint1.coordinateY);
+			var crossProduct = (p.coordinateY - FirstPoint.coordinateY) * (SecondPoint.coordinateX - FirstPoint.coordinateX) -
+				(p.coordinateX - FirstPoint.coordinateX) * (SecondPoint.coordinateY - FirstPoint.coordinateY);
 			if (Math.Abs(crossProduct) > double.Epsilon)
 			{
 				// the three points are not aligned
 				return false;
 			}
 
-			var dotProduct = (p.coordinateX - EndPoint1.coordinateX) * (EndPoint2.coordinateX - EndPoint1.coordinateX) +
-				(p.coordinateY - EndPoint1.coordinateY) * (EndPoint2.coordinateY - EndPoint1.coordinateY);
+			var dotProduct = (p.coordinateX - FirstPoint.coordinateX) * (SecondPoint.coordinateX - FirstPoint.coordinateX) +
+				(p.coordinateY - FirstPoint.coordinateY) * (SecondPoint.coordinateY - FirstPoint.coordinateY);
 			if (dotProduct < 0)
 			{
 				return false;
 			}
 
-			var squaredDistance = Math.Pow(EndPoint2.coordinateX - EndPoint1.coordinateX, 2) + 
-				Math.Pow(EndPoint2.coordinateY - EndPoint1.coordinateY, 2);
+			var squaredDistance = Math.Pow(SecondPoint.coordinateX - FirstPoint.coordinateX, 2) + 
+				Math.Pow(SecondPoint.coordinateY - FirstPoint.coordinateY, 2);
 			if (dotProduct > squaredDistance)
 			{
 				return false;
@@ -119,7 +145,7 @@ namespace DiagramDesignerEngine
 			{
 				throw new ArgumentException("Point not on segment");
 			}
-			return (new LineSegment(EndPoint1, pointToSplit), new LineSegment(pointToSplit, EndPoint2));
+			return (new LineSegment(FirstPoint, pointToSplit), new LineSegment(pointToSplit, SecondPoint));
 		}
 
 		/// <summary>
@@ -133,16 +159,16 @@ namespace DiagramDesignerEngine
 
 			// make sure all points are distinct and ordered in ascending or descending order by X or Y coordinate so that the elements at the front are closer to EndPoint1
 			List<Point> sortedPointsToSplit;
-			if (EndPoint1.coordinateX != EndPoint2.coordinateX)
+			if (FirstPoint.coordinateX != SecondPoint.coordinateX)
 			{
-				sortedPointsToSplit = EndPoint1.coordinateX < EndPoint2.coordinateX ?
+				sortedPointsToSplit = FirstPoint.coordinateX < SecondPoint.coordinateX ?
 							pointsToSplit.OrderBy(o => o.coordinateX).ToList() :
 							pointsToSplit.OrderByDescending(o => o.coordinateX).ToList();
 			} 
 			else
 			{
-				Debug.Assert(EndPoint1.coordinateY != EndPoint2.coordinateY);
-				sortedPointsToSplit = EndPoint1.coordinateY < EndPoint2.coordinateY ?
+				Debug.Assert(FirstPoint.coordinateY != SecondPoint.coordinateY);
+				sortedPointsToSplit = FirstPoint.coordinateY < SecondPoint.coordinateY ?
 										pointsToSplit.OrderBy(o => o.coordinateY).ToList() :
 										pointsToSplit.OrderByDescending(o => o.coordinateY).ToList();
 			}
@@ -157,6 +183,71 @@ namespace DiagramDesignerEngine
 			}
 			splitSegments.Add(remainingSegment); // the last segment
 
+			return splitSegments;
+		}
+
+		private static bool AreParallel(LineSegment ls1, LineSegment ls2)
+		{
+			var p1x = ls1.FirstPoint.coordinateX;
+			var p1y = ls1.FirstPoint.coordinateY;
+			var p2x = ls1.SecondPoint.coordinateX;
+			var p2y = ls1.SecondPoint.coordinateY;
+
+			var p3x = ls2.FirstPoint.coordinateX;
+			var p3y = ls2.FirstPoint.coordinateY;
+			var p4x = ls2.SecondPoint.coordinateX;
+			var p4y = ls2.SecondPoint.coordinateY;
+
+			var s1x = p2x - p1x;
+			var s1y = p2y - p1y;
+			var s2x = p4x - p3x;
+			var s2y = p4y - p3y;
+
+			return (Math.Abs(s1x / s1y - s2x / s2y) < double.Epsilon); // return true iff the slops are equal
+		}
+
+
+		/// <summary>
+		/// Check whether the two segments overlap. 
+		/// If they do, split them into shortest non-overlapping segments and return those;
+		/// If they don't, return the two segments as they are
+		/// </summary>
+		/// <param name="ls"></param>
+		/// <returns></returns>
+		internal static List<LineSegment> SplitIfOverlap(LineSegment ls1, LineSegment ls2)
+		{
+			var splitSegments = new List<LineSegment>();
+			
+			if (ls1.FirstPoint == ls2.FirstPoint && ls1.SecondPoint == ls2.SecondPoint)
+			{
+				// complete overlap
+				splitSegments.Add(ls1);
+				return splitSegments;
+			}
+			if (LineSegment.AreParallel(ls1, ls2))
+			{
+				if (ls1.ContainsPoint(ls2.FirstPoint) || 
+					ls1.ContainsPoint(ls2.SecondPoint) ||
+					ls2.ContainsPoint(ls1.FirstPoint) ||
+					ls2.ContainsPoint(ls1.SecondPoint))
+				{
+					// they partially overlap. Put the unique endpoints in order
+					var endPoints = new List<Point> { ls1.FirstPoint, ls1.SecondPoint, ls2.FirstPoint, ls2.SecondPoint };
+					List<Point> sortedEndPointsByY = endPoints.OrderBy(o => o.coordinateY).ToList();
+					List<Point> sortedEndPoints = sortedEndPointsByY.OrderBy(o => o.coordinateX).ToList();
+					List<Point> uniqueSortedPoints = sortedEndPoints.Distinct().ToList();
+
+					// make the segments connecting the endpoints
+					for (int i = 0; i< uniqueSortedPoints.Count - 1; i++)
+					{
+						splitSegments.Add(new LineSegment(uniqueSortedPoints[i], uniqueSortedPoints[i + 1]));
+					}
+
+					return splitSegments;
+				}
+			}
+			splitSegments.Add(ls1);
+			splitSegments.Add(ls2);
 			return splitSegments;
 		}
 	}

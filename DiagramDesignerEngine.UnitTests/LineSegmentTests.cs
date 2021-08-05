@@ -15,10 +15,22 @@ namespace DiagramDesignerEngine.UnitTests
 			var p2 = new Point(1, -2);
 			var p3 = new Point(2, -1);
 			var p4 = new Point(2, 3);
-			//Assert.Throws<ArgumentException>(() => new LineSegment(null, p1));
 			Assert.Throws<ArgumentException>(() => new LineSegment(p1, p2));
 			Assert.Throws<ArgumentException>(() => new LineSegment(p4, p4));
 			Assert.DoesNotThrow(() => new LineSegment(p1, p3));
+
+			var ls1 = new LineSegment(p3, p1);
+			Assert.AreEqual(ls1.FirstPoint, p1);
+			Assert.AreEqual(ls1.SecondPoint, p3);
+
+			var p5 = new Point(1, -1);
+			var ls2 = new LineSegment(p5, p1);
+			Assert.AreEqual(ls2.FirstPoint, p1);
+			Assert.AreEqual(ls2.SecondPoint, p5);
+
+			var ls3 = new LineSegment(p3, p4);
+			Assert.AreEqual(ls3.FirstPoint, p3);
+			Assert.AreEqual(ls3.SecondPoint, p4);
 		}
 
 		[Test]
@@ -28,8 +40,6 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls2 = new LineSegment(new Point(0, -1), new Point(0, 1));
 			Assert.AreEqual(ls1.FindIntersection(ls2), new Point(0, 0));
 			Assert.AreEqual(ls2.FindIntersection(ls1), new Point(0, 0));
-
-			//Assert.Throws<ArgumentException>(() => ls1.FindIntersection(null));
 
 			var ls3 = new LineSegment(new Point(-2, -1), new Point(0, 3));
 			var ls4 = new LineSegment(new Point(1, -1), new Point(-3, 3));
@@ -95,6 +105,19 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls4 = new LineSegment(new Point(-4, 2), new Point(4, -2));
 			var ps4 = new List<Point> { new Point(-2, 1), new Point(0, 0), new Point(2, -2), new Point(2, -1), new Point(0, 0) };
 			Assert.Throws<ArgumentException>(() => ls4.SplitAtPoints(ps4));
+		}
+
+		[Test]
+		public void TestSplitIfOverlap()
+		{
+			var ls1 = new LineSegment(new Point(-2, 0), new Point(2, 0));
+			var ls2 = ls1;
+			var result1 = LineSegment.SplitIfOverlap(ls2, ls1);
+			Assert.AreEqual(result1.Count, 1);
+			Assert.AreEqual(result1[0], ls1);
+
+			var ls3 = new LineSegment(new Point(-1, 0), new Point(1, 0));
+
 		}
 	}
 }

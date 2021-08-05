@@ -46,11 +46,11 @@ namespace DiagramDesignerEngine
                 allSegments.AddRange(we.Geometry.ConvertToLineSegments());
 			}
 
-            // find intersections and breakdown corresponding segments
-            List<HashSet<Point>> pointToSplitForAllLines = new List<HashSet<Point>>();
+            // find intersections
+            List<List<Point>> pointsToSplitForEachLine = new List<List<Point>>();
             for (int i = 0; i < allSegments.Count; i++)
 			{
-                pointToSplitForAllLines.Add(new HashSet<Point>());
+                pointsToSplitForEachLine.Add(new List<Point>());
 			}
             for (int i = 0; i < allSegments.Count; i++)
 			{
@@ -60,15 +60,18 @@ namespace DiagramDesignerEngine
                     Point? pointToSplit = allSegments[i].FindIntersection(allSegments[j]);
 					if (pointToSplit != null)
 					{
-						pointToSplitForAllLines[i].Add((Point)pointToSplit);
-                        pointToSplitForAllLines[j].Add((Point)pointToSplit);
+						pointsToSplitForEachLine[i].Add((Point)pointToSplit);
+                        pointsToSplitForEachLine[j].Add((Point)pointToSplit);
 			    	}
 		    	}
 			}
 
             // split segments at points identified
             this.CollapsedWallSegments = new List<LineSegment>();
-            
+            for (int i = 0; i < pointsToSplitForEachLine.Count; i++)
+			{
+                this.CollapsedWallSegments.AddRange(allSegments[i].SplitAtPoints(pointsToSplitForEachLine[i]));
+			}
 		}
 
         public double TotalEnclosedArea()
