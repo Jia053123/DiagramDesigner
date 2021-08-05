@@ -80,12 +80,24 @@ namespace DiagramDesignerEngine
 			var s1y = p2y - p1y;
 			var s2x = p4x - p3x;
 			var s2y = p4y - p3y;
-
-			if (Math.Abs(s1x / s1y - s2x / s2y) < double.Epsilon)
+			
+			if (s1y != 0 && s2y != 0)
 			{
-				// slops are the same: they are parallel or overlap
-				return null;
+				if (Math.Abs(s1x / s1y - s2x / s2y) < double.Epsilon)
+				{
+					// slops are the same: they are parallel or overlap
+					return null;
+				}
 			}
+			else
+			{
+				if (Math.Abs(s1y / s1x - s2y / s2x) < double.Epsilon)
+				{
+					// slops are the same: they are parallel or overlap
+					return null;
+				}
+			}
+			
 
 			var s = (s1x * (p1y - p3y) - s1y * (p1x - p3x)) / (s1x * s2y - s2x * s1y);
 			var t = (s2x * (p1y - p3y) - s2y * (p1x - p3x)) / (s1x * s2y - s2x * s1y);
@@ -203,7 +215,24 @@ namespace DiagramDesignerEngine
 			var s2x = p4x - p3x;
 			var s2y = p4y - p3y;
 
-			return (Math.Abs(s1x / s1y - s2x / s2y) < double.Epsilon); // return true iff the slops are equal
+			// return true iff the slops are equal
+			if (s1y != 0 && s2y != 0)
+			{
+				if (Math.Abs(s1x / s1y - s2x / s2y) < double.Epsilon)
+				{
+					// slops are the same: they are parallel or overlap
+					return true;
+				}
+			}
+			else
+			{
+				if (Math.Abs(s1y / s1x - s2y / s2x) < double.Epsilon)
+				{
+					// slops are the same: they are parallel or overlap
+					return true;
+				}
+			}
+			return false;
 		}
 
 
