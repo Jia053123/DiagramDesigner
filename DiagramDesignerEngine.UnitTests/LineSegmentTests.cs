@@ -34,6 +34,38 @@ namespace DiagramDesignerEngine.UnitTests
 		}
 
 		[Test]
+		public void TestEquality()
+		{
+			var ls1 = new LineSegment(new Point(1, 2), new Point(3, 4));
+			var ls2 = new LineSegment(new Point(1, 2), new Point(3, 4));
+			var ls3 = new LineSegment(new Point(1, 2), new Point(2, 4));
+			var ls4 = new LineSegment(new Point(1, 1), new Point(3, 4));
+			var ls5 = new LineSegment(new Point(1, -1), new Point(4, 4));
+
+			Assert.AreEqual(ls1, ls1);
+			Assert.AreEqual(ls1, ls2);
+			Assert.AreNotEqual(ls1, ls3);
+			Assert.AreNotEqual(ls1, ls4);
+			Assert.AreNotEqual(ls1, ls5);
+
+			Assert.IsTrue(ls1 == ls2);
+			Assert.IsTrue(ls1 != ls3);
+			Assert.IsTrue(ls1 != ls4);
+			Assert.IsTrue(ls1 != ls5);
+
+			Assert.IsTrue(ls1.Equals(ls1));
+			Assert.IsTrue(ls1.Equals(ls2));
+			Assert.IsFalse(ls1.Equals(ls3));
+			Assert.IsFalse(ls1.Equals(ls4));
+			Assert.IsFalse(ls1.Equals(ls5));
+
+			Assert.AreEqual(ls1.GetHashCode(), ls2.GetHashCode());
+			Assert.AreNotEqual(ls1.GetHashCode(), ls3.GetHashCode());
+			Assert.AreNotEqual(ls1.GetHashCode(), ls4.GetHashCode());
+			Assert.AreNotEqual(ls1.GetHashCode(), ls5.GetHashCode());
+		}
+
+		[Test]
 		public void TestFindIntersection()
 		{
 			var ls1 = new LineSegment(new Point(-1, 0), new Point(1, 0));

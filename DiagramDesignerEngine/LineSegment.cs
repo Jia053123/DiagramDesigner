@@ -12,7 +12,7 @@ namespace DiagramDesignerEngine
 	/// if they are equal, FirstPoint always has smaller Y coordinate.
 	/// </summary>
 	/// 
-	readonly struct LineSegment
+	readonly struct LineSegment : IEquatable<LineSegment>
 	{
 		public Point FirstPoint { get; }
 		public Point SecondPoint { get; }
@@ -249,6 +249,23 @@ namespace DiagramDesignerEngine
 			splitSegments.Add(ls1);
 			splitSegments.Add(ls2);
 			return splitSegments;
+		}
+
+		public override int GetHashCode() => (this.FirstPoint, this.SecondPoint).GetHashCode();
+
+		public static bool operator == (LineSegment lhs, LineSegment rhs)
+		{
+			return lhs.Equals(rhs);
+		}
+
+		public static bool operator != (LineSegment lhs, LineSegment rhs) => !(lhs == rhs);
+
+		public override bool Equals(object obj) => obj is LineSegment other && this.Equals(other);
+		bool IEquatable<LineSegment>.Equals(LineSegment other) => this.Equals(other);
+
+		private bool Equals(LineSegment ls)
+		{
+			return (this.FirstPoint == ls.FirstPoint && this.SecondPoint == ls.SecondPoint);
 		}
 	}
 }
