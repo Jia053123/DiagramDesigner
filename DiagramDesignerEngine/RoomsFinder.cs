@@ -15,45 +15,6 @@ namespace DiagramDesignerEngine
 		{
 			this.LinkedLineSegments = new List<LineSegment>();
 
-			//// convert all segments to linked segments objects
-			//foreach (LineSegment ls in explodedSegments)
-			//{
-			//	this.LinkedLineSegments.Add(new LineSegment(ls));	
-			//}
-
-			//// fill the previous and next segments lists of all linked segments
-			//for (int i = 0; i < this.LinkedLineSegments.Count; i++)
-			//{
-			//	for (int j = i + 1; j < this.LinkedLineSegments.Count; j++)
-			//	{
-			//		if (this.LinkedLineSegments[i].WrappedLineSegment.FirstPoint == this.LinkedLineSegments[j].WrappedLineSegment.FirstPoint) 
-			//		{
-			//			this.LinkedLineSegments[i].PreviousSegments.Add(this.LinkedLineSegments[j]);
-			//			this.LinkedLineSegments[j].PreviousSegments.Add(this.LinkedLineSegments[i]);
-			//		}
-
-			//		if (this.LinkedLineSegments[i].WrappedLineSegment.FirstPoint == this.LinkedLineSegments[j].WrappedLineSegment.SecondPoint)
-			//		{
-			//			this.LinkedLineSegments[i].PreviousSegments.Add(this.LinkedLineSegments[j]);
-			//			this.LinkedLineSegments[j].NextSegments.Add(this.LinkedLineSegments[i]);
-			//		}
-
-			//		if (this.LinkedLineSegments[i].WrappedLineSegment.SecondPoint == this.LinkedLineSegments[j].WrappedLineSegment.FirstPoint)
-			//		{
-			//			this.LinkedLineSegments[i].NextSegments.Add(this.LinkedLineSegments[j]);
-			//			this.LinkedLineSegments[j].PreviousSegments.Add(this.LinkedLineSegments[i]);
-			//		}
-			//		if (this.LinkedLineSegments[i].WrappedLineSegment.SecondPoint == this.LinkedLineSegments[j].WrappedLineSegment.SecondPoint)
-			//		{
-			//			this.LinkedLineSegments[i].NextSegments.Add(this.LinkedLineSegments[j]);
-			//			this.LinkedLineSegments[j].NextSegments.Add(this.LinkedLineSegments[i]);
-			//		}
-			//	}
-			//}
-
-			//// sort?? 
-
-
 			// init resolution stack with exploded segments
 			this.FragmentsLeftToResolve = new Stack<List<LineSegment>>();
 			this.FragmentsLeftToResolve.Push(this.LinkedLineSegments);
