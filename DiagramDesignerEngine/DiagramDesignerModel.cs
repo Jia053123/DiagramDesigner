@@ -48,13 +48,12 @@ namespace DiagramDesignerEngine
 
             this.ExplodedWallSegments = (new SegmentsExploder(allSegments)).ExplodeSegments();
 
-            // find rooms
-            //var rooms = (new RoomsFinder(this.ExplodedWallSegments)).FindRooms();
+			var rooms = (new RoomsFinder(this.ExplodedWallSegments)).FindRooms();
 
-            
+
 		}
 
-        public double TotalEnclosedArea()
+		public double TotalEnclosedArea()
         {
             // TODO: stub
             return 0;

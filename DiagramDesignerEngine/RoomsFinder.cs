@@ -130,57 +130,5 @@ namespace DiagramDesignerEngine
 		{
 			
 		}
-
-		class LinkedLineSegment
-		{
-			internal LineSegment WrappedLineSegment { get; }
-			internal List<LinkedLineSegment> PreviousSegments { get; private set; } = new List<LinkedLineSegment>();
-			internal List<LinkedLineSegment> NextSegments { get; private set; } = new List<LinkedLineSegment>();
-			internal bool IsDangling => (this.PreviousSegments.Count == 0 || this.NextSegments.Count == 0);
-
-			internal LinkedLineSegment(LineSegment ls)
-			{
-				this.WrappedLineSegment = ls;
-			}
-
-			internal void SortPreviousAndNextSegmentsListsByAngle()
-			{
-				this.PreviousSegments = this.PreviousSegments.OrderBy(o => 
-				{
-					Point p1 = this.WrappedLineSegment.SecondPoint;
-					Point p2 = this.WrappedLineSegment.FirstPoint;
-					Point p3;
-
-					if (p2 == o.WrappedLineSegment.FirstPoint)
-					{
-						p3 = o.WrappedLineSegment.FirstPoint;
-					}
-					else
-					{
-						Debug.Assert(p2 == o.WrappedLineSegment.SecondPoint);
-						p3 = o.WrappedLineSegment.SecondPoint;
-					}
-					return GeometryUtilities.AngleAmongThreePoints(p1, p2, p3);
-				}).ToList();
-
-				this.NextSegments = this.NextSegments.OrderBy(o =>
-				{
-					Point p1 = this.WrappedLineSegment.FirstPoint;
-					Point p2 = this.WrappedLineSegment.SecondPoint;
-					Point p3;
-
-					if (p2 == o.WrappedLineSegment.FirstPoint)
-					{
-						p3 = o.WrappedLineSegment.FirstPoint;
-					}
-					else
-					{
-						Debug.Assert(p2 == o.WrappedLineSegment.SecondPoint);
-						p3 = o.WrappedLineSegment.SecondPoint;
-					}
-					return GeometryUtilities.AngleAmongThreePoints(p1, p2, p3);
-				}).ToList();
-			}
-		}
 	}
 }
