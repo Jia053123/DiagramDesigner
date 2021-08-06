@@ -46,43 +46,7 @@ namespace DiagramDesignerEngine
                 allSegments.AddRange(we.Geometry.ConvertToLineSegments());
 			}
 
-            // split overlapping segments
-            var collapsedSegments = new List<LineSegment>();
-            for (int i = 0; i < allSegments.Count; i++)
-            {
-                for (int j = i + 1; j < allSegments.Count; j++)
-                {
-                    var result = LineSegment.SplitIfOverlap(allSegments[i], allSegments[j]);
-                    collapsedSegments.AddRange(result);
-                }
-            }
-
-			// find intersections
-			List<List<Point>> pointsToSplitForEachLine = new List<List<Point>>();
-            for (int i = 0; i < collapsedSegments.Count; i++)
-			{
-                pointsToSplitForEachLine.Add(new List<Point>());
-			}
-            for (int i = 0; i < collapsedSegments.Count; i++)
-			{
-                for (int j = i+1; j < collapsedSegments.Count; j++)
-				{
-                    // If intersection is found, remember which segment should be split at what point
-                    Point? pointToSplit = collapsedSegments[i].FindIntersection(collapsedSegments[j]);
-					if (pointToSplit != null)
-					{
-						pointsToSplitForEachLine[i].Add((Point)pointToSplit);
-                        pointsToSplitForEachLine[j].Add((Point)pointToSplit);
-			    	}
-		    	}
-			}
-
-            // split segments at points identified
-            this.ExplodedWallSegments = new List<LineSegment>();
-            for (int i = 0; i < pointsToSplitForEachLine.Count; i++)
-			{
-                this.ExplodedWallSegments.AddRange(collapsedSegments[i].SplitAtPoints(pointsToSplitForEachLine[i]));
-			}
+            this.ExplodedWallSegments = (new SegmentsExploder(allSegments)).ExplodeSegments();
 
             // find rooms
             //var rooms = (new RoomsFinder(this.ExplodedWallSegments)).FindRooms();
