@@ -99,24 +99,25 @@ namespace DiagramDesignerEngine
 		/// <summary>
 		/// Find the indexes of segments connected to the FirstPoint of the segment from the pool, sorted by their angle from the segment
 		/// </summary>
-		/// <param name="segmentIndex"> the index of the segment from the pool </param>
-		/// <param name="pool"> the list of segments to search from </param>
-		/// <returns> the list of indexes of segments connected to the FirstPoint of the input segment; 
-		/// the list is sorted in ascending order by their angle from the segemnt measured in radian, clockwise. </returns>
-		private List<int> FindPreviousSegmentsIndexSortedByAngle(int segmentIndex, List<LineSegment> pool)
+		/// <param name="segmentIndex"> the beginning segment </param>
+		/// <param name="segmentsPool"> the list of segments to search from </param>
+		/// <returns> the list of segments from the pool connected to the FirstPoint of the segment, 
+		/// excluding segments equal to the input segment; 
+		/// the list is sorted in ascending order by their angle from the beginning segemnt measured clockwise. </returns>
+		private List<LineSegment> FindPreviousSegmentsSortedByAngle(LineSegment segment, List<LineSegment> segmentsPool)
 		{
-			var connectedSegmentIndexes = new List<int>();
-			for (int i = 0; i< pool.Count; i++)
+			var connectedSegments = new List<LineSegment>();
+			for (int i = 0; i< segmentsPool.Count; i++)
 			{ 
-				if (i != segmentIndex)
+				if (segmentsPool[i] != segment)
 				{
-					if (pool[segmentIndex].FirstPoint == pool[i].FirstPoint || pool[segmentIndex].FirstPoint == pool[i].SecondPoint)
+					if (segment.FirstPoint == segmentsPool[i].FirstPoint || segment.FirstPoint == segmentsPool[i].SecondPoint)
 					{
-						connectedSegmentIndexes.Add(i);
+						connectedSegments.Add(segmentsPool[i]);
 					}
 				}
-				
 			}
+			return GeometryUtilities.SortSegmentsByAngleFromSegment(segment, connectedSegments);
 		}
 
 		/// <summary>
@@ -126,9 +127,20 @@ namespace DiagramDesignerEngine
 		/// <param name="pool"> the list of segments to search from </param>
 		/// <returns> the list of indexes of segments connected to the SecondPoint of the input segment; 
 		/// the list is sorted in ascending order by their angle from the segemnt measured in radian, clockwise. </returns>
-		private List<int> FindNextSegmentsIndexSortedByAngle(int segmentIndex, List<LineSegment> pool)
+		private List<LineSegment> FindNextSegmentsIndexSortedByAngle(LineSegment segment, List<LineSegment> segmentsPool)
 		{
-			
+			var connectedSegments = new List<LineSegment>();
+			for (int i = 0; i < segmentsPool.Count; i++)
+			{
+				if (segmentsPool[i] != segment)
+				{
+					if (segment.SecondPoint == segmentsPool[i].FirstPoint || segment.SecondPoint == segmentsPool[i].SecondPoint)
+					{
+						connectedSegments.Add(segmentsPool[i]);
+					}
+				}
+			}
+			return GeometryUtilities.SortSegmentsByAngleFromSegment(segment, connectedSegments);
 		}
 	}
 }

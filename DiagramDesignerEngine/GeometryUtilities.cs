@@ -80,7 +80,7 @@ namespace DiagramDesignerEngine
 		/// <param name="connectedLs"> a list of segments connected to the segment </param>
 		/// <returns> segments sorted by angle in ascending order </returns>
 		internal static List<LineSegment> SortSegmentsByAngleFromSegment(LineSegment ls, List<LineSegment> connectedLs)
-		{
+		{	
 			return connectedLs.OrderBy(o => GeometryUtilities.AngleAmongTwoSegments(ls, o)).ToList();
 		}
 	}
