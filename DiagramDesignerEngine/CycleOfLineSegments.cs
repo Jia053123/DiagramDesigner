@@ -78,9 +78,34 @@ namespace DiagramDesignerEngine
 			}
 		}
 
+		/// <summary>
+		/// Whether a line segments lies within the cycle
+		/// </summary>
+		/// <param name="lineSegment"> the line segment to check against the cycle </param>
+		/// <returns> true if and only if both end points of the segment are either on or within the cycle perimeter </returns>
+		internal bool IsLineSegmentInCycle(LineSegment lineSegment)
+		{
+			return (this.IsPointInCycle(lineSegment.FirstPoint) && this.IsPointInCycle(lineSegment.SecondPoint));
+		}
+
+		/// <summary>
+		/// Whether a point is in or on the cycle
+		/// </summary>
+		/// <param name="point"> the point to check against the cycle </param>
+		/// <returns> true if the point is within or on the boundary of the cycle </returns>
 		internal bool IsPointInCycle(Point point)
 		{
-			var leftMostPoint = this.Cycle.First().FirstPoint;
+			// if the point is on the cycle, return true
+			foreach (LineSegment ls in this.Cycle)
+			{
+				if (ls.FirstPoint == point || ls.SecondPoint == point)
+				{
+					return true;
+				}
+			}
+
+				// find the left most point on the cycle
+				var leftMostPoint = this.Cycle.First().FirstPoint;
 			foreach (LineSegment ls in this.Cycle)
 			{
 				if (ls.FirstPoint.coordinateX < leftMostPoint.coordinateX)
@@ -92,17 +117,18 @@ namespace DiagramDesignerEngine
 					leftMostPoint = ls.SecondPoint;
 				}
 			}
-			
+			// use Ray Casting algorithm to determine if it's inside
 			var rayCastingSegment = new LineSegment(leftMostPoint, point);
-			var numOfIntersection = 0;
+			var numOfTimesPerimeterPassed = 0;
 			foreach (LineSegment ls in this.Cycle)
 			{
-				if (!(rayCastingSegment.FindIntersection(ls) is null)) {
-					numOfIntersection++;
+				if (!(rayCastingSegment.FindIntersection(ls) is null))
+				{
+					numOfTimesPerimeterPassed++;
 				}
 			}
 
-			return !(numOfIntersection % 2 == 0); // if even, then outside
+			return !(numOfTimesPerimeterPassed % 2 == 0); // if even, then outside
 		}
 	}
 }

@@ -7,12 +7,25 @@ namespace DiagramDesignerEngine
 	class DiagramFragment
 	{
 		private CycleOfLineSegments Perimeter;
-		private List<LineSegment> LineSegments;
+		private List<LineSegment> LineSegments; // these do not contain the perimeter
 
-		internal (DiagramFragment, DiagramFragment) DivideIntoSmallerFragments()
+		internal DiagramFragment(CycleOfLineSegments perimeter, List<LineSegment> segmentsWithinPerimeter)
 		{
-			// TODO: stub
-			return (null, null);
+			foreach (LineSegment ls in segmentsWithinPerimeter)
+			{
+				
+			}
+			
+		}
+
+		/// <summary>
+		/// Divide the fragment if possible, or return null if this is already a room (not dividable)
+		/// </summary>
+		/// <returns> The two divided fragments if dividable, or null if it's not </returns>
+		internal Tuple<DiagramFragment, DiagramFragment> DivideIntoSmallerFragments()
+		{
+			
+			
 		}
 	}
 }
