@@ -13,9 +13,13 @@ namespace DiagramDesignerEngine
 		{
 			foreach (LineSegment ls in segmentsWithinPerimeter)
 			{
-				
+				if (!perimeter.IsLineSegmentInCycle(ls))
+				{
+					throw new ArgumentException("not all segments are within the perimeter");
+				}
 			}
-			
+			this.Perimeter = perimeter;
+			this.LineSegments = segmentsWithinPerimeter;
 		}
 
 		/// <summary>
