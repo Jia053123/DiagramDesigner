@@ -41,67 +41,81 @@ namespace DiagramDesignerEngine
 					}
 				}
 
-				// Initialize the starting handle and find the starting segment with the handle
+				// Initialize the starting handle
 				var startPoint = segmentsWithLeftmostFirstPoint.First().FirstPoint;
-				LineSegment startingHandle = new LineSegment(new Point(startPoint.coordinateX, startPoint.coordinateY + 10), startPoint);
-				
+				LineSegment startingHandle = new LineSegment(new Point(startPoint.coordinateX, startPoint.coordinateY - 10), startPoint);
 
-				// Find a perimeter by keeping turning the smallest angle
-				
-				
+				bool IsFirstPointTheOneToSearch = false; // for the first segment the first point is connected to the handel
+				var currentSegment = startingHandle;
 
+				// Find a perimeter by keeping turning the largest angle
+				var perimeter = new List<LineSegment>();
+				LineSegment nextSegment;
+				do
+				{
+					perimeter.Add(currentSegment);
+
+					// find the next segment
+					if (IsFirstPointTheOneToSearch)
+					{
+						var result = GeometryUtilities.FindLeftConnectedSegmentsSortedByAngle(currentSegment, segments);
+						if (result.Count > 0)
+						{
+							nextSegment = result.Last(); // choose the one with largest angle
+							IsFirstPointTheOneToSearch = !(currentSegment.FirstPoint == nextSegment.FirstPoint);
+							//perimeter.Add(nextSegment);
+							currentSegment = nextSegment;
+						}
+						else
+						{
+							// this is a dangling segment and cannot be part of any room. Remove it from the pool
+							segments.Remove(currentSegment);
+							perimeter.Remove(currentSegment);
+							if (perimeter.Count == 0)
+							{
+								break; // the segments lead to nowhere; not finding any room from this handle
+							}
+							// roll back
+							currentSegment = perimeter.Last();
+							perimeter.RemoveAt(perimeter.Count - 1);
+						}
+					}
+					else
+					{
+						var result = GeometryUtilities.FindRightConnectedSegmentsSortedByAngle(currentSegment, segments);
+						if (result.Count > 0)
+						{
+							nextSegment = result.Last(); // choose the one with largest angle
+							IsFirstPointTheOneToSearch = !(currentSegment.SecondPoint == nextSegment.FirstPoint);
+							perimeter.Add(nextSegment);
+							currentSegment = nextSegment;
+						}
+						else
+						{
+							// this is a dangling segment and cannot be part of any room. Remove it
+							segments.Remove(currentSegment);
+							perimeter.Remove(currentSegment);
+							if (perimeter.Count == 0)
+							{
+								break; // not finding any room from this handle
+							}
+							// roll back
+							currentSegment = perimeter.Last();
+							perimeter.RemoveAt(perimeter.Count - 1);
+						}
+					}
+				} while (!perimeter.Contains(currentSegment));
+
+				perimeter.RemoveAt(0); // remove the handle! 
+
+				if (perimeter.Count > 2)
+				{
+					// found a perimeter! 
+
+					// push the perimeter and all included segments into a stack. Remove all these segments from FragmentsLeftToResolve
+				}
 			} while (this.FragmentsLeftToResolve.Count > 0);
-
-
 		}
-
-
-
-		/// <summary>
-		/// Find the indexes of segments connected to the FirstPoint of the segment from the pool, sorted by their angle from the segment
-		/// </summary>
-		/// <param name="segmentIndex"> the beginning segment </param>
-		/// <param name="segmentsPool"> the list of segments to search from </param>
-		/// <returns> the list of segments from the pool connected to the FirstPoint of the segment, 
-		/// excluding segments equal to the input segment; 
-		/// the list is sorted in ascending order by their angle from the beginning segemnt measured clockwise. </returns>
-		private List<LineSegment> FindPreviousSegmentsSortedByAngle(LineSegment segment, List<LineSegment> segmentsPool)
-		{
-			var connectedSegments = new List<LineSegment>();
-			for (int i = 0; i< segmentsPool.Count; i++)
-			{ 
-				if (segmentsPool[i] != segment)
-				{
-					if (segment.FirstPoint == segmentsPool[i].FirstPoint || segment.FirstPoint == segmentsPool[i].SecondPoint)
-					{
-						connectedSegments.Add(segmentsPool[i]);
-					}
-				}
-			}
-			return GeometryUtilities.SortSegmentsByAngleFromSegment(segment, connectedSegments);
-		}
-
-		/// <summary>
-		/// Find the indexes of segments connected to the SecondPoint of the segment from the pool, sorted by their angle from the segment
-		/// </summary>
-		/// <param name="segmentIndex"> the index of the segment from the pool </param>
-		/// <param name="pool"> the list of segments to search from </param>
-		/// <returns> the list of indexes of segments connected to the SecondPoint of the input segment; 
-		/// the list is sorted in ascending order by their angle from the segemnt measured in radian, clockwise. </returns>
-		private List<LineSegment> FindNextSegmentsIndexSortedByAngle(LineSegment segment, List<LineSegment> segmentsPool)
-		{
-			var connectedSegments = new List<LineSegment>();
-			for (int i = 0; i < segmentsPool.Count; i++)
-			{
-				if (segmentsPool[i] != segment)
-				{
-					if (segment.SecondPoint == segmentsPool[i].FirstPoint || segment.SecondPoint == segmentsPool[i].SecondPoint)
-					{
-						connectedSegments.Add(segmentsPool[i]);
-					}
-				}
-			}
-			return GeometryUtilities.SortSegmentsByAngleFromSegment(segment, connectedSegments);
-		}
+	
 	}
 }

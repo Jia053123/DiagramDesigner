@@ -50,7 +50,7 @@ namespace DiagramDesignerEngine
 
 			var rooms = (new RoomsFinder(this.ExplodedWallSegments)).FindRooms();
 
-
+            // TODO: match programs
 		}
 
 		public double TotalEnclosedArea()
