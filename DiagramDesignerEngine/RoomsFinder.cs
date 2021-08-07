@@ -111,8 +111,9 @@ namespace DiagramDesignerEngine
 				if (perimeter.Count > 2)
 				{
 					// found a perimeter! 
-					
-					// push the perimeter and all included segments into a stack. Remove all these segments from FragmentsLeftToResolve
+					var cycle = new CycleOfLineSegments(perimeter);
+
+					// TODO: make a DaigramFragment from the perimeter and all included segments and push into a stack . Remove all these segments from FragmentsLeftToResolve
 				}
 			} while (this.FragmentsLeftToResolve.Count > 0);
 
