@@ -14,19 +14,19 @@ namespace DiagramDesignerEngine.UnitTests
 			var p2 = new Point(0, 0);
 			var p3 = new Point(0, 1);
 
-			Assert.AreEqual(GeometryUtilities.AngleAmongThreePoints(p1, p2, p3), Math.PI * 0.5);
-			Assert.AreEqual(GeometryUtilities.AngleAmongThreePoints(p3, p2, p1), Math.PI * 1.5);
-			Assert.AreEqual(GeometryUtilities.AngleAmongThreePoints(p3, p2, p3), 0);
+			Assert.AreEqual(SegmentsUtilities.AngleAmongThreePoints(p1, p2, p3), Math.PI * 0.5);
+			Assert.AreEqual(SegmentsUtilities.AngleAmongThreePoints(p3, p2, p1), Math.PI * 1.5);
+			Assert.AreEqual(SegmentsUtilities.AngleAmongThreePoints(p3, p2, p3), 0);
 
 			var p4 = new Point(2, 0);
 			var p5 = new Point(0, 0);
 			var p6 = new Point(0, 1.5);
 
-			Assert.AreEqual(GeometryUtilities.AngleAmongThreePoints(p4, p5, p6), Math.PI * 1.5);
-			Assert.AreEqual(GeometryUtilities.AngleAmongThreePoints(p6, p5, p4), Math.PI * 0.5);
-			Assert.AreEqual(GeometryUtilities.AngleAmongThreePoints(p6, p5, p3), 0);
+			Assert.AreEqual(SegmentsUtilities.AngleAmongThreePoints(p4, p5, p6), Math.PI * 1.5);
+			Assert.AreEqual(SegmentsUtilities.AngleAmongThreePoints(p6, p5, p4), Math.PI * 0.5);
+			Assert.AreEqual(SegmentsUtilities.AngleAmongThreePoints(p6, p5, p3), 0);
 
-			Assert.AreEqual(GeometryUtilities.AngleAmongThreePoints(p1, p2, p4), Math.PI);
+			Assert.AreEqual(SegmentsUtilities.AngleAmongThreePoints(p1, p2, p4), Math.PI);
 		}
 
 		[Test]
@@ -43,16 +43,16 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls3 = new LineSegment(p3, p0);
 			var ls4 = new LineSegment(p4, p0);
 
-			Assert.AreEqual(GeometryUtilities.AngleAmongTwoSegments(ls1, ls2), Math.PI);
-			Assert.AreEqual(GeometryUtilities.AngleAmongTwoSegments(ls2, ls1), Math.PI);
+			Assert.AreEqual(SegmentsUtilities.AngleAmongTwoSegments(ls1, ls2), Math.PI);
+			Assert.AreEqual(SegmentsUtilities.AngleAmongTwoSegments(ls2, ls1), Math.PI);
 
-			Assert.AreEqual(GeometryUtilities.AngleAmongTwoSegments(ls1, ls3), Math.PI * 1.5);
-			Assert.AreEqual(GeometryUtilities.AngleAmongTwoSegments(ls3, ls1), Math.PI * 0.5);
+			Assert.AreEqual(SegmentsUtilities.AngleAmongTwoSegments(ls1, ls3), Math.PI * 1.5);
+			Assert.AreEqual(SegmentsUtilities.AngleAmongTwoSegments(ls3, ls1), Math.PI * 0.5);
 
-			Assert.AreEqual(GeometryUtilities.AngleAmongTwoSegments(ls1, ls4), Math.PI * 0.5);
-			Assert.AreEqual(GeometryUtilities.AngleAmongTwoSegments(ls4, ls1), Math.PI * 1.5);
+			Assert.AreEqual(SegmentsUtilities.AngleAmongTwoSegments(ls1, ls4), Math.PI * 0.5);
+			Assert.AreEqual(SegmentsUtilities.AngleAmongTwoSegments(ls4, ls1), Math.PI * 1.5);
 
-			Assert.AreEqual(GeometryUtilities.AngleAmongTwoSegments(ls1, ls1), 0);
+			Assert.AreEqual(SegmentsUtilities.AngleAmongTwoSegments(ls1, ls1), 0);
 		}
 	}
 }

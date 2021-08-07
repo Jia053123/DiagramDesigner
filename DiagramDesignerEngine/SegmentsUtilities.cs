@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DiagramDesignerEngine
 {
-	static class GeometryUtilities
+	static class SegmentsUtilities
 	{
 		/// <summary>
 		/// Find the angle between two connected line segments
@@ -18,19 +18,19 @@ namespace DiagramDesignerEngine
 		{
 			if (ls1.FirstPoint == ls2.FirstPoint)
 			{
-				return GeometryUtilities.AngleAmongThreePoints(ls1.SecondPoint, ls1.FirstPoint, ls2.SecondPoint);
+				return SegmentsUtilities.AngleAmongThreePoints(ls1.SecondPoint, ls1.FirstPoint, ls2.SecondPoint);
 			}
 			else if (ls1.FirstPoint == ls2.SecondPoint)
 			{
-				return GeometryUtilities.AngleAmongThreePoints(ls1.SecondPoint, ls1.FirstPoint, ls2.FirstPoint);
+				return SegmentsUtilities.AngleAmongThreePoints(ls1.SecondPoint, ls1.FirstPoint, ls2.FirstPoint);
 			}
 			else if (ls1.SecondPoint == ls2.FirstPoint)
 			{
-				return GeometryUtilities.AngleAmongThreePoints(ls1.FirstPoint, ls1.SecondPoint, ls2.SecondPoint);
+				return SegmentsUtilities.AngleAmongThreePoints(ls1.FirstPoint, ls1.SecondPoint, ls2.SecondPoint);
 			}
 			else if (ls1.SecondPoint == ls2.SecondPoint)
 			{
-				return GeometryUtilities.AngleAmongThreePoints(ls1.FirstPoint, ls1.SecondPoint, ls2.FirstPoint);
+				return SegmentsUtilities.AngleAmongThreePoints(ls1.FirstPoint, ls1.SecondPoint, ls2.FirstPoint);
 			}
 			else
 			{
@@ -81,7 +81,7 @@ namespace DiagramDesignerEngine
 		/// <returns> segments sorted by angle in ascending order </returns>
 		internal static List<LineSegment> SortSegmentsByAngleFromSegment(LineSegment ls, List<LineSegment> connectedLs)
 		{	
-			return connectedLs.OrderBy(o => GeometryUtilities.AngleAmongTwoSegments(ls, o)).ToList();
+			return connectedLs.OrderBy(o => SegmentsUtilities.AngleAmongTwoSegments(ls, o)).ToList();
 		}
 
 		/// <summary>
@@ -105,7 +105,7 @@ namespace DiagramDesignerEngine
 					}
 				}
 			}
-			return GeometryUtilities.SortSegmentsByAngleFromSegment(segment, connectedSegments);
+			return SegmentsUtilities.SortSegmentsByAngleFromSegment(segment, connectedSegments);
 		}
 
 		/// <summary>
@@ -128,7 +128,7 @@ namespace DiagramDesignerEngine
 					}
 				}
 			}
-			return GeometryUtilities.SortSegmentsByAngleFromSegment(segment, connectedSegments);
+			return SegmentsUtilities.SortSegmentsByAngleFromSegment(segment, connectedSegments);
 		}
 	}
 }

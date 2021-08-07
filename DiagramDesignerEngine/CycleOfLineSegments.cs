@@ -10,6 +10,12 @@ namespace DiagramDesignerEngine
 		// the first and last segment must be connected
 		private List<LineSegment> Cycle = new List<LineSegment>();
 
+		internal List<LineSegment> GetPerimeter()
+		{
+			// make a copy since LineSegment is value type
+			return new List<LineSegment>(Cycle);
+		}
+
 		/// <summary>
 		/// A cycle consists of at least 3 segments. All segments are connected end-to-end to form a loop
 		/// </summary>
@@ -24,8 +30,8 @@ namespace DiagramDesignerEngine
 			// remove dangling segments
 			foreach (LineSegment ls in segments)
 			{
-				var leftResult = GeometryUtilities.FindLeftConnectedSegmentsSortedByAngle(ls, segments);
-				var rightResult = GeometryUtilities.FindRightConnectedSegmentsSortedByAngle(ls, segments);
+				var leftResult = SegmentsUtilities.FindLeftConnectedSegmentsSortedByAngle(ls, segments);
+				var rightResult = SegmentsUtilities.FindRightConnectedSegmentsSortedByAngle(ls, segments);
 
 				if (leftResult.Count == 0 || rightResult.Count == 0)
 				{
@@ -41,11 +47,11 @@ namespace DiagramDesignerEngine
 				List<LineSegment> searchResult;
 				if (IsFirstPointTheOneToSearch)
 				{
-					searchResult = GeometryUtilities.FindLeftConnectedSegmentsSortedByAngle(currentSegment, segments);
+					searchResult = SegmentsUtilities.FindLeftConnectedSegmentsSortedByAngle(currentSegment, segments);
 				}
 				else
 				{
-					searchResult = GeometryUtilities.FindRightConnectedSegmentsSortedByAngle(currentSegment, segments);
+					searchResult = SegmentsUtilities.FindRightConnectedSegmentsSortedByAngle(currentSegment, segments);
 				}
 				if (searchResult.Count != 1)
 				{
@@ -71,8 +77,8 @@ namespace DiagramDesignerEngine
 			}
 
 			// check the front and end of the loop are connected
-			if (GeometryUtilities.FindLeftConnectedSegmentsSortedByAngle(Cycle.First(), Cycle).Count != 1 ||
-				GeometryUtilities.FindRightConnectedSegmentsSortedByAngle(Cycle.First(), Cycle).Count != 1)
+			if (SegmentsUtilities.FindLeftConnectedSegmentsSortedByAngle(Cycle.First(), Cycle).Count != 1 ||
+				SegmentsUtilities.FindRightConnectedSegmentsSortedByAngle(Cycle.First(), Cycle).Count != 1)
 			{
 				throw new ArgumentException("not all segments are connected at both ends or there are branches");
 			}

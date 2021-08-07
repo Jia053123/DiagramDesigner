@@ -48,6 +48,9 @@ namespace DiagramDesignerEngine
 				bool IsFirstPointTheOneToSearch = false; // for the first segment the first point is connected to the handel
 				var currentSegment = startingHandle;
 
+				// TODO: refactor to deal with dangling segments first! 
+				// TODO: copy segments before removing
+
 				// Find a perimeter by keeping turning the largest angle
 				var perimeter = new List<LineSegment>();
 				LineSegment nextSegment;
@@ -58,12 +61,12 @@ namespace DiagramDesignerEngine
 					// find the next segment
 					if (IsFirstPointTheOneToSearch)
 					{
-						var result = GeometryUtilities.FindLeftConnectedSegmentsSortedByAngle(currentSegment, segments);
+						var result = SegmentsUtilities.FindLeftConnectedSegmentsSortedByAngle(currentSegment, segments);
 						if (result.Count > 0)
 						{
 							nextSegment = result.Last(); // choose the one with largest angle
 							IsFirstPointTheOneToSearch = !(currentSegment.FirstPoint == nextSegment.FirstPoint);
-							//perimeter.Add(nextSegment);
+							
 							currentSegment = nextSegment;
 						}
 						else
@@ -82,12 +85,12 @@ namespace DiagramDesignerEngine
 					}
 					else
 					{
-						var result = GeometryUtilities.FindRightConnectedSegmentsSortedByAngle(currentSegment, segments);
+						var result = SegmentsUtilities.FindRightConnectedSegmentsSortedByAngle(currentSegment, segments);
 						if (result.Count > 0)
 						{
 							nextSegment = result.Last(); // choose the one with largest angle
 							IsFirstPointTheOneToSearch = !(currentSegment.SecondPoint == nextSegment.FirstPoint);
-							perimeter.Add(nextSegment);
+							
 							currentSegment = nextSegment;
 						}
 						else
