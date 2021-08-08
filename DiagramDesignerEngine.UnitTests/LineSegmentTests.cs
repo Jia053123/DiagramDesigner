@@ -143,12 +143,20 @@ namespace DiagramDesignerEngine.UnitTests
 		[Test]
 		public void TestSplitIfOverlap_X()
 		{
+			// 
+			//  x-----x
+			//  x-----x
+			//
 			var ls1 = new LineSegment(new Point(-2, 0), new Point(2, 0));
 			var ls2 = ls1;
 			var result1 = LineSegment.SplitIfOverlap(ls2, ls1);
 			Assert.AreEqual(result1.Count, 1);
 			Assert.AreEqual(result1[0], ls1);
 
+			// 
+			//     x---x
+			//  x----------x
+			//
 			var ls3 = new LineSegment(new Point(-1, 0), new Point(1, 0));
 			var result2 = LineSegment.SplitIfOverlap(ls1, ls3);
 			TestContext.WriteLine(result2[0]);
@@ -158,12 +166,20 @@ namespace DiagramDesignerEngine.UnitTests
 			Assert.IsTrue(result2.Contains(new LineSegment(new Point(-1, 0), new Point(1, 0))));
 			Assert.IsTrue(result2.Contains(new LineSegment(new Point(1, 0), new Point(2, 0))));
 
+			// 
+			//  x---------x
+			//    x-----x
+			//
 			var result3 = LineSegment.SplitIfOverlap(ls3, ls1);
 			Assert.AreEqual(result3.Count, 3);
 			Assert.IsTrue(result3.Contains(new LineSegment(new Point(-2, 0), new Point(-1, 0))));
 			Assert.IsTrue(result3.Contains(new LineSegment(new Point(-1, 0), new Point(1, 0))));
 			Assert.IsTrue(result3.Contains(new LineSegment(new Point(1, 0), new Point(2, 0))));
 
+			//
+			// x--------x
+			//     x-------x
+			//
 			var ls4 = new LineSegment(new Point(-4, 0), new Point(1, 0));
 			var result4 = LineSegment.SplitIfOverlap(ls1, ls4);
 			Assert.AreEqual(result4.Count, 3);
@@ -171,29 +187,46 @@ namespace DiagramDesignerEngine.UnitTests
 			Assert.IsTrue(result4.Contains(new LineSegment(new Point(-2, 0), new Point(1, 0))));
 			Assert.IsTrue(result4.Contains(new LineSegment(new Point(1, 0), new Point(2, 0))));
 
+			//
+			//    x-------x
+			//  x------x
+			//
 			var result5 = LineSegment.SplitIfOverlap(ls4, ls1);
 			Assert.AreEqual(result5.Count, 3);
 			Assert.IsTrue(result5.Contains(new LineSegment(new Point(-4, 0), new Point(-2, 0))));
 			Assert.IsTrue(result5.Contains(new LineSegment(new Point(-2, 0), new Point(1, 0))));
 			Assert.IsTrue(result5.Contains(new LineSegment(new Point(1, 0), new Point(2, 0))));
 
+			//
+			// x------x
+			// x---------x
+			//
 			var ls5 = new LineSegment(new Point(-2, 0), new Point(1, 0));
 			var result6 = LineSegment.SplitIfOverlap(ls1, ls5);
 			Assert.AreEqual(result6.Count, 2);
 			Assert.IsTrue(result6.Contains(new LineSegment(new Point(-2, 0), new Point(1, 0))));
 			Assert.IsTrue(result6.Contains(new LineSegment(new Point(1, 0), new Point(2, 0))));
 
+			//
+			// x--------x
+			// x-----x
+			//
 			var result7 = LineSegment.SplitIfOverlap(ls5, ls1);
 			Assert.AreEqual(result7.Count, 2);
 			Assert.IsTrue(result7.Contains(new LineSegment(new Point(-2, 0), new Point(1, 0))));
 			Assert.IsTrue(result7.Contains(new LineSegment(new Point(1, 0), new Point(2, 0))));
 
+			//
+			// x------x
+			//    x---x
+			//
 			var ls7 = new LineSegment(new Point(-1, 0), new Point(2, 0));
 			var result8 = LineSegment.SplitIfOverlap(ls1, ls7);
 			Assert.AreEqual(result8.Count, 2);
 			Assert.IsTrue(result8.Contains(new LineSegment(new Point(-2, 0), new Point(-1, 0))));
 			Assert.IsTrue(result8.Contains(new LineSegment(new Point(-1, 0), new Point(2, 0))));
 
+			// case with no overlap
 			var ls8 = new LineSegment(new Point(100, 100), new Point(200, 200));
 			var result9 = LineSegment.SplitIfOverlap(ls1, ls8);
 			Assert.AreEqual(result8.Count, 2);
@@ -202,7 +235,7 @@ namespace DiagramDesignerEngine.UnitTests
 		}
 	
 		[Test]
-		public void TestSplitIfOverlap_Y()
+		public void TestSplitIfOverlap_Y() // test along the Y axis
 		{
 			var ls1 = new LineSegment(new Point(0, -2), new Point(0, 2));
 			var ls2 = ls1;

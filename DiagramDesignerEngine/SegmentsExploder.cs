@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace DiagramDesignerEngine
@@ -52,6 +53,8 @@ namespace DiagramDesignerEngine
 			{
 				explodedWallSegments.AddRange(collapsedSegments[i].SplitAtPoints(pointsToSplitForEachLine[i]));
 			}
+
+			//explodedWallSegments = explodedWallSegments.Distinct().ToList();
 
 			return explodedWallSegments;
 		}
