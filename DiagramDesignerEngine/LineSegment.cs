@@ -255,50 +255,41 @@ namespace DiagramDesignerEngine
 			return false;
 		}
 
-
 		/// <summary>
-		/// Check whether the two segments overlap. 
-		/// If they do, split them into shortest non-overlapping segments and return those;
-		/// If they don't, return the two segments as they are
+		/// If the two segments overlap, return the points at which each of them should split
+		/// such that each pair from the resulting segments either completely overlap (identical) 
+		/// or do not overlap at all
 		/// </summary>
-		/// <param name="ls"></param>
-		/// <returns></returns>
-		internal static List<LineSegment> SplitIfOverlap(LineSegment ls1, LineSegment ls2)
+		/// <param name="ls1"></param>
+		/// <param name="ls2"></param>
+		/// <returns> the list of points to split; 
+		/// return an empty list if the segments completely overlap or do not overlap at all </returns>
+		internal static List<Point> PointsToSplitIfOverlap(LineSegment ls1, LineSegment ls2)
 		{
-			var splitSegments = new List<LineSegment>();
-			
-			if (ls1 == ls2)
-			{
-				// complete overlap
-				splitSegments.Add(ls1);
-				return splitSegments;
-			}
 			if (LineSegment.AreParallel(ls1, ls2))
 			{
-				if (ls1.ContainsPoint(ls2.FirstPoint) || 
+				if (ls1.ContainsPoint(ls2.FirstPoint) ||
 					ls1.ContainsPoint(ls2.SecondPoint) ||
 					ls2.ContainsPoint(ls1.FirstPoint) ||
 					ls2.ContainsPoint(ls1.SecondPoint))
 				{
-					// they partially overlap. Put the unique endpoints in order
+					// they overlap. Put the unique endpoints in order. (doesn't matter it's ascending or descending as long as it's sorted)
 					var endPoints = new List<Point> { ls1.FirstPoint, ls1.SecondPoint, ls2.FirstPoint, ls2.SecondPoint };
 					List<Point> sortedEndPointsByY = endPoints.OrderBy(o => o.coordinateY).ToList();
 					List<Point> sortedEndPoints = sortedEndPointsByY.OrderBy(o => o.coordinateX).ToList();
 					List<Point> uniqueSortedPoints = sortedEndPoints.Distinct().ToList();
 
-					// make the segments connecting the endpoints
-					for (int i = 0; i< uniqueSortedPoints.Count - 1; i++)
-					{
-						splitSegments.Add(new LineSegment(uniqueSortedPoints[i], uniqueSortedPoints[i + 1]));
-					}
-
-					return splitSegments;
+					// take only the points in the middle (if any)
+					var pointsToSplit = uniqueSortedPoints;
+					pointsToSplit.RemoveAt(uniqueSortedPoints.Count - 1);
+					pointsToSplit.RemoveAt(0);
+					return pointsToSplit;
 				}
 			}
-			splitSegments.Add(ls1);
-			splitSegments.Add(ls2);
-			return splitSegments;
+			// they do not overlap
+			return new List<Point>(); 
 		}
+
 
 		public override int GetHashCode() => (this.FirstPoint, this.SecondPoint).GetHashCode();
 
