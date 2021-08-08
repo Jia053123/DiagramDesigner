@@ -45,7 +45,7 @@ namespace DiagramDesignerEngine
                 allSegments.AddRange(we.Geometry.ConvertToLineSegments());
 			}
 
-            this.ExplodedWallSegments = (new SegmentsExploder(allSegments)).ExplodeSegments();
+            this.ExplodedWallSegments = (new LineSegmentsExploder(allSegments)).ExplodeSegments();
 
 			//var rooms = (new RoomsFinder(this.ExplodedWallSegments)).FindRooms();
 

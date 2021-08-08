@@ -5,24 +5,24 @@ using System.Text;
 
 namespace DiagramDesignerEngine
 {
-	class SegmentsExploder
+	class LineSegmentsExploder
 	{
 		private List<LineSegment> SegmentsToExplode;
 
-		internal SegmentsExploder(List<LineSegment> segmentsToExplode)
+		internal LineSegmentsExploder(List<LineSegment> segmentsToExplode)
 		{
 			this.SegmentsToExplode = segmentsToExplode;
 		}
 
 		internal List<LineSegment> ExplodeSegments()
 		{
-			// find points to split for overlapping segments
 			List<List<Point>> pointsToSplitForEachLine1 = new List<List<Point>>();
 			for (int i = 0; i < SegmentsToExplode.Count; i++)
 			{
 				pointsToSplitForEachLine1.Add(new List<Point>());
 			}
 
+			// find points to split for overlapping segments
 			for (int i = 0; i < this.SegmentsToExplode.Count; i++)
 			{
 				for (int j = i + 1; j < this.SegmentsToExplode.Count; j++)
@@ -38,20 +38,12 @@ namespace DiagramDesignerEngine
 			var collapsedSegments = new List<LineSegment>();
 			for (int i = 0; i < pointsToSplitForEachLine1.Count; i++)
 			{
-				collapsedSegments.AddRange(collapsedSegments[i].SplitAtPoints(pointsToSplitForEachLine1[i]));
-			}
-
-
-			for (int i = 0; i < this.SegmentsToExplode.Count; i++)
-			{
-				for (int j = i + 1; j < this.SegmentsToExplode.Count; j++)
-				{
-					var result = LineSegment.SplitIfOverlap(this.SegmentsToExplode[i], this.SegmentsToExplode[j]);
-					collapsedSegments.AddRange(result);
-				}
+				collapsedSegments.AddRange(SegmentsToExplode[i].SplitAtPoints(pointsToSplitForEachLine1[i]));
 			}
 			// remove completely overlapping segments
 			collapsedSegments = collapsedSegments.Distinct().ToList();
+
+
 
 			// find intersections
 			List<List<Point>> pointsToSplitForEachLine2 = new List<List<Point>>();
