@@ -101,9 +101,9 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls1 = new LineSegment(new Point(-1, 0), new Point(1, 0));
 			Assert.IsTrue(ls1.ContainsPoint(new Point(0, 0)));
 			Assert.IsFalse(ls1.ContainsPoint(new Point(0, 1)));
-			Assert.IsFalse(ls1.ContainsPoint(new Point(-1, 0)));
-			Assert.IsFalse(ls1.ContainsPoint(new Point(1, 0)));
-			
+			Assert.IsTrue(ls1.ContainsPoint(new Point(-1, 0)));
+			Assert.IsTrue(ls1.ContainsPoint(new Point(1, 0)));
+
 			var ls2 = new LineSegment(new Point(0, -1), new Point(0, 1));
 			Assert.IsTrue(ls2.ContainsPoint(new Point(0, 0)));
 			Assert.IsFalse(ls2.ContainsPoint(new Point(1, 0)));

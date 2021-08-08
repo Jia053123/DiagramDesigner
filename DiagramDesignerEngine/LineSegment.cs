@@ -114,18 +114,12 @@ namespace DiagramDesignerEngine
 		}
 
 		/// <summary>
-		/// Check whether the point is on the segment inbetween the two endpoints
+		/// Check whether the point is on the segment
 		/// </summary>
 		/// <param name="p"> The point to check </param>
-		/// <returns> false if the point is not on the segment or is an endpoint </returns>
+		/// <returns> false if the point is not on the segment </returns>
 		internal bool ContainsPoint(Point p)
 		{
-			// check p is not one of the endpoints
-			if (p == FirstPoint || p == SecondPoint)
-			{
-				return false;
-			}
-
 			var crossProduct = (p.coordinateY - FirstPoint.coordinateY) * (SecondPoint.coordinateX - FirstPoint.coordinateX) -
 				(p.coordinateX - FirstPoint.coordinateX) * (SecondPoint.coordinateY - FirstPoint.coordinateY);
 			if (Math.Abs(crossProduct) > double.Epsilon)
