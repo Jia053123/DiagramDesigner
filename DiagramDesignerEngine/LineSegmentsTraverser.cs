@@ -36,14 +36,29 @@ namespace DiagramDesignerEngine
 		{
 			var pool = new List<LineSegment>(this.SegmentsToTraverse);
 			this.Path = new List<LineSegment>();
+			var pointsOnPath = new List<Point>(); // remembers the order the points are traversed for loop detection
+
 			var currentSegment = startSegment;
 			LineSegment? nextSegment;
 			bool isFirstPointTheOneToSearch = startWithFirstPoint;
+
+			// the first point is the not-being-searched end of the first segment
+			pointsOnPath.Add(startWithFirstPoint ? currentSegment.SecondPoint : currentSegment.FirstPoint); 
 
 			do
 			{
 				this.Path.Add(currentSegment);
 				nextSegment = null;
+
+				var previousOccurence = pointsOnPath.FindIndex(p => p == (isFirstPointTheOneToSearch ? currentSegment.FirstPoint : currentSegment.SecondPoint));
+				if (previousOccurence != -1)
+				{
+					// a traversed point is reached. return with the index
+					return (previousOccurence);
+				}
+
+				// add the new point being searched
+				pointsOnPath.Add(isFirstPointTheOneToSearch ? currentSegment.FirstPoint : currentSegment.SecondPoint);
 
 				// look for next segment
 				var searchResult = isFirstPointTheOneToSearch ?
@@ -53,15 +68,10 @@ namespace DiagramDesignerEngine
 				if (searchResult.Count > 0)
 				{
 					nextSegment = turnLargestAngle ? searchResult.Last() : searchResult.First();
-					var previousOccurence = this.Path.FindIndex(s => s == (LineSegment)nextSegment);
-					if (previousOccurence != -1)
-					{
-						// a traversed segment is reached. return with the index
-						return (previousOccurence);
-					}
-
+					
+					// if first point is connected then search the free second point, vice versa
 					var pointConnectedToNextSegment = isFirstPointTheOneToSearch ? currentSegment.FirstPoint : currentSegment.SecondPoint;
-					isFirstPointTheOneToSearch = !(pointConnectedToNextSegment == ((LineSegment)nextSegment).FirstPoint); // if first point is connected then search the free second point, vice versa
+					isFirstPointTheOneToSearch = !(pointConnectedToNextSegment == ((LineSegment)nextSegment).FirstPoint); 
 
 					currentSegment = (LineSegment)nextSegment;
 				}
