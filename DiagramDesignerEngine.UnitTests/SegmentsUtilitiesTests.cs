@@ -5,30 +5,8 @@ using System.Text;
 
 namespace DiagramDesignerEngine.UnitTests
 {
-	class GeometryUtilitiesTests
+	class SegmentsUtilitiesTests
 	{
-		[Test]
-		public void TestAngleAmongThreePoints()
-		{
-			var p1 = new Point(-2, 0);
-			var p2 = new Point(0, 0);
-			var p3 = new Point(0, 1);
-
-			Assert.AreEqual(SegmentsUtilities.AngleAmongThreePoints(p1, p2, p3), Math.PI * 0.5);
-			Assert.AreEqual(SegmentsUtilities.AngleAmongThreePoints(p3, p2, p1), Math.PI * 1.5);
-			Assert.AreEqual(SegmentsUtilities.AngleAmongThreePoints(p3, p2, p3), 0);
-
-			var p4 = new Point(2, 0);
-			var p5 = new Point(0, 0);
-			var p6 = new Point(0, 1.5);
-
-			Assert.AreEqual(SegmentsUtilities.AngleAmongThreePoints(p4, p5, p6), Math.PI * 1.5);
-			Assert.AreEqual(SegmentsUtilities.AngleAmongThreePoints(p6, p5, p4), Math.PI * 0.5);
-			Assert.AreEqual(SegmentsUtilities.AngleAmongThreePoints(p6, p5, p3), 0);
-
-			Assert.AreEqual(SegmentsUtilities.AngleAmongThreePoints(p1, p2, p4), Math.PI);
-		}
-
 		[Test]
 		public void TestAngleAmongTwoSegments()
 		{

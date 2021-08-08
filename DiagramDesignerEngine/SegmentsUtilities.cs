@@ -46,7 +46,7 @@ namespace DiagramDesignerEngine
 		/// <param name="endPoint"> the end point of the second segment marking the end of the angle </param>
 		/// <returns> The angle between 0 and 2pi by going from startPoint, through sharedPoint to endPoint. 
 		/// The angle is measured clockwise; return 0 if the segments overlap </returns>
-		internal static double AngleAmongThreePoints(Point startPoint, Point sharedPoint, Point endPoint)
+		private static double AngleAmongThreePoints(Point startPoint, Point sharedPoint, Point endPoint)
 		{
 			// move all points together so that sharedPoint is at 0,0
 			var translatedStartPoint = new Point(startPoint.coordinateX - sharedPoint.coordinateX,
@@ -79,7 +79,7 @@ namespace DiagramDesignerEngine
 		/// <param name="ls"> the segment where the angle starts </param>
 		/// <param name="connectedLs"> a list of segments connected to the segment </param>
 		/// <returns> segments sorted by angle in ascending order </returns>
-		internal static List<LineSegment> SortSegmentsByAngleFromSegment(LineSegment ls, List<LineSegment> connectedLs)
+		private static List<LineSegment> SortSegmentsByAngleFromSegment(LineSegment ls, List<LineSegment> connectedLs)
 		{	
 			return connectedLs.OrderBy(o => SegmentsUtilities.AngleAmongTwoSegments(ls, o)).ToList();
 		}
