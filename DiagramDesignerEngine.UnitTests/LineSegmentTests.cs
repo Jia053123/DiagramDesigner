@@ -136,8 +136,20 @@ namespace DiagramDesignerEngine.UnitTests
 			Assert.IsTrue(result3.Contains(new LineSegment(new Point(2, -1), new Point(4, -2))));
 
 			var ls4 = new LineSegment(new Point(-4, 2), new Point(4, -2));
-			var ps4 = new List<Point> { new Point(-2, 1), new Point(0, 0), new Point(2, -2), new Point(2, -1), new Point(0, 0) };
-			Assert.Throws<ArgumentException>(() => ls4.SplitAtPoints(ps4));
+			var ps4 = new List<Point> { new Point(-4, 2), new Point(0, 0) };
+			var result4 = ls4.SplitAtPoints(ps4);
+			Assert.IsTrue(result4.Contains(new LineSegment(new Point(-4, 2), new Point(0, 0))));
+			Assert.IsTrue(result4.Contains(new LineSegment(new Point(0, 0), new Point(4, -2))));
+
+			var ls42 = new LineSegment(new Point(-4, 2), new Point(4, -2));
+			var ps42 = new List<Point> { new Point(4, -2), new Point(0, 0) };
+			var result42 = ls42.SplitAtPoints(ps42);
+			Assert.IsTrue(result42.Contains(new LineSegment(new Point(-4, 2), new Point(0, 0))));
+			Assert.IsTrue(result42.Contains(new LineSegment(new Point(0, 0), new Point(4, -2))));
+
+			var ls5 = new LineSegment(new Point(-4, 2), new Point(4, -2));
+			var ps5 = new List<Point> { new Point(-2, 1), new Point(0, 0), new Point(2, -2), new Point(2, -1), new Point(0, 0) };
+			Assert.Throws<ArgumentException>(() => ls5.SplitAtPoints(ps5));
 		}
 
 		[Test]

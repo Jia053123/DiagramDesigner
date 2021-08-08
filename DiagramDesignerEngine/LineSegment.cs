@@ -21,7 +21,7 @@ namespace DiagramDesignerEngine
 		{		
 			if (endPoint1 == endPoint2)
 			{
-				throw new ArgumentException("Parameters cannot be identical");
+				throw new ArgumentException("endpoints cannot be identical");
 			}
 
 			if (endPoint1.coordinateX < endPoint2.coordinateX)
@@ -145,12 +145,29 @@ namespace DiagramDesignerEngine
 			return true;
 		}
 
-		private (LineSegment, LineSegment) SplitAtPoint(Point pointToSplit)
+		/// <summary>
+		/// Split the segment at the point
+		/// </summary>
+		/// <param name="pointToSplit"></param>
+		/// <returns> The split segments; 
+		/// if the point is at FirstPoint, the first item is null, and the second item is the original segment
+		/// if the point is at SecondPoint, the first item is the original segment, and the second item is null </returns>
+		private (LineSegment?, LineSegment?) SplitAtPoint(Point pointToSplit)
 		{
 			if (!this.ContainsPoint(pointToSplit))
 			{
 				throw new ArgumentException("Point not on segment");
 			}
+
+			if (pointToSplit == this.FirstPoint)
+			{
+				return (null, new LineSegment(pointToSplit, SecondPoint));
+			}
+			else if (pointToSplit == this.SecondPoint)
+			{
+				return (new LineSegment(pointToSplit, FirstPoint), null);
+			}
+
 			return (new LineSegment(FirstPoint, pointToSplit), new LineSegment(pointToSplit, SecondPoint));
 		}
 
@@ -158,7 +175,7 @@ namespace DiagramDesignerEngine
 		/// Split the segment at every point in the list
 		/// </summary>
 		/// <param name="pointsToSplit"> A list of points on the segment at which to split; the do not have to be unique. </param>
-		/// <returns></returns>
+		/// <returns> The list of split segments </returns>
 		internal List<LineSegment> SplitAtPoints(List<Point> pointsToSplit)
 		{
 			var splitSegments = new List<LineSegment>();
@@ -180,15 +197,24 @@ namespace DiagramDesignerEngine
 			}
 			List<Point> uniqueSortedPointsToSplit = sortedPointsToSplit.Distinct().ToList();
 
-			var remainingSegment = this;
+			LineSegment? remainingSegment = this;
 			for (int i = 0; i < uniqueSortedPointsToSplit.Count; i++)
 			{
-				var result = remainingSegment.SplitAtPoint(uniqueSortedPointsToSplit[i]);
-				splitSegments.Add(result.Item1); 
-				remainingSegment = result.Item2;
-			}
-			splitSegments.Add(remainingSegment); // the last segment
+				var result = ((LineSegment)remainingSegment).SplitAtPoint(uniqueSortedPointsToSplit[i]);
+				if (!(result.Item1 is null))
+				{
+					splitSegments.Add((LineSegment)result.Item1);
+				}
 
+				remainingSegment = result.Item2;
+				if (remainingSegment is null) { break; }
+			}
+
+			if (!(remainingSegment is null))
+			{
+				splitSegments.Add((LineSegment)remainingSegment); // the last segment
+			}
+			
 			return splitSegments;
 		}
 
