@@ -174,8 +174,8 @@ namespace DiagramDesignerEngine
 		/// <summary>
 		/// Split the segment at every point in the list
 		/// </summary>
-		/// <param name="pointsToSplit"> A list of points on the segment at which to split; the do not have to be unique. </param>
-		/// <returns> The list of split segments </returns>
+		/// <param name="pointsToSplit"> A list of points on the segment at which to split; the do not have to be unique. Can be empty </param>
+		/// <returns> The list of split segments, or the original segment if list is empty </returns>
 		internal List<LineSegment> SplitAtPoints(List<Point> pointsToSplit)
 		{
 			var splitSegments = new List<LineSegment>();
@@ -257,8 +257,7 @@ namespace DiagramDesignerEngine
 
 		/// <summary>
 		/// If the two segments overlap, return the points at which each of them should split
-		/// such that each pair from the resulting segments either completely overlap (identical) 
-		/// or do not overlap at all
+		/// such that the resulting segments either completely overlap (identical) or do not overlap at all
 		/// </summary>
 		/// <param name="ls1"></param>
 		/// <param name="ls2"></param>

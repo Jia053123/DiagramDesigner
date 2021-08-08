@@ -116,6 +116,12 @@ namespace DiagramDesignerEngine.UnitTests
 		[Test]
 		public void TestSplitAtPoints()
 		{
+			var ls0 = new LineSegment(new Point(-2, 0), new Point(2, 0));
+			var ps0 = new List<Point>();
+			var result0 = ls0.SplitAtPoints(ps0);
+			Assert.AreEqual(result0.Count, 1);
+			Assert.IsTrue(result0.Contains(ls0));
+
 			var ls1 = new LineSegment(new Point(-2, 0), new Point(2, 0));
 			var ps1 = new List<Point> { new Point(-1, 0), new Point(1, 0), new Point(0, 0) };
 			var result1 = ls1.SplitAtPoints(ps1);
