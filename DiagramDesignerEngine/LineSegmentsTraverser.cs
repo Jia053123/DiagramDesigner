@@ -32,7 +32,7 @@ namespace DiagramDesignerEngine
 		/// <param name="turnLargestAngle"> when the potential path branches, turn the largest angle or not (and turn the smallest angle) </param>
 		/// <returns> If the traversal ended in a loop, return the index where the loop begins; 
 		/// returning 0 means the path is a perfect loop; if the traversal ended at a deadend, return -1 </returns>
-		internal int TraverseSegment(LineSegment startSegment, bool startWithFirstPoint, bool turnLargestAngle)
+		internal int TraverseSegments(LineSegment startSegment, bool startWithFirstPoint, bool turnLargestAngle)
 		{
 			var pool = new List<LineSegment>(this.SegmentsToTraverse);
 			this.Path = new List<LineSegment>();
@@ -56,7 +56,7 @@ namespace DiagramDesignerEngine
 					var previousOccurence = this.Path.FindIndex(s => s == (LineSegment)nextSegment);
 					if (previousOccurence != -1)
 					{
-						// a traversed segment is reached. return
+						// a traversed segment is reached. return with the index
 						return (previousOccurence);
 					}
 
@@ -65,9 +65,9 @@ namespace DiagramDesignerEngine
 
 					currentSegment = (LineSegment)nextSegment;
 				}
-			} while (!(nextSegment is null)); // continue if not at deadend
+			} while (!(nextSegment is null)); // continue if not at deadend yet
 
-			return -1; // if deadend is reached, return -1
+			return -1; // reaching here means dead end is reached, return -1
 		}
 	}
 }

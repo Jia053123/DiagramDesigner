@@ -15,7 +15,6 @@ namespace DiagramDesignerEngine
         //public List<BoundaryEntity> BoundaryEntities { get; private set; } = new List<BoundaryEntity>();
         public List<WallEntity> WallEntities { get; private set; } = new List<WallEntity>();
         private List<LineSegment> ExplodedWallSegments = null;
-        //private Stack<List<LineSegment>> ExplodedSegmentsToResolve;
 
         public List<EnclosedProgram> Programs { get; private set; } = new List<EnclosedProgram>();
 
@@ -48,7 +47,7 @@ namespace DiagramDesignerEngine
 
             this.ExplodedWallSegments = (new SegmentsExploder(allSegments)).ExplodeSegments();
 
-			var rooms = (new RoomsFinder(this.ExplodedWallSegments)).FindRooms();
+			//var rooms = (new RoomsFinder(this.ExplodedWallSegments)).FindRooms();
 
             // TODO: match programs
 		}
