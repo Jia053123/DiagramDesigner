@@ -47,7 +47,7 @@ namespace DiagramDesignerEngine
 		}
 
 		/// <summary>
-		/// Whether a point is in or on the cycle
+		/// Whether a point is in the cycle (being on the perimeter also counts)
 		/// </summary>
 		/// <param name="point"> the point to check against the cycle </param>
 		/// <returns> true if the point is within or on the boundary of the cycle </returns>
@@ -62,21 +62,21 @@ namespace DiagramDesignerEngine
 				}
 			}
 
-				// find the left most point on the cycle
-				var leftMostPoint = this.Cycle.First().FirstPoint;
+			// find the left most point on the cycle
+			var leftMostPoint = this.Cycle.First().FirstPoint;
 			foreach (LineSegment ls in this.Cycle)
 			{
 				if (ls.FirstPoint.coordinateX < leftMostPoint.coordinateX)
 				{
 					leftMostPoint = ls.FirstPoint;
 				}
-				else if (ls.SecondPoint.coordinateX < leftMostPoint.coordinateX) // probably unnecessary because they are connected
+				else if (ls.SecondPoint.coordinateX < leftMostPoint.coordinateX) 
 				{
 					leftMostPoint = ls.SecondPoint;
 				}
 			}
 			// use Ray Casting algorithm to determine if it's inside
-			var rayCastingSegment = new LineSegment(leftMostPoint, point);
+			var rayCastingSegment = new LineSegment(new Point(leftMostPoint.coordinateX - 10, point.coordinateY), point);
 			var numOfTimesPerimeterPassed = 0;
 			foreach (LineSegment ls in this.Cycle)
 			{
