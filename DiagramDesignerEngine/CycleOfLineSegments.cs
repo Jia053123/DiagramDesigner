@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace DiagramDesignerEngine
 {
@@ -17,71 +16,24 @@ namespace DiagramDesignerEngine
 		}
 
 		/// <summary>
-		/// A cycle consists of at least 3 segments. All segments are connected end-to-end to form a loop
+		/// A cycle consists of at least 3 segments. All segments are connected end-to-end to form one perfect loop
 		/// </summary>
-		/// <param name="segments"> must contain at least 3 elements and no extra segments except for dangling ones </param>
-		internal CycleOfLineSegments(List<LineSegment> segments)
+		/// <param name="segmentsFormingCycle"> must contain at least 3 elements and no redundant segments </param>
+		internal CycleOfLineSegments(List<LineSegment> segmentsFormingCycle)
 		{
-			if (segments.Count < 3 || (segments.Distinct().ToList().Count < segments.Count))
+			if (segmentsFormingCycle.Count < 3 || (segmentsFormingCycle.Distinct().ToList().Count < segmentsFormingCycle.Count))
 			{
 				throw new ArgumentException("input has less than 3 elements or contains duplicates");
 			}
 
-			// remove dangling segments
-			foreach (LineSegment ls in segments)
+			var traverser = new LineSegmentsTraverser(segmentsFormingCycle);
+			var result = traverser.TraverseSegments(segmentsFormingCycle.First(), true, true); // doesn't matter what the parameters are since it's supposed to be a perfect loop
+			if (result != 0 || traverser.GetPath().Count != segmentsFormingCycle.Count)
 			{
-				var leftResult = SegmentsUtilities.FindLeftConnectedSegmentsSortedByAngle(ls, segments);
-				var rightResult = SegmentsUtilities.FindRightConnectedSegmentsSortedByAngle(ls, segments);
-
-				if (leftResult.Count == 0 || rightResult.Count == 0)
-				{
-					segments.Remove(ls);
-				}
+				throw new ArgumentException("does not form a perfect loop");
 			}
 
-			// verify the cycle
-			var currentSegment = segments[0];
-			bool IsFirstPointTheOneToSearch = true;
-			do
-			{
-				List<LineSegment> searchResult;
-				if (IsFirstPointTheOneToSearch)
-				{
-					searchResult = SegmentsUtilities.FindLeftConnectedSegmentsSortedByAngle(currentSegment, segments);
-				}
-				else
-				{
-					searchResult = SegmentsUtilities.FindRightConnectedSegmentsSortedByAngle(currentSegment, segments);
-				}
-				if (searchResult.Count != 1)
-				{
-					throw new ArgumentException("not all segments are connected at both ends or there are branches");
-				}
-
-				var nextSegment = searchResult.First();
-				if (IsFirstPointTheOneToSearch)
-				{
-					IsFirstPointTheOneToSearch = currentSegment.FirstPoint != nextSegment.FirstPoint; // if not the first point, must be equal to the second point then
-				}
-				else
-				{
-					IsFirstPointTheOneToSearch = currentSegment.SecondPoint != nextSegment.FirstPoint;
-				}
-				Cycle.Add(currentSegment);
-				currentSegment = nextSegment;
-			} while (Cycle.Count < segments.Count);
-
-			if (segments.Count < 3)
-			{
-				throw new ArgumentException("cannot find a loop with more than 2 elements ");
-			}
-
-			// check the front and end of the loop are connected
-			if (SegmentsUtilities.FindLeftConnectedSegmentsSortedByAngle(Cycle.First(), Cycle).Count != 1 ||
-				SegmentsUtilities.FindRightConnectedSegmentsSortedByAngle(Cycle.First(), Cycle).Count != 1)
-			{
-				throw new ArgumentException("not all segments are connected at both ends or there are branches");
-			}
+			this.Cycle = segmentsFormingCycle;
 		}
 
 		/// <summary>
@@ -99,7 +51,7 @@ namespace DiagramDesignerEngine
 		/// </summary>
 		/// <param name="point"> the point to check against the cycle </param>
 		/// <returns> true if the point is within or on the boundary of the cycle </returns>
-		internal bool IsPointInCycle(Point point)
+		private bool IsPointInCycle(Point point)
 		{
 			// if the point is on the cycle, return true
 			foreach (LineSegment ls in this.Cycle)

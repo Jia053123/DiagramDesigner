@@ -1,0 +1,164 @@
+﻿using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace DiagramDesignerEngine.UnitTests
+{
+	class CycleOfLineSegmentsTests
+	{
+		[Test]
+		public void TestConstructor_0()
+		{
+			var ls1 = new LineSegment(new Point(0, 0), new Point(1, 1));
+			var ls2 = new LineSegment(new Point(0, 0), new Point(1, 1));
+			var ls3 = new LineSegment(new Point(1, 1), new Point(1, -1));
+			var ls4 = new LineSegment(new Point(1, -1), new Point(0, 0));
+
+			var segments1 = new List<LineSegment> { ls1, ls3 };
+			Assert.Throws<ArgumentException>(() => new CycleOfLineSegments(segments1));
+
+			var segments2 = new List<LineSegment> { ls1, ls2, ls3, ls4 };
+			Assert.Throws<ArgumentException>(() => new CycleOfLineSegments(segments2));
+
+			var segments3 = new List<LineSegment> { ls1, ls2 };
+			Assert.Throws<ArgumentException>(() => new CycleOfLineSegments(segments3));
+
+			var segments4 = new List<LineSegment> { ls1, ls3, ls4 };
+			Assert.DoesNotThrow(() => new CycleOfLineSegments(segments4));
+		}
+
+		[Test]
+		public void TestConstructor_1()
+		{
+			//   ____        
+			//  |     \        /|   
+			//  |       \    /  |    
+			//    \       \/    |
+			//      \___________|
+			//
+			// -2   -1    0     1      
+			//
+
+			var ls1 = new LineSegment(new Point(0, 0), new Point(1, 1));
+			var ls2 = new LineSegment(new Point(1, 1), new Point(1, -0.5));
+			var ls3 = new LineSegment(new Point(1, -0.5), new Point(-1, -0.5));
+			var ls4 = new LineSegment(new Point(-1, -0.5), new Point(-2, 0.5));
+			var ls5 = new LineSegment(new Point(-2, 0.5), new Point(-2, 1));
+			var ls6 = new LineSegment(new Point(-2, 1), new Point(-1, 1));
+			var ls7 = new LineSegment(new Point(-1, 1), new Point(0, 0));
+
+			var segments1 = new List<LineSegment> { ls1, ls7, ls2, ls6, ls3, ls5, ls4 };
+			Assert.DoesNotThrow(() => new CycleOfLineSegments(segments1));
+		}
+
+		[Test]
+		public void TestConstructor_2()
+		{
+			//   ____        
+			//  |     \        /|   
+			//  |       \    /  |    
+			//    \       \/    |
+			//      \___________|______
+			//
+			// -2   -1    0     1      2
+			//
+
+			var ls1 = new LineSegment(new Point(0, 0), new Point(1, 1));
+			var ls2 = new LineSegment(new Point(1, 1), new Point(1, -0.5));
+			var ls3 = new LineSegment(new Point(1, -0.5), new Point(-1, -0.5));
+			var ls4 = new LineSegment(new Point(-1, -0.5), new Point(-2, 0.5));
+			var ls5 = new LineSegment(new Point(-2, 0.5), new Point(-2, 1));
+			var ls6 = new LineSegment(new Point(-2, 1), new Point(-1, 1));
+			var ls7 = new LineSegment(new Point(-1, 1), new Point(0, 0));
+			var ls8 = new LineSegment(new Point(1, -0.5), new Point(2, -0.5));
+
+			var segments1 = new List<LineSegment> { ls1, ls7, ls2, ls6, ls3, ls5, ls4, ls8 };
+			Assert.Throws<ArgumentException>(() => new CycleOfLineSegments(segments1));
+		}
+
+		[Test]
+		public void TestConstructor_3()
+		{
+			//   ____        
+			//  |     \        /|   
+			//  |       \    /  |    
+			//    \       \/    |
+			//      \   /    \  |
+			//
+			// -2   -1    0     1      2
+			//
+
+			var ls1 = new LineSegment(new Point(0, 0), new Point(1, 1));
+			var ls2 = new LineSegment(new Point(1, 1), new Point(1, -0.5));
+			var ls3 = new LineSegment(new Point(1, -0.5), new Point(0, 0));
+			var ls4 = new LineSegment(new Point(0, 0), new Point(-1, -0.5));
+			var ls5 = new LineSegment(new Point(-1, -0.5), new Point(-2, 0.5));
+			var ls6 = new LineSegment(new Point(-2, 0.5), new Point(-2, 1));
+			var ls7 = new LineSegment(new Point(-2, 1), new Point(-1, 1));
+			var ls8 = new LineSegment(new Point(-1, 1), new Point(0, 0));
+
+			var segments = new List<LineSegment> { ls1, ls7, ls2, ls6, ls3, ls5, ls4, ls8 };
+			Assert.Throws<ArgumentException>(() => new CycleOfLineSegments(segments));
+		}
+
+		[Test]
+		public void TestConstructor_4()
+		{
+			//  
+			//    ___________
+			//   |           |
+			//   |       |\  |
+			//   |       |  \| 
+			//   |       |  /|
+			//   |       |/  |
+			//   |___________| 
+			//
+			//   -1    0     1    
+			//
+
+			var ls1 = new LineSegment(new Point(-1, -2), new Point(-1, 2));
+			var ls2 = new LineSegment(new Point(-1, 2), new Point(1, 2));
+			var ls3 = new LineSegment(new Point(1, 2), new Point(1, 0));
+			var ls4 = new LineSegment(new Point(1, 0), new Point(1, -2));
+			var ls5 = new LineSegment(new Point(1, -2), new Point(-1, -2));
+
+			var ls6 = new LineSegment(new Point(1, 0), new Point(0.5, 0.5));
+			var ls7 = new LineSegment(new Point(1, 0), new Point(0.5, -0.5));
+			var ls8 = new LineSegment(new Point(0.5, -0.5), new Point(0.5, 0.5));
+
+			var segments = new List<LineSegment> { ls1, ls7, ls2, ls6, ls3, ls5, ls4, ls8 };
+			Assert.Throws<ArgumentException>(() => new CycleOfLineSegments(segments));
+		}
+
+		[Test]
+		public void TestConstructor_5()
+		{
+			//  
+			//    ___________
+			//   |           |
+			//   |     |\    |
+			//   |     |  \  | 
+			//   |     |  /  |
+			//   |     |/    |
+			//   |___________| 
+			//
+			//   -1    0     1    
+			//
+
+			var ls1 = new LineSegment(new Point(-1, -2), new Point(-1, 2));
+			var ls2 = new LineSegment(new Point(-1, 2), new Point(1, 2));
+			var ls3 = new LineSegment(new Point(1, 2), new Point(1, 0));
+			var ls4 = new LineSegment(new Point(1, 0), new Point(1, -2));
+			var ls5 = new LineSegment(new Point(1, -2), new Point(-1, -2));
+
+			var ls6 = new LineSegment(new Point(0.5, 0), new Point(0, 0.5));
+			var ls7 = new LineSegment(new Point(0.5, 0), new Point(0, -0.5));
+			var ls8 = new LineSegment(new Point(0, -0.5), new Point(0, 0.5));
+
+			var segments = new List<LineSegment> { ls1, ls7, ls2, ls6, ls3, ls5, ls4, ls8 };
+			Assert.Throws<ArgumentException>(() => new CycleOfLineSegments(segments));
+		}
+
+	}
+}
