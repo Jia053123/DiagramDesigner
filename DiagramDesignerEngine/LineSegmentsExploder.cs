@@ -16,19 +16,27 @@ namespace DiagramDesignerEngine
 
 		internal List<LineSegment> ExplodeSegments()
 		{
+			var collapsedSegments = this.SplitAndMergeOverlappingSegments(SegmentsToExplode);
+			List<LineSegment> explodedWallSegments = this.SplitIntersectingSegments(collapsedSegments);
+
+			return explodedWallSegments;
+		}
+
+		private List<LineSegment> SplitAndMergeOverlappingSegments(List<LineSegment> segments)
+		{
 			List<List<Point>> pointsToSplitForEachLine1 = new List<List<Point>>();
-			for (int i = 0; i < SegmentsToExplode.Count; i++)
+			for (int i = 0; i < segments.Count; i++)
 			{
 				pointsToSplitForEachLine1.Add(new List<Point>());
 			}
 
 			// find points to split for overlapping segments
-			for (int i = 0; i < this.SegmentsToExplode.Count; i++)
+			for (int i = 0; i < segments.Count; i++)
 			{
-				for (int j = i + 1; j < this.SegmentsToExplode.Count; j++)
+				for (int j = i + 1; j < segments.Count; j++)
 				{
 					// if segments overlap, remember where to split
-					var pointsToSplit = LineSegment.PointsToSplitIfOverlap(SegmentsToExplode[i], SegmentsToExplode[j]);
+					var pointsToSplit = LineSegment.PointsToSplitIfOverlap(segments[i], segments[j]);
 					pointsToSplitForEachLine1[i].AddRange(pointsToSplit);
 					pointsToSplitForEachLine1[j].AddRange(pointsToSplit);
 				}
@@ -38,26 +46,29 @@ namespace DiagramDesignerEngine
 			var collapsedSegments = new List<LineSegment>();
 			for (int i = 0; i < pointsToSplitForEachLine1.Count; i++)
 			{
-				collapsedSegments.AddRange(SegmentsToExplode[i].SplitAtPoints(pointsToSplitForEachLine1[i]));
+				collapsedSegments.AddRange(segments[i].SplitAtPoints(pointsToSplitForEachLine1[i]));
 			}
 			// remove duplicate segments
 			collapsedSegments = collapsedSegments.Distinct().ToList();
 
+			return collapsedSegments;
+		}
 
-
+		private List<LineSegment> SplitIntersectingSegments(List<LineSegment> segments)
+		{
 			// find intersections
 			List<List<Point>> pointsToSplitForEachLine2 = new List<List<Point>>();
-			for (int i = 0; i < collapsedSegments.Count; i++)
+			for (int i = 0; i < segments.Count; i++)
 			{
 				pointsToSplitForEachLine2.Add(new List<Point>());
 			}
 
-			for (int i = 0; i < collapsedSegments.Count; i++)
+			for (int i = 0; i < segments.Count; i++)
 			{
-				for (int j = i + 1; j < collapsedSegments.Count; j++)
+				for (int j = i + 1; j < segments.Count; j++)
 				{
 					// If intersection is found, remember which segment should be split at what point
-					Point? pointToSplit = collapsedSegments[i].FindIntersection(collapsedSegments[j]);
+					Point? pointToSplit = segments[i].FindIntersection(segments[j]);
 					if (pointToSplit != null)
 					{
 						pointsToSplitForEachLine2[i].Add((Point)pointToSplit);
@@ -67,14 +78,13 @@ namespace DiagramDesignerEngine
 			}
 
 			// split segments at points identified
-			var explodedWallSegments = new List<LineSegment>();
+			var splitSegments = new List<LineSegment>();
 			for (int i = 0; i < pointsToSplitForEachLine2.Count; i++)
 			{
-				explodedWallSegments.AddRange(collapsedSegments[i].SplitAtPoints(pointsToSplitForEachLine2[i]));
+				splitSegments.AddRange(segments[i].SplitAtPoints(pointsToSplitForEachLine2[i]));
 			}
 
-		
-			return explodedWallSegments;
+			return splitSegments;
 		}
 	}
 }
