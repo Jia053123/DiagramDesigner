@@ -40,7 +40,7 @@ namespace DiagramDesignerEngine
 			{
 				collapsedSegments.AddRange(SegmentsToExplode[i].SplitAtPoints(pointsToSplitForEachLine1[i]));
 			}
-			// remove completely overlapping segments
+			// remove duplicate segments
 			collapsedSegments = collapsedSegments.Distinct().ToList();
 
 
@@ -51,6 +51,7 @@ namespace DiagramDesignerEngine
 			{
 				pointsToSplitForEachLine2.Add(new List<Point>());
 			}
+
 			for (int i = 0; i < collapsedSegments.Count; i++)
 			{
 				for (int j = i + 1; j < collapsedSegments.Count; j++)

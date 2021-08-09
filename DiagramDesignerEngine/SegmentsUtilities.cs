@@ -113,7 +113,8 @@ namespace DiagramDesignerEngine
 		/// </summary>
 		/// <param name="segmentIndex"> the index of the segment from the pool </param>
 		/// <param name="pool"> the list of segments to search from </param>
-		/// <returns> the list of indexes of segments connected to the SecondPoint of the input segment; 
+		/// <returns> the list of indexes of segments connected to the SecondPoint of the input segment, 
+		/// excluding segments equal to the input segment; 
 		/// the list is sorted in ascending order by their angle from the segemnt measured in radian, clockwise. </returns>
 		internal static List<LineSegment> FindRightConnectedSegmentsSortedByAngle(LineSegment segment, List<LineSegment> segmentsPool)
 		{
@@ -129,6 +130,37 @@ namespace DiagramDesignerEngine
 				}
 			}
 			return SegmentsUtilities.SortSegmentsByAngleFromSegment(segment, connectedSegments);
+		}
+
+		/// <summary>
+		/// Remove LineSegment items that are not connected on both ends. Duplicate segments are not connected to each other
+		/// </summary>
+		/// <param name="lineSegments"> The segments to search for dangling segments </param>
+		/// <returns> The segments with dangling segments removed and have none left, otherwise in the same order </returns>
+		internal static List<LineSegment> RemoveDanglingLineSegments(List<LineSegment> lineSegments)
+		{
+			List<LineSegment> segmentsOfCurrentIteration;
+			var segmentsOfNextIteration = new List<LineSegment>(lineSegments); // make a copy
+			bool oneSegmentRemoved;
+			do
+			{
+				oneSegmentRemoved = false;
+				segmentsOfCurrentIteration = new List<LineSegment>(segmentsOfNextIteration);
+				for (int i = 0; i < segmentsOfCurrentIteration.Count; i++)
+				{
+					var ls = segmentsOfCurrentIteration[i];
+					var leftResult = SegmentsUtilities.FindLeftConnectedSegmentsSortedByAngle(ls, segmentsOfCurrentIteration);
+					var rightResult = SegmentsUtilities.FindRightConnectedSegmentsSortedByAngle(ls, segmentsOfCurrentIteration);
+
+					if (leftResult.Count == 0 || rightResult.Count == 0)
+					{
+						segmentsOfNextIteration.Remove(ls); // RemoveAt may remove the wrong one if segments have been removed before that index
+						oneSegmentRemoved = true;
+					}
+				}
+			} while (oneSegmentRemoved);
+			
+			return segmentsOfNextIteration;
 		}
 	}
 }

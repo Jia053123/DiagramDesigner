@@ -44,7 +44,7 @@ namespace DiagramDesignerEngine.UnitTests
 			//
 			// -1.5 -1   0 0.5 1   2
 			//
-			var ls1 = new LineSegment(new Point(-1, 0), new Point(-1.5, -1));
+			var ls1 = new LineSegment(new Point(-1, 0), new Point(-1.5, 1));
 			var ls2 = new LineSegment(new Point(-1, 0), new Point(-1.5, 1));
 			var ls3 = new LineSegment(new Point(-1, 0), new Point(0, 0));
 			var ls4 = new LineSegment(new Point(0, 0), new Point(0.5, 1));
@@ -80,7 +80,7 @@ namespace DiagramDesignerEngine.UnitTests
 			//
 			// -1.5 -1   0 0.5 1   2
 			//
-			var ls1 = new LineSegment(new Point(-1, 0), new Point(-1.5, -1));
+			var ls1 = new LineSegment(new Point(-1, 0), new Point(-1.5, 1));
 			var ls2 = new LineSegment(new Point(-1, 0), new Point(-1, 1));
 			var ls3 = new LineSegment(new Point(-1, 0), new Point(0, 0));
 			var ls4 = new LineSegment(new Point(0, 0), new Point(0.5, 1));
@@ -102,6 +102,87 @@ namespace DiagramDesignerEngine.UnitTests
 			Assert.AreEqual(ls4, result3[0]);
 			Assert.AreEqual(ls7, result3[1]);
 			Assert.AreEqual(ls5, result3[2]);
+		}
+
+		[Test]
+		public void TestRemoveDanglingLineSegments_1()
+		{
+			//
+			//    \       /
+			//     \_____/___  ____
+			//     |      \   
+			//     |       \___
+			//
+			// -1.5 -1   0 0.5 1   2
+			//
+			var ls1 = new LineSegment(new Point(-1, 0), new Point(-1.5, 1));
+			var ls2 = new LineSegment(new Point(-1, 0), new Point(-1, 1));
+			var ls3 = new LineSegment(new Point(-1, 0), new Point(0, 0));
+			var ls4 = new LineSegment(new Point(0, 0), new Point(0.5, 1));
+			var ls5 = new LineSegment(new Point(0, 0), new Point(0.5, -1));
+			var ls6 = new LineSegment(new Point(0.5, -1), new Point(1, -1));
+			var ls7 = new LineSegment(new Point(0, 0), new Point(0.5, 0));
+			var ls8 = new LineSegment(new Point(1, 0), new Point(2, 0));
+			var segments = new List<LineSegment> { ls1, ls2, ls3, ls4, ls5, ls6, ls7, ls8 };
+
+			var result1 = SegmentsUtilities.RemoveDanglingLineSegments(segments);
+			Assert.AreEqual(0, result1.Count); 
+		}
+
+		[Test]
+		public void TestRemoveDanglingLineSegments_2()
+		{
+			// _____________
+			//     \       /
+			//      \_____/___  ____
+			//      |      \   
+			//      |       \___
+			//
+			//-2-1.5-1    0 0.5 1   2
+			//
+			var ls1 = new LineSegment(new Point(-1, 0), new Point(-1.5, 1));
+			var ls2 = new LineSegment(new Point(-1, 0), new Point(-1, 1));
+			var ls3 = new LineSegment(new Point(-1, 0), new Point(0, 0));
+			var ls4 = new LineSegment(new Point(0, 0), new Point(0.5, 1));
+			var ls5 = new LineSegment(new Point(0, 0), new Point(0.5, -1));
+			var ls6 = new LineSegment(new Point(0.5, -1), new Point(1, -1));
+			var ls7 = new LineSegment(new Point(0, 0), new Point(0.5, 0));
+			var ls8 = new LineSegment(new Point(1, 0), new Point(2, 0));
+			var ls9 = new LineSegment(new Point(-2, 1), new Point(0.5, 1));
+			var segments = new List<LineSegment> { ls1, ls2, ls3, ls4, ls5, ls6, ls7, ls8, ls9 };
+
+			var result1 = SegmentsUtilities.RemoveDanglingLineSegments(segments);
+			Assert.AreEqual(0, result1.Count); // only perfect loops may survive! 
+		}
+
+		[Test]
+		public void TestRemoveDanglingLineSegments_3()
+		{
+			//     _________
+			//     \       /
+			//      \_____/___  ____
+			//      |      \   
+			//      |       \___
+			//
+			//-2-1.5-1    0 0.5 1   2
+			//
+			var ls1 = new LineSegment(new Point(-1, 0), new Point(-1.5, 1));
+			var ls2 = new LineSegment(new Point(-1, 0), new Point(-1, 1));
+			var ls3 = new LineSegment(new Point(-1, 0), new Point(0, 0));
+			var ls4 = new LineSegment(new Point(0, 0), new Point(0.5, 1));
+			var ls5 = new LineSegment(new Point(0, 0), new Point(0.5, -1));
+			var ls6 = new LineSegment(new Point(0.5, -1), new Point(1, -1));
+			var ls7 = new LineSegment(new Point(0, 0), new Point(0.5, 0));
+			var ls8 = new LineSegment(new Point(1, 0), new Point(2, 0));
+			var ls9 = new LineSegment(new Point(-1.5, 1), new Point(0.5, 1));
+			var segments = new List<LineSegment> { ls1, ls2, ls3, ls4, ls5, ls6, ls7, ls8, ls9 };
+
+			var result1 = SegmentsUtilities.RemoveDanglingLineSegments(segments);
+			Assert.AreEqual(4, result1.Count);
+			Assert.AreEqual(ls1, result1[0]);
+			Assert.AreEqual(ls3, result1[1]);
+			Assert.AreEqual(ls4, result1[2]);
+			Assert.AreEqual(ls9, result1[3]);
 		}
 	}
 }
