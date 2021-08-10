@@ -9,10 +9,20 @@ namespace DiagramDesignerEngine
 	{
 		private List<LineSegment> SegmentsToTraverse;
 		private List<LineSegment> Path = null;
+		private List<List<LineSegment>> PathsTraversed;
 
 		internal List<LineSegment> GetPath()
 		{
 			return new List<LineSegment>(this.Path); // make a copy
+		}
+
+		private List<LineSegment> GetTraversedPathAtIndex(int index)
+		{
+			if (index > 0 && index < this.PathsTraversed.Count)
+			{
+				return new List<LineSegment>(this.PathsTraversed[index]);
+			}
+			return null;
 		}
 
 		/// <summary>
@@ -32,7 +42,7 @@ namespace DiagramDesignerEngine
 		/// <param name="turnLargestAngle"> when the potential path branches, turn the largest angle or not (and turn the smallest angle) </param>
 		/// <returns> If the traversal ended in a loop, return the index where the loop begins; 
 		/// returning 0 means the path is a perfect loop; if the traversal ended at a deadend, return -1 </returns>
-		internal int TraverseSegments(LineSegment startSegment, bool startWithFirstPoint, bool turnLargestAngle)
+		internal (int, List<LineSegment>) TraverseSegments(LineSegment startSegment, bool startWithFirstPoint, bool turnLargestAngle)
 		{
 			var pool = new List<LineSegment>(this.SegmentsToTraverse);
 			this.Path = new List<LineSegment>();
@@ -54,7 +64,7 @@ namespace DiagramDesignerEngine
 				if (previousOccurence != -1)
 				{
 					// a traversed point is reached. return with the index
-					return (previousOccurence);
+					return (previousOccurence, this.GetPath());
 				}
 
 				// add the new point being searched
@@ -77,7 +87,24 @@ namespace DiagramDesignerEngine
 				}
 			} while (!(nextSegment is null)); // continue if not at deadend yet
 
-			return -1; // reaching here means dead end is reached, return -1
+			return (-1, this.GetPath()); // reaching here means dead end is reached, return -1
+		}
+
+		/// <summary>
+		/// Traverse once again with the same settings, 
+		/// but attempt a different route (determined by the angle setting) at the last available branching point; 
+		/// a new iteration of depth first search
+		/// </summary>
+		/// <returns>  If the traversal ended in a loop, return the index where the loop begins; 
+		/// returning 0 means the path is a perfect loop; if the traversal ended at a deadend, return -1 </returns>
+		internal (int, List<LineSegment>) TraverseAgain()
+		{
+			if (this.Path is null)
+			{
+				throw new InvalidOperationException("TraverseSegments not yet performed");
+			}
+
+			return (0, null); // stub
 		}
 	}
 }

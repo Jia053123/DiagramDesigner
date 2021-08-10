@@ -12,8 +12,7 @@ namespace DiagramDesignerEngine.UnitTests
 		{
 			//      __
 			//     |__|
-			//     |
-			//
+			//     
 			var ls1 = new LineSegment(new Point(-1, -1), new Point(-1, 1));
 			var ls2 = new LineSegment(new Point(-1, 1), new Point(1, 1));
 			var ls3 = new LineSegment(new Point(1, 1), new Point(1, -1));
@@ -30,6 +29,10 @@ namespace DiagramDesignerEngine.UnitTests
 				Assert.IsTrue(traverser1.GetPath().Contains(ls));
 			}
 
+			//      __
+			//     |__|
+			//     |
+			//
 			var ls5 = new LineSegment(new Point(-1, -1), new Point(-1, -2));
 			var segments2 = new List<LineSegment> { ls1, ls4, ls2, ls3, ls5 };
 
@@ -49,6 +52,11 @@ namespace DiagramDesignerEngine.UnitTests
 			Assert.AreEqual(traverser2.GetPath().Count, 1);
 			Assert.IsTrue(traverser2.GetPath().Contains(ls5));
 
+			//      __
+			//     |__
+			//     |
+			//
+
 			// test angle
 			var segments3 = new List<LineSegment> { ls1, ls4, ls2, ls5 };
 			var traverser3 = new LineSegmentsTraverser(segments3);
@@ -64,6 +72,36 @@ namespace DiagramDesignerEngine.UnitTests
 			Assert.AreEqual(traverser3.GetPath().Count, 2);
 			Assert.AreEqual(traverser3.GetPath()[0], ls5);
 			Assert.AreEqual(traverser3.GetPath()[1], ls4);
+		}
+
+		[Test]
+		public void TestTraverseSegments_DepthFirstSearch()
+		{
+			// 3
+			//        |
+			// 2 _____|_____
+			//        |     |
+			// 1      |_____|_____
+			//              |
+			// 0            |
+			//
+			//  0     1     2     3
+
+			var ls1 = new LineSegment(new Point(0, 2), new Point(1, 2));
+			var ls2 = new LineSegment(new Point(1, 2), new Point(1, 3));
+			var ls3 = new LineSegment(new Point(1, 2), new Point(2, 2));
+			var ls4 = new LineSegment(new Point(1, 2), new Point(1, 1));
+			var ls5 = new LineSegment(new Point(1, 1), new Point(2, 1));
+			var ls6 = new LineSegment(new Point(2, 1), new Point(2, 2));
+			var ls7 = new LineSegment(new Point(2, 1), new Point(3, 1));
+			var ls8 = new LineSegment(new Point(2, 1), new Point(2, 0));
+
+			var segments = new List<LineSegment> { ls1, ls8, ls2, ls7, ls3, ls6, ls4, ls5 };
+			var traverser = new LineSegmentsTraverser(segments);
+			Assert.Throws<InvalidOperationException>(() => traverser.TraverseAgain());
+
+			var result1 = traverser.TraverseSegments(ls1, false, true);
+
 		}
 	}
 }
