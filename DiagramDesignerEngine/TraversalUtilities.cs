@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DiagramDesignerEngine
 {
-	static class SegmentsUtilities
+	static class TraversalUtilities
 	{
 		/// <summary>
 		/// Find the angle between two connected line segments
@@ -18,19 +18,19 @@ namespace DiagramDesignerEngine
 		{
 			if (ls1.FirstPoint == ls2.FirstPoint)
 			{
-				return SegmentsUtilities.AngleAmongThreePoints(ls1.SecondPoint, ls1.FirstPoint, ls2.SecondPoint);
+				return TraversalUtilities.AngleAmongThreePoints(ls1.SecondPoint, ls1.FirstPoint, ls2.SecondPoint);
 			}
 			else if (ls1.FirstPoint == ls2.SecondPoint)
 			{
-				return SegmentsUtilities.AngleAmongThreePoints(ls1.SecondPoint, ls1.FirstPoint, ls2.FirstPoint);
+				return TraversalUtilities.AngleAmongThreePoints(ls1.SecondPoint, ls1.FirstPoint, ls2.FirstPoint);
 			}
 			else if (ls1.SecondPoint == ls2.FirstPoint)
 			{
-				return SegmentsUtilities.AngleAmongThreePoints(ls1.FirstPoint, ls1.SecondPoint, ls2.SecondPoint);
+				return TraversalUtilities.AngleAmongThreePoints(ls1.FirstPoint, ls1.SecondPoint, ls2.SecondPoint);
 			}
 			else if (ls1.SecondPoint == ls2.SecondPoint)
 			{
-				return SegmentsUtilities.AngleAmongThreePoints(ls1.FirstPoint, ls1.SecondPoint, ls2.FirstPoint);
+				return TraversalUtilities.AngleAmongThreePoints(ls1.FirstPoint, ls1.SecondPoint, ls2.FirstPoint);
 			}
 			else
 			{
@@ -81,7 +81,7 @@ namespace DiagramDesignerEngine
 		/// <returns> segments sorted by angle in ascending order </returns>
 		private static List<LineSegment> SortSegmentsByAngleFromSegment(LineSegment ls, List<LineSegment> connectedLs)
 		{	
-			return connectedLs.OrderBy(o => SegmentsUtilities.AngleAmongTwoSegments(ls, o)).ToList();
+			return connectedLs.OrderBy(o => TraversalUtilities.AngleAmongTwoSegments(ls, o)).ToList();
 		}
 
 		/// <summary>
@@ -105,7 +105,7 @@ namespace DiagramDesignerEngine
 					}
 				}
 			}
-			return SegmentsUtilities.SortSegmentsByAngleFromSegment(segment, connectedSegments);
+			return TraversalUtilities.SortSegmentsByAngleFromSegment(segment, connectedSegments);
 		}
 
 		/// <summary>
@@ -129,7 +129,7 @@ namespace DiagramDesignerEngine
 					}
 				}
 			}
-			return SegmentsUtilities.SortSegmentsByAngleFromSegment(segment, connectedSegments);
+			return TraversalUtilities.SortSegmentsByAngleFromSegment(segment, connectedSegments);
 		}
 
 		/// <summary>
@@ -149,8 +149,8 @@ namespace DiagramDesignerEngine
 				for (int i = 0; i < segmentsOfCurrentIteration.Count; i++)
 				{
 					var ls = segmentsOfCurrentIteration[i];
-					var leftResult = SegmentsUtilities.FindLeftConnectedSegmentsSortedByAngle(ls, segmentsOfCurrentIteration);
-					var rightResult = SegmentsUtilities.FindRightConnectedSegmentsSortedByAngle(ls, segmentsOfCurrentIteration);
+					var leftResult = TraversalUtilities.FindLeftConnectedSegmentsSortedByAngle(ls, segmentsOfCurrentIteration);
+					var rightResult = TraversalUtilities.FindRightConnectedSegmentsSortedByAngle(ls, segmentsOfCurrentIteration);
 
 					if (leftResult.Count == 0 || rightResult.Count == 0)
 					{

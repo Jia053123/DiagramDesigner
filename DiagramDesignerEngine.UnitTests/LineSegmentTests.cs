@@ -159,6 +159,113 @@ namespace DiagramDesignerEngine.UnitTests
 		}
 
 		[Test]
+		public void TestDoOverlap_X()
+		{
+			// 
+			//  x-----x
+			//  x-----x
+			//
+			var ls1 = new LineSegment(new Point(-2, 0), new Point(2, 0));
+			var ls2 = ls1;
+			Assert.IsTrue(LineSegment.DoOverlap(ls1, ls2));
+
+			// 
+			//     x---x
+			//  x----------x
+			//
+			var ls3 = new LineSegment(new Point(-1, 0), new Point(1, 0));
+			Assert.IsTrue(LineSegment.DoOverlap(ls1, ls3));
+
+			// 
+			//  x---------x
+			//    x-----x
+			//
+			Assert.IsTrue(LineSegment.DoOverlap(ls3, ls1));
+
+			//
+			// x--------x
+			//     x-------x
+			//
+			var ls4 = new LineSegment(new Point(-4, 0), new Point(1, 0));
+			Assert.IsTrue(LineSegment.DoOverlap(ls1, ls4));
+
+			//
+			//    x-------x
+			//  x------x
+			//
+			Assert.IsTrue(LineSegment.DoOverlap(ls4, ls1));
+
+			//
+			// x------x
+			// x---------x
+			//
+			var ls5 = new LineSegment(new Point(-2, 0), new Point(1, 0));
+			Assert.IsTrue(LineSegment.DoOverlap(ls1, ls5));
+
+			//
+			// x--------x
+			// x-----x
+			//
+			Assert.IsTrue(LineSegment.DoOverlap(ls5, ls1));
+
+			//
+			// x------x
+			//    x---x
+			//
+			var ls7 = new LineSegment(new Point(-1, 0), new Point(2, 0));
+			Assert.IsTrue(LineSegment.DoOverlap(ls1, ls7));
+
+			//
+			//    x---x
+			// x------x
+			//
+			Assert.IsTrue(LineSegment.DoOverlap(ls7, ls1));
+
+			// case with no overlap
+			var ls8 = new LineSegment(new Point(100, 100), new Point(200, 200));
+			Assert.IsFalse(LineSegment.DoOverlap(ls8, ls1));
+			Assert.IsFalse(LineSegment.DoOverlap(ls1, ls8));
+
+			//
+			// x------x
+			//        x-----x
+			//
+			var ls9 = new LineSegment(new Point(2, 0), new Point(3, 0));
+			Assert.IsFalse(LineSegment.DoOverlap(ls9, ls1));
+		}
+
+		[Test]
+		public void TestDoOverlap_Y() // test along the Y axis
+		{
+			var ls1 = new LineSegment(new Point(0, -2), new Point(0, 2));
+			var ls2 = ls1;
+			Assert.IsTrue(LineSegment.DoOverlap(ls1, ls2));
+
+			var ls3 = new LineSegment(new Point(0, -1), new Point(0, 1));
+			Assert.IsTrue(LineSegment.DoOverlap(ls1, ls3));
+			Assert.IsTrue(LineSegment.DoOverlap(ls3, ls1));
+
+			var ls4 = new LineSegment(new Point(0, -4), new Point(0, 1));
+			Assert.IsTrue(LineSegment.DoOverlap(ls1, ls4));
+			Assert.IsTrue(LineSegment.DoOverlap(ls4, ls1));
+
+			var ls5 = new LineSegment(new Point(0, -2), new Point(0, 1));
+			Assert.IsTrue(LineSegment.DoOverlap(ls1, ls5));
+			Assert.IsTrue(LineSegment.DoOverlap(ls5, ls1));
+
+			var ls7 = new LineSegment(new Point(0, -1), new Point(0, 2));
+			Assert.IsTrue(LineSegment.DoOverlap(ls1, ls7));
+			Assert.IsTrue(LineSegment.DoOverlap(ls7, ls1));
+
+			var ls8 = new LineSegment(new Point(100, 100), new Point(200, 200));
+			Assert.IsFalse(LineSegment.DoOverlap(ls8, ls1));
+			Assert.IsFalse(LineSegment.DoOverlap(ls1, ls8));
+
+			var ls9 = new LineSegment(new Point(0, 2), new Point(0, 3));
+			Assert.IsFalse(LineSegment.DoOverlap(ls9, ls1));
+		}
+
+		[Test]
 		public void TestPointsToSplitIfOverlap_X()
 		{
 			// 
@@ -238,6 +345,14 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls8 = new LineSegment(new Point(100, 100), new Point(200, 200));
 			var result9 = LineSegment.PointsToSplitIfOverlap(ls1, ls8);
 			Assert.AreEqual(result9.Count, 0);
+
+			//
+			// x------x
+			//        x-----x
+			//
+			var ls9 = new LineSegment(new Point(2, 0), new Point(3, 0));
+			var result10 = LineSegment.PointsToSplitIfOverlap(ls1, ls9);
+			Assert.AreEqual(result10.Count, 0);
 		}
 	
 		[Test]
@@ -287,6 +402,10 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls8 = new LineSegment(new Point(100, 100), new Point(200, 200));
 			var result9 = LineSegment.PointsToSplitIfOverlap(ls1, ls8);
 			Assert.AreEqual(result9.Count, 0);
+
+			var ls9 = new LineSegment(new Point(0, 2), new Point(0, 3));
+			var result10 = LineSegment.PointsToSplitIfOverlap(ls1, ls9);
+			Assert.AreEqual(result10.Count, 0);
 		}
 	}
 }

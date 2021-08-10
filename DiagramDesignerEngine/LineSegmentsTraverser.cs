@@ -62,8 +62,8 @@ namespace DiagramDesignerEngine
 
 				// look for next segment
 				var searchResult = isFirstPointTheOneToSearch ?
-					SegmentsUtilities.FindLeftConnectedSegmentsSortedByAngle(currentSegment, pool) :
-					SegmentsUtilities.FindRightConnectedSegmentsSortedByAngle(currentSegment, pool);
+					TraversalUtilities.FindLeftConnectedSegmentsSortedByAngle(currentSegment, pool) :
+					TraversalUtilities.FindRightConnectedSegmentsSortedByAngle(currentSegment, pool);
 
 				if (searchResult.Count > 0)
 				{

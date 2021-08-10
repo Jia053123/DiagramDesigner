@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DiagramDesignerEngine.UnitTests
 {
-	class SegmentsUtilitiesTests
+	class TraversalUtilitiesTests
 	{
 		[Test]
 		public void TestAngleAmongTwoSegments()
@@ -21,16 +21,16 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls3 = new LineSegment(p3, p0);
 			var ls4 = new LineSegment(p4, p0);
 
-			Assert.AreEqual(SegmentsUtilities.AngleAmongTwoSegments(ls1, ls2), Math.PI);
-			Assert.AreEqual(SegmentsUtilities.AngleAmongTwoSegments(ls2, ls1), Math.PI);
+			Assert.AreEqual(TraversalUtilities.AngleAmongTwoSegments(ls1, ls2), Math.PI);
+			Assert.AreEqual(TraversalUtilities.AngleAmongTwoSegments(ls2, ls1), Math.PI);
 
-			Assert.AreEqual(SegmentsUtilities.AngleAmongTwoSegments(ls1, ls3), Math.PI * 1.5);
-			Assert.AreEqual(SegmentsUtilities.AngleAmongTwoSegments(ls3, ls1), Math.PI * 0.5);
+			Assert.AreEqual(TraversalUtilities.AngleAmongTwoSegments(ls1, ls3), Math.PI * 1.5);
+			Assert.AreEqual(TraversalUtilities.AngleAmongTwoSegments(ls3, ls1), Math.PI * 0.5);
 
-			Assert.AreEqual(SegmentsUtilities.AngleAmongTwoSegments(ls1, ls4), Math.PI * 0.5);
-			Assert.AreEqual(SegmentsUtilities.AngleAmongTwoSegments(ls4, ls1), Math.PI * 1.5);
+			Assert.AreEqual(TraversalUtilities.AngleAmongTwoSegments(ls1, ls4), Math.PI * 0.5);
+			Assert.AreEqual(TraversalUtilities.AngleAmongTwoSegments(ls4, ls1), Math.PI * 1.5);
 
-			Assert.AreEqual(SegmentsUtilities.AngleAmongTwoSegments(ls1, ls1), 0);
+			Assert.AreEqual(TraversalUtilities.AngleAmongTwoSegments(ls1, ls1), 0);
 		}
 
 		[Test]
@@ -54,15 +54,15 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls8 = new LineSegment(new Point(1, 0), new Point(2, 0));
 			var segments = new List<LineSegment> { ls1, ls2, ls3, ls4, ls5, ls6, ls7, ls8 };
 
-			var result1 = SegmentsUtilities.FindLeftConnectedSegmentsSortedByAngle(ls3, segments);
+			var result1 = TraversalUtilities.FindLeftConnectedSegmentsSortedByAngle(ls3, segments);
 			Assert.AreEqual(2, result1.Count);
 			Assert.AreEqual(ls1, result1[0]);
 			Assert.AreEqual(ls2, result1[1]);
 
-			var result2 = SegmentsUtilities.FindLeftConnectedSegmentsSortedByAngle(ls1, segments);
+			var result2 = TraversalUtilities.FindLeftConnectedSegmentsSortedByAngle(ls1, segments);
 			Assert.AreEqual(0, result2.Count);
 			
-			var result3 = SegmentsUtilities.FindLeftConnectedSegmentsSortedByAngle(ls4, segments);
+			var result3 = TraversalUtilities.FindLeftConnectedSegmentsSortedByAngle(ls4, segments);
 			Assert.AreEqual(3, result3.Count);
 			Assert.AreEqual(ls7, result3[0]);
 			Assert.AreEqual(ls5, result3[1]);
@@ -90,14 +90,14 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls8 = new LineSegment(new Point(1, 0), new Point(2, 0));
 			var segments = new List<LineSegment> { ls1, ls2, ls3, ls4, ls5, ls6, ls7, ls8 };
 
-			var result1 = SegmentsUtilities.FindRightConnectedSegmentsSortedByAngle(ls5, segments);
+			var result1 = TraversalUtilities.FindRightConnectedSegmentsSortedByAngle(ls5, segments);
 			Assert.AreEqual(1, result1.Count);
 			Assert.AreEqual(ls6, result1[0]);
 
-			var result2 = SegmentsUtilities.FindRightConnectedSegmentsSortedByAngle(ls2, segments);
+			var result2 = TraversalUtilities.FindRightConnectedSegmentsSortedByAngle(ls2, segments);
 			Assert.AreEqual(0, result2.Count);
 
-			var result3 = SegmentsUtilities.FindRightConnectedSegmentsSortedByAngle(ls3, segments);
+			var result3 = TraversalUtilities.FindRightConnectedSegmentsSortedByAngle(ls3, segments);
 			Assert.AreEqual(3, result3.Count);
 			Assert.AreEqual(ls4, result3[0]);
 			Assert.AreEqual(ls7, result3[1]);
@@ -125,7 +125,7 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls8 = new LineSegment(new Point(1, 0), new Point(2, 0));
 			var segments = new List<LineSegment> { ls1, ls2, ls3, ls4, ls5, ls6, ls7, ls8 };
 
-			var result1 = SegmentsUtilities.RemoveDanglingLineSegments(segments);
+			var result1 = TraversalUtilities.RemoveDanglingLineSegments(segments);
 			Assert.AreEqual(0, result1.Count); 
 		}
 
@@ -151,7 +151,7 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls9 = new LineSegment(new Point(-2, 1), new Point(0.5, 1));
 			var segments = new List<LineSegment> { ls1, ls2, ls3, ls4, ls5, ls6, ls7, ls8, ls9 };
 
-			var result1 = SegmentsUtilities.RemoveDanglingLineSegments(segments);
+			var result1 = TraversalUtilities.RemoveDanglingLineSegments(segments);
 			Assert.AreEqual(0, result1.Count); // only perfect loops may survive! 
 		}
 
@@ -177,7 +177,7 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls9 = new LineSegment(new Point(-1.5, 1), new Point(0.5, 1));
 			var segments = new List<LineSegment> { ls1, ls2, ls3, ls4, ls5, ls6, ls7, ls8, ls9 };
 
-			var result1 = SegmentsUtilities.RemoveDanglingLineSegments(segments);
+			var result1 = TraversalUtilities.RemoveDanglingLineSegments(segments);
 			Assert.AreEqual(4, result1.Count);
 			Assert.AreEqual(ls1, result1[0]);
 			Assert.AreEqual(ls3, result1[1]);

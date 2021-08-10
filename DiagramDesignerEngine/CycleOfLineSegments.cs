@@ -7,7 +7,7 @@ namespace DiagramDesignerEngine
 	class CycleOfLineSegments
 	{
 		// the first and last segment must be connected
-		private List<LineSegment> Cycle = new List<LineSegment>();
+		private List<LineSegment> Cycle = null;
 
 		internal List<LineSegment> GetPerimeter()
 		{

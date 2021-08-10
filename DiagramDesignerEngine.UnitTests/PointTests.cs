@@ -5,11 +5,6 @@ namespace DiagramDesignerEngine.UnitTests
 {
 	public class PointTests
 	{
-		[SetUp]
-		public void Setup()
-		{
-		}
-
 		[Test]
 		public void TestEqualities()
 		{

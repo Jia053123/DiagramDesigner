@@ -256,6 +256,50 @@ namespace DiagramDesignerEngine
 		}
 
 		/// <summary>
+		/// Whether two segments overlap, either partially or fully
+		/// </summary>
+		/// <param name="ls1"> one segment </param>
+		/// <param name="ls2"> another segment </param>
+		/// <returns> whether they overlap, either partially or fully </returns>
+		internal static bool DoOverlap(LineSegment ls1, LineSegment ls2)
+		{
+			if (LineSegment.AreParallel(ls1, ls2))
+			{
+				int numOfContainment = 0;
+				if (ls1.ContainsPoint(ls2.FirstPoint)) { numOfContainment++; }
+				if (ls1.ContainsPoint(ls2.SecondPoint)) { numOfContainment++; }
+				if (ls2.ContainsPoint(ls1.FirstPoint)) { numOfContainment++; }
+				if (ls2.ContainsPoint(ls1.SecondPoint)) { numOfContainment++; }
+				
+				if (numOfContainment < 2)
+				{
+					// they are not touching
+					return false;
+				}
+				else if (numOfContainment == 2)
+				{
+					if (ls1.FirstPoint == ls2.FirstPoint ||
+						ls1.FirstPoint == ls2.SecondPoint ||
+						ls1.SecondPoint == ls2.FirstPoint ||
+						ls1.SecondPoint == ls2.SecondPoint)
+					{
+						// they are merely touching at endpoint
+						return false;
+					}
+					else
+					{
+						return true;
+					}
+				}
+				else
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		/// <summary>
 		/// If the two segments overlap, return the points at which each of them should split
 		/// such that the resulting segments either completely overlap (identical) or do not overlap at all
 		/// </summary>
@@ -265,25 +309,19 @@ namespace DiagramDesignerEngine
 		/// return an empty list if the segments completely overlap or do not overlap at all </returns>
 		internal static List<Point> PointsToSplitIfOverlap(LineSegment ls1, LineSegment ls2)
 		{
-			if (LineSegment.AreParallel(ls1, ls2))
+			if (LineSegment.DoOverlap(ls1, ls2))
 			{
-				if (ls1.ContainsPoint(ls2.FirstPoint) ||
-					ls1.ContainsPoint(ls2.SecondPoint) ||
-					ls2.ContainsPoint(ls1.FirstPoint) ||
-					ls2.ContainsPoint(ls1.SecondPoint))
-				{
-					// they overlap. Put the unique endpoints in order. (doesn't matter it's ascending or descending as long as it's sorted)
-					var endPoints = new List<Point> { ls1.FirstPoint, ls1.SecondPoint, ls2.FirstPoint, ls2.SecondPoint };
-					List<Point> sortedEndPointsByY = endPoints.OrderBy(o => o.coordinateY).ToList();
-					List<Point> sortedEndPoints = sortedEndPointsByY.OrderBy(o => o.coordinateX).ToList();
-					List<Point> uniqueSortedPoints = sortedEndPoints.Distinct().ToList();
+				// they overlap. Put the unique endpoints in order. (doesn't matter it's ascending or descending as long as it's sorted)
+				var endPoints = new List<Point> { ls1.FirstPoint, ls1.SecondPoint, ls2.FirstPoint, ls2.SecondPoint };
+				List<Point> sortedEndPointsByY = endPoints.OrderBy(o => o.coordinateY).ToList();
+				List<Point> sortedEndPoints = sortedEndPointsByY.OrderBy(o => o.coordinateX).ToList();
+				List<Point> uniqueSortedPoints = sortedEndPoints.Distinct().ToList();
 
-					// take only the points in the middle (if any)
-					var pointsToSplit = uniqueSortedPoints;
-					pointsToSplit.RemoveAt(uniqueSortedPoints.Count - 1);
-					pointsToSplit.RemoveAt(0);
-					return pointsToSplit;
-				}
+				// take only the points in the middle (if any)
+				var pointsToSplit = uniqueSortedPoints;
+				pointsToSplit.RemoveAt(uniqueSortedPoints.Count - 1);
+				pointsToSplit.RemoveAt(0);
+				return pointsToSplit;
 			}
 			// they do not overlap
 			return new List<Point>(); 
