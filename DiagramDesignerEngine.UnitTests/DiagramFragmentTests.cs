@@ -220,5 +220,35 @@ namespace DiagramDesignerEngine.UnitTests
 			var result = fragment.DivideIntoSmallerFragments();
 			Assert.IsNull(result);
 		}
+
+		[Test]
+		public void TestDivideIntoSmallerFragments_2()
+		{
+			//       
+			//        ___________ 
+			//       |           |
+			//       |           |
+			//    0  |-----------|
+			//       |           |
+			//       |___________|
+			//
+			//       -1    0     1    
+			//
+			var ls1 = new LineSegment(new Point(-1, -2), new Point(-1, 2));
+			var ls2 = new LineSegment(new Point(-1, 2), new Point(1, 2));
+			var ls3 = new LineSegment(new Point(1, 2), new Point(1, -2));
+			var ls4 = new LineSegment(new Point(1, -2), new Point(-1, -2));
+
+			var ls5 = new LineSegment(new Point(-1, 0), new Point(1, 0));
+
+			var perimeter = new List<LineSegment> { ls1, ls2, ls3, ls4 };
+			var content = new List<LineSegment> { ls5 };
+
+			var cycle = new CycleOfLineSegments(perimeter);
+			var fragment = new DiagramFragment(cycle, content);
+			var result = fragment.DivideIntoSmallerFragments();
+			Assert.AreEqual(2, result.Count);
+			
+		}
 	}
 }

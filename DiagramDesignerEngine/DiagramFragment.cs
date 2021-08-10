@@ -34,7 +34,7 @@ namespace DiagramDesignerEngine
 			}
 			for (int i = 0; i < segmentsToTest.Count; i++)
 			{
-				for (int j = i+1; i< segmentsToTest.Count; j++)
+				for (int j = i+1; j < segmentsToTest.Count; j++)
 				{
 					if (LineSegment.DoOverlap(segmentsToTest[i], segmentsToTest[j]))
 					{
