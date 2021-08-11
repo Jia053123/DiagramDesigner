@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DiagramDesignerEngine
 {
-	static class TestUtilities
+	static class ListUtilities
 	{
 		/// <summary>
 		/// whether the two lists contain exactly the same items, regardless of the order

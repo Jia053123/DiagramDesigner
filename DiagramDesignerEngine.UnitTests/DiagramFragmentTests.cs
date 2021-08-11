@@ -256,10 +256,10 @@ namespace DiagramDesignerEngine.UnitTests
 
 			var expectedPerimeter1 = new List<LineSegment> { ls6, ls2, ls7, ls5 };
 			var expectedPerimeter2 = new List<LineSegment> { ls6, ls2, ls7, ls5 };
-			Assert.IsTrue(TestUtilities.AreContentsEqual(result[0].GetPerimeter().GetPerimeter(), expectedPerimeter1) &&
-				TestUtilities.AreContentsEqual(result[1].GetPerimeter().GetPerimeter(), expectedPerimeter2));
-			Assert.IsTrue(TestUtilities.AreContentsEqual(result[0].GetPerimeter().GetPerimeter(), expectedPerimeter2) &&
-				TestUtilities.AreContentsEqual(result[1].GetPerimeter().GetPerimeter(), expectedPerimeter1));
+			Assert.IsTrue(ListUtilities.AreContentsEqual(result[0].GetPerimeter().GetPerimeter(), expectedPerimeter1) &&
+				ListUtilities.AreContentsEqual(result[1].GetPerimeter().GetPerimeter(), expectedPerimeter2));
+			Assert.IsTrue(ListUtilities.AreContentsEqual(result[0].GetPerimeter().GetPerimeter(), expectedPerimeter2) &&
+				ListUtilities.AreContentsEqual(result[1].GetPerimeter().GetPerimeter(), expectedPerimeter1));
 
 			Assert.AreEqual(0, result[0].GetInnerPerimeters().Count);
 			Assert.AreEqual(0, result[1].GetInnerPerimeters().Count);

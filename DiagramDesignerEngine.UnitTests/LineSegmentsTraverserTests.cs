@@ -80,7 +80,7 @@ namespace DiagramDesignerEngine.UnitTests
 		}
 
 		[Test]
-		public void TestTraverseSegments_DepthFirstSearch()
+		public void TestTraverseSegments_DepthFirstSearch_LargerAngleFirst()
 		{
 			// 3
 			//        |
@@ -109,14 +109,66 @@ namespace DiagramDesignerEngine.UnitTests
 			var expectedPath1 = new List<LineSegment> { ls1, ls4, ls5, ls8 };
 			var expectedPoints1 = new List<Point> { new Point(0, 2), new Point(1, 2), new Point(1, 1), new Point(2, 1), new Point(2, 0) };
 			Assert.AreEqual(-1, result1.Item1);
-			Assert.IsTrue(TestUtilities.AreContentsEqualInOrder(result1.Item2, expectedPath1));
-			Assert.IsTrue(TestUtilities.AreContentsEqualInOrder(traverser.GetLastPath(), expectedPath1));
-			Assert.IsTrue(TestUtilities.AreContentsEqualInOrder(traverser.GetLastPointsAlongPath(), expectedPoints1));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(result1.Item2, expectedPath1));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPath(), expectedPath1));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPointsAlongPath(), expectedPoints1));
 
-			//var result2 = traverser.TraverseAgain();
-			//var expectedPath2 = new List<LineSegment> { ls1, ls4, ls5, ls7 };
-			//Assert.AreEqual(-1, result2.Item1);
-			//Assert.IsTrue(TestUtilities.AreContentsEqualInOrder(result2.Item2, expectedPath2));
+			var result2 = traverser.TraverseAgain();
+			var expectedPath2 = new List<LineSegment> { ls1, ls4, ls5, ls7 };
+			var expectedPoints2 = new List<Point> { new Point(0, 2), new Point(1, 2), new Point(1, 1), new Point(2, 1), new Point(3, 1) };
+			Assert.AreEqual(-1, result2.Item1);
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(result2.Item2, expectedPath2));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPath(), expectedPath2));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPointsAlongPath(), expectedPoints2));
+
+			var result3 = traverser.TraverseAgain();
+			var expectedPath3 = new List<LineSegment> { ls1, ls4, ls5, ls6, ls3 };
+			var expectedPoints3 = new List<Point> { new Point(0, 2), new Point(1, 2), new Point(1, 1), new Point(2, 1), new Point(2, 2), new Point(1,2) };
+			Assert.AreEqual(1, result3.Item1);
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(result3.Item2, expectedPath3));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPath(), expectedPath3));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPointsAlongPath(), expectedPoints3));
+
+			var result4 = traverser.TraverseAgain();
+			var expectedPath4 = new List<LineSegment> { ls1, ls3, ls6, ls5, ls4 };
+			var expectedPoints4 = new List<Point> { new Point(0, 2), new Point(1, 2), new Point(2, 2), new Point(2, 1), new Point(1, 1), new Point(1, 2) };
+			Assert.AreEqual(1, result4.Item1);
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(result4.Item2, expectedPath4));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPath(), expectedPath4));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPointsAlongPath(), expectedPoints4));
+
+			var result5 = traverser.TraverseAgain();
+			var expectedPath5 = new List<LineSegment> { ls1, ls3, ls6, ls8 };
+			var expectedPoints5 = new List<Point> { new Point(0, 2), new Point(1, 2), new Point(2, 2), new Point(2, 1), new Point(2, 0) };
+			Assert.AreEqual(-1, result5.Item1);
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(result5.Item2, expectedPath5));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPath(), expectedPath5));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPointsAlongPath(), expectedPoints5));
+
+			var result6 = traverser.TraverseAgain();
+			var expectedPath6 = new List<LineSegment> { ls1, ls3, ls6, ls7 };
+			var expectedPoints6 = new List<Point> { new Point(0, 2), new Point(1, 2), new Point(2, 2), new Point(2, 1), new Point(3, 1) };
+			Assert.AreEqual(-1, result6.Item1);
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(result6.Item2, expectedPath6));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPath(), expectedPath6));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPointsAlongPath(), expectedPoints6));
+
+			var result7 = traverser.TraverseAgain();
+			var expectedPath7 = new List<LineSegment> { ls1, ls2 };
+			var expectedPoints7 = new List<Point> { new Point(0, 2), new Point(1, 2), new Point(1, 3) };
+			Assert.AreEqual(-1, result7.Item1);
+			foreach (LineSegment ls in result7.Item2)
+			{
+				TestContext.WriteLine(ls.ToString());
+			}
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(result7.Item2, expectedPath7));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPath(), expectedPath7));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPointsAlongPath(), expectedPoints7));
+
+			var result8 = traverser.TraverseAgain();
+			Assert.IsNull(result8);
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPath(), expectedPath7));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPointsAlongPath(), expectedPoints7));
 		}
 	}
 }

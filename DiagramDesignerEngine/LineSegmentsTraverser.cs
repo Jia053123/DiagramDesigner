@@ -143,14 +143,15 @@ namespace DiagramDesignerEngine
 				throw new InvalidOperationException("TraverseSegments not yet performed");
 			}
 
-			//var traversedPaths = this.GetLastPath;
 			var lastPath = this.GetLastPath();
 			var lastPoints = this.GetLastPointsAlongPath();
 
-			// start searching from the second last point of lastPoints
-			int pointIndex = lastPoints.Count - 1;
-			int segmentIndex = pointIndex - 1;
-			bool foundNewSegmentToProceed = false;
+			// start searching from the second last point of lastPoints for an alternative branching
+			int segmentIndex = lastPath.Count - 2;
+			int pointIndex = lastPoints.Count - 2;
+			
+			LineSegment? newSegmentToProceed = null;
+			Point? newPointToProceed = null;
 			List<LineSegment> unvisitedBranchesAtPointToSearch;
 			do
 			{
@@ -180,32 +181,51 @@ namespace DiagramDesignerEngine
 				foreach (LineSegment b in branchesAtPointToSearch)
 				{
 					for (int i = 0; i < this.TraversalRecords.Count; i++)
-					//foreach (List<LineSegment> tp in traversedPaths)
 					{
-						var tp = this.TraversalRecords[i].Path;
-						if (tp.Contains(b))
+						var oldPath = this.TraversalRecords[i].Path;
+						var pathPreview = lastPath.GetRange(0, segmentIndex + 1);
+						pathPreview.Add(b);
+						if (oldPath.Count >= segmentIndex + 2)
 						{
-							unvisitedBranchesAtPointToSearch.Remove(b);
+							// take old path up to this point for comparison
+							oldPath = oldPath.GetRange(0, segmentIndex + 2);
+						}
+						if (ListUtilities.AreContentsEqualInOrder(oldPath, pathPreview))
+						{
+							// already gone this way before
+							var r = unvisitedBranchesAtPointToSearch.Remove(b);
+							Debug.Assert(r);
 							break;
 						}
 					}
 				}
+
 				if (unvisitedBranchesAtPointToSearch.Count > 0)
 				{
-					foundNewSegmentToProceed = true;
+					newSegmentToProceed = this.TurnLargerAnglesFirst ? unvisitedBranchesAtPointToSearch.Last() : unvisitedBranchesAtPointToSearch.First();
+					newPointToProceed = 
+						pointToSearch == ((LineSegment)newSegmentToProceed).FirstPoint ? 
+						((LineSegment)newSegmentToProceed).SecondPoint : 
+						((LineSegment)newSegmentToProceed).FirstPoint;
 				}
 				else
 				{
 					// all branches at this point have been traversed, go back one more segment
-					foundNewSegmentToProceed = false;
 					pointIndex--;
 					segmentIndex--;
 				}
-			} while (!foundNewSegmentToProceed);
+			} while ((newSegmentToProceed is null) || (newPointToProceed is null));
 
-			var newSegmentToProceed = this.TurnLargerAnglesFirst ? unvisitedBranchesAtPointToSearch.Last() : unvisitedBranchesAtPointToSearch.First();
+			var traversedPath = lastPath.GetRange(0, segmentIndex + 1);
+			traversedPath.Add((LineSegment)newSegmentToProceed);
 
-			return null; //stub
+			var traversedPoints = lastPoints.GetRange(0, pointIndex + 1);
+			traversedPoints.Add((Point)newPointToProceed);
+
+			var result = this.FinishTraversal(ref traversedPath, ref traversedPoints);
+
+			this.TraversalRecords.Add(new TraversalRecord(traversedPath, traversedPoints));
+			return new Tuple<int,List<LineSegment>>(result, traversedPath);
 		}
 
 		internal readonly struct TraversalRecord 

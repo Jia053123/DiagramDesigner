@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DiagramDesignerEngine.UnitTests
 {
-	class TestUtilitiesTest
+	class ListUtilitiesTest
 	{
 		[Test]
 		public void TestAreContentsEqual()
@@ -22,14 +22,14 @@ namespace DiagramDesignerEngine.UnitTests
 
 			var list1 = new List<LineSegment> { ls1, ls3, ls2 };
 			var list2 = new List<LineSegment> { ls3, ls2, ls1 };
-			Assert.IsTrue(TestUtilities.AreContentsEqual(list1, list2));
+			Assert.IsTrue(ListUtilities.AreContentsEqual(list1, list2));
 
 			var list3 = new List<LineSegment> { ls3, ls2, ls1, ls4 };
-			Assert.IsFalse(TestUtilities.AreContentsEqual(list1, list3));
+			Assert.IsFalse(ListUtilities.AreContentsEqual(list1, list3));
 
 			var list4 = new List<LineSegment>();
 			var list5 = new List<LineSegment>();
-			Assert.IsTrue(TestUtilities.AreContentsEqual(list4, list5));
+			Assert.IsTrue(ListUtilities.AreContentsEqual(list4, list5));
 		}
 	}
 }
