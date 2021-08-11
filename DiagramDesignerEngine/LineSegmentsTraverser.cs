@@ -136,7 +136,7 @@ namespace DiagramDesignerEngine
 		/// </summary>
 		/// <returns>  If the traversal ended in a loop, return the index where the loop begins; 
 		/// returning 0 means the path is a perfect loop; if the traversal ended at a deadend, return -1 </returns>
-		internal new Tuple<int, List<LineSegment>> TraverseAgain()
+		internal Tuple<int, List<LineSegment>> TraverseAgain()
 		{
 			if (this.TraversalRecords.Count == 0)
 			{
