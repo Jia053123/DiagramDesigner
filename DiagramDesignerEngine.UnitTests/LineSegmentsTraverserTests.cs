@@ -107,13 +107,16 @@ namespace DiagramDesignerEngine.UnitTests
 
 			var result1 = traverser.TraverseSegments(ls1, false, true);
 			var expectedPath1 = new List<LineSegment> { ls1, ls4, ls5, ls8 };
+			var expectedPoints1 = new List<Point> { new Point(0, 2), new Point(1, 2), new Point(1, 1), new Point(2, 1), new Point(2, 0) };
 			Assert.AreEqual(-1, result1.Item1);
 			Assert.IsTrue(TestUtilities.AreContentsEqualInOrder(result1.Item2, expectedPath1));
+			Assert.IsTrue(TestUtilities.AreContentsEqualInOrder(traverser.GetLastPath(), expectedPath1));
+			Assert.IsTrue(TestUtilities.AreContentsEqualInOrder(traverser.GetLastPointsAlongPath(), expectedPoints1));
 
-			var result2 = traverser.TraverseAgain();
-			var expectedPath2 = new List<LineSegment> { ls1, ls4, ls5, ls7 };
-			Assert.AreEqual(-1, result2.Item1);
-			Assert.IsTrue(TestUtilities.AreContentsEqualInOrder(result2.Item2, expectedPath2));
+			//var result2 = traverser.TraverseAgain();
+			//var expectedPath2 = new List<LineSegment> { ls1, ls4, ls5, ls7 };
+			//Assert.AreEqual(-1, result2.Item1);
+			//Assert.IsTrue(TestUtilities.AreContentsEqualInOrder(result2.Item2, expectedPath2));
 		}
 	}
 }
