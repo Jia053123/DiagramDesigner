@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -8,21 +9,21 @@ namespace DiagramDesignerEngine
 	class LineSegmentsTraverser
 	{
 		private List<LineSegment> SegmentsToTraverse;
-		private List<LineSegment> Path = null;
-		private List<List<LineSegment>> PathsTraversed;
+		private List<TraversalRecord> TraversalRecords = null;
 
-		internal List<LineSegment> GetPath()
+		private LineSegment StartSegment;
+		private bool StartWithFirstPoint;
+		private bool TurnLargerAnglesFirst;
+
+		internal List<LineSegment> GetLastPath()
 		{
-			return new List<LineSegment>(this.Path); // make a copy
+			return new List<LineSegment>(this.TraversalRecords.Last().Path); // make a copy
 		}
-
-		private List<LineSegment> GetTraversedPathAtIndex(int index)
+		internal List<Point> GetLastPointsAlongPath()
 		{
-			if (index > 0 && index < this.PathsTraversed.Count)
-			{
-				return new List<LineSegment>(this.PathsTraversed[index]);
-			}
-			return null;
+			var tr = this.TraversalRecords.Last();
+			Debug.Assert(tr.PointsAlongPath.Count == tr.Path.Count + 1);
+			return new List<Point>(tr.PointsAlongPath); // make a copy
 		}
 
 		/// <summary>
@@ -32,6 +33,7 @@ namespace DiagramDesignerEngine
 		internal LineSegmentsTraverser(List<LineSegment> segmentsToTraverse)
 		{
 			this.SegmentsToTraverse = segmentsToTraverse;
+			this.TraversalRecords = new List<TraversalRecord>();
 		}
 
 		/// <summary>
@@ -39,36 +41,42 @@ namespace DiagramDesignerEngine
 		/// </summary>
 		/// <param name="startSegment"> The segment from segmentsToTraverse. The beginning of the path. </param>
 		/// <param name="startWithFirstPoint"> start traversing from FirstPoint of the startSegment or not (and use SecondPoint) </param>
-		/// <param name="turnLargestAngle"> when the potential path branches, turn the largest angle or not (and turn the smallest angle) </param>
+		/// <param name="turnLargerAnglesFirst"> when the potential path branches, turn the largest angle first or not (and turn the smallest angle first) </param>
 		/// <returns> If the traversal ended in a loop, return the index where the loop begins; 
 		/// returning 0 means the path is a perfect loop; if the traversal ended at a deadend, return -1 </returns>
-		internal (int, List<LineSegment>) TraverseSegments(LineSegment startSegment, bool startWithFirstPoint, bool turnLargestAngle)
+		internal Tuple<int, List<LineSegment>> TraverseSegments(LineSegment startSegment, bool startWithFirstPoint, bool turnLargerAnglesFirst)
 		{
-			var pool = new List<LineSegment>(this.SegmentsToTraverse);
-			this.Path = new List<LineSegment>();
-			var pointsOnPath = new List<Point>(); // remembers the order the points are traversed for loop detection
+			// reset and fill all fields
+			this.StartSegment = startSegment;
+			this.StartWithFirstPoint = startWithFirstPoint;
+			this.TurnLargerAnglesFirst = turnLargerAnglesFirst;
 
-			var currentSegment = startSegment;
+			
+			var pool = new List<LineSegment>(this.SegmentsToTraverse);
+			var path = new List<LineSegment>();
+			var pointsAlongPath = new List<Point>();
+			var currentSegment = this.StartSegment;
 			LineSegment? nextSegment;
-			bool isFirstPointTheOneToSearch = startWithFirstPoint;
+			bool isFirstPointTheOneToSearch = this.StartWithFirstPoint;
 
 			// the first point is the not-being-searched end of the first segment
-			pointsOnPath.Add(startWithFirstPoint ? currentSegment.SecondPoint : currentSegment.FirstPoint); 
+			pointsAlongPath.Add(this.StartWithFirstPoint ? currentSegment.SecondPoint : currentSegment.FirstPoint);
 
 			do
 			{
-				this.Path.Add(currentSegment);
+				path.Add(currentSegment);
 				nextSegment = null;
 
-				var previousOccurence = pointsOnPath.FindIndex(p => p == (isFirstPointTheOneToSearch ? currentSegment.FirstPoint : currentSegment.SecondPoint));
+				// check for past occurance before adding the new point itself to the list
+				var previousOccurence = pointsAlongPath.FindIndex(p => p == (isFirstPointTheOneToSearch ? currentSegment.FirstPoint : currentSegment.SecondPoint));
+				pointsAlongPath.Add(isFirstPointTheOneToSearch ? currentSegment.FirstPoint : currentSegment.SecondPoint);
+
 				if (previousOccurence != -1)
 				{
 					// a traversed point is reached. return with the index
-					return (previousOccurence, this.GetPath());
+					this.TraversalRecords.Add(new TraversalRecord(path, pointsAlongPath));
+					return new Tuple<int, List<LineSegment>>(previousOccurence, this.GetLastPath());
 				}
-
-				// add the new point being searched
-				pointsOnPath.Add(isFirstPointTheOneToSearch ? currentSegment.FirstPoint : currentSegment.SecondPoint);
 
 				// look for next segment
 				var searchResult = isFirstPointTheOneToSearch ?
@@ -77,17 +85,18 @@ namespace DiagramDesignerEngine
 
 				if (searchResult.Count > 0)
 				{
-					nextSegment = turnLargestAngle ? searchResult.Last() : searchResult.First();
-					
+					nextSegment = this.TurnLargerAnglesFirst ? searchResult.Last() : searchResult.First();
+
 					// if first point is connected then search the free second point, vice versa
 					var pointConnectedToNextSegment = isFirstPointTheOneToSearch ? currentSegment.FirstPoint : currentSegment.SecondPoint;
-					isFirstPointTheOneToSearch = !(pointConnectedToNextSegment == ((LineSegment)nextSegment).FirstPoint); 
+					isFirstPointTheOneToSearch = !(pointConnectedToNextSegment == ((LineSegment)nextSegment).FirstPoint);
 
 					currentSegment = (LineSegment)nextSegment;
 				}
 			} while (!(nextSegment is null)); // continue if not at deadend yet
 
-			return (-1, this.GetPath()); // reaching here means dead end is reached, return -1
+			this.TraversalRecords.Add(new TraversalRecord(path, pointsAlongPath));
+			return new Tuple<int, List<LineSegment>>(-1, this.GetLastPath()); // reaching here means dead end is reached, return -1
 		}
 
 		/// <summary>
@@ -97,14 +106,93 @@ namespace DiagramDesignerEngine
 		/// </summary>
 		/// <returns>  If the traversal ended in a loop, return the index where the loop begins; 
 		/// returning 0 means the path is a perfect loop; if the traversal ended at a deadend, return -1 </returns>
-		internal (int, List<LineSegment>) TraverseAgain()
+		internal new Tuple<int, List<LineSegment>> TraverseAgain()
 		{
-			if (this.Path is null)
+			if (this.TraversalRecords.Count == 0)
 			{
 				throw new InvalidOperationException("TraverseSegments not yet performed");
 			}
 
-			return (0, null); // stub
+			//var traversedPaths = this.GetLastPath;
+			var lastPath = this.GetLastPath();
+			var lastPoints = this.GetLastPointsAlongPath();
+
+			// start searching from the second last point of lastPoints
+			int pointIndex = lastPoints.Count - 1;
+			int segmentIndex = pointIndex - 1;
+			bool foundNewSegmentToProceed = false;
+			List<LineSegment> unvisitedBranchesAtPointToSearch;
+			do
+			{
+				if (pointIndex < 0 || segmentIndex < 0)
+				{
+					// all paths from the starting segment at starting point has been traversed
+					return null;
+				}
+
+				var pointToSearch = lastPoints[pointIndex];
+				var segmentToSearch = lastPath[segmentIndex];
+
+				List<LineSegment> branchesAtPointToSearch;
+				if (pointToSearch == segmentToSearch.FirstPoint)
+				{
+					branchesAtPointToSearch = TraversalUtilities.FindLeftConnectedSegmentsSortedByAngle(segmentToSearch, this.SegmentsToTraverse);
+				}
+				else
+				{
+					Debug.Assert(pointToSearch == segmentToSearch.SecondPoint);
+					branchesAtPointToSearch = TraversalUtilities.FindRightConnectedSegmentsSortedByAngle(segmentToSearch, this.SegmentsToTraverse);
+				}
+				Debug.Assert(branchesAtPointToSearch.Count > 0); // since we just went back by one segment, there must be at least one connected segment
+
+				// remove segments traversed before
+				unvisitedBranchesAtPointToSearch = new List<LineSegment>(branchesAtPointToSearch);
+				foreach (LineSegment b in branchesAtPointToSearch)
+				{
+					for (int i = 0; i < this.TraversalRecords.Count; i++)
+					//foreach (List<LineSegment> tp in traversedPaths)
+					{
+						var tp = this.TraversalRecords[i].Path;
+						if (tp.Contains(b))
+						{
+							unvisitedBranchesAtPointToSearch.Remove(b);
+							break;
+						}
+					}
+				}
+				if (unvisitedBranchesAtPointToSearch.Count > 0)
+				{
+					foundNewSegmentToProceed = true;
+				}
+				else
+				{
+					// all branches at this point have been traversed, go back one more segment
+					foundNewSegmentToProceed = false;
+					pointIndex--;
+					segmentIndex--;
+				}
+			} while (!foundNewSegmentToProceed);
+
+			var newSegmentToProceed = this.TurnLargerAnglesFirst ? unvisitedBranchesAtPointToSearch.Last() : unvisitedBranchesAtPointToSearch.First();
+
+			return null; //stub
+		}
+
+		internal readonly struct TraversalRecord 
+		{
+			internal readonly List<LineSegment> Path;
+			internal readonly List<Point> PointsAlongPath;
+			internal TraversalRecord(List<LineSegment> path, List<Point> pointsAlongPath)
+			{
+				// TODO: should I check the data match? 
+
+				if (path.Count != pointsAlongPath.Count - 1)
+				{
+					throw new ArgumentException("count of path and pointsAlongPath don't match");
+				}
+				this.Path = path;
+				this.PointsAlongPath = pointsAlongPath;
+			}
 		}
 	}
 }

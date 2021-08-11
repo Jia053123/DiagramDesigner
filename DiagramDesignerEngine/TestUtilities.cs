@@ -9,7 +9,7 @@ namespace DiagramDesignerEngine
 		/// <summary>
 		/// whether the two lists contain exactly the same items, regardless of the order
 		/// </summary>
-			internal static bool AreContentsEqual<T>(List<T> list1, List<T> list2) where T : IEquatable<T>
+		internal static bool AreContentsEqual<T>(List<T> list1, List<T> list2) where T : IEquatable<T>
 		{
 			if (list1.Count != list2.Count)
 			{
@@ -32,6 +32,26 @@ namespace DiagramDesignerEngine
 			}
 
 			return allItemsFound;
+		}
+
+		/// <summary>
+		/// whether the two lists contain exaclty the same items, in the same order
+		/// </summary>
+		internal static bool AreContentsEqualInOrder<T>(List<T> list1, List<T> list2) where T : IEquatable<T>
+		{
+			if (list1.Count != list2.Count)
+			{
+				return false;
+			}
+
+			for (int i = 0; i < list1.Count; i++)
+			{
+				if (! list1[i].Equals(list2[i]))
+				{
+					return false;
+				}
+			}
+			return true;
 		}
 	}
 }

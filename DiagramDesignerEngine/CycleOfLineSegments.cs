@@ -28,7 +28,7 @@ namespace DiagramDesignerEngine
 
 			var traverser = new LineSegmentsTraverser(segmentsFormingCycle);
 			var result = traverser.TraverseSegments(segmentsFormingCycle.First(), true, true); // doesn't matter what the parameters are since it's supposed to be a perfect loop
-			if (result.Item1 != 0 || traverser.GetPath().Count != segmentsFormingCycle.Count)
+			if (result.Item1 != 0 || traverser.GetLastPath().Count != segmentsFormingCycle.Count)
 			{
 				throw new ArgumentException("does not form a perfect loop");
 			}
