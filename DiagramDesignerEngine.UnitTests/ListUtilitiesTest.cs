@@ -15,11 +15,6 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls3 = new LineSegment(new Point(1, 2), new Point(1, 0));
 			var ls4 = new LineSegment(new Point(1, 0), new Point(1, -2));
 
-			var ls5 = new LineSegment(new Point(1, -2), new Point(-1, -2));
-			var ls6 = new LineSegment(new Point(1, 0), new Point(0.5, 0.5));
-			var ls7 = new LineSegment(new Point(1, 0), new Point(0.5, -0.5));
-			var ls8 = new LineSegment(new Point(0.5, -0.5), new Point(0.5, 0.5));
-
 			var list1 = new List<LineSegment> { ls1, ls3, ls2 };
 			var list2 = new List<LineSegment> { ls3, ls2, ls1 };
 			Assert.IsTrue(ListUtilities.AreContentsEqual(list1, list2));
@@ -30,6 +25,26 @@ namespace DiagramDesignerEngine.UnitTests
 			var list4 = new List<LineSegment>();
 			var list5 = new List<LineSegment>();
 			Assert.IsTrue(ListUtilities.AreContentsEqual(list4, list5));
+		}
+
+		[Test]
+		public void TestAreContentsEqualInOrder()
+		{
+			var ls1 = new LineSegment(new Point(-1, -2), new Point(-1, 2));
+			var ls2 = new LineSegment(new Point(-1, 2), new Point(1, 2));
+			var ls3 = new LineSegment(new Point(1, 2), new Point(1, 0));
+			var ls4 = new LineSegment(new Point(1, 0), new Point(1, -2));
+
+			var list1 = new List<LineSegment> { ls1, ls3, ls2 };
+			var list2 = new List<LineSegment> { ls3, ls2, ls1 };
+			Assert.IsFalse(ListUtilities.AreContentsEqualInOrder(list1, list2));
+
+			var list3 = new List<LineSegment> { ls1, ls3, ls2 };
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(list1, list3));
+
+			var list4 = new List<LineSegment>();
+			var list5 = new List<LineSegment>();
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(list4, list5));
 		}
 	}
 }
