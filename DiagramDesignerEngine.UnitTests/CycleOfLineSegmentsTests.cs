@@ -235,7 +235,7 @@ namespace DiagramDesignerEngine.UnitTests
 			//       x           |
 			//       |           |
 			//       |           |
-			//       |      _____|_____ 
+			//       |      _____x_____ 
 			//       |           |
 			//       |           |
 			//       |           |
@@ -252,17 +252,126 @@ namespace DiagramDesignerEngine.UnitTests
 			var segments = new List<LineSegment> { ls1, ls2, ls3, ls4 };
 			var cycle = new CycleOfLineSegments(segments);
 
-			var ls6 = new LineSegment(new Point(0, 0), new Point(2, 0));
+			var ls61 = new LineSegment(new Point(0, 0), new Point(1, 0));
+			var ls62 = new LineSegment(new Point(1, 0), new Point(2, 0));
 			var ls7 = new LineSegment(new Point(1, -2), new Point(2, -2));
 			var ls8 = new LineSegment(new Point(1.5, 2), new Point(2, 2));
 			var ls9 = new LineSegment(new Point(-2, 2), new Point(-1, 2));
 			var ls10 = new LineSegment(new Point(-2, 2), new Point(-2, 3));
 
-			Assert.IsFalse(cycle.IsLineSegmentInCycle(ls6));
+			Assert.IsTrue(cycle.IsLineSegmentInCycle(ls61));
+			Assert.IsFalse(cycle.IsLineSegmentInCycle(ls62));
 			Assert.IsFalse(cycle.IsLineSegmentInCycle(ls7));
 			Assert.IsFalse(cycle.IsLineSegmentInCycle(ls8));
 			Assert.IsFalse(cycle.IsLineSegmentInCycle(ls9));
 			Assert.IsFalse(cycle.IsLineSegmentInCycle(ls10));
+		}
+
+		[Test]
+		public void TestIsLineSegmentInCycle_4()
+		{
+			//       
+			//        ___________ 
+			//       |           |
+			//       |           |
+			//    0  x-----------x
+			//       |           |
+			//       |___________|
+			//
+			//       -1    0     1    
+			//
+			var ls1 = new LineSegment(new Point(-1, 0), new Point(-1, 1));
+			var ls2 = new LineSegment(new Point(-1, 0), new Point(-1, -1));
+			var ls3 = new LineSegment(new Point(-1, 1), new Point(1, 1));
+			var ls4 = new LineSegment(new Point(1, 0), new Point(1, 1));
+			var ls5 = new LineSegment(new Point(1, 0), new Point(1, -1));
+			var ls6 = new LineSegment(new Point(1, -1), new Point(-1, -1));
+
+			var ls7 = new LineSegment(new Point(-1, 0), new Point(1, 0));
+
+			var perimeter = new List<LineSegment> { ls1, ls2, ls3, ls4, ls5, ls6 };
+
+			var cycle = new CycleOfLineSegments(perimeter);
+			Assert.IsTrue(cycle.IsLineSegmentInCycle(ls7));
+		}
+
+		[Test]
+		public void TestIsLineSegmentInCycle_5()
+		{
+			//       
+			//        _____x_____ 
+			//       |     |     |
+			//       |     |     |
+			//    0  |     |     |
+			//       |     |     |
+			//       |_____x_____|
+			//
+			//       -1    0     1    
+			//
+			var ls1 = new LineSegment(new Point(-1, -1), new Point(-1, 1));
+			var ls2 = new LineSegment(new Point(-1, 1), new Point(0, 1));
+			var ls3 = new LineSegment(new Point(1, 1), new Point(0, 1));
+			var ls4 = new LineSegment(new Point(1, 1), new Point(1, -1));
+			var ls5 = new LineSegment(new Point(1, -1), new Point(0, -1));
+			var ls6 = new LineSegment(new Point(-1, -1), new Point(0, -1));
+
+			var ls7 = new LineSegment(new Point(0, -1), new Point(0, 1));
+
+			var perimeter = new List<LineSegment> { ls1, ls2, ls3, ls4, ls5, ls6 };
+			var cycle = new CycleOfLineSegments(perimeter);
+			Assert.IsTrue(cycle.IsLineSegmentInCycle(ls7));
+		}
+
+		[Test]
+		public void TestIsLineSegmentInCycle_6()
+		{
+			//   ____ x_________x       
+			//  |     \        /|   
+			//  |       \    /  |    
+			//    \       \/    |
+			//      \___________|
+			//
+			// -2   -1    0     1      
+			//
+
+			var ls1 = new LineSegment(new Point(0, 0), new Point(1, 1));
+			var ls2 = new LineSegment(new Point(1, 1), new Point(1, -0.5));
+			var ls3 = new LineSegment(new Point(1, -0.5), new Point(-1, -0.5));
+			var ls4 = new LineSegment(new Point(-1, -0.5), new Point(-2, 0.5));
+			var ls5 = new LineSegment(new Point(-2, 0.5), new Point(-2, 1));
+			var ls6 = new LineSegment(new Point(-2, 1), new Point(-1, 1));
+			var ls7 = new LineSegment(new Point(-1, 1), new Point(0, 0));
+
+			var ls8 = new LineSegment(new Point(-1, 1), new Point(1, 1));
+
+			var segments1 = new List<LineSegment> { ls1, ls7, ls2, ls6, ls3, ls5, ls4 };
+			var cycle = new CycleOfLineSegments(segments1);
+			Assert.IsFalse(cycle.IsLineSegmentInCycle(ls8));
+		}
+
+		[Test]
+		public void TestIsLineSegmentInCycle_7()
+		{
+			//       
+			//        ___________ 
+			//       |           |
+			//       |           |
+			//    0  |           |
+			//       |           |
+			//       |===========|
+			//
+			//       -1    0     1    
+			//
+			var ls1 = new LineSegment(new Point(-1, -1), new Point(-1, 1));
+			var ls2 = new LineSegment(new Point(-1, 1), new Point(1, 1));
+			var ls3 = new LineSegment(new Point(1, 1), new Point(1, -1));
+			var ls4 = new LineSegment(new Point(1, -1), new Point(-1, -1));
+
+			var ls5 = new LineSegment(new Point(-1, -1), new Point(1, -1));
+
+			var perimeter = new List<LineSegment> { ls1, ls2, ls3, ls4 };
+			var cycle = new CycleOfLineSegments(perimeter);
+			Assert.IsFalse(cycle.IsLineSegmentInCycle(ls5));
 		}
 	}
 }
