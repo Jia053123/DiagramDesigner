@@ -14,9 +14,11 @@ namespace DiagramDesignerEngine
 		private List<LineSegment> SegmentsWithin = null; // these do not contain part of the perimeter
 
 		/// <param name="perimeter"> the perimeter of this fragment </param>
-		/// <param name="segmentsWithinPerimeter"> segments in the fragment that's not part of the perimeter; 
-		/// all dangling segments must connect an endpoint on the perimeter </param>
-		internal DiagramFragment(CycleOfLineSegments perimeter, List<LineSegment> segmentsWithinPerimeter)
+		/// <param name="innerPerimeters"> the inner perimeters. They must be inside the perimeter with no overlap; 
+		/// they must not interset or overlap with each other </param>
+		/// <param name="segmentsWithinPerimeter"> segments in the fragment (inside the periemeter and outisde the inner perimeters) 
+		/// that's not part of the perimeters; all dangling segments must connect an endpoint on the perimeters </param> 
+		internal DiagramFragment(CycleOfLineSegments perimeter, List<CycleOfLineSegments> innerPerimeters, List<LineSegment> segmentsWithinPerimeter)
 		{
 			foreach (LineSegment ls in segmentsWithinPerimeter)
 			{
@@ -46,7 +48,7 @@ namespace DiagramDesignerEngine
 
 			this.Perimeter = perimeter;
 			this.SegmentsWithin = segmentsWithinPerimeter;
-			this.InnerPerimeters = new List<CycleOfLineSegments>(); // TODO: stub
+			this.InnerPerimeters = innerPerimeters;
 		}
 
 		internal CycleOfLineSegments GetPerimeter()
@@ -154,7 +156,8 @@ namespace DiagramDesignerEngine
 							segmentsWithinSubFragment1.Add(ls);
 						}
 					}
-					var subFragment1 = new DiagramFragment(subFragmentPerimeter1, segmentsWithinSubFragment1);
+					// TODO: stub
+					var subFragment1 = new DiagramFragment(subFragmentPerimeter1, new List<CycleOfLineSegments>(), segmentsWithinSubFragment1);
 
 					List<LineSegment> segmentsWithinSubFragment2 = new List<LineSegment>();
 					foreach (LineSegment ls in this.SegmentsWithin)
@@ -164,7 +167,8 @@ namespace DiagramDesignerEngine
 							segmentsWithinSubFragment2.Add(ls);
 						}
 					}
-					var subFragment2 = new DiagramFragment(subFragmentPerimeter2, segmentsWithinSubFragment2);
+					// TODO: stub
+					var subFragment2 = new DiagramFragment(subFragmentPerimeter2, new List<CycleOfLineSegments>(), segmentsWithinSubFragment2);
 
 					return new List<DiagramFragment> { subFragment1, subFragment2 };
 				}
@@ -180,6 +184,27 @@ namespace DiagramDesignerEngine
 			}
 
 			return null; // stub
+		}
+
+		internal bool IsLineSegmentInPerimeters(LineSegment ls)
+		{
+			// within the outer perimeter
+			if (this.Perimeter.IsLineSegmentInCycle(ls))
+			{
+				// outside each inner perimeter
+				foreach (CycleOfLineSegments innerPerimeter in this.InnerPerimeters)
+				{
+					if (innerPerimeter.IsLineSegmentInCycle(ls))
+					{
+						return false;
+					}
+				}
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 
 		private bool IsAnEndpointOnPerimeter(Point point)
