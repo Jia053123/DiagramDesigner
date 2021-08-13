@@ -131,7 +131,8 @@ namespace DiagramDesignerEngine
 
 				// TODO: make a DaigramFragment from the perimeter and all included segments and push into a stack. Remove all these segments from FragmentsLeftToResolve
 			}
-		} while (this.FragmentsLeftToResolve.Count > 0);
+
+			return null;
 		}
 
 	}

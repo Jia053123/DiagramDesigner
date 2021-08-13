@@ -30,7 +30,7 @@ namespace DiagramDesignerEngine.UnitTests
 			Assert.AreEqual(TraversalUtilities.AngleAmongTwoSegments(ls1, ls4), Math.PI * 0.5);
 			Assert.AreEqual(TraversalUtilities.AngleAmongTwoSegments(ls4, ls1), Math.PI * 1.5);
 
-			Assert.AreEqual(TraversalUtilities.AngleAmongTwoSegments(ls1, ls1), 0);
+			Assert.AreEqual(TraversalUtilities.AngleAmongTwoSegments(ls1, ls1), Math.PI * 2.0);
 		}
 
 		[Test]

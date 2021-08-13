@@ -60,12 +60,12 @@ namespace DiagramDesignerEngine
 			var angleDiff = angleForStartPoint - angleForEndPoint;
 
 			// Math.Atan2 return value is between -pi and pi. Map to output
-			if (angleDiff < 0)
+			if (angleDiff <= 0)
 			{
 				angleDiff += Math.PI * 2;
 			}
 
-			if (angleDiff >= Math.PI * 2)
+			if (angleDiff > Math.PI * 2)
 			{
 				angleDiff -= Math.PI * 2;
 			}
