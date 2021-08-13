@@ -42,11 +42,11 @@ namespace DiagramDesignerEngine
 		}
 
 		/// <summary>
-		/// Whether a line segments lies within the cycle (but not overlap with the perimeter), 
+		/// Whether a line segments lies within the cycle (not if overlaping with the perimeter), 
 		/// assuming the geometry is in exploded state
 		/// </summary>
 		/// <param name="lineSegment"> the line segment to check against the cycle </param>
-		/// <returns> true if and only if both end points of the segment are either on or within the cycle perimeter </returns>
+		/// <returns> return true if and only if a line segment is within the cycle and not overlapping with the cycle </returns>
 		internal bool IsLineSegmentInCycle(LineSegment lineSegment)
 		{
 			foreach (LineSegment pls in this.GetPerimeter())

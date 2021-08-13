@@ -166,7 +166,7 @@ namespace DiagramDesignerEngine.UnitTests
 			//  x-----x
 			//
 			var ls1 = new LineSegment(new Point(-2, 0), new Point(2, 0));
-			var ls2 = ls1;
+			var ls2 = new LineSegment(new Point(-2, 0), new Point(2, 0)); 
 			Assert.IsTrue(LineSegment.DoOverlap(ls1, ls2));
 
 			// 
@@ -238,7 +238,7 @@ namespace DiagramDesignerEngine.UnitTests
 		public void TestDoOverlap_Y() // test along the Y axis
 		{
 			var ls1 = new LineSegment(new Point(0, -2), new Point(0, 2));
-			var ls2 = ls1;
+			var ls2 = new LineSegment(new Point(0, -2), new Point(0, 2));
 			Assert.IsTrue(LineSegment.DoOverlap(ls1, ls2));
 
 			var ls3 = new LineSegment(new Point(0, -1), new Point(0, 1));
