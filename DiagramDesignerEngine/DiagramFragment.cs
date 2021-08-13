@@ -14,10 +14,10 @@ namespace DiagramDesignerEngine
 		private List<LineSegment> SegmentsWithin = null; // these do not contain part of the perimeter
 
 		/// <param name="perimeter"> the perimeter of this fragment </param>
-		/// <param name="innerPerimeters"> the inner perimeters. They must be inside the perimeter with no overlap; 
-		/// they must not interset or overlap with each other </param>
+		/// <param name="innerPerimeters"> the inner perimeters.  
+		/// They must be inside the perimeter with no overlap, and they must not interset or overlap with each other </param>
 		/// <param name="segmentsWithinPerimeter"> segments in the fragment (inside the periemeter and outisde the inner perimeters) 
-		/// that's not part of the perimeters; all dangling segments must connect an endpoint on the perimeters </param> 
+		/// that's not part of the perimeters; all dangling segments must connect an endpoint on the perimeters; </param> 
 		internal DiagramFragment(CycleOfLineSegments perimeter, List<CycleOfLineSegments> innerPerimeters, List<LineSegment> segmentsWithinPerimeter)
 		{
 			foreach (LineSegment ls in segmentsWithinPerimeter)
