@@ -8,7 +8,7 @@ namespace DiagramDesignerEngine
 	static class TraversalUtilities
 	{
 		/// <summary>
-		/// Find the angle between two connected line segments
+		/// Find the angle between two connected line segments, from the first one to the second, clockwise
 		/// </summary>
 		/// <param name="ls1"> the first segment </param>
 		/// <param name="ls2"> the second segment that's connected to the first one </param>
