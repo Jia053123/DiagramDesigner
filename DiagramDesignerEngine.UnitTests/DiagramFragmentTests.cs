@@ -192,7 +192,7 @@ namespace DiagramDesignerEngine.UnitTests
 			//        __________________ 
 			//       |                  |
 			//       |     ________     |
-			//       |    |        |    |
+			//       |    |        |    | (an inner perimeter)
 			//       |    |        |    | 
 			//       |    |        |    |
 			//       |    |________|    |
@@ -225,7 +225,7 @@ namespace DiagramDesignerEngine.UnitTests
 			//        __________________ 
 			//       |                  |
 			//       |     _____________|____
-			//       |    |             |    |
+			//       |    |             |    | (an inner perimeter)
 			//       |    |             |    |
 			//       |    |             |    |
 			//       |    |_____________|____|
@@ -257,8 +257,8 @@ namespace DiagramDesignerEngine.UnitTests
 			//       
 			//        __________________ 
 			//       |                  |
-			//       |     ____________ |
-			//       |    |            ||    
+			//       |     ____________ | 
+			//       |    |            ||   (an inner perimeter)
 			//       |    |            ||    
 			//       |    |            ||    
 			//       |    |____________||
@@ -291,7 +291,7 @@ namespace DiagramDesignerEngine.UnitTests
 			//        __________________ 
 			//       |                  |
 			//       |     ____     ____|____
-			//       |    |    |   |    |    |
+			//       |    |    |   |    |    |  (both are inner perimeters) 
 			//       |    |    |   |    |    |
 			//       |    |    |   |    |    |
 			//       |    |____|   |____|____|
@@ -330,7 +330,7 @@ namespace DiagramDesignerEngine.UnitTests
 			//        _______________________ 
 			//       |                       |
 			//       |     _______  ____     |
-			//       |    |       ||    |    |
+			//       |    |       ||    |    | (both are inner perimeters)
 			//       |    |       ||    |    |
 			//       |    |       ||    |    |
 			//       |    |_______||____|    |
@@ -339,7 +339,6 @@ namespace DiagramDesignerEngine.UnitTests
 			//
 			//       -2   -1   0   1    2    3
 			//
-
 			var ls1 = new LineSegment(new Point(-2, -2), new Point(-2, 2));
 			var ls2 = new LineSegment(new Point(-2, 2), new Point(3, 2));
 			var ls3 = new LineSegment(new Point(3, 2), new Point(3, -2));
@@ -370,7 +369,7 @@ namespace DiagramDesignerEngine.UnitTests
 			//        _______________________ 
 			//       |                       |
 			//       |     ________          |
-			//       |    |   ___  |         | (both inner rectangles are inner perimeters)
+			//       |    |   ___  |         | (both are inner perimeters)
 			//       |    |  |   | |         |
 			//       |    |  |___| |         |
 			//       |    |________|         |
@@ -379,7 +378,6 @@ namespace DiagramDesignerEngine.UnitTests
 			//
 			//       -2   -1   0   1    2    3
 			//
-
 			var ls1 = new LineSegment(new Point(-2, -2), new Point(-2, 2));
 			var ls2 = new LineSegment(new Point(-2, 2), new Point(3, 2));
 			var ls3 = new LineSegment(new Point(3, 2), new Point(3, -2));
@@ -410,8 +408,8 @@ namespace DiagramDesignerEngine.UnitTests
 			//   2    _______________________ 
 			//       |                       |
 			//   1   |     ________          |
-			//  0.5  |    |     ___|___      |
-			//   0   |    |    |   |   |     |
+			//  0.5  |    |     ___|___      | (both are inner perimeters)
+			//   0   |    |    |   |   |     | 
 			// -0.5  |    |    |___|___|     |    
 			//  -1   |    |________|         |
 			//       |                       |
@@ -419,7 +417,6 @@ namespace DiagramDesignerEngine.UnitTests
 			//
 			//       -2   -1   0   1    2    3
 			//
-
 			var ls1 = new LineSegment(new Point(-2, -2), new Point(-2, 2));
 			var ls2 = new LineSegment(new Point(-2, 2), new Point(3, 2));
 			var ls3 = new LineSegment(new Point(3, 2), new Point(3, -2));
@@ -450,7 +447,7 @@ namespace DiagramDesignerEngine.UnitTests
 			//        _______________________ 
 			//       |                       |
 			//       |     ____     ____     |
-			//       |    |    |   |    |    |
+			//       |    |    |   |    |    | (both are inner perimeters)
 			//       |    |    |   |    |    |
 			//       |    |    |   |    |    |
 			//       |    |____|   |____|    |
@@ -459,7 +456,6 @@ namespace DiagramDesignerEngine.UnitTests
 			//
 			//       -2   -1   0   1    2    3
 			//
-
 			var ls1 = new LineSegment(new Point(-2, -2), new Point(-2, 2));
 			var ls2 = new LineSegment(new Point(-2, 2), new Point(3, 2));
 			var ls3 = new LineSegment(new Point(3, 2), new Point(3, -2));
@@ -493,54 +489,12 @@ namespace DiagramDesignerEngine.UnitTests
 			//       |    |    |   |    |    |
 			//       |    |    |   |    |    |
 			//       |    |    |   |    |    |
-			//       |    |____x___x____|    |
-			//       |                       |
-			//       |_______________________|
-			//
-			//       -2   -1   0   1    2    3
-			//
-
-			var ls1 = new LineSegment(new Point(-2, -2), new Point(-2, 2));
-			var ls2 = new LineSegment(new Point(-2, 2), new Point(3, 2));
-			var ls3 = new LineSegment(new Point(3, 2), new Point(3, -2));
-			var ls4 = new LineSegment(new Point(3, -2), new Point(-2, -2));
-			var perimeter = new CycleOfLineSegments(new List<LineSegment> { ls1, ls2, ls3, ls4 });
-
-			var ls5 = new LineSegment(new Point(-1, -1), new Point(-1, 1));
-			var ls6 = new LineSegment(new Point(-1, 1), new Point(0, 1));
-			var ls7 = new LineSegment(new Point(0, 1), new Point(0, -1));
-			var ls8 = new LineSegment(new Point(0, -1), new Point(-1, -1));
-			var innerPerimeter1 = new CycleOfLineSegments(new List<LineSegment> { ls5, ls6, ls7, ls8 });
-
-			var ls9 = new LineSegment(new Point(1, -1), new Point(1, 1));
-			var ls10 = new LineSegment(new Point(1, 1), new Point(2, 1));
-			var ls11 = new LineSegment(new Point(2, 1), new Point(2, -1));
-			var ls12 = new LineSegment(new Point(2, -1), new Point(1, -1));
-			var innerPerimeter2 = new CycleOfLineSegments(new List<LineSegment> { ls9, ls10, ls11, ls12 });
-
-			var ls13 = new LineSegment(new Point(0, -1), new Point(1, -1));
-			var segsWithin = new List<LineSegment> { ls13 };
-
-			Assert.Throws<ArgumentException>(() => new DiagramFragment(perimeter, new List<CycleOfLineSegments> { innerPerimeter1, innerPerimeter2 }, segsWithin));
-		}
-
-		[Test]
-		public void TestConstructor_15()
-		{
-			//       
-			//        _______________________ 
-			//       |                       |
-			//       |     ____     ____     |
-			//       |    |    |   |    |    |
-			//       |    |    |   |    |    |
-			//       |    |    |   |    |    |
 			//       |    |____|   |____|    |
 			//       |    (peri) (not peri)  |
 			//       |_______________________|
 			//
 			//       -2   -1   0   1    2    3
 			//
-
 			var ls1 = new LineSegment(new Point(-2, -2), new Point(-2, 2));
 			var ls2 = new LineSegment(new Point(-2, 2), new Point(3, 2));
 			var ls3 = new LineSegment(new Point(3, 2), new Point(3, -2));
@@ -559,7 +513,49 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls12 = new LineSegment(new Point(2, -1), new Point(1, -1));
 			var segsWithin = new List<LineSegment> { ls9, ls10, ls11, ls12 };
 
-			Assert.DoesNotThrow(() => new DiagramFragment(perimeter, new List<CycleOfLineSegments> { innerPerimeter }, segsWithin));
+			Assert.Throws<ArgumentException>(() => new DiagramFragment(perimeter, new List<CycleOfLineSegments> { innerPerimeter }, segsWithin));
+		}
+
+		[Test]
+		public void TestConstructor_15_ThisIsWhyCannotHaveInnerPerimetersAlongWithOtherSegments()
+		{
+			//       
+			//   2    _______________________ 
+			//       |                       |
+			//   1   |____x____x___x____x____|
+			//       |    |    |   |    |    |
+			//   0   |    |    |   |    |    |
+			//       |    |    |   |    |    |
+			//  -1   |    |____|   |____|    |
+			//       |    (peri)   (peri)    |
+			//  -2   |_______________________|
+			//
+			//       -2   -1   0   1    2    3
+			//
+			var ls1 = new LineSegment(new Point(-2, -2), new Point(-2, 2));
+			var ls2 = new LineSegment(new Point(-2, 2), new Point(3, 2));
+			var ls3 = new LineSegment(new Point(3, 2), new Point(3, -2));
+			var ls4 = new LineSegment(new Point(3, -2), new Point(-2, -2));
+			var perimeter = new CycleOfLineSegments(new List<LineSegment> { ls1, ls2, ls3, ls4 });
+
+			var ls5 = new LineSegment(new Point(-1, -1), new Point(-1, 1));
+			var ls6 = new LineSegment(new Point(-1, 1), new Point(0, 1));
+			var ls7 = new LineSegment(new Point(0, 1), new Point(0, -1));
+			var ls8 = new LineSegment(new Point(0, -1), new Point(-1, -1));
+			var innerPerimeter1 = new CycleOfLineSegments(new List<LineSegment> { ls5, ls6, ls7, ls8 });
+
+			var ls9 = new LineSegment(new Point(1, -1), new Point(1, 1));
+			var ls10 = new LineSegment(new Point(1, 1), new Point(2, 1));
+			var ls11 = new LineSegment(new Point(2, 1), new Point(2, -1));
+			var ls12 = new LineSegment(new Point(2, -1), new Point(1, -1));
+			var innerPerimeter2 = new CycleOfLineSegments(new List<LineSegment> { ls9, ls10, ls11, ls12 });
+
+			var ls13 = new LineSegment(new Point(-2, 1), new Point(-1, 1));
+			var ls14 = new LineSegment(new Point(0, 1), new Point(1, 1));
+			var ls15 = new LineSegment(new Point(2, 1), new Point(3, 1));
+			var segmentsWithin = new List<LineSegment> { ls13, ls14, ls15 };
+
+			Assert.Throws<ArgumentException>(() => new DiagramFragment(perimeter, new List<CycleOfLineSegments> { innerPerimeter1, innerPerimeter2 }, segmentsWithin));
 		}
 
 		[Test]

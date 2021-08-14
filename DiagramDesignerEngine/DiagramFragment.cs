@@ -11,13 +11,13 @@ namespace DiagramDesignerEngine
 		private CycleOfLineSegments Perimeter = null;
 		private List<CycleOfLineSegments> InnerPerimeters = null;
 
-		private List<LineSegment> SegmentsWithin = null; // these do not contain part of the perimeter
+		private List<LineSegment> SegmentsWithin = null;
 
 		/// <param name="perimeter"> the perimeter of this fragment </param>
-		/// <param name="innerPerimeters"> the inner perimeters.  
+		/// <param name="innerPerimeters"> the inner perimeters. For this to not be empty, segmentsWithinPerimeter must be empty.
 		/// They must be inside the perimeter with no overlap, and they must not interset or overlap with each other </param>
-		/// <param name="segmentsWithinPerimeter"> segments in the fragment (inside the periemeter and outisde the inner perimeters) 
-		/// that's not part of the perimeters; all dangling segments must connect an endpoint on the perimeters; </param> 
+		/// <param name="segmentsWithinPerimeter"> segments in the fragment that's not part of the perimeters. 
+		/// For this to not be empty, innerPerimeters must be empty. All dangling segments must connect an endpoint on the perimeters; </param> 
 		internal DiagramFragment(CycleOfLineSegments perimeter, List<CycleOfLineSegments> innerPerimeters, List<LineSegment> segmentsWithinPerimeter)
 		{
 			foreach (LineSegment ls in segmentsWithinPerimeter)
@@ -175,7 +175,7 @@ namespace DiagramDesignerEngine
 
 				if (!(pathThroughPerimeterInPoints is null))
 				{
-					// divide the fragment through the path	
+					// divide the perimeter through the path	
 					var perimeterInPoints = this.ConvertPolyLineToEndpoints(this.Perimeter.GetPerimeter());
 					var firstIndexOnPeri = perimeterInPoints.FindIndex(p => p == pathThroughPerimeterInPoints.First());
 					int pathEndIndex = -1;
@@ -207,26 +207,22 @@ namespace DiagramDesignerEngine
 					var subFragmentPerimeter1 = new CycleOfLineSegments(firstHalfOfPerimeter);
 					var subFragmentPerimeter2 = new CycleOfLineSegments(secondHalfOfPerimeter);
 
+					// put other segments into respective halves
 					List<LineSegment> segmentsWithinSubFragment1 = new List<LineSegment>();
+					List<LineSegment> segmentsWithinSubFragment2 = new List<LineSegment>();
 					foreach (LineSegment ls in this.SegmentsWithin)
 					{
 						if (subFragmentPerimeter1.IsLineSegmentInCycle(ls))
 						{
 							segmentsWithinSubFragment1.Add(ls);
 						}
-					}
-					// TODO: stub
-					var subFragment1 = new DiagramFragment(subFragmentPerimeter1, new List<CycleOfLineSegments>(), segmentsWithinSubFragment1);
-
-					List<LineSegment> segmentsWithinSubFragment2 = new List<LineSegment>();
-					foreach (LineSegment ls in this.SegmentsWithin)
-					{
-						if (subFragmentPerimeter2.IsLineSegmentInCycle(ls))
+						else if (subFragmentPerimeter2.IsLineSegmentInCycle(ls))
 						{
 							segmentsWithinSubFragment2.Add(ls);
 						}
 					}
 					// TODO: stub
+					var subFragment1 = new DiagramFragment(subFragmentPerimeter1, new List<CycleOfLineSegments>(), segmentsWithinSubFragment1);
 					var subFragment2 = new DiagramFragment(subFragmentPerimeter2, new List<CycleOfLineSegments>(), segmentsWithinSubFragment2);
 
 					return new List<DiagramFragment> { subFragment1, subFragment2 };
