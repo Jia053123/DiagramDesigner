@@ -59,7 +59,7 @@ namespace DiagramDesignerEngine
 				}
 
 				// traverse starting from startSegemnt, at its SecondPoint, to find a perimeter
-				var traverser = new LineSegmentsTraverser(lineSegments);
+				var traverser = new LineSegmentsTraverser(trimmedSegments);
 				var result = traverser.TraverseSegments(startSegment, false, false); // always turn the smallest angle possible to trace the perimeter
 
 				Debug.Assert(result.Item1 != -1); // impossible to get stuck because there's no dangling segment
