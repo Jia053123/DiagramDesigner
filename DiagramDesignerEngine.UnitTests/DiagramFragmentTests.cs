@@ -640,7 +640,7 @@ namespace DiagramDesignerEngine.UnitTests
 			//       |           |
 			//  0.5  x-----------x
 			//   0   |   _____   |
-			// -0.5  |  |_____|  |
+			// -0.5  |  |_____|  |  (not an inner perimeter)
 			//       |___________|
 			//  -1
 			//       -1    0     1    

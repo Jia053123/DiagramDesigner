@@ -105,6 +105,13 @@ namespace DiagramDesignerEngine.UnitTests
 		}
 
 		[Test]
+		public void TestRemoveDanglingLineSegments_0()
+		{
+			var result = TraversalUtilities.RemoveDanglingLineSegments(new List<LineSegment>());
+			Assert.AreEqual(0, result.Count);
+		}
+
+			[Test]
 		public void TestRemoveDanglingLineSegments_1()
 		{
 			//
