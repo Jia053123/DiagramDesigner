@@ -9,10 +9,11 @@ namespace DiagramDesignerEngine
 	static class FragmentFactory
 	{
 		/// <summary>
-		/// Extract fragments from line segments. The leftover segments cannot be part of a room
+		/// Extract fragments from line segments. It is done by only one layer so an extracted fragment does not contain another. 
+		/// The leftover segments cannot be part of a room. 
 		/// </summary>
 		/// <param name="lineSegments"> The segments must be in exploded and non-overlapping state </param>
-		/// <returns> the fragments able to be extracted from the segments. </returns>
+		/// <returns> the fragments able to be extracted from the segments. They do not contain each other </returns>
 		static internal List<DividableDiagramFragment> MakeFragments(List<LineSegment> lineSegments)
 		{
 			if (lineSegments is null) { throw new ArgumentException("lineSegments is null"); }

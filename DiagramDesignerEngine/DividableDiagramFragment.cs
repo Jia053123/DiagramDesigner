@@ -143,18 +143,23 @@ namespace DiagramDesignerEngine
 
 					return new List<DiagramFragment> { subFragment1, subFragment2 };
 				}
-				else
-				{
-					// but there are still segments in there! Make them into new fragments
-				}
 			}
-			else
+
+			// couldn't find a dividing path, but there are still segments in there! Make them into new fragments
+			var results = FragmentFactory.MakeFragments(this.SegmentsWithin);
+			var innerPerimeters = new List<CycleOfLineSegments>();
+			foreach (DividableDiagramFragment df in results)
 			{
-				// but there are still segments in there! Make them into new fragments
-
+				List<LineSegment> p = df.GetPerimeter().GetPerimeter();
+				innerPerimeters.Add(new CycleOfLineSegments(p));
 			}
 
-			return null; // stub
+			var largeFragment = new UndividableDiagramFragment(this.Perimeter, innerPerimeters);
+
+			var fragmentsMade = new List<DiagramFragment>();
+			fragmentsMade.Add(largeFragment);
+			fragmentsMade.AddRange(results);
+			return fragmentsMade;
 		}
 	}
 }
