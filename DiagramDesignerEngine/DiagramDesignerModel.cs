@@ -12,7 +12,6 @@ namespace DiagramDesignerEngine
     {
         public ProgramRequirementsTable ProgramRequirements { get; } = new ProgramRequirementsTable();
 
-        //public List<BoundaryEntity> BoundaryEntities { get; private set; } = new List<BoundaryEntity>();
         public List<WallEntity> WallEntities { get; private set; } = new List<WallEntity>();
         private List<LineSegment> ExplodedWallSegments = null;
 
@@ -45,7 +44,7 @@ namespace DiagramDesignerEngine
                 allSegments.AddRange(we.Geometry.ConvertToLineSegments());
 			}
 
-            this.ExplodedWallSegments = (new LineSegmentsExploder(allSegments)).ExplodeSegments();
+           
 
 			//var rooms = (new RoomsFinder(this.ExplodedWallSegments)).FindRooms();
 

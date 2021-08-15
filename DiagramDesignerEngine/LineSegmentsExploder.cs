@@ -14,7 +14,10 @@ namespace DiagramDesignerEngine
 			this.SegmentsToExplode = segmentsToExplode;
 		}
 
-		internal List<LineSegment> ExplodeSegments()
+		/// <summary>
+		/// Break down and merge line segments so that no segments intersect or overlap. 
+		/// </summary>
+		internal List<LineSegment> MergeAndExplodeSegments()
 		{
 			var collapsedSegments = this.SplitAndMergeOverlappingSegments(SegmentsToExplode);
 			List<LineSegment> explodedWallSegments = this.SplitIntersectingSegments(collapsedSegments);

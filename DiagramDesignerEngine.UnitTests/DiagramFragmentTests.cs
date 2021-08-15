@@ -683,7 +683,6 @@ namespace DiagramDesignerEngine.UnitTests
 
 			var segsWithin = new List<LineSegment> { ls5, ls6, ls8, ls7, ls9, ls10 };
 
-
 			var fragment = new DividableDiagramFragment(perimeter, segsWithin);
 			var result = fragment.DivideIntoSmallerFragments();
 			Assert.AreEqual(3, result.Count);

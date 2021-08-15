@@ -6,8 +6,14 @@ namespace DiagramDesignerEngine
 {
     public class EnclosedProgram
     {
-        public bool IsAlsoCirculation;
-        public PolylineGeometry Geometry { get; internal set; }
+        internal UndividableDiagramFragment Geometry { get; set; }
+        public List<Point> Perimeter { get { return this.Geometry.GetPerimeterInPoints(); } }
+        public List<List<Point>> InnerPerimeters { get { return this.Geometry.GetInnerPerimetersInPoints(); } }
+
+        internal EnclosedProgram(UndividableDiagramFragment geometry)
+		{
+            this.Geometry = geometry;
+		}
 
         public double CalculateEnclosedArea()
         {

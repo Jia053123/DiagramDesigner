@@ -23,7 +23,7 @@ namespace DiagramDesignerEngine.UnitTests
 			var segments1 = new List<LineSegment> { ls1, ls2, ls3};
 
 			var exploder1 = new LineSegmentsExploder(segments1);
-			var result1 = exploder1.ExplodeSegments();
+			var result1 = exploder1.MergeAndExplodeSegments();
 			Assert.AreEqual(result1.Count, 4);
 			Assert.IsTrue(result1.Contains(new LineSegment(new Point(-3, 0), new Point(-2, 0))));
 			Assert.IsTrue(result1.Contains(new LineSegment(new Point(-2, 0), new Point(-1, 0))));
@@ -46,7 +46,7 @@ namespace DiagramDesignerEngine.UnitTests
 			var segments1 = new List<LineSegment> { ls1, ls3, ls2 };
 
 			var exploder1 = new LineSegmentsExploder(segments1);
-			var result1 = exploder1.ExplodeSegments();
+			var result1 = exploder1.MergeAndExplodeSegments();
 			Assert.AreEqual(result1.Count, 6);
 			Assert.IsTrue(result1.Contains(new LineSegment(new Point(-3, 0), new Point(-1, 0))));
 			Assert.IsTrue(result1.Contains(new LineSegment(new Point(-1, 0), new Point(0, 0))));
@@ -74,7 +74,7 @@ namespace DiagramDesignerEngine.UnitTests
 			var segments1 = new List<LineSegment> { ls1, ls3, ls2, ls4, ls5, ls6 };
 
 			var exploder1 = new LineSegmentsExploder(segments1);
-			var result1 = exploder1.ExplodeSegments();
+			var result1 = exploder1.MergeAndExplodeSegments();
 			Assert.AreEqual(result1.Count, 11);
 			Assert.IsTrue(result1.Contains(new LineSegment(new Point(-3, 0), new Point(-2, 0))));
 			Assert.IsTrue(result1.Contains(new LineSegment(new Point(-2, -1), new Point(-2, 0))));
