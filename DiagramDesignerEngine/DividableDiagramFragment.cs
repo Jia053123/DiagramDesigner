@@ -47,10 +47,13 @@ namespace DiagramDesignerEngine
 		/// <summary>
 		/// Divide the fragment into smaller ones if possible
 		/// </summary>
-		/// <returns> The divided fragments if dividable, or null if it's not (in which case this is a room) </returns>
+		/// <returns> The divided fragments if dividable, or one UndividableFragment if it's not </returns>
 		internal List<DiagramFragment> DivideIntoSmallerFragments()
 		{
-			if (SegmentsWithin.Count == 0) { return null; }
+			if (SegmentsWithin.Count == 0) 
+			{
+				return new List<DiagramFragment> { new UndividableDiagramFragment(this.Perimeter, new List<CycleOfLineSegments>()) }; 
+			}
 
 			// find a line connected to the perimeter
 			List<LineSegment> startSegments = new List<LineSegment>();
@@ -135,9 +138,8 @@ namespace DiagramDesignerEngine
 							segmentsWithinSubFragment2.Add(ls);
 						}
 					}
-					// TODO: stub
-					var subFragment1 = new DiagramFragment(subFragmentPerimeter1, new List<CycleOfLineSegments>(), segmentsWithinSubFragment1);
-					var subFragment2 = new DiagramFragment(subFragmentPerimeter2, new List<CycleOfLineSegments>(), segmentsWithinSubFragment2);
+					var subFragment1 = new DividableDiagramFragment(subFragmentPerimeter1, segmentsWithinSubFragment1);
+					var subFragment2 = new DividableDiagramFragment(subFragmentPerimeter2, segmentsWithinSubFragment2);
 
 					return new List<DiagramFragment> { subFragment1, subFragment2 };
 				}

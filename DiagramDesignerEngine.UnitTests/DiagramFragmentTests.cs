@@ -28,9 +28,8 @@ namespace DiagramDesignerEngine.UnitTests
 
 			var perimeter = new List<LineSegment> { ls1, ls2, ls3, ls4 };
 
-			var segsWithin = new List<LineSegment>();
-
-			Assert.DoesNotThrow(() => new DiagramFragment(new CycleOfLineSegments(perimeter), new List<CycleOfLineSegments>(), segsWithin));
+			Assert.DoesNotThrow(() => new DividableDiagramFragment(new CycleOfLineSegments(perimeter), new List<LineSegment>()));
+			Assert.DoesNotThrow(() => new UndividableDiagramFragment(new CycleOfLineSegments(perimeter), new List<CycleOfLineSegments>()));
 		}
 
 		[Test]
@@ -60,7 +59,7 @@ namespace DiagramDesignerEngine.UnitTests
 
 			var segsWithin = new List<LineSegment> { ls6, ls7, ls8 };
 
-			Assert.DoesNotThrow(() => new DiagramFragment(new CycleOfLineSegments(perimeter), new List<CycleOfLineSegments>(), segsWithin));
+			Assert.DoesNotThrow(() => new DividableDiagramFragment(new CycleOfLineSegments(perimeter), segsWithin));
 		}
 
 		[Test]
@@ -91,7 +90,7 @@ namespace DiagramDesignerEngine.UnitTests
 
 			var segsWithin = new List<LineSegment> { ls6, ls7, ls8 };
 
-			Assert.Throws<ArgumentException>(() => new DiagramFragment(new CycleOfLineSegments(perimeter), new List<CycleOfLineSegments>(), segsWithin));
+			Assert.Throws<ArgumentException>(() => new DividableDiagramFragment(new CycleOfLineSegments(perimeter), segsWithin));
 		}
 
 		[Test]
@@ -122,7 +121,7 @@ namespace DiagramDesignerEngine.UnitTests
 
 			var segsWithin = new List<LineSegment> { ls6, ls7, ls8 };
 
-			Assert.Throws<ArgumentException>(() => new DiagramFragment(new CycleOfLineSegments(perimeter), new List<CycleOfLineSegments>(), segsWithin));
+			Assert.Throws<ArgumentException>(() => new DividableDiagramFragment(new CycleOfLineSegments(perimeter), segsWithin));
 		}
 
 		[Test]
@@ -153,7 +152,7 @@ namespace DiagramDesignerEngine.UnitTests
 
 			var segsWithin = new List<LineSegment> { ls6, ls7, ls8 };
 
-			Assert.Throws<ArgumentException>(() => new DiagramFragment(new CycleOfLineSegments(perimeter), new List<CycleOfLineSegments>(), segsWithin));
+			Assert.Throws<ArgumentException>(() => new DividableDiagramFragment(new CycleOfLineSegments(perimeter), segsWithin));
 		}
 
 		[Test]
@@ -182,7 +181,7 @@ namespace DiagramDesignerEngine.UnitTests
 			
 			var segsWithin = new List<LineSegment> { ls6 };
 
-			Assert.Throws<ArgumentException>(() => new DiagramFragment(new CycleOfLineSegments(perimeter), new List<CycleOfLineSegments>(), segsWithin));
+			Assert.Throws<ArgumentException>(() => new DividableDiagramFragment(new CycleOfLineSegments(perimeter), segsWithin));
 		}
 
 		[Test]
@@ -213,9 +212,7 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls8 = new LineSegment(new Point(1, -1), new Point(-1, -1));
 			var innerPerimeter1 = new CycleOfLineSegments(new List<LineSegment> { ls5, ls6, ls7, ls8 });
 
-			var segsWithin = new List<LineSegment>();
-
-			Assert.DoesNotThrow(() => new DiagramFragment(perimeter, new List<CycleOfLineSegments> { innerPerimeter1 }, segsWithin));
+			Assert.DoesNotThrow(() => new UndividableDiagramFragment(perimeter, new List<CycleOfLineSegments> { innerPerimeter1 }));
 		}
 
 		[Test]
@@ -246,9 +243,7 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls8 = new LineSegment(new Point(3, -1), new Point(-1, -1));
 			var innerPerimeter1 = new CycleOfLineSegments(new List<LineSegment> { ls5, ls6, ls7, ls8 });
 
-			var segsWithin = new List<LineSegment>();
-
-			Assert.Throws<ArgumentException>(() => new DiagramFragment(perimeter, new List<CycleOfLineSegments> { innerPerimeter1 }, segsWithin));
+			Assert.Throws<ArgumentException>(() => new UndividableDiagramFragment(perimeter, new List<CycleOfLineSegments> { innerPerimeter1 }));
 		}
 
 		[Test]
@@ -279,9 +274,7 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls8 = new LineSegment(new Point(2, -1), new Point(-1, -1));
 			var innerPerimeter1 = new CycleOfLineSegments(new List<LineSegment> { ls5, ls6, ls7, ls8 });
 
-			var segsWithin = new List<LineSegment>();
-
-			Assert.Throws<ArgumentException>(() => new DiagramFragment(perimeter, new List<CycleOfLineSegments> { innerPerimeter1 }, segsWithin));
+			Assert.Throws<ArgumentException>(() => new UndividableDiagramFragment(perimeter, new List<CycleOfLineSegments> { innerPerimeter1 }));
 		}
 
 		[Test]
@@ -318,9 +311,7 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls12 = new LineSegment(new Point(3, -1), new Point(1, -1));
 			var innerPerimeter2 = new CycleOfLineSegments(new List<LineSegment> { ls9, ls10, ls11, ls12 });
 
-			var segsWithin = new List<LineSegment>();
-
-			Assert.Throws<ArgumentException>(() => new DiagramFragment(perimeter, new List<CycleOfLineSegments> { innerPerimeter1, innerPerimeter2 }, segsWithin));
+			Assert.Throws<ArgumentException>(() => new UndividableDiagramFragment(perimeter, new List<CycleOfLineSegments> { innerPerimeter1, innerPerimeter2 }));
 		}
 
 		[Test]
@@ -357,9 +348,7 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls12 = new LineSegment(new Point(2, -1), new Point(1, -1));
 			var innerPerimeter2 = new CycleOfLineSegments(new List<LineSegment> { ls9, ls10, ls11, ls12 });
 
-			var segsWithin = new List<LineSegment>();
-
-			Assert.Throws<ArgumentException>(() => new DiagramFragment(perimeter, new List<CycleOfLineSegments> { innerPerimeter1, innerPerimeter2 }, segsWithin));
+			Assert.Throws<ArgumentException>(() => new UndividableDiagramFragment(perimeter, new List<CycleOfLineSegments> { innerPerimeter1, innerPerimeter2 }));
 		}
 
 		[Test]
@@ -396,9 +385,7 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls12 = new LineSegment(new Point(0.5, -0.5), new Point(-0.5, -0.5));
 			var innerPerimeter2 = new CycleOfLineSegments(new List<LineSegment> { ls9, ls10, ls11, ls12 });
 
-			var segsWithin = new List<LineSegment>();
-
-			Assert.Throws<ArgumentException>(() => new DiagramFragment(perimeter, new List<CycleOfLineSegments> { innerPerimeter1, innerPerimeter2 }, segsWithin));
+			Assert.Throws<ArgumentException>(() => new UndividableDiagramFragment(perimeter, new List<CycleOfLineSegments> { innerPerimeter1, innerPerimeter2 }));
 		}
 
 		[Test]
@@ -435,9 +422,7 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls12 = new LineSegment(new Point(2, -0.5), new Point(0, -0.5));
 			var innerPerimeter2 = new CycleOfLineSegments(new List<LineSegment> { ls9, ls10, ls11, ls12 });
 
-			var segsWithin = new List<LineSegment>();
-
-			Assert.Throws<ArgumentException>(() => new DiagramFragment(perimeter, new List<CycleOfLineSegments> { innerPerimeter1, innerPerimeter2 }, segsWithin));
+			Assert.Throws<ArgumentException>(() => new UndividableDiagramFragment(perimeter, new List<CycleOfLineSegments> { innerPerimeter1, innerPerimeter2 }));
 		}
 
 		[Test]
@@ -474,88 +459,7 @@ namespace DiagramDesignerEngine.UnitTests
 			var ls12 = new LineSegment(new Point(2, -1), new Point(1, -1));
 			var innerPerimeter2 = new CycleOfLineSegments(new List<LineSegment> { ls9, ls10, ls11, ls12 });
 
-			var segsWithin = new List<LineSegment>();
-
-			Assert.DoesNotThrow(() => new DiagramFragment(perimeter, new List<CycleOfLineSegments> { innerPerimeter1, innerPerimeter2 }, segsWithin));
-		}
-
-		[Test]
-		public void TestConstructor_14()
-		{
-			//       
-			//        _______________________ 
-			//       |                       |
-			//       |     ____     ____     |
-			//       |    |    |   |    |    |
-			//       |    |    |   |    |    |
-			//       |    |    |   |    |    |
-			//       |    |____|   |____|    |
-			//       |    (peri) (not peri)  |
-			//       |_______________________|
-			//
-			//       -2   -1   0   1    2    3
-			//
-			var ls1 = new LineSegment(new Point(-2, -2), new Point(-2, 2));
-			var ls2 = new LineSegment(new Point(-2, 2), new Point(3, 2));
-			var ls3 = new LineSegment(new Point(3, 2), new Point(3, -2));
-			var ls4 = new LineSegment(new Point(3, -2), new Point(-2, -2));
-			var perimeter = new CycleOfLineSegments(new List<LineSegment> { ls1, ls2, ls3, ls4 });
-
-			var ls5 = new LineSegment(new Point(-1, -1), new Point(-1, 1));
-			var ls6 = new LineSegment(new Point(-1, 1), new Point(0, 1));
-			var ls7 = new LineSegment(new Point(0, 1), new Point(0, -1));
-			var ls8 = new LineSegment(new Point(0, -1), new Point(-1, -1));
-			var innerPerimeter = new CycleOfLineSegments(new List<LineSegment> { ls5, ls6, ls7, ls8 });
-
-			var ls9 = new LineSegment(new Point(1, -1), new Point(1, 1));
-			var ls10 = new LineSegment(new Point(1, 1), new Point(2, 1));
-			var ls11 = new LineSegment(new Point(2, 1), new Point(2, -1));
-			var ls12 = new LineSegment(new Point(2, -1), new Point(1, -1));
-			var segsWithin = new List<LineSegment> { ls9, ls10, ls11, ls12 };
-
-			Assert.Throws<ArgumentException>(() => new DiagramFragment(perimeter, new List<CycleOfLineSegments> { innerPerimeter }, segsWithin));
-		}
-
-		[Test]
-		public void TestConstructor_15_ThisIsWhyCannotHaveInnerPerimetersAlongWithOtherSegments()
-		{
-			//       
-			//   2    _______________________ 
-			//       |                       |
-			//   1   |____x____x___x____x____|
-			//       |    |    |   |    |    |
-			//   0   |    |    |   |    |    |
-			//       |    |    |   |    |    |
-			//  -1   |    |____|   |____|    |
-			//       |    (peri)   (peri)    |
-			//  -2   |_______________________|
-			//
-			//       -2   -1   0   1    2    3
-			//
-			var ls1 = new LineSegment(new Point(-2, -2), new Point(-2, 2));
-			var ls2 = new LineSegment(new Point(-2, 2), new Point(3, 2));
-			var ls3 = new LineSegment(new Point(3, 2), new Point(3, -2));
-			var ls4 = new LineSegment(new Point(3, -2), new Point(-2, -2));
-			var perimeter = new CycleOfLineSegments(new List<LineSegment> { ls1, ls2, ls3, ls4 });
-
-			var ls5 = new LineSegment(new Point(-1, -1), new Point(-1, 1));
-			var ls6 = new LineSegment(new Point(-1, 1), new Point(0, 1));
-			var ls7 = new LineSegment(new Point(0, 1), new Point(0, -1));
-			var ls8 = new LineSegment(new Point(0, -1), new Point(-1, -1));
-			var innerPerimeter1 = new CycleOfLineSegments(new List<LineSegment> { ls5, ls6, ls7, ls8 });
-
-			var ls9 = new LineSegment(new Point(1, -1), new Point(1, 1));
-			var ls10 = new LineSegment(new Point(1, 1), new Point(2, 1));
-			var ls11 = new LineSegment(new Point(2, 1), new Point(2, -1));
-			var ls12 = new LineSegment(new Point(2, -1), new Point(1, -1));
-			var innerPerimeter2 = new CycleOfLineSegments(new List<LineSegment> { ls9, ls10, ls11, ls12 });
-
-			var ls13 = new LineSegment(new Point(-2, 1), new Point(-1, 1));
-			var ls14 = new LineSegment(new Point(0, 1), new Point(1, 1));
-			var ls15 = new LineSegment(new Point(2, 1), new Point(3, 1));
-			var segmentsWithin = new List<LineSegment> { ls13, ls14, ls15 };
-
-			Assert.Throws<ArgumentException>(() => new DiagramFragment(perimeter, new List<CycleOfLineSegments> { innerPerimeter1, innerPerimeter2 }, segmentsWithin));
+			Assert.DoesNotThrow(() => new UndividableDiagramFragment(perimeter, new List<CycleOfLineSegments> { innerPerimeter1, innerPerimeter2 }));
 		}
 
 		[Test]
@@ -578,9 +482,14 @@ namespace DiagramDesignerEngine.UnitTests
 
 			var perimeter = new List<LineSegment> { ls1, ls2, ls3, ls4 };
 			var cycle = new CycleOfLineSegments(perimeter);
-			var fragment = new DiagramFragment(cycle, new List<CycleOfLineSegments>(), new List<LineSegment>());
+			var fragment = new DividableDiagramFragment(cycle, new List<LineSegment>());
 			var result = fragment.DivideIntoSmallerFragments();
-			Assert.IsNull(result);
+			Assert.AreEqual(1, result.Count);
+			Assert.IsTrue(result[0] is UndividableDiagramFragment);
+			Assert.IsTrue(ListUtilities.AreContentsEqual(perimeter, result[0].GetPerimeter().GetPerimeter()));
+			Assert.AreEqual(0, result[0].GetInnerPerimeters().Count);
+			Assert.AreEqual(0, result[0].GetSegmentsWithin().Count);
+
 		}
 
 		[Test]
@@ -609,7 +518,7 @@ namespace DiagramDesignerEngine.UnitTests
 			var segsWithin = new List<LineSegment> { ls7 };
 
 			var cycle = new CycleOfLineSegments(perimeter);
-			var fragment = new DiagramFragment(cycle, new List<CycleOfLineSegments>(), segsWithin);
+			var fragment = new DividableDiagramFragment(cycle, segsWithin);
 			var result = fragment.DivideIntoSmallerFragments();
 			Assert.AreEqual(2, result.Count);
 
@@ -658,7 +567,7 @@ namespace DiagramDesignerEngine.UnitTests
 
 			var segsWithin = new List<LineSegment> { ls7, ls8, ls9, ls10, ls11 };
 
-			var fragment = new DiagramFragment(perimeter, new List<CycleOfLineSegments>(), segsWithin);
+			var fragment = new DividableDiagramFragment(perimeter, segsWithin);
 			var result = fragment.DivideIntoSmallerFragments();
 			Assert.AreEqual(2, result.Count);
 
@@ -713,7 +622,7 @@ namespace DiagramDesignerEngine.UnitTests
 			var segsWithin = new List<LineSegment> { ls5, ls6, ls7, ls8 };
 
 
-			var fragment = new DiagramFragment(perimeter, new List<CycleOfLineSegments>(), segsWithin);
+			var fragment = new DividableDiagramFragment(perimeter, segsWithin);
 			var result = fragment.DivideIntoSmallerFragments();
 			Assert.AreEqual(2, result.Count);
 

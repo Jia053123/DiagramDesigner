@@ -9,8 +9,8 @@ namespace DiagramDesignerEngine
 	abstract class DiagramFragment
 	{
 		protected CycleOfLineSegments Perimeter = null;
-		protected List<CycleOfLineSegments> InnerPerimeters = null;
-		protected List<LineSegment> SegmentsWithin = null;
+		protected List<CycleOfLineSegments> InnerPerimeters = new List<CycleOfLineSegments>();
+		protected List<LineSegment> SegmentsWithin = new List<LineSegment>();
 
 		internal CycleOfLineSegments GetPerimeter()
 		{

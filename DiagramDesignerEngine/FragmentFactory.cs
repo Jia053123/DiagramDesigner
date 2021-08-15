@@ -13,14 +13,14 @@ namespace DiagramDesignerEngine
 		/// </summary>
 		/// <param name="lineSegments"> The segments must be in exploded and non-overlapping state </param>
 		/// <returns> the fragments able to be extracted from the segments. </returns>
-		static internal List<DiagramFragment> MakeFragments(List<LineSegment> lineSegments)
+		static internal List<DividableDiagramFragment> MakeFragments(List<LineSegment> lineSegments)
 		{
 			if (lineSegments is null) { throw new ArgumentException("lineSegments is null"); }
 
 			// Start by removing dangling line segments, which cannot be part of a room
 			var trimmedSegments = TraversalUtilities.RemoveDanglingLineSegments(lineSegments);
 
-			var fragmentsMade = new List<DiagramFragment>();
+			var fragmentsMade = new List<DividableDiagramFragment>();
 			while (trimmedSegments.Count > 0)
 			{
 				// Find the segments with the left most starting point, which is guarantted to be a boundary point. 
@@ -85,7 +85,7 @@ namespace DiagramDesignerEngine
 						segmentsWithinPerimeter.Add(ls);
 					}
 				}
-				var newFragment = new DiagramFragment(newPerimeter, new List<CycleOfLineSegments>(), segmentsWithinPerimeter);
+				var newFragment = new DividableDiagramFragment(newPerimeter, segmentsWithinPerimeter);
 				fragmentsMade.Add(newFragment);
 
 				// setup before next check
