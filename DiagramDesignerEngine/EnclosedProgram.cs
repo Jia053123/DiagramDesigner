@@ -6,6 +6,8 @@ namespace DiagramDesignerEngine
 {
     public class EnclosedProgram
     {
+        public String Name { get; private set; } = "Unamed";
+        public double Area { get; private set; } = 0.0;
         internal UndividableDiagramFragment Geometry { get; set; }
         public List<Point> Perimeter { get { return this.Geometry.GetPerimeterInPoints(); } }
         public List<List<Point>> InnerPerimeters { get { return this.Geometry.GetInnerPerimetersInPoints(); } }

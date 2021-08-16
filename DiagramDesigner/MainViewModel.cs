@@ -20,7 +20,8 @@ namespace DiagramDesigner
 
         public double DisplayUnitOverRealUnit { get; set; } = 2;
         public DataTable ProgramRequirementsDataTable => this.Model.ProgramRequirements; 
-        public List<List<WinPoint>> PolylinesToRender { get; private set; }
+        public List<List<WinPoint>> WallsToRender { get; private set; }
+        public List<ProgramToRender> ProgramsToRender { get; private set; }
 
         private readonly (WinPoint startPoint, WinPoint endPoint) NewEdgePreviewDefault = (new WinPoint(0, 0), new WinPoint(0, 0));
         public (WinPoint startPoint, WinPoint endPoint) NewEdgePreview => NewEdgePreviewData is null ? NewEdgePreviewDefault : (NewEdgePreviewData.StartPoint, NewEdgePreviewData.EndPoint);
@@ -55,14 +56,38 @@ namespace DiagramDesigner
 
         private void RebuildGraphicsDataFromModel()
 		{
-            this.PolylinesToRender = new List<List<WinPoint>>();
+            // Walls
+            this.WallsToRender = new List<List<WinPoint>>();
             foreach (WallEntity we in this.Model.WallEntities)
 			{
-                this.PolylinesToRender.Add(new List<WinPoint>());
+                this.WallsToRender.Add(new List<WinPoint>());
                 foreach (Point p in we.Geometry.PathsDefinedByPoints)
 				{
-                    this.PolylinesToRender.Last().Add(Utilities.ConvertPointToWindowsPoint(p, this.DisplayUnitOverRealUnit));
+                    this.WallsToRender.Last().Add(Utilities.ConvertPointToWindowsPoint(p, this.DisplayUnitOverRealUnit));
 				}
+			}
+
+            // Programs
+            this.ProgramsToRender = new List<ProgramToRender>();
+            foreach (EnclosedProgram ep in this.Model.Programs)
+			{
+                var perimeter = new List<WinPoint>();
+                foreach (Point p in ep.Perimeter)
+				{
+                    perimeter.Add(Utilities.ConvertPointToWindowsPoint(p, DisplayUnitOverRealUnit));
+				}
+
+                var innerPerimeters = new List<List<WinPoint>>();
+                foreach (List<Point> innerPerimeter in ep.InnerPerimeters)
+				{
+                    innerPerimeters.Add(new List<WinPoint>());
+                    foreach (Point p in innerPerimeter)
+					{
+                        innerPerimeters.Last().Add(Utilities.ConvertPointToWindowsPoint(p, DisplayUnitOverRealUnit));
+					}
+				}
+
+                ProgramsToRender.Add(new ProgramToRender(perimeter, innerPerimeters, ep.Name, ep.Area));
 			}
 		}
 
@@ -114,7 +139,7 @@ namespace DiagramDesigner
             if (this.IsInDrawingState)
             {
                 var mea = (MouseEventArgs)e;
-                if (this.PolylinesToRender != null)
+                if (this.WallsToRender != null)
                 {
                     var newPoint = new WinPoint(mea.LocationX, mea.LocationY);
                     this.Model.AddPointToWallEntityAtIndex(Utilities.ConvertWindowsPointToPoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count-1);
@@ -157,5 +182,5 @@ namespace DiagramDesigner
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-    }
+	}
 }

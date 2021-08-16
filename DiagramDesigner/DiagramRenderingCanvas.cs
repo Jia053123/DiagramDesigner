@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using WinPoint = System.Windows.Point;
+using WinLineSegment = System.Windows.Media.LineSegment;
 using System.Globalization;
 
 namespace DiagramDesigner
@@ -22,18 +23,43 @@ namespace DiagramDesigner
         private readonly double ScaleBarHeight = 5;
         private readonly double ScaleBarPadding = 10;
 
+        private readonly Brush BackgroundBrush = Brushes.White;
+
         public DiagramRenderingCanvas()
         {
-            this.Background = Brushes.White;
+            this.Background = this.BackgroundBrush;
             this.sourceVisual = new DrawingVisual();
             AddVisualChild(sourceVisual);
             AddLogicalChild(sourceVisual);
         }
 
-		public void RenderVisual(List<List<WinPoint>> polylinesToRender, (WinPoint startPoint, WinPoint endPoint) newEdgePreview, double scaleBarUnitLength)
+		public void RenderVisual(List<List<WinPoint>> wallsToRender, (WinPoint startPoint, WinPoint endPoint) newEdgePreview, List<ProgramToRender> programsToRender, double scaleBarUnitLength)
         {
             using (DrawingContext dc = sourceVisual.RenderOpen())
             {
+                void drawPolyline(List<WinPoint> points, Pen pen)
+				{
+                    for (int i = 0; i < points.Count-1; i++)
+                    {
+						var startPoint = new WinPoint((int)points[i].X, (int)points[i].Y);
+						var endPoint = new WinPoint((int)points[i + 1].X, (int)points[i + 1].Y);
+						dc.DrawLine(pen, startPoint, endPoint);
+					}
+				}
+
+                void drawPolygonFill(List<WinPoint> points, Brush brush)
+				{
+                    var start = points[0];
+                    List<WinLineSegment> segments = new List<WinLineSegment>();
+                    for (int i = 1; i < points.Count; i++)
+					{
+                        segments.Add(new WinLineSegment(points[i], false));
+					}
+                    var figure = new PathFigure(start, segments, true);
+                    var geo = new PathGeometry(new[] { figure });
+                    dc.DrawGeometry(brush, null, geo);
+				}
+
                 // draw scale bar
                 FormattedText formattedText;
                 var w = this.ActualWidth - ScaleBarPadding;
@@ -65,20 +91,28 @@ namespace DiagramDesigner
                 var p5 = new WinPoint(w, h);
                 dc.DrawLine(ScaleBarPen, p4, p5);
 
-                // draw polyline
-                for (int i = 0; i < polylinesToRender.Count; i++)
+                // draw walls
+                for (int i = 0; i < wallsToRender.Count; i++)
                 {
-                    for (int j = 0; j < polylinesToRender[i].Count-1; j++)
-					{
-                        var startPoint = new WinPoint((int)polylinesToRender[i][j].X, (int)polylinesToRender[i][j].Y);
-                        var endPoint = new WinPoint((int)polylinesToRender[i][j+1].X, (int)polylinesToRender[i][j+1].Y);
-                        dc.DrawLine(new Pen(Brushes.Black, 1), startPoint, endPoint);
-                    }
+                    drawPolyline(wallsToRender[i], new Pen(Brushes.Black, 1));
                 }
+
+                // draw the programs
+                foreach (ProgramToRender ptr in programsToRender)
+				{
+                    drawPolygonFill(ptr.Perimeter, Brushes.Red);
+                    foreach (List<Point> innerPerimeter in ptr.InnerPerimeters)
+					{
+                        drawPolygonFill(innerPerimeter, this.BackgroundBrush);
+					}
+				}
+
                 // draw the preview line
                 dc.DrawLine(new Pen(Brushes.Blue, 1), newEdgePreview.startPoint, newEdgePreview.endPoint);
             }
         }
+
+        
 
         protected override Visual GetVisualChild(int index)
         {

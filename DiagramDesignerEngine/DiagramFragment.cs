@@ -12,16 +12,25 @@ namespace DiagramDesignerEngine
 		protected List<CycleOfLineSegments> InnerPerimeters = new List<CycleOfLineSegments>();
 		protected List<LineSegment> SegmentsWithin = new List<LineSegment>();
 
+		/// <summary>
+		/// the list is in the order of connection and the first and last segments are connected
+		/// </summary>
 		internal CycleOfLineSegments GetPerimeter()
 		{
 			return new CycleOfLineSegments(this.Perimeter.GetPerimeter());
 		}
 
+		/// <summary>
+		/// the list is in the order of connection and the first and last points are the same
+		/// </summary>
 		internal List<Point> GetPerimeterInPoints()
 		{
 			return this.ConvertPolyLineToEndpoints(this.GetPerimeter().GetPerimeter());
 		}
 
+		/// <summary>
+		/// the list is in the order of connection and the first and last segments are connected
+		/// </summary>
 		internal List<CycleOfLineSegments> GetInnerPerimeters()
 		{
 			var list = new List<CycleOfLineSegments>();
@@ -32,6 +41,9 @@ namespace DiagramDesignerEngine
 			return list;
 		}
 
+		/// <summary>
+		/// the list is in the order of connection and the first and last points are the same
+		/// </summary>
 		internal List<List<Point>> GetInnerPerimetersInPoints()
 		{
 			var cycles = this.GetInnerPerimeters();

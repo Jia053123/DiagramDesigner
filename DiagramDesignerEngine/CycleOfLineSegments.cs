@@ -9,6 +9,9 @@ namespace DiagramDesignerEngine
 		// the list is in the order of connection and the first and last segment are connected
 		private List<LineSegment> Cycle = null;
 
+		/// <summary>
+		/// return the perimeter segments in the order of connection and the first and last segments are connected
+		/// </summary>
 		internal List<LineSegment> GetPerimeter()
 		{
 			// make a copy since LineSegment is value type

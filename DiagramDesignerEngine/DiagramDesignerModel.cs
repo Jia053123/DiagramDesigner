@@ -13,7 +13,6 @@ namespace DiagramDesignerEngine
         public ProgramRequirementsTable ProgramRequirements { get; } = new ProgramRequirementsTable();
 
         public List<WallEntity> WallEntities { get; private set; } = new List<WallEntity>();
-        private List<LineSegment> ExplodedWallSegments = null;
 
         public List<EnclosedProgram> Programs { get; private set; } = new List<EnclosedProgram>();
 
@@ -44,11 +43,8 @@ namespace DiagramDesignerEngine
                 allSegments.AddRange(we.Geometry.ConvertToLineSegments());
 			}
 
-           
-
-			//var rooms = (new RoomsFinder(this.ExplodedWallSegments)).FindRooms();
-
-            // TODO: match programs
+			this.Programs = (new ProgramsFinder(allSegments, this.ProgramRequirements)).FindPrograms();
+            this.OnProgramsChanged();
 		}
 
 		public double TotalEnclosedArea()
@@ -61,6 +57,14 @@ namespace DiagramDesignerEngine
         {
             // TODO: stub
             return 0;
+        }
+
+        private void OnProgramsChanged()
+		{
+            if (this.ModelChanged != null)
+            {
+                this.ModelChanged(this, null);
+            }
         }
 
         private void OnEntitiesChanged()
