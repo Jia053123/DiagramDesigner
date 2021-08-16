@@ -718,7 +718,7 @@ namespace DiagramDesignerEngine.UnitTests
 			//   2    __________________ 
 			//       |                  |
 			//   1   x__________________x
-			//       |\                /|
+			//       | \              / |
 			//   0   |       \  /       |
 			//       |        /\        |
 			//  -1   |      /____\      |
@@ -822,6 +822,7 @@ namespace DiagramDesignerEngine.UnitTests
 			var result = fragment.DivideIntoSmallerFragments();
 			Assert.AreEqual(2, result.Count);
 
+			// Assuming the containing fragment is the first in the list
 			Assert.IsTrue(ListUtilities.AreContentsEqual(result[0].GetPerimeter().GetPerimeter(), perimeter));
 			Assert.AreEqual(1, result[0].GetInnerPerimeters().Count);
 			Assert.IsTrue(ListUtilities.AreContentsEqual(result[0].GetInnerPerimeters()[0].GetPerimeter(), segsWithin));

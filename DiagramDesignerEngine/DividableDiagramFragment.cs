@@ -87,6 +87,19 @@ namespace DiagramDesignerEngine
 						pathThroughPerimeterInPoints = traverser.GetLastPointsAlongPath();
 						break;
 					}
+					else
+					{
+						// look for another point (a different one) on the perimeter to form a path
+						var pointsAlongPath = traverser.GetLastPointsAlongPath();
+						for (int j = 1; j < pointsAlongPath.Count; j++)
+						{
+							if (this.IsAnEndpointOnPerimeter(pointsAlongPath[j]) && pointsAlongPath[j] != pointsAlongPath[0])
+							{
+								pathThroughPerimeterInPoints = traverser.GetLastPointsAlongPath().GetRange(0, j+1);
+								break;
+							}
+						}
+					}
 				}
 
 				if (!(pathThroughPerimeterInPoints is null))
@@ -108,7 +121,8 @@ namespace DiagramDesignerEngine
 					Debug.Assert(pathEndIndex != -1);
 					Debug.Assert(secondIndexOnPeri != -1);
 
-					var firstHalfOfPerimeter = this.ConvertPointsToPolyline(perimeterInPoints.GetRange(firstIndexOnPeri, secondIndexOnPeri - firstIndexOnPeri + 1));
+					var firstHalfOfPerimeterCount = secondIndexOnPeri > firstIndexOnPeri ? (secondIndexOnPeri - firstIndexOnPeri + 1) : (firstIndexOnPeri - secondIndexOnPeri + 1);
+					var firstHalfOfPerimeter = this.ConvertPointsToPolyline(perimeterInPoints.GetRange(firstIndexOnPeri, firstHalfOfPerimeterCount));
 					List<LineSegment> secondHalfOfPerimeter = this.Perimeter.GetPerimeter();
 					foreach (LineSegment ls in firstHalfOfPerimeter)
 					{
