@@ -14,20 +14,20 @@ namespace DiagramDesignerEngine.UnitTests
 			var p3 = new Point(1, 2.02);
 			var p4 = new Point(0.9, 2);
 
-			var p5 = new Point(1.0004, 1.9995);
+			//var p5 = new Point(1.0004, 1.9995);
 
 			Point? p6 = null;
 			
 			Assert.AreEqual(p1, p2);
 			Assert.AreNotEqual(p3, p1);
 			Assert.AreNotEqual(p1, p4);
-			Assert.AreEqual(p1, p5);
+			//Assert.AreEqual(p1, p5);
 			Assert.AreNotEqual(p1, p6);
 
 			Assert.IsTrue(p1 == p2);
 			Assert.IsTrue(p1 != p3);
 			Assert.IsTrue(p4 != p1);
-			Assert.IsTrue(p1 == p5);
+			//Assert.IsTrue(p1 == p5);
 			Assert.IsTrue(p1 != p6);
 			Assert.IsTrue(p6 != p1);
 
@@ -38,7 +38,7 @@ namespace DiagramDesignerEngine.UnitTests
 			Assert.AreEqual(p1.GetHashCode(), p2.GetHashCode());
 			Assert.AreNotEqual(p3.GetHashCode(), p1.GetHashCode());
 			Assert.AreNotEqual(p1.GetHashCode(), p4.GetHashCode());
-			Assert.AreEqual(p1.GetHashCode(), p5.GetHashCode());
+			//Assert.AreEqual(p1.GetHashCode(), p5.GetHashCode());
 		}
 	}
 }

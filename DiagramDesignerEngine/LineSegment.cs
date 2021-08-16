@@ -120,6 +120,28 @@ namespace DiagramDesignerEngine
 		/// <returns> false if the point is not on the segment </returns>
 		internal bool ContainsPoint(Point p)
 		{
+			double maximumAngularTolerance = 0.018; // about 1 degree
+
+			if (p == this.FirstPoint || p == this.SecondPoint)
+			{
+				return true;
+			}
+			
+			var angle = TraversalUtilities.AngleAmongThreePoints(this.FirstPoint, p, this.SecondPoint);
+			var absDiff = Math.Abs(angle - Math.PI);
+
+			if (absDiff < maximumAngularTolerance)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		private bool StrictlyContainsPoint(Point p)
+		{
 			var crossProduct = (p.coordinateY - FirstPoint.coordinateY) * (SecondPoint.coordinateX - FirstPoint.coordinateX) -
 				(p.coordinateX - FirstPoint.coordinateX) * (SecondPoint.coordinateY - FirstPoint.coordinateY);
 			if (Math.Abs(crossProduct) > double.Epsilon)
@@ -135,7 +157,7 @@ namespace DiagramDesignerEngine
 				return false;
 			}
 
-			var squaredDistance = Math.Pow(SecondPoint.coordinateX - FirstPoint.coordinateX, 2) + 
+			var squaredDistance = Math.Pow(SecondPoint.coordinateX - FirstPoint.coordinateX, 2) +
 				Math.Pow(SecondPoint.coordinateY - FirstPoint.coordinateY, 2);
 			if (dotProduct > squaredDistance)
 			{
@@ -143,6 +165,7 @@ namespace DiagramDesignerEngine
 			}
 
 			return true;
+
 		}
 
 		/// <summary>

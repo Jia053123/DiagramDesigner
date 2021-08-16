@@ -8,7 +8,7 @@ namespace DiagramDesignerEngine
 {
     public readonly struct Point: IEquatable<Point>
     {
-        public const int DIGITS_FOR_ROUNDING = 3;
+        //public const int DIGITS_FOR_ROUNDING = 3;
 
         // setting these to internal in order to make them readonly to the ViewModel
         public double coordinateX { get; }
@@ -16,8 +16,8 @@ namespace DiagramDesignerEngine
 
         public Point(double x, double y)
         {
-            this.coordinateX = (Math.Round(x, DIGITS_FOR_ROUNDING));
-            this.coordinateY = (Math.Round(y, DIGITS_FOR_ROUNDING));
+			this.coordinateX = x; //(Math.Round(x, DIGITS_FOR_ROUNDING));
+			this.coordinateY = y; //(Math.Round(y, DIGITS_FOR_ROUNDING));
         }
 
 		public override int GetHashCode() => (this.coordinateX, this.coordinateY).GetHashCode();

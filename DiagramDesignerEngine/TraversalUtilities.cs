@@ -46,7 +46,7 @@ namespace DiagramDesignerEngine
 		/// <param name="endPoint"> the end point of the second segment marking the end of the angle </param>
 		/// <returns> The angle between 0 and 2pi by going from startPoint, through sharedPoint to endPoint. 
 		/// The angle is measured clockwise; return 0 if the segments overlap </returns>
-		private static double AngleAmongThreePoints(Point startPoint, Point sharedPoint, Point endPoint)
+		internal static double AngleAmongThreePoints(Point startPoint, Point sharedPoint, Point endPoint)
 		{
 			// move all points together so that sharedPoint is at 0,0
 			var translatedStartPoint = new Point(startPoint.coordinateX - sharedPoint.coordinateX,

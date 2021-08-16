@@ -96,7 +96,7 @@ namespace DiagramDesignerEngine.UnitTests
 		}
 
 		[Test]
-		public void TestContainsPoint()
+		public void TestContainsPoint_1()
 		{
 			var ls1 = new LineSegment(new Point(-1, 0), new Point(1, 0));
 			Assert.IsTrue(ls1.ContainsPoint(new Point(0, 0)));
@@ -108,9 +108,23 @@ namespace DiagramDesignerEngine.UnitTests
 			Assert.IsTrue(ls2.ContainsPoint(new Point(0, 0)));
 			Assert.IsFalse(ls2.ContainsPoint(new Point(1, 0)));
 
-			var ls3 = new LineSegment(new Point(-1, -2), new Point(1, 2));
-			Assert.IsTrue(ls3.ContainsPoint(new Point(0, 0)));
+			var ls3 = new LineSegment(new Point(-2, -3), new Point(0, 1));
+			Assert.IsTrue(ls3.ContainsPoint(new Point(-1, -1)));
 			Assert.IsFalse(ls3.ContainsPoint(new Point(1, 1)));
+		}
+
+		[Test]
+		public void TestContainsPoint_2()
+		{
+			var ls4 = new LineSegment(new Point(105, 210.5), new Point(259, 112.5));
+			Assert.IsTrue(ls4.ContainsPoint(new Point(162.79444, 173.72171)));
+		}
+
+		[Test]
+		public void TestContainsPoint_3()
+		{
+			var ls5 = new LineSegment(new Point(120, 68.5), new Point(210, 159));
+			Assert.IsTrue(ls5.ContainsPoint(new Point(157.63185905670764, 106.34092494035603)));
 		}
 
 		[Test]
