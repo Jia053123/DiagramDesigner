@@ -8,7 +8,8 @@ namespace DiagramDesignerEngine
 {
     public readonly struct Point: IEquatable<Point>
     {
-        //public const int DIGITS_FOR_ROUNDING = 3;
+		//public const int DIGITS_FOR_ROUNDING = 3;
+		//public const double EQUALITY_TOLERANCE = 0.01;
 
         // setting these to internal in order to make them readonly to the ViewModel
         public double coordinateX { get; }
@@ -34,7 +35,11 @@ namespace DiagramDesignerEngine
 
 		private bool Equals(Point p)
 		{
-			return (this.coordinateX == p.coordinateX && this.coordinateY == p.coordinateY);
+			//return (Math.Abs(this.coordinateX - p.coordinateX) <= EQUALITY_TOLERANCE &&
+			//	Math.Abs(this.coordinateY - p.coordinateY) <= EQUALITY_TOLERANCE);
+
+			return (Math.Abs(this.coordinateX - p.coordinateX) <= double.Epsilon &&
+				Math.Abs(this.coordinateY - p.coordinateY) <= double.Epsilon);
 		}
 
 		public override string ToString()

@@ -100,10 +100,10 @@ namespace DiagramDesigner
                 // draw the programs
                 foreach (ProgramToRender ptr in programsToRender)
 				{
-                    drawPolygonFill(ptr.Perimeter, Brushes.Red);
+                    drawPolygonFill(ptr.Perimeter, new SolidColorBrush(Color.FromArgb(100,255,0,0)));
                     foreach (List<Point> innerPerimeter in ptr.InnerPerimeters)
 					{
-                        drawPolygonFill(innerPerimeter, this.BackgroundBrush);
+                        drawPolygonFill(innerPerimeter, Brushes.Yellow);
 					}
 				}
 

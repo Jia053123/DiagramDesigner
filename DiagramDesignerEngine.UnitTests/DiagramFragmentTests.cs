@@ -35,21 +35,21 @@ namespace DiagramDesignerEngine.UnitTests
 		[Test]
 		public void TestConstructor_1()
 		{
-			//    ___________
-			//   |           |
-			//   |       |\  |
-			//   |       |  \x 
-			//   |       |  /|
-			//   |       |/  |
-			//   |___________| 
+			//  1  ____________
+			//    |            |
+			//    |        |\  |
+			//  0 |        |  \x 
+			//    |        |  /|
+			//    |        |/  |
+			// -1 |____________| 
 			//
-			//   -1    0     1    
+			//   -1     0     1    
 			//
-			var ls1 = new LineSegment(new Point(-1, -2), new Point(-1, 2));
-			var ls2 = new LineSegment(new Point(-1, 2), new Point(1, 2));
-			var ls3 = new LineSegment(new Point(1, 2), new Point(1, 0));
-			var ls4 = new LineSegment(new Point(1, 0), new Point(1, -2));
-			var ls5 = new LineSegment(new Point(1, -2), new Point(-1, -2));
+			var ls1 = new LineSegment(new Point(-1, -1), new Point(-1, 1));
+			var ls2 = new LineSegment(new Point(-1, 1), new Point(1, 1));
+			var ls3 = new LineSegment(new Point(1, 1), new Point(1, 0));
+			var ls4 = new LineSegment(new Point(1, 0), new Point(1, -1));
+			var ls5 = new LineSegment(new Point(1, -1), new Point(-1, -1));
 
 			var perimeter = new List<LineSegment> { ls1, ls2, ls3, ls4, ls5 };
 
@@ -710,6 +710,127 @@ namespace DiagramDesignerEngine.UnitTests
 			Assert.AreEqual(0, result[0].GetSegmentsWithin().Count);
 			Assert.AreEqual(0, result[1].GetSegmentsWithin().Count);
 			Assert.AreEqual(0, result[2].GetSegmentsWithin().Count);
+		}
+
+		[Test]
+		public void TestDivideIntoSmallerFragments_6()
+		{
+			//   2    __________________ 
+			//       |                  |
+			//   1   x__________________x
+			//       |\                /|
+			//   0   |       \  /       |
+			//       |        /\        |
+			//  -1   |      /____\      |
+			//       |                  |
+			//  -2   |__________________|
+			//
+			//       -2   -1   0   1    2
+			//
+			var ls1 = new LineSegment(new Point(-2, -2), new Point(-2, 1));
+			var ls2 = new LineSegment(new Point(-2, 1), new Point(-2, 2));
+			var ls3 = new LineSegment(new Point(-2, 2), new Point(2, 2));
+			var ls4 = new LineSegment(new Point(2, 2), new Point(2, 1));
+			var ls5 = new LineSegment(new Point(2, 1), new Point(2, -2));
+			var ls6 = new LineSegment(new Point(2, -2), new Point(-2, -2));
+			var perimeter = new CycleOfLineSegments(new List<LineSegment> { ls1, ls2, ls3, ls4, ls5, ls6 });
+
+			var ls7 = new LineSegment(new Point(-1, -1), new Point(0, 0));
+			var ls8 = new LineSegment(new Point(0, 0), new Point(1, -1));
+			var ls9 = new LineSegment(new Point(1, -1), new Point(-1, -1));
+
+			var ls10 = new LineSegment(new Point(0, 0), new Point(-2, 1));
+			var ls11 = new LineSegment(new Point(-2, 1), new Point(2, 1));
+			var ls12 = new LineSegment(new Point(2, 1), new Point(0, 0));
+
+			var segsWithin = new List<LineSegment> { ls7, ls8, ls9, ls10, ls11, ls12 };
+
+			var fragment = new DividableDiagramFragment(perimeter, segsWithin);
+			var result = fragment.DivideIntoSmallerFragments();
+			Assert.AreEqual(2, result.Count);
+
+			// guess 1: divided along the upper single straight line
+			var expectedPerimeter11 = new List<LineSegment> { ls2, ls3, ls4, ls11 };
+			var expectedSegmentsWithin11 = new List<LineSegment>();
+			var expectedPerimeter12 = new List<LineSegment> { ls1, ls11, ls5, ls6 };
+			var expectedSegmentsWithin12 = new List<LineSegment> { ls7, ls8, ls9, ls10, ls12 };
+
+			var guess1pA = (ListUtilities.AreContentsEqual(result[0].GetPerimeter().GetPerimeter(), expectedPerimeter11) &&
+			ListUtilities.AreContentsEqual(result[1].GetPerimeter().GetPerimeter(), expectedPerimeter12));
+			var guess1sA = (ListUtilities.AreContentsEqual(result[0].GetSegmentsWithin(), expectedSegmentsWithin11) &&
+				ListUtilities.AreContentsEqual(result[1].GetSegmentsWithin(), expectedSegmentsWithin12));
+
+			var guess1pB = (ListUtilities.AreContentsEqual(result[0].GetPerimeter().GetPerimeter(), expectedPerimeter12) &&
+			ListUtilities.AreContentsEqual(result[1].GetPerimeter().GetPerimeter(), expectedPerimeter11));
+			var guess1sB = (ListUtilities.AreContentsEqual(result[0].GetSegmentsWithin(), expectedSegmentsWithin12) &&
+						ListUtilities.AreContentsEqual(result[1].GetSegmentsWithin(), expectedSegmentsWithin11));
+
+			var guess1 = (guess1pA && guess1sA) || (guess1pB && guess1sB);
+
+			// guess2: divided along the lower two lines
+			var expectedPerimeter21 = new List<LineSegment> { ls1, ls10, ls12, ls5, ls6 };
+			var expectedSegmentsWithin21 = new List<LineSegment> { ls7, ls8, ls9 };
+			var expectedPerimeter22 = new List<LineSegment> { ls10, ls2, ls3, ls4, ls12 };
+			var expectedSegmentsWithin22 = new List<LineSegment> { ls11 };
+
+			var guess2pA = (ListUtilities.AreContentsEqual(result[0].GetPerimeter().GetPerimeter(), expectedPerimeter21) &&
+			ListUtilities.AreContentsEqual(result[1].GetPerimeter().GetPerimeter(), expectedPerimeter22));
+			var guess2sA = (ListUtilities.AreContentsEqual(result[0].GetSegmentsWithin(), expectedSegmentsWithin21) &&
+				ListUtilities.AreContentsEqual(result[1].GetSegmentsWithin(), expectedSegmentsWithin22));
+
+			var guess2pB = (ListUtilities.AreContentsEqual(result[0].GetPerimeter().GetPerimeter(), expectedPerimeter22) &&
+			ListUtilities.AreContentsEqual(result[1].GetPerimeter().GetPerimeter(), expectedPerimeter21));
+			var guess2sB = (ListUtilities.AreContentsEqual(result[0].GetSegmentsWithin(), expectedSegmentsWithin22) &&
+						ListUtilities.AreContentsEqual(result[1].GetSegmentsWithin(), expectedSegmentsWithin21));
+
+			var guess2 = (guess2pA && guess2sA) || (guess2pB && guess2sB);
+
+			Assert.IsTrue(guess1 || guess2);
+
+			Assert.AreEqual(0, result[0].GetInnerPerimeters().Count);
+			Assert.AreEqual(0, result[1].GetInnerPerimeters().Count);
+		}
+
+		[Test]
+		public void TestDivideIntoSmallerFragments_7()
+		{
+			//  1  ____________
+			//    |            |
+			//    |        |\  |
+			//  0 |        |  \x 
+			//    |        |  /|
+			//    |        |/  |
+			// -1 |____________| 
+			//
+			//   -1     0     1    
+			//
+			var ls1 = new LineSegment(new Point(-1, -1), new Point(-1, 1));
+			var ls2 = new LineSegment(new Point(-1, 1), new Point(1, 1));
+			var ls3 = new LineSegment(new Point(1, 1), new Point(1, 0));
+			var ls4 = new LineSegment(new Point(1, 0), new Point(1, -1));
+			var ls5 = new LineSegment(new Point(1, -1), new Point(-1, -1));
+
+			var perimeter = new List<LineSegment> { ls1, ls2, ls3, ls4, ls5 };
+
+			var ls6 = new LineSegment(new Point(1, 0), new Point(0.5, 0.5));
+			var ls7 = new LineSegment(new Point(1, 0), new Point(0.5, -0.5));
+			var ls8 = new LineSegment(new Point(0.5, -0.5), new Point(0.5, 0.5));
+
+			var segsWithin = new List<LineSegment> { ls6, ls7, ls8 };
+
+			var fragment = new DividableDiagramFragment(new CycleOfLineSegments(perimeter), segsWithin);
+			var result = fragment.DivideIntoSmallerFragments();
+			Assert.AreEqual(2, result.Count);
+
+			Assert.IsTrue(ListUtilities.AreContentsEqual(result[0].GetPerimeter().GetPerimeter(), perimeter));
+			Assert.AreEqual(1, result[0].GetInnerPerimeters().Count);
+			Assert.IsTrue(ListUtilities.AreContentsEqual(result[0].GetInnerPerimeters()[0].GetPerimeter(), segsWithin));
+
+			Assert.IsTrue(ListUtilities.AreContentsEqual(result[1].GetPerimeter().GetPerimeter(), segsWithin));
+			Assert.AreEqual(0, result[1].GetInnerPerimeters().Count);
+
+			Assert.AreEqual(0, result[0].GetSegmentsWithin().Count);
+			Assert.AreEqual(0, result[1].GetSegmentsWithin().Count);
 		}
 	}
 }

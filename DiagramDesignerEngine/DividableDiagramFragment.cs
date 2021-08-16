@@ -41,7 +41,6 @@ namespace DiagramDesignerEngine
 
 			this.Perimeter = perimeter;
 			this.SegmentsWithin = segmentsWithinPerimeter;
-			//this.InnerPerimeters = innerPerimeters;
 		}
 
 		/// <summary>
