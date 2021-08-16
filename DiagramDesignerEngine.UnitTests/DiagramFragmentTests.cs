@@ -792,7 +792,7 @@ namespace DiagramDesignerEngine.UnitTests
 		}
 
 		[Test]
-		public void TestDivideIntoSmallerFragments_7()
+		public void TestDivideIntoSmallerFragments_8()
 		{
 			//  1  ____________
 			//    |            |

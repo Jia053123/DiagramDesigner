@@ -176,5 +176,50 @@ namespace DiagramDesignerEngine.UnitTests
 			Assert.AreEqual(0, result[0].GetSegmentsWithin().Count);
 			Assert.AreEqual(0, result[1].GetSegmentsWithin().Count);
 		}
+
+		[Test]
+		public void TestExtractAllFragments_1_InnerLoopButNotInnerPerimeter()
+		{
+			//   2   x \           x  
+			//        \     \     /|
+			//   1      \       x  |         
+			//            \   /    x\
+			//   0          x      |    x
+			//            /   \    x/         
+			//  -1      /       x  |
+			//        /     /    \ |
+			//  -2   x /           x     
+			//
+			//       -2   -1   0   1    2
+			//
+			var ls1 = new LineSegment(new Point(-2, -2), new Point(-1, 0));
+			var ls2 = new LineSegment(new Point(-1, 0), new Point(0, 1));
+			var ls3 = new LineSegment(new Point(0, 1), new Point(1, 2));
+
+			var ls4 = new LineSegment(new Point(1, 2), new Point(1, 0.5));
+			var ls5 = new LineSegment(new Point(1, 0.5), new Point(1, -0.5));
+			var ls6 = new LineSegment(new Point(1, -0.5), new Point(1, -2));
+
+			var ls7 = new LineSegment(new Point(1, -2), new Point(0, -1));
+			var ls8 = new LineSegment(new Point(0, -1), new Point(-1, 0));
+			var ls9 = new LineSegment(new Point(-1, 0), new Point(-2, -2));
+
+			var ls10 = new LineSegment(new Point(-2, 2), new Point(0, 1));
+			var ls11 = new LineSegment(new Point(0, 1), new Point(1, 0.5));
+			var ls12 = new LineSegment(new Point(1, 0.5), new Point(2, 0));
+
+			var ls13 = new LineSegment(new Point(2, 0), new Point(1, -0.5));
+			var ls14 = new LineSegment(new Point(1, -0.5), new Point(0, -1));
+			var ls15 = new LineSegment(new Point(0, -1), new Point(-2, -2));
+
+			var allSegments = new List<LineSegment> { ls15, ls14, ls13, ls12, ls11, ls10, ls9, ls8, ls7, ls6, ls5, ls4, ls3, ls2, ls1 };
+
+			var result = FragmentFactory.ExtractAllFragments(allSegments);
+			Assert.AreEqual(6, result.Count);
+			foreach (DiagramFragment udf in result)
+			{
+				Assert.AreEqual(0, udf.GetInnerPerimeters().Count);
+			}
+		}
 	}
 }

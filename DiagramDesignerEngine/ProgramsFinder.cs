@@ -22,27 +22,7 @@ namespace DiagramDesignerEngine
 		internal List<EnclosedProgram> FindPrograms()
 		{
 			// First, extract UndividableDiagramFragments from the line segments, each representing a room
-			var dividableFragments = FragmentFactory.MakeFragments(this.ExplodedSegments).Cast<DiagramFragment>().ToList();
-			Stack<DiagramFragment> fragmentsToResolve = new Stack<DiagramFragment>(dividableFragments);
-			List<UndividableDiagramFragment> extractedFragments = new List<UndividableDiagramFragment>();
-
-			while (fragmentsToResolve.Count > 0)
-			{
-				var ftr = fragmentsToResolve.Pop();
-				
-				if (ftr is DividableDiagramFragment)
-				{
-					var dividedFtr = ((DividableDiagramFragment)ftr).DivideIntoSmallerFragments();
-					foreach (DiagramFragment df in dividedFtr)
-					{
-						fragmentsToResolve.Push(df);
-					}
-				}
-				else if (ftr is UndividableDiagramFragment)
-				{
-					extractedFragments.Add((UndividableDiagramFragment) ftr);
-				}
-			}
+			List<UndividableDiagramFragment> extractedFragments = FragmentFactory.ExtractAllFragments(this.ExplodedSegments);
 
 			// Second, assign the programs
 

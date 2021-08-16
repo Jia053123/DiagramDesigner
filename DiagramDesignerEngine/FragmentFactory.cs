@@ -9,6 +9,38 @@ namespace DiagramDesignerEngine
 	static class FragmentFactory
 	{
 		/// <summary>
+		/// Make and keep dividing fragments until all fragments are undividable (effectively rooms). 
+		/// The leftover segments cannot be part of a room. 
+		/// </summary>
+		/// <param name="explodedLineSegments"> The segments must be in exploded and non-overlapping state </param>
+		static internal List<UndividableDiagramFragment> ExtractAllFragments(List<LineSegment> explodedLineSegments)
+		{
+			var dividableFragments = FragmentFactory.MakeFragments(explodedLineSegments).Cast<DiagramFragment>().ToList();
+			Stack<DiagramFragment> fragmentsToResolve = new Stack<DiagramFragment>(dividableFragments);
+			List<UndividableDiagramFragment> extractedFragments = new List<UndividableDiagramFragment>();
+
+			while (fragmentsToResolve.Count > 0)
+			{
+				var ftr = fragmentsToResolve.Pop();
+
+				if (ftr is DividableDiagramFragment)
+				{
+					var dividedFtr = ((DividableDiagramFragment)ftr).DivideIntoSmallerFragments();
+					foreach (DiagramFragment df in dividedFtr)
+					{
+						fragmentsToResolve.Push(df);
+					}
+				}
+				else if (ftr is UndividableDiagramFragment)
+				{
+					extractedFragments.Add((UndividableDiagramFragment)ftr);
+				}
+			}
+			return extractedFragments;
+		}
+
+
+		/// <summary>
 		/// Extract fragments from line segments. It is done by only one layer so an extracted fragment does not contain another. 
 		/// The leftover segments cannot be part of a room. 
 		/// </summary>
