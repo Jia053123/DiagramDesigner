@@ -135,6 +135,35 @@ namespace DiagramDesignerEngine.UnitTests
 		public void TestConstructor_5()
 		{
 			//  
+			//  2   ___________
+			//  1  |           |
+			//     | /|        |
+			//  0  x/ |        | 
+			//     |\ |        |
+			// -1  | \|        |
+			// -2  |___________| 
+			//
+			//   -1    0     1    
+			//
+
+			var ls1 = new LineSegment(new Point(-1, -2), new Point(-1, 0));
+			var ls2 = new LineSegment(new Point(-1, 0), new Point(-1, 2));
+			var ls3 = new LineSegment(new Point(-1, 2), new Point(1, 2));
+			var ls4 = new LineSegment(new Point(1, 2), new Point(1, -2));
+			var ls5 = new LineSegment(new Point(1, -2), new Point(-1, -2));
+
+			var ls6 = new LineSegment(new Point(-1, 0), new Point(-0.5, 1));
+			var ls7 = new LineSegment(new Point(-1, 0), new Point(-0.5, -1));
+			var ls8 = new LineSegment(new Point(-0.5, -1), new Point(-0.5, 1));
+
+			var segments = new List<LineSegment> { ls1, ls7, ls2, ls6, ls3, ls5, ls4, ls8 };
+			Assert.Throws<ArgumentException>(() => new CycleOfLineSegments(segments));
+		}
+
+		[Test]
+		public void TestConstructor_6()
+		{
+			//  
 			//    ___________
 			//   |           |
 			//   |     |\    |
@@ -351,6 +380,34 @@ namespace DiagramDesignerEngine.UnitTests
 
 		[Test]
 		public void TestIsLineSegmentInCycle_7()
+		{
+			//   2    
+			//                         
+			//   1   x__________________x
+			//       |\                /|
+			//   0   |   \          /   |
+			//       |      \    /      |
+			//  -1   |        \/        |
+			//       |                  |
+			//  -2   |__________________|
+			//
+			//       -2   -1   0   1    2
+			//
+			var ls1 = new LineSegment(new Point(-2, -2), new Point(-2, 1));
+			var ls2 = new LineSegment(new Point(-2, 1), new Point(0, -1));
+			var ls3 = new LineSegment(new Point(0, -1), new Point(2, 1));
+			var ls4 = new LineSegment(new Point(2, 1), new Point(2, -2));
+			var ls5 = new LineSegment(new Point(2, -2), new Point(-2, -2));
+			var perimeter = new List<LineSegment> { ls5, ls1, ls4, ls2, ls3 };
+			
+			var ls6 = new LineSegment(new Point(-2, 1), new Point(2, 1));
+
+			var cycle = new CycleOfLineSegments(perimeter);
+			Assert.IsFalse(cycle.IsLineSegmentInCycle(ls6));
+		}
+
+		[Test]
+		public void TestIsLineSegmentInCycle_8()
 		{
 			//       
 			//        ___________ 

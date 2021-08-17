@@ -202,7 +202,7 @@ namespace DiagramDesignerEngine.UnitTests
 
 			var ls7 = new LineSegment(new Point(1, -2), new Point(0, -1));
 			var ls8 = new LineSegment(new Point(0, -1), new Point(-1, 0));
-			var ls9 = new LineSegment(new Point(-1, 0), new Point(-2, -2));
+			var ls9 = new LineSegment(new Point(-1, 0), new Point(-2, 2));
 
 			var ls10 = new LineSegment(new Point(-2, 2), new Point(0, 1));
 			var ls11 = new LineSegment(new Point(0, 1), new Point(1, 0.5));

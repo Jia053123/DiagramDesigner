@@ -103,7 +103,7 @@ namespace DiagramDesigner
                     drawPolygonFill(ptr.Perimeter, new SolidColorBrush(Color.FromArgb(100,255,0,0)));
                     foreach (List<Point> innerPerimeter in ptr.InnerPerimeters)
 					{
-                        drawPolygonFill(innerPerimeter, Brushes.Yellow);
+                        drawPolygonFill(innerPerimeter, new SolidColorBrush(Color.FromArgb(100, 255, 255, 0)));
 					}
 
                     formattedText = new FormattedText(ptr.Name, CultureInfo.GetCultureInfo("en-us"), FlowDirection.LeftToRight, new Typeface("Arial"), 9, Brushes.Black, VisualTreeHelper.GetDpi(this).PixelsPerDip);

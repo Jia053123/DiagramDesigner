@@ -35,11 +35,13 @@ namespace DiagramDesignerEngine
 			}
 
 			var traverser = new LineSegmentsTraverser(segmentsFormingCycle);
-			var result = traverser.TraverseSegments(segmentsFormingCycle.First(), true, true); // doesn't matter what the parameters are since it's supposed to be a perfect loop
+			var result = traverser.TraverseSegments(segmentsFormingCycle.First(), true, true); // turn the larger angles first for test case TestConstructor_3
 			if (result.Item1 != 0 || traverser.GetLastPath().Count != segmentsFormingCycle.Count)
 			{
 				throw new ArgumentException("does not form a perfect loop");
 			}
+
+			// no need to check overlapping endpoints because if that happens either the result won't be 0 or the traverser won't cover all segments
 
 			this.Cycle = traverser.GetLastPath();
 		}
@@ -86,6 +88,9 @@ namespace DiagramDesignerEngine
 
 			// find the left most point on the cycle
 			var leftMostPoint = this.Cycle.First().FirstPoint;
+			var rightMostPoint = this.Cycle.First().FirstPoint;
+			var topMostPoint = this.Cycle.First().FirstPoint;
+			var bottomMostPoint = this.Cycle.First().FirstPoint;
 			foreach (LineSegment ls in this.Cycle)
 			{
 				if (ls.FirstPoint.coordinateX < leftMostPoint.coordinateX)
@@ -96,21 +101,64 @@ namespace DiagramDesignerEngine
 				{
 					leftMostPoint = ls.SecondPoint;
 				}
-			}
-			// use Ray Casting algorithm to determine if it's inside
-			var rayCastingSegment = new LineSegment(new Point(leftMostPoint.coordinateX - 10, point.coordinateY), point);
-			// count the number of unique intersection points instead of the number of intersection itself
-			HashSet<Point> intersectionPoints = new HashSet<Point>();
-			foreach (LineSegment ls in this.Cycle)
-			{
-				var ip = rayCastingSegment.FindIntersection(ls);
-				if (! (ip is null))
+
+				if (ls.FirstPoint.coordinateX > rightMostPoint.coordinateX)
 				{
-					intersectionPoints.Add((Point)ip);
+					rightMostPoint = ls.FirstPoint;
+				}
+				else if (ls.SecondPoint.coordinateX > rightMostPoint.coordinateX)
+				{
+					rightMostPoint = ls.SecondPoint;
+				}
+
+				if (ls.FirstPoint.coordinateY < bottomMostPoint.coordinateY)
+				{
+					bottomMostPoint = ls.FirstPoint;
+				}
+				else if (ls.SecondPoint.coordinateY < bottomMostPoint.coordinateY)
+				{
+					bottomMostPoint = ls.SecondPoint;
+				}
+
+				if (ls.FirstPoint.coordinateY > topMostPoint.coordinateY)
+				{
+					topMostPoint = ls.FirstPoint;
+				}
+				else if (ls.SecondPoint.coordinateY > topMostPoint.coordinateY)
+				{
+					topMostPoint = ls.SecondPoint;
 				}
 			}
+			// use Ray Casting algorithm to determine if it's inside: count the number of unique intersection points in four directions
+			var rayCastingSegmentLeft = new LineSegment(new Point(leftMostPoint.coordinateX - 10, point.coordinateY), point);
+			var rayCastingSegmentRight = new LineSegment(new Point(rightMostPoint.coordinateX + 10, point.coordinateY), point);
+			var rayCastingSegmentBottom = new LineSegment(new Point(point.coordinateX, bottomMostPoint.coordinateY - 10), point);
+			var rayCastingSegmentTop = new LineSegment(new Point(point.coordinateX, topMostPoint.coordinateY + 10), point);
 
-			return !(intersectionPoints.Count % 2 == 0); // if even, then outside
+			HashSet<Point> findUniqueIntersections(LineSegment rayCastingSegment)
+			{
+				HashSet<Point> intersectionPoints = new HashSet<Point>();
+				foreach (LineSegment ls in this.Cycle)
+				{
+					var ip = rayCastingSegment.FindIntersection(ls);
+					if (!(ip is null))
+					{
+						intersectionPoints.Add((Point)ip);
+					}
+				}
+				return intersectionPoints;
+			}
+
+			var intersectionPointsLeft = findUniqueIntersections(rayCastingSegmentLeft);
+			var intersectionPointsRight = findUniqueIntersections(rayCastingSegmentRight);
+			var intersectionPointsBottom = findUniqueIntersections(rayCastingSegmentBottom);
+			var intersectionPointsTop = findUniqueIntersections(rayCastingSegmentTop);
+
+			// the point is inside if and only if all four results are odd
+			return !(intersectionPointsLeft.Count % 2 == 0) &&
+				!(intersectionPointsRight.Count % 2 == 0) &&
+				!(intersectionPointsBottom.Count % 2 == 0) &&
+				!(intersectionPointsTop.Count % 2 == 0);
 		}
 	}
 }
