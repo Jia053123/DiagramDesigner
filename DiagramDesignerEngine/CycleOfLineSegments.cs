@@ -35,7 +35,7 @@ namespace DiagramDesignerEngine
 			}
 
 			var traverser = new LineSegmentsTraverser(segmentsFormingCycle);
-			var result = traverser.TraverseSegments(segmentsFormingCycle.First(), true, true); // turn the larger angles first for test case TestConstructor_3
+			var result = traverser.TraverseSegments(segmentsFormingCycle.First(), true, true); // the last parameter probably doesn't matter
 			if (result.Item1 != 0 || traverser.GetLastPath().Count != segmentsFormingCycle.Count)
 			{
 				throw new ArgumentException("does not form a perfect loop");
@@ -144,6 +144,12 @@ namespace DiagramDesignerEngine
 					if (!(ip is null))
 					{
 						intersectionPoints.Add((Point)ip);
+					}
+					else if (LineSegment.DoOverlap(rayCastingSegment, ls))
+					{
+						// if they overlap, just for this method assume they intersect at the middle of ls
+						intersectionPoints.Add(new Point((ls.FirstPoint.coordinateX + ls.SecondPoint.coordinateX) / 2.0,
+							(ls.FirstPoint.coordinateY + ls.SecondPoint.coordinateY) / 2.0));
 					}
 				}
 				return intersectionPoints;

@@ -409,6 +409,36 @@ namespace DiagramDesignerEngine.UnitTests
 		[Test]
 		public void TestIsLineSegmentInCycle_8()
 		{
+			//   2          ____________
+			//             |            |
+			//   1    _____x____________x 
+			//       |                  |
+			//   0   |                  |
+			//       |                  |
+			//  -1   |                  |
+			//       |                  |
+			//  -2   |__________________|
+			//
+			//       -2   -1   0   1    2
+			//
+			var ls1 = new LineSegment(new Point(-2, -2), new Point(-2, 1));
+			var ls2 = new LineSegment(new Point(-2, 1), new Point(-1, 1));
+			var ls3 = new LineSegment(new Point(-1, 1), new Point(-1, 2));
+			var ls4 = new LineSegment(new Point(-1, 2), new Point(2, 2));
+			var ls5 = new LineSegment(new Point(2, 2), new Point(2, 1));
+			var ls6 = new LineSegment(new Point(2, 1), new Point(2, -2));
+			var ls7 = new LineSegment(new Point(2, -2), new Point(-2, -2));
+			var perimeter = new List<LineSegment> { ls1, ls2, ls3, ls4, ls5, ls6, ls7 };
+
+			var ls8 = new LineSegment(new Point(-1, 1), new Point(2, 1));
+
+			var cycle = new CycleOfLineSegments(perimeter);
+			Assert.IsTrue(cycle.IsLineSegmentInCycle(ls8));
+		}
+
+		[Test]
+		public void TestIsLineSegmentInCycle_9()
+		{
 			//       
 			//        ___________ 
 			//       |           |

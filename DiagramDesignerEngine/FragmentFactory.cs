@@ -75,7 +75,7 @@ namespace DiagramDesignerEngine
 				// from these segments find the one closest to a vertical line with SecondPoint at top
 				Debug.Assert(segmentsWithLeftmostFirstPoint.Count > 0);
 
-				double smallestAngleClockwise = double.NaN; //TraversalUtilities.AngleAmongTwoSegments(testSegment, segmentsWithLeftmostFirstPoint[0]);
+				double smallestAngleClockwise = double.NaN; 
 				LineSegment startSegment = segmentsWithLeftmostFirstPoint.First();
 				for (int i = 0; i < segmentsWithLeftmostFirstPoint.Count; i++)
 				{
