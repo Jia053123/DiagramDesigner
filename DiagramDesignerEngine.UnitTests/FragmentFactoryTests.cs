@@ -219,6 +219,7 @@ namespace DiagramDesignerEngine.UnitTests
 			foreach (DiagramFragment udf in result)
 			{
 				Assert.AreEqual(0, udf.GetInnerPerimeters().Count);
+				Assert.AreEqual(0, udf.GetSegmentsWithin().Count);
 			}
 		}
 	}

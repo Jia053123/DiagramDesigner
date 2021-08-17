@@ -135,7 +135,8 @@ namespace DiagramDesignerEngine
 		/// a new iteration of depth first search
 		/// </summary>
 		/// <returns>  If the traversal ended in a loop, return the index where the loop begins; 
-		/// returning 0 means the path is a perfect loop; if the traversal ended at a deadend, return -1 </returns>
+		/// returning 0 means the path is a perfect loop; if the traversal ended at a deadend, return -1.
+		/// If all possible paths are exhausted, return null </returns>
 		internal Tuple<int, List<LineSegment>> TraverseAgain()
 		{
 			if (this.TraversalRecords.Count == 0)
