@@ -105,7 +105,11 @@ namespace DiagramDesigner
 					{
                         drawPolygonFill(innerPerimeter, Brushes.Yellow);
 					}
-				}
+
+                    formattedText = new FormattedText(ptr.Name, CultureInfo.GetCultureInfo("en-us"), FlowDirection.LeftToRight, new Typeface("Arial"), 9, Brushes.Black, VisualTreeHelper.GetDpi(this).PixelsPerDip);
+                    var labelOrigin = ptr.GetCenterOfThePerimeter();
+                    dc.DrawText(formattedText, new WinPoint(labelOrigin.X - formattedText.Width / 2, labelOrigin.Y - formattedText.Height));
+                }
 
                 // draw the preview line
                 dc.DrawLine(new Pen(Brushes.Blue, 1), newEdgePreview.startPoint, newEdgePreview.endPoint);

@@ -19,5 +19,20 @@ namespace DiagramDesigner
             this.Name = name;
             this.Area = area;
         }
+
+        internal WinPoint GetCenterOfThePerimeter()
+		{
+            double xTotal = 0;
+            double yTotal = 0;
+            int pointCount = this.Perimeter.Count;
+
+            foreach (WinPoint wp in this.Perimeter)
+			{
+                xTotal += wp.X;
+                yTotal += wp.Y;
+			}
+
+            return new WinPoint(xTotal / pointCount, yTotal / pointCount);
+		}
     }
 }
