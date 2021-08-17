@@ -1,8 +1,9 @@
-﻿using System;
+﻿using DiagramDesignerEngine;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DiagramDesignerEngine
+namespace DiagramDesignerModel
 {
     /// <summary>
     /// An thing in the diagram that is not an annotation for such diagram. 

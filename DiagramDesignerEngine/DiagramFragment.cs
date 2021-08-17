@@ -6,7 +6,7 @@ using System.Text;
 
 namespace DiagramDesignerEngine
 {
-	abstract class DiagramFragment
+	public abstract class DiagramFragment
 	{
 		protected CycleOfLineSegments Perimeter = null;
 		protected List<CycleOfLineSegments> InnerPerimeters = new List<CycleOfLineSegments>();
@@ -15,7 +15,7 @@ namespace DiagramDesignerEngine
 		/// <summary>
 		/// the list is in the order of connection and the first and last segments are connected
 		/// </summary>
-		internal CycleOfLineSegments GetPerimeter()
+		public CycleOfLineSegments GetPerimeter()
 		{
 			return new CycleOfLineSegments(this.Perimeter.GetPerimeter());
 		}
@@ -23,7 +23,7 @@ namespace DiagramDesignerEngine
 		/// <summary>
 		/// the list is in the order of connection and the first and last points are the same
 		/// </summary>
-		internal List<Point> GetPerimeterInPoints()
+		public List<Point> GetPerimeterInPoints()
 		{
 			return this.ConvertPolyLineToEndpoints(this.GetPerimeter().GetPerimeter());
 		}
@@ -31,7 +31,7 @@ namespace DiagramDesignerEngine
 		/// <summary>
 		/// the list is in the order of connection and the first and last segments are connected
 		/// </summary>
-		internal List<CycleOfLineSegments> GetInnerPerimeters()
+		public List<CycleOfLineSegments> GetInnerPerimeters()
 		{
 			var list = new List<CycleOfLineSegments>();
 			foreach (CycleOfLineSegments cycle in this.InnerPerimeters)
@@ -44,7 +44,7 @@ namespace DiagramDesignerEngine
 		/// <summary>
 		/// the list is in the order of connection and the first and last points are the same
 		/// </summary>
-		internal List<List<Point>> GetInnerPerimetersInPoints()
+		public List<List<Point>> GetInnerPerimetersInPoints()
 		{
 			var cycles = this.GetInnerPerimeters();
 			var points = new List<List<Point>>();

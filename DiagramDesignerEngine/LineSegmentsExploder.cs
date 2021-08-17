@@ -5,11 +5,11 @@ using System.Text;
 
 namespace DiagramDesignerEngine
 {
-	class LineSegmentsExploder
+	public class LineSegmentsExploder
 	{
 		private List<LineSegment> SegmentsToExplode;
 
-		internal LineSegmentsExploder(List<LineSegment> segmentsToExplode)
+		public LineSegmentsExploder(List<LineSegment> segmentsToExplode)
 		{
 			this.SegmentsToExplode = segmentsToExplode;
 		}
@@ -17,7 +17,7 @@ namespace DiagramDesignerEngine
 		/// <summary>
 		/// Break down and merge line segments so that no segments intersect or overlap. 
 		/// </summary>
-		internal List<LineSegment> MergeAndExplodeSegments()
+		public List<LineSegment> MergeAndExplodeSegments()
 		{
 			var collapsedSegments = this.SplitAndMergeOverlappingSegments(SegmentsToExplode);
 			List<LineSegment> explodedWallSegments = this.SplitIntersectingSegments(collapsedSegments);

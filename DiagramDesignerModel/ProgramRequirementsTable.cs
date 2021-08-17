@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace DiagramDesignerEngine
+namespace DiagramDesignerModel
 {
     public class ProgramRequirementsTable : DataTable
     {

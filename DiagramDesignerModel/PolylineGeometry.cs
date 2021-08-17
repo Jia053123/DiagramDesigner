@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using DiagramDesignerEngine;
 
-namespace DiagramDesignerEngine
+namespace DiagramDesignerModel
 {
     public class PolylineGeometry
     {

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DiagramDesignerEngine
 {
-	class UndividableDiagramFragment: DiagramFragment
+	public class UndividableDiagramFragment: DiagramFragment
 	{
 		/// <param name="perimeter"> the perimeter of this fragment </param>
 		/// <param name="innerPerimeters"> the inner perimeters. They must be inside the perimeter with no overlap, 

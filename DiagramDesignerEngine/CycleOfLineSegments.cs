@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace DiagramDesignerEngine
 {
-	class CycleOfLineSegments
+	public class CycleOfLineSegments
 	{
 		// the list is in the order of connection and the first and last segment are connected
 		private List<LineSegment> Cycle = null;

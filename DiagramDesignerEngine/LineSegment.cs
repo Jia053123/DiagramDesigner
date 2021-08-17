@@ -12,12 +12,12 @@ namespace DiagramDesignerEngine
 	/// if they are equal, FirstPoint always has smaller Y coordinate.
 	/// </summary>
 	/// 
-	readonly struct LineSegment : IEquatable<LineSegment>
+	public readonly struct LineSegment : IEquatable<LineSegment>
 	{
 		public Point FirstPoint { get; }
 		public Point SecondPoint { get; }
 
-		internal LineSegment(Point endPoint1, Point endPoint2)
+		public LineSegment(Point endPoint1, Point endPoint2)
 		{		
 			if (endPoint1 == endPoint2)
 			{

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DiagramDesignerEngine.UnitTests
+namespace DiagramDesignerModel.UnitTests
 {
 	class ProgramsFinderTests
 	{

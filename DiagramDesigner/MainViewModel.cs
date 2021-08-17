@@ -8,6 +8,7 @@ using DiagramDesignerEngine;
 using System.Linq;
 using WinPoint = System.Windows.Point;
 using System.Data;
+using DiagramDesignerModel;
 
 namespace DiagramDesigner
 {
@@ -16,7 +17,7 @@ namespace DiagramDesigner
     /// </summary>
     class MainViewModel : INotifyPropertyChanged
     {
-        private DiagramDesignerModel Model = new DiagramDesignerModel();
+        private DDModel Model = new DDModel();
 
         public double DisplayUnitOverRealUnit { get; set; } = 2;
         public DataTable ProgramRequirementsDataTable => this.Model.ProgramRequirements; 

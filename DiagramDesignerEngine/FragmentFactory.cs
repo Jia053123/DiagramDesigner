@@ -6,14 +6,14 @@ using System.Text;
 
 namespace DiagramDesignerEngine
 {
-	static class FragmentFactory
+	public static class FragmentFactory
 	{
 		/// <summary>
 		/// Make and keep dividing fragments until all fragments are undividable (effectively rooms). 
 		/// The leftover segments cannot be part of a room. 
 		/// </summary>
 		/// <param name="explodedLineSegments"> The segments must be in exploded and non-overlapping state </param>
-		static internal List<UndividableDiagramFragment> ExtractAllFragments(List<LineSegment> explodedLineSegments)
+		public static List<UndividableDiagramFragment> ExtractAllFragments(List<LineSegment> explodedLineSegments)
 		{
 			var dividableFragments = FragmentFactory.MakeFragments(explodedLineSegments).Cast<DiagramFragment>().ToList();
 			Stack<DiagramFragment> fragmentsToResolve = new Stack<DiagramFragment>(dividableFragments);

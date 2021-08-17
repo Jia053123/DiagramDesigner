@@ -1,12 +1,13 @@
-﻿using System;
+﻿using DiagramDesignerEngine;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace DiagramDesignerEngine
+namespace DiagramDesignerModel
 {
-	class ProgramsFinder
+	internal class ProgramsFinder
 	{
 		private List<LineSegment> ExplodedSegments;
 		private ProgramRequirementsTable ProgramRequirements;
