@@ -37,78 +37,25 @@ namespace DiagramDesigner
         {
             using (DrawingContext dc = sourceVisual.RenderOpen())
             {
-                void drawPolyline(List<WinPoint> points, Pen pen)
-				{
-                    for (int i = 0; i < points.Count-1; i++)
-                    {
-						var startPoint = new WinPoint((int)points[i].X, (int)points[i].Y);
-						var endPoint = new WinPoint((int)points[i + 1].X, (int)points[i + 1].Y);
-						dc.DrawLine(pen, startPoint, endPoint);
-					}
-				}
-
-                void drawPolygonFill(List<WinPoint> points, Brush brush)
-				{
-                    var start = points[0];
-                    List<WinLineSegment> segments = new List<WinLineSegment>();
-                    for (int i = 1; i < points.Count; i++)
-					{
-                        segments.Add(new WinLineSegment(points[i], false));
-					}
-                    var figure = new PathFigure(start, segments, true);
-                    var geo = new PathGeometry(new[] { figure });
-                    dc.DrawGeometry(brush, null, geo);
-				}
-
-                // draw scale bar
-                FormattedText formattedText;
-                var w = this.ActualWidth - ScaleBarPadding;
-                var h = this.ActualHeight - ScaleBarPadding;
-                var lineGoesUp = true;
-                double[] vs = { 40, 20, 10, 5, 0 };
-                for (int i = 0; i < 4; i++)
-				{
-                    var segmentLabel = ((int)vs[i]).ToString();
-                    formattedText = new FormattedText(segmentLabel, CultureInfo.GetCultureInfo("en-us"), FlowDirection.LeftToRight, new Typeface("Arial"), 9, Brushes.Black, VisualTreeHelper.GetDpi(this).PixelsPerDip);
-                    dc.DrawText(formattedText, lineGoesUp ? new WinPoint(w - formattedText.Width/2, h - ScaleBarHeight - formattedText.Height) : new WinPoint(w - formattedText.Width/2, h - formattedText.Height));
-
-                    var p1 = new WinPoint(w, h);
-                    h = lineGoesUp ? h - ScaleBarHeight : h + ScaleBarHeight;
-                    var p2 = new WinPoint(w, h);
-                    dc.DrawLine(ScaleBarPen, p1, p2);
-
-                    w -= scaleBarUnitLength * (vs[i] - vs[i+1]);
-                    var p3 = new WinPoint(w, h);
-                    dc.DrawLine(ScaleBarPen, p2, p3);
-                    
-                    lineGoesUp = !lineGoesUp;
-                }
-                formattedText = new FormattedText("0", CultureInfo.GetCultureInfo("en-us"), FlowDirection.LeftToRight, new Typeface("Arial"), 9, Brushes.Black, VisualTreeHelper.GetDpi(this).PixelsPerDip);
-                dc.DrawText(formattedText, lineGoesUp ? new WinPoint(w - formattedText.Width/2, h - ScaleBarHeight - formattedText.Height) : new WinPoint(w - formattedText.Width/2, h - formattedText.Height));
-
-                var p4 = new WinPoint(w, h);
-                h = lineGoesUp ? h - ScaleBarHeight : h + ScaleBarHeight;
-                var p5 = new WinPoint(w, h);
-                dc.DrawLine(ScaleBarPen, p4, p5);
-
+                this.DrawScaleBar(dc, scaleBarUnitLength);
                 // draw walls
                 for (int i = 0; i < wallsToRender.Count; i++)
                 {
-                    drawPolyline(wallsToRender[i], new Pen(Brushes.Black, 1));
+                    this.DrawPolyline(dc, wallsToRender[i], new Pen(Brushes.Black, 1));
                 }
 
                 // draw the programs
                 foreach (ProgramToRender ptr in programsToRender)
 				{
-                    drawPolygonFill(ptr.Perimeter, new SolidColorBrush(Color.FromArgb(100,255,0,0)));
+                    this.DrawPolygonFill(dc, ptr.Perimeter, new SolidColorBrush(Color.FromArgb(100,255,0,0)));
                     foreach (List<Point> innerPerimeter in ptr.InnerPerimeters)
 					{
-                        drawPolygonFill(innerPerimeter, new SolidColorBrush(Color.FromArgb(100, 255, 255, 0)));
+                        this.DrawPolygonFill(dc, innerPerimeter, new SolidColorBrush(Color.FromArgb(100, 255, 255, 0)));
 					}
 
                     String label = $@"{ptr.Name}
 {Math.Floor(ptr.Area)}";
-					formattedText = new FormattedText(label, CultureInfo.GetCultureInfo("en-us"), FlowDirection.LeftToRight, new Typeface("Arial"), 9, Brushes.Black, VisualTreeHelper.GetDpi(this).PixelsPerDip);
+					var formattedText = new FormattedText(label, CultureInfo.GetCultureInfo("en-us"), FlowDirection.LeftToRight, new Typeface("Arial"), 9, Brushes.Black, VisualTreeHelper.GetDpi(this).PixelsPerDip);
                     formattedText.TextAlignment = TextAlignment.Center;
                     var labelOrigin = ptr.GetCenterOfThePerimeter();
                     dc.DrawText(formattedText, new WinPoint(labelOrigin.X, labelOrigin.Y - formattedText.Height / 2));
@@ -119,7 +66,62 @@ namespace DiagramDesigner
             }
         }
 
-        
+        private void DrawScaleBar(DrawingContext context, double scaleBarUnitLength)
+		{
+            // draw scale bar
+            FormattedText formattedText;
+            var w = this.ActualWidth - ScaleBarPadding;
+            var h = this.ActualHeight - ScaleBarPadding;
+            var lineGoesUp = true;
+            double[] vs = { 40, 20, 10, 5, 0 };
+            for (int i = 0; i < 4; i++)
+            {
+                var segmentLabel = ((int)vs[i]).ToString();
+                formattedText = new FormattedText(segmentLabel, CultureInfo.GetCultureInfo("en-us"), FlowDirection.LeftToRight, new Typeface("Arial"), 9, Brushes.Black, VisualTreeHelper.GetDpi(this).PixelsPerDip);
+                context.DrawText(formattedText, lineGoesUp ? new WinPoint(w - formattedText.Width / 2, h - ScaleBarHeight - formattedText.Height) : new WinPoint(w - formattedText.Width / 2, h - formattedText.Height));
+
+                var p1 = new WinPoint(w, h);
+                h = lineGoesUp ? h - ScaleBarHeight : h + ScaleBarHeight;
+                var p2 = new WinPoint(w, h);
+                context.DrawLine(ScaleBarPen, p1, p2);
+
+                w -= scaleBarUnitLength * (vs[i] - vs[i + 1]);
+                var p3 = new WinPoint(w, h);
+                context.DrawLine(ScaleBarPen, p2, p3);
+
+                lineGoesUp = !lineGoesUp;
+            }
+            formattedText = new FormattedText("0", CultureInfo.GetCultureInfo("en-us"), FlowDirection.LeftToRight, new Typeface("Arial"), 9, Brushes.Black, VisualTreeHelper.GetDpi(this).PixelsPerDip);
+            context.DrawText(formattedText, lineGoesUp ? new WinPoint(w - formattedText.Width / 2, h - ScaleBarHeight - formattedText.Height) : new WinPoint(w - formattedText.Width / 2, h - formattedText.Height));
+
+            var p4 = new WinPoint(w, h);
+            h = lineGoesUp ? h - ScaleBarHeight : h + ScaleBarHeight;
+            var p5 = new WinPoint(w, h);
+            context.DrawLine(ScaleBarPen, p4, p5);
+        }
+
+        private void DrawPolyline(DrawingContext context, List<WinPoint> points, Pen pen)
+        {
+            for (int i = 0; i < points.Count - 1; i++)
+            {
+                var startPoint = new WinPoint((int)points[i].X, (int)points[i].Y);
+                var endPoint = new WinPoint((int)points[i + 1].X, (int)points[i + 1].Y);
+                context.DrawLine(pen, startPoint, endPoint);
+            }
+        }
+
+        private void DrawPolygonFill(DrawingContext context, List<WinPoint> points, Brush brush)
+        {
+            var start = points[0];
+            List<WinLineSegment> segments = new List<WinLineSegment>();
+            for (int i = 1; i < points.Count; i++)
+            {
+                segments.Add(new WinLineSegment(points[i], false));
+            }
+            var figure = new PathFigure(start, segments, true);
+            var geo = new PathGeometry(new[] { figure });
+            context.DrawGeometry(brush, null, geo);
+        }
 
         protected override Visual GetVisualChild(int index)
         {

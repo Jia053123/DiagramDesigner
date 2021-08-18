@@ -32,8 +32,18 @@ namespace DiagramDesignerModel
 			{
 				var fragmentArea = extractedFragments[i].CalculateFragmentArea();
 
-				String name = (String) ProgramRequirements.Rows[0]["Name"];
-				double requiredArea = (double)ProgramRequirements.Rows[0]["Area"];
+				String name;
+				double requiredArea;
+				if (ProgramRequirements.Rows.Count == 0)
+				{
+					name = "Unamed";
+					requiredArea = 0;
+				}
+				else
+				{
+					name = (String)ProgramRequirements.Rows[0]["Name"];
+					requiredArea = (double)ProgramRequirements.Rows[0]["Area"];
+				}
 
 				for (int j = 1; j < ProgramRequirements.Rows.Count; j++)
 				{
