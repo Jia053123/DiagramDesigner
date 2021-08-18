@@ -26,12 +26,34 @@ namespace DiagramDesignerModel
 			List<UndividableDiagramFragment> extractedFragments = FragmentFactory.ExtractAllFragments(this.ExplodedSegments);
 
 			// Second, assign the programs
+			// at the moment, simply assign the program closest in area
+			List<String> programNames = new List<String>();
+			for (int i = 0; i < extractedFragments.Count; i++)
+			{
+				var fragmentArea = extractedFragments[i].CalculateFragmentArea();
+
+				String name = (String) ProgramRequirements.Rows[0]["Name"];
+				double requiredArea = (double)ProgramRequirements.Rows[0]["Area"];
+
+				for (int j = 1; j < ProgramRequirements.Rows.Count; j++)
+				{
+					var currentDiff = Math.Abs(fragmentArea - requiredArea);
+					var newDiff = Math.Abs(fragmentArea - (double)ProgramRequirements.Rows[j]["Area"]);
+					if (newDiff < currentDiff)
+					{
+						name = (String)ProgramRequirements.Rows[j]["Name"];
+						requiredArea = (double)ProgramRequirements.Rows[j]["Area"];
+					}
+				}
+
+				programNames.Add(name);
+			}
 
 			// Third, make program objects 
 			var assignedPrograms = new List<EnclosedProgram>();
-			foreach (UndividableDiagramFragment udf in extractedFragments)
+			for (int i = 0; i < extractedFragments.Count; i++)
 			{
-				assignedPrograms.Add(new EnclosedProgram("unamed", udf));
+				assignedPrograms.Add(new EnclosedProgram(programNames[i], extractedFragments[i]));
 			}
 
 			return assignedPrograms;

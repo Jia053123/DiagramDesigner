@@ -190,7 +190,6 @@ namespace DiagramDesignerEngine
 			var subFragment2 = new DividableDiagramFragment(subFragmentPerimeter2, segmentsWithinSubFragment2);
 
 			return (subFragment1, subFragment2);
-			//}
 		}
 	}
 }

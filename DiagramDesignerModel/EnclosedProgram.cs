@@ -21,33 +21,12 @@ namespace DiagramDesignerModel
 
         public double CalculateEnclosedArea()
         {
-            double perimeterArea = this.ShoelaceArea(this.Perimeter);
-            double innerPerimetersArea = 0;
-            foreach (List<Point> ip in this.InnerPerimeters)
-			{
-                innerPerimetersArea += this.ShoelaceArea(ip);
-            }
+            return this.Geometry.CalculateFragmentArea();
+		}
 
-            return perimeterArea - innerPerimetersArea;
-        }
-
-        public double CalculatePerimeterLength()
+		public double CalculatePerimeterLength()
         {
             throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Source: https://rosettacode.org/wiki/Shoelace_formula_for_polygonal_area#C.23
-        /// </summary>
-        private double ShoelaceArea(List<Point> v)
-        {
-            int n = v.Count;
-            double a = 0.0;
-            for (int i = 0; i < n - 1; i++)
-            {
-                a += v[i].coordinateX * v[i + 1].coordinateY - v[i + 1].coordinateX * v[i].coordinateY;
-            }
-            return Math.Abs(a + v[n - 1].coordinateX * v[0].coordinateY - v[0].coordinateX * v[n - 1].coordinateY) / 2.0;
         }
     }
 }
