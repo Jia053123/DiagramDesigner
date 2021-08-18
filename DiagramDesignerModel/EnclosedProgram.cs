@@ -21,7 +21,14 @@ namespace DiagramDesignerModel
 
         public double CalculateEnclosedArea()
         {
-            return this.ShoelaceArea(this.Geometry.GetPerimeterInPoints());
+            double perimeterArea = this.ShoelaceArea(this.Perimeter);
+            double innerPerimetersArea = 0;
+            foreach (List<Point> ip in this.InnerPerimeters)
+			{
+                innerPerimetersArea += this.ShoelaceArea(ip);
+            }
+
+            return perimeterArea - innerPerimetersArea;
         }
 
         public double CalculatePerimeterLength()
