@@ -24,10 +24,11 @@ namespace DiagramDesigner
 		{
             double xTotal = 0;
             double yTotal = 0;
-            int pointCount = this.Perimeter.Count;
+            int pointCount = this.Perimeter.Count - 1;
 
-            foreach (WinPoint wp in this.Perimeter)
+            for (int i = 0; i < pointCount; i++) // the last point is repeated, so do not count
 			{
+                var wp = this.Perimeter[i];
                 xTotal += wp.X;
                 yTotal += wp.Y;
 			}

@@ -77,7 +77,7 @@ namespace DiagramDesigner
                     var p2 = new WinPoint(w, h);
                     dc.DrawLine(ScaleBarPen, p1, p2);
 
-                    w -= scaleBarUnitLength * vs[i];
+                    w -= scaleBarUnitLength * (vs[i] - vs[i+1]);
                     var p3 = new WinPoint(w, h);
                     dc.DrawLine(ScaleBarPen, p2, p3);
                     
@@ -106,9 +106,12 @@ namespace DiagramDesigner
                         drawPolygonFill(innerPerimeter, new SolidColorBrush(Color.FromArgb(100, 255, 255, 0)));
 					}
 
-                    formattedText = new FormattedText(ptr.Name, CultureInfo.GetCultureInfo("en-us"), FlowDirection.LeftToRight, new Typeface("Arial"), 9, Brushes.Black, VisualTreeHelper.GetDpi(this).PixelsPerDip);
+                    String label = $@"{ptr.Name}
+{Math.Floor(ptr.Area)}";
+					formattedText = new FormattedText(label, CultureInfo.GetCultureInfo("en-us"), FlowDirection.LeftToRight, new Typeface("Arial"), 9, Brushes.Black, VisualTreeHelper.GetDpi(this).PixelsPerDip);
+                    formattedText.TextAlignment = TextAlignment.Center;
                     var labelOrigin = ptr.GetCenterOfThePerimeter();
-                    dc.DrawText(formattedText, new WinPoint(labelOrigin.X - formattedText.Width / 2, labelOrigin.Y - formattedText.Height));
+                    dc.DrawText(formattedText, new WinPoint(labelOrigin.X, labelOrigin.Y - formattedText.Height / 2));
                 }
 
                 // draw the preview line

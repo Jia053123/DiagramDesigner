@@ -31,7 +31,7 @@ namespace DiagramDesignerModel
 			var assignedPrograms = new List<EnclosedProgram>();
 			foreach (UndividableDiagramFragment udf in extractedFragments)
 			{
-				assignedPrograms.Add(new EnclosedProgram(udf));
+				assignedPrograms.Add(new EnclosedProgram("unamed", udf));
 			}
 
 			return assignedPrograms;

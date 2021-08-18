@@ -19,7 +19,7 @@ namespace DiagramDesigner
     {
         private DDModel Model = new DDModel();
 
-        public double DisplayUnitOverRealUnit { get; set; } = 2;
+        public double DisplayUnitOverRealUnit { get; set; } = 3;
         public DataTable ProgramRequirementsDataTable => this.Model.ProgramRequirements; 
         public List<List<WinPoint>> WallsToRender { get; private set; }
         public List<ProgramToRender> ProgramsToRender { get; private set; }
