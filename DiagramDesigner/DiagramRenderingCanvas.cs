@@ -42,7 +42,7 @@ namespace DiagramDesigner
                 // draw walls
                 for (int i = 0; i < wallsToRender.Count; i++)
                 {
-                    this.DrawPolyline(dc, wallsToRender[i], new Pen(Brushes.Black, 1));
+                    this.DrawPolyline(dc, wallsToRender[i], new Pen(Brushes.Black, 2));
                 }
 
                 // draw the programs

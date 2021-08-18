@@ -32,7 +32,14 @@ namespace DiagramDesignerModel
 			}
             this.WallEntities[index].AddPointToGeometry(point);
 
-            this.OnEntitiesChanged();
+            this.OnModelChanged();
+		}
+
+        public void RemoveAllWallsAndPrograms()
+		{
+            this.WallEntities.Clear();
+            this.Programs.Clear();
+            this.OnModelChanged();
 		}
 
         public void ResolvePrograms()
@@ -45,7 +52,7 @@ namespace DiagramDesignerModel
 			}
 
 			this.Programs = (new ProgramsFinder(allSegments, this.ProgramRequirements)).FindPrograms();
-            this.OnProgramsChanged();
+            this.OnModelChanged();
 		}
 
 		public double TotalEnclosedArea()
@@ -60,15 +67,7 @@ namespace DiagramDesignerModel
             return 0;
         }
 
-        private void OnProgramsChanged()
-		{
-            if (this.ModelChanged != null)
-            {
-                this.ModelChanged(this, null);
-            }
-        }
-
-        private void OnEntitiesChanged()
+        private void OnModelChanged()
 		{
             if (this.ModelChanged != null)
             {

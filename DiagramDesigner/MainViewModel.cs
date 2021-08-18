@@ -37,6 +37,7 @@ namespace DiagramDesigner
 
         public ICommand StartDrawingCommand { set; get; }
         public ICommand EndDrawingCommand { set; get; }
+        public ICommand ClearGeometryCommand { set; get; }
         public ICommand ResolveProgramsCommand { get; set; }
         public ICommand AddNewProgramRequirementCommand { set; get; }
 
@@ -48,6 +49,7 @@ namespace DiagramDesigner
         {
             this.StartDrawingCommand = new DelegateCommand(ExecuteStartDrawing);
             this.EndDrawingCommand = new DelegateCommand(ExecuteEndDrawing);
+            this.ClearGeometryCommand = new DelegateCommand(ExecuteClearGeometry);
             this.ResolveProgramsCommand = new DelegateCommand(ExecuteResolvePrograms);
             this.AddNewProgramRequirementCommand = new DelegateCommand(ExecuteAddNewRowToRequirementsTable);
 
@@ -104,6 +106,12 @@ namespace DiagramDesigner
             this.NewEdgePreviewData = null; 
             this.HandelGraphicsModified(this, null);
         }
+
+        private void ExecuteClearGeometry(object obj)
+		{
+            this.ExecuteEndDrawing(obj);
+            this.Model.RemoveAllWallsAndPrograms();
+		}
 
         private void ExecuteResolvePrograms(object obj)
 		{
