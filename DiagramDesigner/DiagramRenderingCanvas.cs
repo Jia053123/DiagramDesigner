@@ -47,11 +47,7 @@ namespace DiagramDesigner
                 // draw the programs
                 foreach (ProgramToRender ptr in programsToRender)
 				{
-                    this.DrawPolygonFill(dc, ptr.Perimeter, new SolidColorBrush(Color.FromArgb(100,255,0,0)));
-                    foreach (List<Point> innerPerimeter in ptr.InnerPerimeters)
-					{
-                        this.DrawPolygonFill(dc, innerPerimeter, new SolidColorBrush(Color.FromArgb(100, 255, 255, 0)));
-					}
+                    this.DrawPolygonFill(dc, ptr.Perimeter, new SolidColorBrush(this.RandomProgramColor(200)));
 
                     String label = $@"{ptr.Name}
 {Math.Floor(ptr.Area)}";
@@ -65,6 +61,12 @@ namespace DiagramDesigner
                 dc.DrawLine(new Pen(Brushes.Blue, 1), newEdgePreview.startPoint, newEdgePreview.endPoint);
             }
         }
+
+        private Color RandomProgramColor(int alpha)
+		{
+            Random r = new Random();
+            return Color.FromArgb((byte)alpha, (byte)r.Next(100, 255), (byte)r.Next(100, 255), (byte)r.Next(100, 255));
+		}
 
         private void DrawScaleBar(DrawingContext context, double scaleBarUnitLength)
 		{
