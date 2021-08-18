@@ -35,6 +35,7 @@ namespace DiagramDesigner
 
 		public void RenderVisual(List<List<WinPoint>> wallsToRender, (WinPoint startPoint, WinPoint endPoint) newEdgePreview, List<ProgramToRender> programsToRender, double scaleBarUnitLength)
         {
+            Random random = new Random(1);
             using (DrawingContext dc = sourceVisual.RenderOpen())
             {
                 this.DrawScaleBar(dc, scaleBarUnitLength);
@@ -47,13 +48,23 @@ namespace DiagramDesigner
                 // draw the programs
                 foreach (ProgramToRender ptr in programsToRender)
 				{
-                    this.DrawPolygonFill(dc, ptr.Perimeter, new SolidColorBrush(this.RandomProgramColor(200)));
+                    var programColor = this.RandomProgramColor(random, 100);
+                    this.DrawPolygonFill(dc, ptr.Perimeter, new SolidColorBrush(programColor));
+                    foreach (List<Point> innerPerimeter in ptr.InnerPerimeters)
+                    {
+                        this.DrawPolygonFill(dc, innerPerimeter, new SolidColorBrush(Color.FromArgb(100, 255, 255, 0)));
+                    }
 
                     String label = $@"{ptr.Name}
 {Math.Floor(ptr.Area)}";
-					var formattedText = new FormattedText(label, CultureInfo.GetCultureInfo("en-us"), FlowDirection.LeftToRight, new Typeface("Arial"), 9, Brushes.Black, VisualTreeHelper.GetDpi(this).PixelsPerDip);
+                    var labelColor = programColor;
+                    labelColor.A = 255;
+                    labelColor.R -= 80;
+                    labelColor.G -= 80;
+                    labelColor.B -= 80;
+                    var formattedText = new FormattedText(label, CultureInfo.GetCultureInfo("en-us"), FlowDirection.LeftToRight, new Typeface("Arial"), 9, new SolidColorBrush(labelColor), VisualTreeHelper.GetDpi(this).PixelsPerDip);
                     formattedText.TextAlignment = TextAlignment.Center;
-                    var labelOrigin = ptr.GetCenterOfThePerimeter();
+                    var labelOrigin = ptr.GetVisualCenter();
                     dc.DrawText(formattedText, new WinPoint(labelOrigin.X, labelOrigin.Y - formattedText.Height / 2));
                 }
 
@@ -62,9 +73,8 @@ namespace DiagramDesigner
             }
         }
 
-        private Color RandomProgramColor(int alpha)
+        private Color RandomProgramColor(Random r, int alpha)
 		{
-            Random r = new Random();
             return Color.FromArgb((byte)alpha, (byte)r.Next(100, 255), (byte)r.Next(100, 255), (byte)r.Next(100, 255));
 		}
 
