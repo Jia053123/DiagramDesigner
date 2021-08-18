@@ -62,7 +62,8 @@ namespace DiagramDesigner
                         new WinPoint(this.ChartCenter.X + this.ChartRadius * Math.Cos(angle+angleDelta), this.ChartCenter.Y - this.ChartRadius * Math.Sin(angle+angleDelta)));
 
                     // draw label
-                    var labelText = this.DataSource.Rows[i].Field<String>(KeyColumnName) + " " + ((int)(ratio*100)).ToString() + "%";
+                    var labelText = $@"{this.DataSource.Rows[i].Field<String>(KeyColumnName)} 
+{((int)(ratio * 100)).ToString()}%";
 
                     var formattedText = new FormattedText(labelText, 
                         CultureInfo.GetCultureInfo("en-us"), 
@@ -72,9 +73,11 @@ namespace DiagramDesigner
                         Brushes.Black, 
                         VisualTreeHelper.GetDpi(this).PixelsPerDip);
 
+                    formattedText.TextAlignment = System.Windows.TextAlignment.Center;
+
                     dc.DrawText(formattedText,
-                        new WinPoint(this.ChartCenter.X + (this.ChartRadius * Math.Cos(angle + angleDelta / 2))/2 - formattedText.Width / 2, 
-                            this.ChartCenter.Y - (this.ChartRadius * Math.Sin(angle + angleDelta / 2))/2));
+                        new WinPoint(this.ChartCenter.X + (this.ChartRadius * Math.Cos(angle + angleDelta / 2))/2, 
+                            this.ChartCenter.Y - (this.ChartRadius * Math.Sin(angle + angleDelta / 2))/2 - formattedText.Height / 2));
 
                     // offset angle starting point
                     angle += angleDelta;
