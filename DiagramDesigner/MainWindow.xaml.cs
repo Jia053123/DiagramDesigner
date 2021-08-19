@@ -49,6 +49,7 @@ namespace DiagramDesigner
 		{
             this.UpdateDiagramRendering();
             this.UpdateProgramsRequirementsPieChart();
+            this.UpdateCurrentProgramsCharts();
 		} 
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
@@ -59,7 +60,7 @@ namespace DiagramDesigner
                     this.UpdateDiagramRendering();
                     break;
                 case "ChartsToRender":
-                    this.UpdateCharts();
+                    this.UpdateCurrentProgramsCharts();
                     break;
                 case "IsInDrawingState":
                     this.PrimaryDiagramCanvas.Cursor = this.MainViewModel.IsInDrawingState ? Cursors.Cross : Cursors.Arrow;
@@ -82,7 +83,7 @@ namespace DiagramDesigner
             ProgramRequirementsChart.RenderPieChart(this.MainViewModel.ProgramRequirementsDataTable, "Name", "TotalArea");
         }
 
-        public void UpdateCharts()
+        public void UpdateCurrentProgramsCharts()
 		{
             CurrentProgramsChart.RenderPieChart(this.MainViewModel.CurrentProgramsDataTable, "Name", "TotalArea");
 		}
