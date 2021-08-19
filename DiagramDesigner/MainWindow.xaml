@@ -8,7 +8,7 @@
         Title="Diagram Designer" Height="720" Width="1280" Loaded="Window_Loaded">
     <DockPanel>
         
-        <StackPanel Orientation="Vertical" Width="300" DockPanel.Dock="Left" Background="LemonChiffon">
+        <StackPanel Orientation="Vertical" Width="300" DockPanel.Dock="Left" Background="LightGray">
             <TextBlock Name="ShapeGrammarLabel" Text="Shape Grammar Panel" FontSize="15" FontStyle="Italic" HorizontalAlignment="Center" Margin="10,10,10,10"></TextBlock>
             <Button Content="Add New Shape" Width="100" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding StartDrawingCommand}"/>
             <Button Content="End of Shape" Width="100" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding EndDrawingCommand}"/>
@@ -25,8 +25,8 @@
             <local:PieChartCanvas x:Name="CurrentProgramsChart" Width="250" Height="200"></local:PieChartCanvas>
         </StackPanel>
         
-        <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Height="30" DockPanel.Dock="Bottom" Background="Azure">
-            <TextBlock Name="StatusLabel" Text="Status Bar" FontStyle="Italic" VerticalAlignment="Center" Margin="10,10,10,10"></TextBlock>
+        <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Height="30" DockPanel.Dock="Bottom" Background="Gray">
+            <TextBlock Name="StatusLabel" Text="Status Bar" Foreground="White" FontStyle="Italic" VerticalAlignment="Center" Margin="10,10,10,10"></TextBlock>
             <Button Content="Resolve Programs" Width="130" Height="20" Command="{Binding ResolveProgramsCommand}"></Button>
         </StackPanel>
         
