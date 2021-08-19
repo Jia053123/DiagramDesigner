@@ -58,6 +58,9 @@ namespace DiagramDesigner
                 case "GraphicsToRender":
                     this.UpdateDiagramRendering();
                     break;
+                case "ChartsToRender":
+                    this.UpdateCharts();
+                    break;
                 case "IsInDrawingState":
                     this.PrimaryDiagramCanvas.Cursor = this.MainViewModel.IsInDrawingState ? Cursors.Cross : Cursors.Arrow;
                     break;
@@ -78,5 +81,10 @@ namespace DiagramDesigner
         {
             ProgramRequirementsChart.RenderPieChart(this.MainViewModel.ProgramRequirementsDataTable, "Name", "TotalArea");
         }
+
+        public void UpdateCharts()
+		{
+            CurrentProgramsChart.RenderPieChart(this.MainViewModel.CurrentProgramsDataTable, "Name", "TotalArea");
+		}
     }
 }

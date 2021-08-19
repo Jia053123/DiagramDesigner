@@ -36,7 +36,7 @@ namespace DiagramDesignerModel
 				double requiredArea;
 				if (ProgramRequirements.Rows.Count == 0)
 				{
-					name = "Unamed";
+					name = "Unnamed";
 					requiredArea = 0;
 				}
 				else

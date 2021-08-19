@@ -30,6 +30,12 @@ namespace DiagramDesigner
             AddLogicalChild(sourceVisual);
         }
 
+        /// <summary>
+        /// Render a data source with a string key column and a numeric value column into a pie chart
+        /// </summary>
+        /// <param name="source"> the source data table </param>
+        /// <param name="keyColumnName"> the name of each numeric value </param>
+        /// <param name="valueColumnName"> the numeric value corresponding to each key </param>
         public void RenderPieChart(DataTable source, String keyColumnName, String valueColumnName)
         {
             this.DataSource = source;

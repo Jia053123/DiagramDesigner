@@ -20,7 +20,8 @@ namespace DiagramDesigner
         private DDModel Model = new DDModel();
 
         public double DisplayUnitOverRealUnit { get; set; } = 5;
-        public DataTable ProgramRequirementsDataTable => this.Model.ProgramRequirements; 
+        public DataTable ProgramRequirementsDataTable => this.Model.ProgramRequirements;
+        public ProgramsSummaryTable CurrentProgramsDataTable { get;} = new ProgramsSummaryTable();
         public List<List<WinPoint>> WallsToRender { get; private set; }
         public List<ProgramToRender> ProgramsToRender { get; private set; }
 
@@ -54,6 +55,7 @@ namespace DiagramDesigner
             this.AddNewProgramRequirementCommand = new DelegateCommand(ExecuteAddNewRowToRequirementsTable);
 
             this.Model.ModelChanged += this.HandelGraphicsModified;
+            this.Model.ModelChanged += this.HandelProgramsModified;
             this.RebuildGraphicsDataFromModel();
         }
 
@@ -92,6 +94,27 @@ namespace DiagramDesigner
 
                 ProgramsToRender.Add(new ProgramToRender(perimeter, innerPerimeters, ep.Name, ep.Area));
 			}
+		}
+
+        private void RebuildProgramsTableFromModel()
+		{
+            this.CurrentProgramsDataTable.Clear();
+            foreach (EnclosedProgram program in this.Model.Programs)
+			{
+                var name = program.Name;
+                var area = program.Area;
+
+				if (this.CurrentProgramsDataTable.Select($@"Name = '{ name }'").Count() == 0)
+				{
+					var newRow = this.CurrentProgramsDataTable.NewRow();
+                    newRow["Name"] = name;
+                    newRow["TotalArea"] = 0.0;
+                    this.CurrentProgramsDataTable.Rows.Add(newRow);
+                }
+				
+                var rowForTheProgram = this.CurrentProgramsDataTable.Select($@"Name = '{ name }'").First();
+                rowForTheProgram["TotalArea"] = (double)rowForTheProgram["TotalArea"] + area;
+            }
 		}
 
         private void ExecuteStartDrawing(object obj)
@@ -171,6 +194,15 @@ namespace DiagramDesigner
                 this.RebuildGraphicsDataFromModel();
             }
             this.OnPropertyChanged("GraphicsToRender");
+        }
+
+        private void HandelProgramsModified(object sender, EventArgs e)
+        {
+            if (sender == this.Model)
+            {
+                this.RebuildProgramsTableFromModel();
+            }
+            this.OnPropertyChanged("ChartsToRender");
         }
 
         protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
