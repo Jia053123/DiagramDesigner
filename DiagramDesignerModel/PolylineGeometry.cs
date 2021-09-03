@@ -8,6 +8,7 @@ namespace DiagramDesignerModel
     public class PolylineGeometry
     {
         public List<Point> PathsDefinedByPoints { get; internal set; } = new List<Point>();
+        internal Shape UnderlyingShape { get; private set; } = null;
 
         internal List<LineSegment> ConvertToLineSegments()
 		{

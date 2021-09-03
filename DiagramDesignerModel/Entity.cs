@@ -10,12 +10,10 @@ namespace DiagramDesignerModel
     /// </summary>
     public abstract class Entity {
         public bool Isfixed;
-        public Double translationX { get; internal set; } = 0;
-        public Double translationY { get; internal set; } = 0;
-        public Double rotation { get; internal set; } = 0;
-        public abstract PolylineGeometry Geometry { get; protected set; } 
+        internal Shape UnderlyingShape { get { return this.Geometry.UnderlyingShape; } }
+		public abstract PolylineGeometry Geometry { get; protected set; }
 
-        internal void AddPointToGeometry(Point p)
+		internal void AddPointToGeometry(Point p)
 		{
             this.Geometry.PathsDefinedByPoints.Add(p);
 		}
