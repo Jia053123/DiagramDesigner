@@ -6,6 +6,6 @@ namespace ShapeGrammarEngine
 {
 	public class Shape
 	{
-
+		
 	}
 }

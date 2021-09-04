@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DiagramDesignerEngine\DiagramDesignerEngine.csproj" />
+    <ProjectReference Include="..\ShapeGrammarEngine\ShapeGrammarEngine.csproj" />
   </ItemGroup>
 
   <ItemGroup>

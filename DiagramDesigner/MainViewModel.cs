@@ -18,7 +18,6 @@ namespace DiagramDesigner
     class MainViewModel : INotifyPropertyChanged
     {
         private DDModel Model = new DDModel();
-
         public double DisplayUnitOverRealUnit { get; set; } = 5;
         public DataTable ProgramRequirementsDataTable => this.Model.ProgramRequirements;
         public ProgramsSummaryTable CurrentProgramsDataTable { get;} = new ProgramsSummaryTable();
@@ -174,6 +173,11 @@ namespace DiagramDesigner
                 if (this.WallsToRender != null)
                 {
                     var newPoint = new WinPoint(mea.LocationX, mea.LocationY);
+                    var pointCloseBy = this.FindPointCloseBy(newPoint);
+                    if (!(pointCloseBy is null))
+					{
+                        newPoint = (WinPoint) pointCloseBy;
+					}
                     this.Model.AddPointToWallEntityAtIndex(Utilities.ConvertWindowsPointToPoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count-1);
                     if (this.NewEdgePreviewData is null)
 					{
@@ -185,6 +189,28 @@ namespace DiagramDesigner
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// This is for the UI feature that places new points atop of a existing points in close proximity (measured by pixel)
+        /// </summary>
+        /// <param name="wPoint"> The new point </param>
+        /// <returns> A point in WallEntity on screen in close proximity, or null if no existing point qualifies </returns>
+        private WinPoint? FindPointCloseBy(WinPoint wPoint)
+        {
+            const double maxDistance = 5;
+            for (int i = 0; i < this.WallsToRender.Count; i++)
+            {
+                for (int j = 0; j < this.WallsToRender[i].Count; j++)
+				{
+                    var p = this.WallsToRender[i][j];
+                    if (Utilities.DistanceBetweenWinPoints(wPoint, p) <= maxDistance)
+					{
+                        return p;
+					}
+				}
+            }
+            return null;
         }
 
         private void HandelGraphicsModified(object sender, EventArgs e)

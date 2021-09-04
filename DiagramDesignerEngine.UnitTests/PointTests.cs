@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using DiagramDesignerEngine;
+using System;
 
 namespace DiagramDesignerEngine.UnitTests
 {

@@ -19,5 +19,12 @@ namespace DiagramDesigner
 		{
 			return new Point(wp.X / winPointUnitOverPointUnit, wp.Y / winPointUnitOverPointUnit);
 		}
+
+		public static double DistanceBetweenWinPoints(WinPoint p1, WinPoint p2)
+		{
+			var diffX = p1.X - p2.X;
+			var diffY = p1.Y - p2.Y;
+			return Math.Sqrt(Math.Pow(diffX, 2) + Math.Pow(diffY, 2));
+		}
 	}
 }
