@@ -11,9 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiagramDesigner.UnitTests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiagramDesignerEngine.UnitTests", "DiagramDesignerEngine.UnitTests\DiagramDesignerEngine.UnitTests.csproj", "{5EF8A75B-D578-4725-B3D0-D795B8793385}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiagramDesignerModel", "DiagramDesignerModel\DiagramDesignerModel.csproj", "{13ED3C59-DA21-4032-975D-9733D6A6CD8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiagramDesignerModel", "DiagramDesignerModel\DiagramDesignerModel.csproj", "{13ED3C59-DA21-4032-975D-9733D6A6CD8F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiagramDesignerModelTests.UnitTests", "DiagramDesignerModelTests\DiagramDesignerModelTests.UnitTests.csproj", "{2A7FD8F3-8973-4A62-A208-7286FE69E089}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiagramDesignerModelTests.UnitTests", "DiagramDesignerModelTests\DiagramDesignerModelTests.UnitTests.csproj", "{2A7FD8F3-8973-4A62-A208-7286FE69E089}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapeGrammarEngine", "ShapeGrammarEngine\ShapeGrammarEngine.csproj", "{85C51CD5-1540-4E40-AD10-8F51741196AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,6 +99,18 @@ Global
 		{2A7FD8F3-8973-4A62-A208-7286FE69E089}.Release|x64.Build.0 = Release|Any CPU
 		{2A7FD8F3-8973-4A62-A208-7286FE69E089}.Release|x86.ActiveCfg = Release|Any CPU
 		{2A7FD8F3-8973-4A62-A208-7286FE69E089}.Release|x86.Build.0 = Release|Any CPU
+		{85C51CD5-1540-4E40-AD10-8F51741196AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85C51CD5-1540-4E40-AD10-8F51741196AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85C51CD5-1540-4E40-AD10-8F51741196AE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{85C51CD5-1540-4E40-AD10-8F51741196AE}.Debug|x64.Build.0 = Debug|Any CPU
+		{85C51CD5-1540-4E40-AD10-8F51741196AE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{85C51CD5-1540-4E40-AD10-8F51741196AE}.Debug|x86.Build.0 = Debug|Any CPU
+		{85C51CD5-1540-4E40-AD10-8F51741196AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85C51CD5-1540-4E40-AD10-8F51741196AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85C51CD5-1540-4E40-AD10-8F51741196AE}.Release|x64.ActiveCfg = Release|Any CPU
+		{85C51CD5-1540-4E40-AD10-8F51741196AE}.Release|x64.Build.0 = Release|Any CPU
+		{85C51CD5-1540-4E40-AD10-8F51741196AE}.Release|x86.ActiveCfg = Release|Any CPU
+		{85C51CD5-1540-4E40-AD10-8F51741196AE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
