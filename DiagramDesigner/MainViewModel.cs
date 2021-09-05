@@ -173,11 +173,19 @@ namespace DiagramDesigner
                 if (this.WallsToRender != null)
                 {
                     var newPoint = new WinPoint(mea.LocationX, mea.LocationY);
+                    
                     var pointCloseBy = this.FindPointCloseBy(newPoint);
+                    var pointOnLineCloseBy = this.FindPointOnLine(newPoint);
                     if (!(pointCloseBy is null))
 					{
-                        newPoint = (WinPoint) pointCloseBy;
+                        // prioritize pointCloseBy
+                        newPoint = (WinPoint)pointCloseBy;
+					} 
+                    else if (!(pointOnLineCloseBy is null))
+					{
+                        newPoint = (WinPoint)pointOnLineCloseBy;
 					}
+                    
                     this.Model.AddPointToWallEntityAtIndex(Utilities.ConvertWindowsPointToPoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count-1);
                     if (this.NewEdgePreviewData is null)
 					{
@@ -192,7 +200,8 @@ namespace DiagramDesigner
         }
 
         /// <summary>
-        /// This is for the UI feature that places new points atop of a existing points in close proximity (measured by pixel)
+        /// Find a Windows Point close by measured by pixel. 
+        /// This is intended for the UI feature that snap new points to existing points close by.
         /// </summary>
         /// <param name="wPoint"> The new point </param>
         /// <returns> A point in WallEntity on screen in close proximity, or null if no existing point qualifies </returns>
@@ -212,6 +221,31 @@ namespace DiagramDesigner
             }
             return null;
         }
+
+        /// <summary>
+        /// Find a Windows Point on a line close by measured by pixel. 
+        /// This is intended for the UI feature that snap new points to existing lines close by. 
+        /// </summary>
+        /// <param name="wPoint"> The new point </param>
+        /// <returns> A point on a line segment on screen in close proximity, or null if no line qualifies </returns>
+        private WinPoint? FindPointOnLine(WinPoint wPoint)
+		{
+            const double maxDistance = 5;
+            for (int i = 0; i < this.WallsToRender.Count; i++)
+            {
+                for (int j = 0; j < this.WallsToRender[i].Count-1; j++)
+                {
+                    var endPoint1 = this.WallsToRender[i][j];
+                    var endPoint2 = this.WallsToRender[i][j+1];
+                    var result = Utilities.DistanceFromWinPointToLine(wPoint, endPoint1, endPoint2);
+                    if (!(result is null) && result.Item1 <= maxDistance)
+                    {
+                        return result.Item2;
+                    }
+                }
+            }
+            return null; // stub
+		}
 
         private void HandelGraphicsModified(object sender, EventArgs e)
         {
