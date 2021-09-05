@@ -41,5 +41,24 @@ namespace DiagramDesignerEngine.UnitTests
 			Assert.AreNotEqual(p1.GetHashCode(), p4.GetHashCode());
 			//Assert.AreEqual(p1.GetHashCode(), p5.GetHashCode());
 		}
+
+		[Test]
+		public void TestDistanceBetweenPoints()
+		{
+			var p1 = new Point(1, 2);
+			Assert.AreEqual(0, Point.DistanceBetweenPoints(p1, p1));
+
+			var p2 = new Point(1, 3);
+			Assert.AreEqual(1, Point.DistanceBetweenPoints(p1, p2));
+			Assert.AreEqual(1, Point.DistanceBetweenPoints(p2, p1));
+			var p3 = new Point(2, 2);
+			Assert.AreEqual(1, Point.DistanceBetweenPoints(p1, p3));
+			Assert.AreEqual(1, Point.DistanceBetweenPoints(p3, p1));
+
+			var p4 = new Point(1, -1);
+			var p5 = new Point(2, -2);
+			Assert.AreEqual(Math.Sqrt(2), Point.DistanceBetweenPoints(p4, p5));
+			Assert.AreEqual(Math.Sqrt(2), Point.DistanceBetweenPoints(p5, p4));
+		}
 	}
 }

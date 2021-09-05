@@ -46,7 +46,7 @@ namespace DiagramDesignerModel
 
         public void ResolvePrograms()
 		{
-            Logger.Debug("////////////////// Resolve Programs /////////////////////");
+            Logger.Debug("////////////////// Resolve Programs //////////////////");
 
 			// make a collection of all geometry segments
 			var allSegments = new List<LineSegment>();

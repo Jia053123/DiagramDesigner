@@ -40,5 +40,12 @@ namespace DiagramDesignerEngine
 		{
 			return String.Concat("(", this.coordinateX.ToString(), " ", this.coordinateY.ToString(), ")");
 		}
+
+		public static double DistanceBetweenPoints(Point p1, Point p2)
+		{
+			var diffX = p1.coordinateX - p2.coordinateX;
+			var diffY = p1.coordinateY - p2.coordinateY;
+			return Math.Sqrt(Math.Pow(diffX, 2) + Math.Pow(diffY, 2));
+		}
 	}
 }

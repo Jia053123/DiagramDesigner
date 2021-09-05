@@ -30,7 +30,7 @@ namespace DiagramDesigner.UnitTests
 		}
 
 		[Test]
-		public void TestDistanceFromWinPoint()
+		public void TestDistanceBetweenWinPoints()
 		{
 			var p1 = new WinPoint(1, 2);
 			Assert.AreEqual(0, Utilities.DistanceBetweenWinPoints(p1, p1));

@@ -120,19 +120,25 @@ namespace DiagramDesignerEngine
 		/// <returns> false if the point is not on the segment </returns>
 		internal bool ContainsPoint(Point p)
 		{
-			double maximumAngularTolerance = 0.018; // about 1 degree
+			double maximumDistanceTolerance = 0.0001;
+			var A = p.coordinateX - this.FirstPoint.coordinateX;
+			var B = p.coordinateY - this.FirstPoint.coordinateY;
+			var C = this.SecondPoint.coordinateX - this.FirstPoint.coordinateX;
+			var D = this.SecondPoint.coordinateY - this.FirstPoint.coordinateY;
 
-			if (p == this.FirstPoint || p == this.SecondPoint)
-			{
-				return true;
-			}
-			
-			var angle = TraversalUtilities.AngleAmongThreePoints(this.FirstPoint, p, this.SecondPoint);
-			var absDiff = Math.Abs(angle - Math.PI);
+			var dot = A * C + B * D;
+			var len_sq = C * C + D * D;
+			double param = -1;
+			Debug.Assert(len_sq != 0);
+			param = dot / len_sq;
 
-			if (absDiff < maximumAngularTolerance)
+			if (param >= 0 && param <= 1)
 			{
-				return true;
+				var projX = this.FirstPoint.coordinateX + param * C;
+				var projY = this.FirstPoint.coordinateY + param * D;
+				var projPoint = new Point(projX, projY);
+				var distance = Point.DistanceBetweenPoints(p, projPoint);
+				return distance <= maximumDistanceTolerance;
 			}
 			else
 			{
@@ -140,33 +146,6 @@ namespace DiagramDesignerEngine
 			}
 		}
 
-		private bool StrictlyContainsPoint(Point p)
-		{
-			var crossProduct = (p.coordinateY - FirstPoint.coordinateY) * (SecondPoint.coordinateX - FirstPoint.coordinateX) -
-				(p.coordinateX - FirstPoint.coordinateX) * (SecondPoint.coordinateY - FirstPoint.coordinateY);
-			if (Math.Abs(crossProduct) > double.Epsilon)
-			{
-				// the three points are not aligned
-				return false;
-			}
-
-			var dotProduct = (p.coordinateX - FirstPoint.coordinateX) * (SecondPoint.coordinateX - FirstPoint.coordinateX) +
-				(p.coordinateY - FirstPoint.coordinateY) * (SecondPoint.coordinateY - FirstPoint.coordinateY);
-			if (dotProduct < 0)
-			{
-				return false;
-			}
-
-			var squaredDistance = Math.Pow(SecondPoint.coordinateX - FirstPoint.coordinateX, 2) +
-				Math.Pow(SecondPoint.coordinateY - FirstPoint.coordinateY, 2);
-			if (dotProduct > squaredDistance)
-			{
-				return false;
-			}
-
-			return true;
-
-		}
 
 		/// <summary>
 		/// Split the segment at the point
