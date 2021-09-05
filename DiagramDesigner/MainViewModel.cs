@@ -43,7 +43,7 @@ namespace DiagramDesigner
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetLogger("Default");
 
         public MainViewModel()
         {
@@ -56,6 +56,8 @@ namespace DiagramDesigner
             this.Model.ModelChanged += this.HandelGraphicsModified;
             this.Model.ModelChanged += this.HandelProgramsModified;
             this.RebuildGraphicsDataFromModel();
+
+            Logger.Debug("MainViewModel initialized");
         }
 
         private void RebuildGraphicsDataFromModel()

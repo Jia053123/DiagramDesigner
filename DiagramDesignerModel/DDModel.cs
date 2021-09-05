@@ -19,6 +19,8 @@ namespace DiagramDesignerModel
 
         public event EventHandler ModelChanged;
 
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetLogger("Default");
+
         public void CreateNewWallEntity()
 		{
             this.WallEntities.Add(new WallEntity(1));
@@ -44,11 +46,19 @@ namespace DiagramDesignerModel
 
         public void ResolvePrograms()
 		{
-            // make a collection of all geometry segments
-            var allSegments = new List<LineSegment>();
-            foreach (WallEntity we in this.WallEntities)
+            Logger.Debug("////////////////// Resolve Programs /////////////////////");
+
+			// make a collection of all geometry segments
+			var allSegments = new List<LineSegment>();
+			foreach (WallEntity we in this.WallEntities)
 			{
-                allSegments.AddRange(we.Geometry.ConvertToLineSegments());
+                var lineSegments = we.Geometry.ConvertToLineSegments();
+                foreach (LineSegment ls in lineSegments)
+				{
+                    Logger.Debug(ls.ToString());
+                }
+
+                allSegments.AddRange(lineSegments);
 			}
 
 			this.Programs = (new ProgramsFinder(allSegments, this.ProgramRequirements)).FindPrograms();
