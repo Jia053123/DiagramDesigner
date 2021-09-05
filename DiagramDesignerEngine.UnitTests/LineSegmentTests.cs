@@ -116,15 +116,16 @@ namespace DiagramDesignerEngine.UnitTests
 		[Test]
 		public void TestContainsPoint_2()
 		{
-			var ls4 = new LineSegment(new Point(105, 210.5), new Point(259, 112.5));
-			Assert.IsTrue(ls4.ContainsPoint(new Point(162.79444, 173.72171)));
+			var ls5 = new LineSegment(new Point(120, 68.5), new Point(210, 159));
+			Assert.IsTrue(ls5.ContainsPoint(new Point(157.63185905670764, 106.34092494035603)));
 		}
 
 		[Test]
 		public void TestContainsPoint_3()
 		{
-			var ls5 = new LineSegment(new Point(120, 68.5), new Point(210, 159));
-			Assert.IsTrue(ls5.ContainsPoint(new Point(157.63185905670764, 106.34092494035603)));
+			var ls5 = new LineSegment(new Point(49.6, 41.6), new Point(50.2, 70.8));
+			Assert.IsTrue(ls5.ContainsPoint(new Point(49.79315357561548, 51.000140679953105)));
+			Assert.IsTrue(ls5.ContainsPoint(new Point(50.072572098475966, 64.59850879249707)));
 		}
 
 		[Test]

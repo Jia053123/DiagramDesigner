@@ -120,7 +120,7 @@ namespace DiagramDesignerEngine
 		/// <returns> false if the point is not on the segment </returns>
 		internal bool ContainsPoint(Point p)
 		{
-			double maximumDistanceTolerance = 0.0001;
+			double maximumDistanceTolerance = 0.00001;
 			var A = p.coordinateX - this.FirstPoint.coordinateX;
 			var B = p.coordinateY - this.FirstPoint.coordinateY;
 			var C = this.SecondPoint.coordinateX - this.FirstPoint.coordinateX;
@@ -138,6 +138,7 @@ namespace DiagramDesignerEngine
 				var projY = this.FirstPoint.coordinateY + param * D;
 				var projPoint = new Point(projX, projY);
 				var distance = Point.DistanceBetweenPoints(p, projPoint);
+
 				return distance <= maximumDistanceTolerance;
 			}
 			else
