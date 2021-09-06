@@ -67,7 +67,7 @@ namespace DiagramDesignerEngine.UnitTests
 		}
 
 		[Test]
-		public void TestFindIntersection()
+		public void TestFindIntersection_1()
 		{
 			var ls1 = new LineSegment(new Point(-1, 0), new Point(1, 0));
 			var ls2 = new LineSegment(new Point(0, -1), new Point(0, 1));
@@ -96,6 +96,32 @@ namespace DiagramDesignerEngine.UnitTests
 		}
 
 		[Test]
+		public void TestFindIntersection_2()
+		{
+			// overlap
+			var ls1 = new LineSegment(new Point(-12, 1), new Point(0.5, 1));
+			var ls2 = new LineSegment(new Point(-2, 1), new Point(-1, 1));
+			Assert.IsNull(ls1.FindIntersection(ls2));
+			Assert.IsNull(ls2.FindIntersection(ls1));
+		}
+
+			[Test]
+		public void TestFindIntersection_3()
+		{
+			// real T shape case
+			var intP1 = new Point(49.79315357561548, 51.000140679953105);
+			var intP2 = new Point(50.072572098475966, 64.59850879249707);
+			var ls1 = new LineSegment(new Point(49.6, 41.6), new Point(50.2, 70.8));
+			var ls2 = new LineSegment(intP1, new Point(72.4, 58));
+			var ls3 = new LineSegment(intP2, new Point(72.4, 58));
+
+			Assert.AreEqual(intP1, ls1.FindIntersection(ls2));
+			Assert.AreEqual(intP1, ls2.FindIntersection(ls1));
+			Assert.AreEqual(intP2, ls1.FindIntersection(ls3));
+			Assert.AreEqual(intP2, ls3.FindIntersection(ls1));
+		}
+
+			[Test]
 		public void TestContainsPoint_1()
 		{
 			var ls1 = new LineSegment(new Point(-1, 0), new Point(1, 0));
@@ -278,6 +304,15 @@ namespace DiagramDesignerEngine.UnitTests
 
 			var ls9 = new LineSegment(new Point(0, 2), new Point(0, 3));
 			Assert.IsFalse(LineSegment.DoOverlap(ls9, ls1));
+		}
+
+		[Test]
+		public void TestDoOverlap_3()
+		{
+			var ls1 = new LineSegment(new Point(-12, 1), new Point(0.5, 1));
+			var ls2 = new LineSegment(new Point(-2, 1), new Point(-1, 1));
+			Assert.IsTrue(LineSegment.DoOverlap(ls1, ls2));
+			Assert.IsTrue(LineSegment.DoOverlap(ls2, ls1));
 		}
 
 		[Test]

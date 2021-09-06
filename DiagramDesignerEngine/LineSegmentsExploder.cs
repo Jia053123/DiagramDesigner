@@ -27,10 +27,10 @@ namespace DiagramDesignerEngine
 
 		private List<LineSegment> SplitAndMergeOverlappingSegments(List<LineSegment> segments)
 		{
-			List<List<Point>> pointsToSplitForEachLine1 = new List<List<Point>>();
+			List<List<Point>> pointsToSplitForEachLine = new List<List<Point>>();
 			for (int i = 0; i < segments.Count; i++)
 			{
-				pointsToSplitForEachLine1.Add(new List<Point>());
+				pointsToSplitForEachLine.Add(new List<Point>());
 			}
 
 			// find points to split for overlapping segments
@@ -40,16 +40,16 @@ namespace DiagramDesignerEngine
 				{
 					// if segments overlap, remember where to split
 					var pointsToSplit = LineSegment.PointsToSplitIfOverlap(segments[i], segments[j]);
-					pointsToSplitForEachLine1[i].AddRange(pointsToSplit);
-					pointsToSplitForEachLine1[j].AddRange(pointsToSplit);
+					pointsToSplitForEachLine[i].AddRange(pointsToSplit);
+					pointsToSplitForEachLine[j].AddRange(pointsToSplit);
 				}
 			}
 
 			// split segments at points identified
 			var collapsedSegments = new List<LineSegment>();
-			for (int i = 0; i < pointsToSplitForEachLine1.Count; i++)
+			for (int i = 0; i < pointsToSplitForEachLine.Count; i++)
 			{
-				collapsedSegments.AddRange(segments[i].SplitAtPoints(pointsToSplitForEachLine1[i]));
+				collapsedSegments.AddRange(segments[i].SplitAtPoints(pointsToSplitForEachLine[i]));
 			}
 			// remove duplicate segments
 			collapsedSegments = collapsedSegments.Distinct().ToList();

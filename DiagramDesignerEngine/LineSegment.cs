@@ -59,11 +59,34 @@ namespace DiagramDesignerEngine
 		/// <returns> the point of intersection; null if not found </returns>
 		internal Point? FindIntersection(LineSegment ls)
 		{
+			if (LineSegment.DoOverlap(this, ls))
+			{
+				return null;
+			}
+
 			if (this.FirstPoint == ls.FirstPoint || this.FirstPoint == ls.SecondPoint || 
 				this.SecondPoint == ls.FirstPoint || this.SecondPoint == ls.SecondPoint)
 			{
-				// end points overlap
+				// share an end point
 				return null;
+			}
+
+			// handle T shaped cases separately to avoid tolerance problem
+			if (ls.ContainsPoint(this.FirstPoint))
+			{
+				return this.FirstPoint;
+			}
+			if (ls.ContainsPoint(this.SecondPoint))
+			{
+				return this.SecondPoint;
+			}
+			if (this.ContainsPoint(ls.FirstPoint))
+			{
+				return ls.FirstPoint;
+			}
+			if (this.ContainsPoint(ls.SecondPoint))
+			{
+				return ls.SecondPoint;
 			}
 
 			var p1x = this.FirstPoint.coordinateX;
@@ -120,7 +143,7 @@ namespace DiagramDesignerEngine
 		/// <returns> false if the point is not on the segment </returns>
 		internal bool ContainsPoint(Point p)
 		{
-			double maximumDistanceTolerance = 0.00001;
+			double maximumDistanceTolerance = 0.000001;
 			var A = p.coordinateX - this.FirstPoint.coordinateX;
 			var B = p.coordinateY - this.FirstPoint.coordinateY;
 			var C = this.SecondPoint.coordinateX - this.FirstPoint.coordinateX;
@@ -146,7 +169,6 @@ namespace DiagramDesignerEngine
 				return false;
 			}
 		}
-
 
 		/// <summary>
 		/// Split the segment at the point
