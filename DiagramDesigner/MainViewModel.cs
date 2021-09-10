@@ -20,7 +20,8 @@ namespace DiagramDesigner
         private DDModel Model = new DDModel();
         public double DisplayUnitOverRealUnit { get; set; } = 5;
         public DataTable ProgramRequirementsDataTable => this.Model.ProgramRequirements;
-        public ProgramsSummaryTable CurrentProgramsDataTable { get;} = new ProgramsSummaryTable();
+        public DataTable CurrentShapesTable => this.Model.CurrentShapes;
+        public ProgramsSummaryTable CurrentProgramsDataTable { get;} = new ProgramsSummaryTable(); // for the pie chart
         public List<List<WinPoint>> WallsToRender { get; private set; }
         public List<ProgramToRender> ProgramsToRender { get; private set; }
 

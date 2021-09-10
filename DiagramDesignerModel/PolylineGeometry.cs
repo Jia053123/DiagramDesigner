@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using DiagramDesignerEngine;
 using ShapeGrammarEngine;
 
 namespace DiagramDesignerModel
 {
-    public class PolylineGeometry
+	public class PolylineGeometry
     {
         public List<Point> PathsDefinedByPoints { get; internal set; } = new List<Point>();
-        internal Shape UnderlyingShape { get; private set; } = null;
+        internal Shape UnderlyingShape { get; private set; }
 
         internal List<LineSegment> ConvertToLineSegments()
 		{

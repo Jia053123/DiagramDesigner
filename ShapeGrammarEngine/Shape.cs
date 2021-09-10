@@ -32,7 +32,7 @@ namespace ShapeGrammarEngine
 
 			foreach ((int, int) connection in this.Definition)
 			{
-				if (! (s.Definition.Contains(connection) || s.Definition.Contains((connection.Item2, connection.Item1))))
+				if (! (s.Definition.Contains((connection.Item1, connection.Item2)) || s.Definition.Contains((connection.Item2, connection.Item1))))
 				{
 					return false;
 				}

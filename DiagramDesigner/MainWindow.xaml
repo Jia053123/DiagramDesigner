@@ -9,10 +9,19 @@
     <DockPanel>
         
         <StackPanel Orientation="Vertical" Width="300" DockPanel.Dock="Left" Background="LightGray">
-            <TextBlock Name="ShapeGrammarLabel" Text="Shape Definition" FontSize="15" FontStyle="Italic" HorizontalAlignment="Center" Margin="10,10,10,10"></TextBlock>
-            <Button Content="Add New Shape" Width="100" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding StartDrawingCommand}"/>
-            <Button Content="End of Shape" Width="100" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding EndDrawingCommand}"/>
-            <Button Content="Clear" Width="100" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding ClearGeometryCommand}"/>
+            <TextBlock Name="ShapeGrammarLabel" Text="Shape Definitions" FontSize="15" FontStyle="Italic" HorizontalAlignment="Center" Margin="10,10,10,10"></TextBlock>
+
+            <DataGrid x:Name="CurrentShapesTable" ItemsSource="{Binding}" AutoGenerateColumns="True" IsReadOnly="False" Margin="10,10,10,10"> </DataGrid>
+            
+            <Button Content="Add New Shape" Width="100" HorizontalAlignment="Center" Margin="10,10,10,1" Command="{Binding StartDrawingCommand}"/>
+            <Button Content="End of Shape" Width="100" HorizontalAlignment="Center" Margin="10,1,10,10" Command="{Binding EndDrawingCommand}"/>
+            
+            <Button Content="Repeat Shape" Width="100" HorizontalAlignment="Center" Margin="10,10,10,1" Command="{Binding StartDrawingCommand}"/>
+            <Button Content="End of Shape" Width="100" HorizontalAlignment="Center" Margin="10,1,10,10" Command="{Binding EndDrawingCommand}"/>
+            
+            <Button Content="Add New Layer" Width="100" HorizontalAlignment="Center" Margin="10,10,10,10"/>
+            
+            <Button Content="Clear All" Width="100" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding ClearGeometryCommand}"/>
         </StackPanel>
         
         <StackPanel Orientation="Vertical" Width="300" DockPanel.Dock="Right" Background="LightGray">

@@ -1,4 +1,5 @@
 ﻿using DiagramDesignerEngine;
+using ShapeGrammarEngine;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,6 +17,8 @@ namespace DiagramDesignerModel
         public List<WallEntity> WallEntities { get; private set; } = new List<WallEntity>();
 
         public List<EnclosedProgram> Programs { get; private set; } = new List<EnclosedProgram>();
+
+        public ShapesDataTable CurrentShapes { get; } = new ShapesDataTable();
 
         public event EventHandler ModelChanged;
 
