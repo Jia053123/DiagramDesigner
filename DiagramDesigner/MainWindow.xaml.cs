@@ -55,6 +55,9 @@ namespace DiagramDesigner
                 case "IsInDrawingState":
                     this.PrimaryDiagramCanvas.Cursor = this.MainViewModel.IsInDrawingState ? Cursors.Cross : Cursors.Arrow;
                     break;
+                case "IsOrthogonalityToggleEnabled":
+                    this.OrthogonalityCheckBox.IsEnabled = this.MainViewModel.IsOrthogonalityToggleEnabled;
+                    break;
             }
         }
 

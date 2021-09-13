@@ -29,16 +29,28 @@ namespace DiagramDesigner
         private readonly (WinPoint startPoint, WinPoint endPoint) NewEdgePreviewDefault = (new WinPoint(0, 0), new WinPoint(0, 0));
         public (WinPoint startPoint, WinPoint endPoint) NewEdgePreview => NewEdgePreviewData is null ? NewEdgePreviewDefault : (NewEdgePreviewData.StartPoint, NewEdgePreviewData.EndPoint);
         private DirectedLine NewEdgePreviewData { get; set; } = null;
+
         private WinPoint? LastAddedPoint = null;
 
         private bool _isInDrawingState = false;
         public bool IsInDrawingState
         {
-            private set { SetProperty(ref _isInDrawingState, value); }
+            private set 
+            {
+                this.IsOrthogonalityToggleEnabled = !value;
+                SetProperty(ref _isInDrawingState, value); 
+            }
             get { return this._isInDrawingState; }
         }
 
-        private bool isDrawingOrthogonally = true;
+        private bool IsDrawingOrthogonally { get; set; } = true;
+
+        private bool _isOrthogonalityToggleEnabled = true;
+        public bool IsOrthogonalityToggleEnabled
+		{
+            private set { SetProperty(ref _isOrthogonalityToggleEnabled, value); }
+            get { return this._isOrthogonalityToggleEnabled; }
+        }
 
         public ICommand StartDrawingCommand { set; get; }
         public ICommand EndDrawingCommand { set; get; }
@@ -165,6 +177,7 @@ namespace DiagramDesigner
         private void ExecuteToggleOrthogonalDrawing(object obj)
 		{
             bool isOrthogonal = (bool)obj;
+            this.IsDrawingOrthogonally = isOrthogonal;
 		}
 
         public void HandleMouseMovedEvent(object sender, EventArgs e)
@@ -190,7 +203,7 @@ namespace DiagramDesigner
                     var newPoint = new WinPoint(mea.LocationX, mea.LocationY);
 
                     // handle orthogonal restrictions
-                    if (this.isDrawingOrthogonally)
+                    if (this.IsDrawingOrthogonally)
 					{
                         if (!(this.LastAddedPoint is null))
 						{
