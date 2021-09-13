@@ -30,8 +30,8 @@ namespace DiagramDesigner
             this.MainViewModel.ProgramRequirementsDataTable.RowDeleted += this.OnProgramRequirementsTableChanged;
             this.MainViewModel.ProgramRequirementsDataTable.TableCleared += this.OnProgramRequirementsTableChanged;
 
-            this.CurrentShapesTable.DataContext = this.MainViewModel.CurrentShapesTable;
-
+            this.CurrentShapesTable.DataContext = this.MainViewModel.CurrentRulesTable;
+            
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

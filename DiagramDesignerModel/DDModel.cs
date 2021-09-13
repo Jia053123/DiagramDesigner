@@ -18,7 +18,7 @@ namespace DiagramDesignerModel
 
         public List<EnclosedProgram> Programs { get; private set; } = new List<EnclosedProgram>();
 
-        public ShapesDataTable CurrentShapes { get; } = new ShapesDataTable();
+        public RulesDataTable CurrentRules { get; } = new RulesDataTable();
 
         public event EventHandler ModelChanged;
 

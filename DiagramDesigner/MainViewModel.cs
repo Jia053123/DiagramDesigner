@@ -9,6 +9,7 @@ using System.Linq;
 using WinPoint = System.Windows.Point;
 using System.Data;
 using DiagramDesignerModel;
+using System.Diagnostics;
 
 namespace DiagramDesigner
 {
@@ -20,7 +21,7 @@ namespace DiagramDesigner
         private DDModel Model = new DDModel();
         public double DisplayUnitOverRealUnit { get; set; } = 5;
         public DataTable ProgramRequirementsDataTable => this.Model.ProgramRequirements;
-        public DataTable CurrentShapesTable => this.Model.CurrentShapes;
+        public DataTable CurrentRulesTable => this.Model.CurrentRules;
         public ProgramsSummaryTable CurrentProgramsDataTable { get;} = new ProgramsSummaryTable(); // for the pie chart
         public List<List<WinPoint>> WallsToRender { get; private set; }
         public List<ProgramToRender> ProgramsToRender { get; private set; }
@@ -41,6 +42,7 @@ namespace DiagramDesigner
         public ICommand ClearGeometryCommand { set; get; }
         public ICommand ResolveProgramsCommand { get; set; }
         public ICommand AddNewProgramRequirementCommand { set; get; }
+        public ICommand ToggleOrthogonalDrawingCommand { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -53,6 +55,7 @@ namespace DiagramDesigner
             this.ClearGeometryCommand = new DelegateCommand(ExecuteClearGeometry);
             this.ResolveProgramsCommand = new DelegateCommand(ExecuteResolvePrograms);
             this.AddNewProgramRequirementCommand = new DelegateCommand(ExecuteAddNewRowToRequirementsTable);
+            this.ToggleOrthogonalDrawingCommand = new DelegateCommand(ExecuteToggleOrthogonalDrawing);
 
             this.Model.ModelChanged += this.HandelGraphicsModified;
             this.Model.ModelChanged += this.HandelProgramsModified;
@@ -154,6 +157,11 @@ namespace DiagramDesigner
                 Logger.Error(ex, "Program Requirement Table Constraint Failed");
 			}
         }
+
+        private void ExecuteToggleOrthogonalDrawing(object obj)
+		{
+            bool isOrthogonal = (bool)obj;
+		}
 
         public void HandleMouseMovedEvent(object sender, EventArgs e)
         {
