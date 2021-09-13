@@ -10,7 +10,7 @@
         <StackPanel Orientation="Vertical" Width="300" DockPanel.Dock="Left" Background="LightGray">
             <TextBlock Name="ShapeGrammarLabel" Text="Shape Definitions" FontSize="15" FontStyle="Italic" HorizontalAlignment="Center" Margin="10,10,10,10"></TextBlock>
 
-            <DataGrid x:Name="CurrentRulesTable" ItemsSource="{Binding}" AutoGenerateColumns="True" IsReadOnly="False" Margin="10,10,10,10" SelectionMode="Single" SelectionUnit="FullRow"> 
+            <DataGrid x:Name="CurrentRulesTable" ItemsSource="{Binding}" AutoGenerateColumns="True" AutoGeneratingColumn="HandelCurrentRulesTableColumnGenerated" IsReadOnly="False" Margin="10,10,10,10" SelectionMode="Single" SelectionUnit="FullRow"> 
             </DataGrid>
             
             <Button Content="Add New Rule" Width="100" HorizontalAlignment="Center" Margin="10,10,10,1" Command="{Binding StartDrawingCommand}"/>

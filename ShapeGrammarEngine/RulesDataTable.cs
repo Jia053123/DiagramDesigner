@@ -20,7 +20,7 @@ namespace ShapeGrammarEngine
             var isOrthoColumn = new DataColumn();
             isOrthoColumn.DataType = System.Type.GetType("System.Boolean");
             isOrthoColumn.ColumnName = "IsOrtho";
-            isOrthoColumn.ReadOnly = false;
+            isOrthoColumn.ReadOnly = true;
             isOrthoColumn.Unique = false;
             isOrthoColumn.DefaultValue = false;
             this.Columns.Add(isOrthoColumn);
@@ -36,7 +36,7 @@ namespace ShapeGrammarEngine
             var leftHandShapeColumn = new DataColumn();
             leftHandShapeColumn.DataType = System.Type.GetType("ShapeGrammarEngine.Shape");
             leftHandShapeColumn.ColumnName = "LeftHandShape";
-            leftHandShapeColumn.ReadOnly = false;
+            leftHandShapeColumn.ReadOnly = true;
             leftHandShapeColumn.Unique = false;
             leftHandShapeColumn.DefaultValue = new Shape(new HashSet<(int, int)>());
             this.Columns.Add(leftHandShapeColumn);
@@ -44,7 +44,7 @@ namespace ShapeGrammarEngine
             var rightHandShapeColumn = new DataColumn();
             rightHandShapeColumn.DataType = System.Type.GetType("ShapeGrammarEngine.Shape");
             rightHandShapeColumn.ColumnName = "RightHandShape";
-            rightHandShapeColumn.ReadOnly = false;
+            rightHandShapeColumn.ReadOnly = true;
             rightHandShapeColumn.Unique = false;
             rightHandShapeColumn.DefaultValue = new Shape(new HashSet<(int, int)>());
             this.Columns.Add(rightHandShapeColumn);

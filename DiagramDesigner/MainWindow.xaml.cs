@@ -2,6 +2,8 @@
 using System.Windows;
 using System.Windows.Input;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Windows.Controls;
 
 namespace DiagramDesigner
 {
@@ -30,7 +32,7 @@ namespace DiagramDesigner
             this.MainViewModel.ProgramRequirementsDataTable.RowDeleted += this.OnProgramRequirementsTableChanged;
             this.MainViewModel.ProgramRequirementsDataTable.TableCleared += this.OnProgramRequirementsTableChanged;
 
-            this.CurrentRulesTable.DataContext = this.MainViewModel.CurrentRulesTable; 
+            this.CurrentRulesTable.DataContext = this.MainViewModel.CurrentRulesTable;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -79,5 +81,21 @@ namespace DiagramDesigner
 		{
             CurrentProgramsChart.RenderPieChart(this.MainViewModel.CurrentProgramsDataTable, "Name", "TotalArea");
 		}
+
+        public void HandelCurrentRulesTableColumnGenerated(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            string headername = e.Column.Header.ToString();
+            switch (headername)
+			{
+                case "LeftHandShape":
+                    e.Cancel = true;
+                    break;
+                case "RightHandShape":
+                    e.Cancel = true;
+                    break;
+				default:
+					break;
+			}
+        }
     }
 }
