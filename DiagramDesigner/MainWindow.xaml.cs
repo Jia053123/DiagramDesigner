@@ -40,7 +40,7 @@ namespace DiagramDesigner
             this.UpdateDiagramRendering();
             this.UpdateProgramsRequirementsPieChart();
             this.UpdateCurrentProgramsCharts();
-		} 
+		}
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
