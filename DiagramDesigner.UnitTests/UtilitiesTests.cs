@@ -93,5 +93,30 @@ namespace DiagramDesigner.UnitTests
 			var endPoint10 = new WinPoint(2, 1);
 			Assert.IsNull(Utilities.DistanceFromWinPointToLine(p5, endPoint9, endPoint10));
 		}
+
+		[Test]
+		public void TestPointOrthogonal()
+		{
+			var p1 = new WinPoint(0, 0);
+			Assert.AreEqual(new WinPoint(0,0), Utilities.PointOrthogonal(p1, p1));
+
+			// 2    x
+			//     
+			// 1
+			//
+			// 0 X
+			//   0  1
+			var p2 = new WinPoint(1, 2);
+			Assert.AreEqual(new WinPoint(0, 2), Utilities.PointOrthogonal(p1, p2));
+
+			// 2    
+			//     
+			// 1 x      
+			//
+			// 0       X      
+			//  -2 -1  0
+			var p3 = new WinPoint(-2, 1);
+			Assert.AreEqual(new WinPoint(-2, 0), Utilities.PointOrthogonal(p1, p3));
+		}
 	}
 }

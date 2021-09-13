@@ -31,7 +31,8 @@ namespace DiagramDesigner
             this.MainViewModel.ProgramRequirementsDataTable.TableCleared += this.OnProgramRequirementsTableChanged;
 
             this.CurrentShapesTable.DataContext = this.MainViewModel.CurrentRulesTable;
-            
+
+            this.OrthogonalityCheckBox.IsChecked = true; // check the ortho checkbox
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

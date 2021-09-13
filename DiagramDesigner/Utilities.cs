@@ -61,5 +61,23 @@ namespace DiagramDesigner
 				return null;
 			}
 		}
+
+		/// <summary>
+		/// Find a Windows Point that's orthogonal to the reference point and closest to the new point
+		/// </summary>
+		public static WinPoint PointOrthogonal(WinPoint refPoint, WinPoint newPoint)
+		{
+			var xDist = Math.Abs(refPoint.X - newPoint.X);
+			var yDist = Math.Abs(refPoint.Y - newPoint.Y);
+
+			if (xDist < yDist)
+			{
+				return new WinPoint(refPoint.X, newPoint.Y);
+			}
+			else
+			{
+				return new WinPoint(newPoint.X, refPoint.Y);
+			}
+		}
 	}
 }

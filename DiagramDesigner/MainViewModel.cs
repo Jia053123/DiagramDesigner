@@ -28,7 +28,8 @@ namespace DiagramDesigner
 
         private readonly (WinPoint startPoint, WinPoint endPoint) NewEdgePreviewDefault = (new WinPoint(0, 0), new WinPoint(0, 0));
         public (WinPoint startPoint, WinPoint endPoint) NewEdgePreview => NewEdgePreviewData is null ? NewEdgePreviewDefault : (NewEdgePreviewData.StartPoint, NewEdgePreviewData.EndPoint);
-        private DirectedLine NewEdgePreviewData { get; set; } = null; 
+        private DirectedLine NewEdgePreviewData { get; set; } = null;
+        private WinPoint? LastAddedPoint = null;
 
         private bool _isInDrawingState = false;
         public bool IsInDrawingState
@@ -36,6 +37,8 @@ namespace DiagramDesigner
             private set { SetProperty(ref _isInDrawingState, value); }
             get { return this._isInDrawingState; }
         }
+
+        private bool isDrawingOrthogonally = true;
 
         public ICommand StartDrawingCommand { set; get; }
         public ICommand EndDrawingCommand { set; get; }
@@ -131,7 +134,8 @@ namespace DiagramDesigner
         private void ExecuteEndDrawing(object obj)
         {
             this.IsInDrawingState = false;
-            this.NewEdgePreviewData = null; 
+            this.NewEdgePreviewData = null;
+            this.LastAddedPoint = null;
             this.HandelGraphicsModified(this, null);
         }
 
@@ -184,7 +188,17 @@ namespace DiagramDesigner
                 if (this.WallsToRender != null)
                 {
                     var newPoint = new WinPoint(mea.LocationX, mea.LocationY);
-                    
+
+                    // handle orthogonal restrictions
+                    if (this.isDrawingOrthogonally)
+					{
+                        if (!(this.LastAddedPoint is null))
+						{
+                            newPoint = Utilities.PointOrthogonal((WinPoint)this.LastAddedPoint, newPoint);
+						}
+					}
+
+                    // snap to point or line nearby
                     var pointCloseBy = this.FindPointCloseBy(newPoint);
                     var pointOnLineCloseBy = this.FindPointOnLine(newPoint);
                     if (!(pointCloseBy is null))
@@ -198,6 +212,7 @@ namespace DiagramDesigner
 					}
                     
                     this.Model.AddPointToWallEntityAtIndex(Utilities.ConvertWindowsPointToPoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count-1);
+                    this.LastAddedPoint = newPoint;
                     if (this.NewEdgePreviewData is null)
 					{
                         this.NewEdgePreviewData = new DirectedLine(newPoint, newPoint);
@@ -255,7 +270,7 @@ namespace DiagramDesigner
                     }
                 }
             }
-            return null; // stub
+            return null; 
 		}
 
         private void HandelGraphicsModified(object sender, EventArgs e)
