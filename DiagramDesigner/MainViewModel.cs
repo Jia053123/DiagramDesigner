@@ -43,7 +43,7 @@ namespace DiagramDesigner
             get { return this._isInDrawingState; }
         }
 
-        private bool IsDrawingOrthogonally { get; set; } = true;
+        public bool IsDrawingOrthogonally { get; private set; } = true;
 
         private bool _isOrthogonalityToggleEnabled = true;
         public bool IsOrthogonalityToggleEnabled

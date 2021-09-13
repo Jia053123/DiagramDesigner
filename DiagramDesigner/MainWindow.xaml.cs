@@ -30,9 +30,7 @@ namespace DiagramDesigner
             this.MainViewModel.ProgramRequirementsDataTable.RowDeleted += this.OnProgramRequirementsTableChanged;
             this.MainViewModel.ProgramRequirementsDataTable.TableCleared += this.OnProgramRequirementsTableChanged;
 
-            this.CurrentShapesTable.DataContext = this.MainViewModel.CurrentRulesTable;
-
-            this.OrthogonalityCheckBox.IsChecked = true; // check the ortho checkbox
+            this.CurrentRulesTable.DataContext = this.MainViewModel.CurrentRulesTable; 
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -40,7 +38,8 @@ namespace DiagramDesigner
             this.UpdateDiagramRendering();
             this.UpdateProgramsRequirementsPieChart();
             this.UpdateCurrentProgramsCharts();
-		}
+            this.OrthogonalityCheckBox.IsChecked = this.MainViewModel.IsDrawingOrthogonally; 
+        }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
