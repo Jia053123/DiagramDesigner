@@ -19,11 +19,5 @@ namespace DiagramDesignerModel
 			}
             return list;
 		}
-
-        public bool IsClosed()
-        {
-            // TODO: stub
-            return false;
-        }
-    }
+	}
 }

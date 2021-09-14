@@ -54,7 +54,12 @@ namespace DiagramDesigner
                     this.UpdateCurrentProgramsCharts();
                     break;
                 case "IsInDrawingState":
+                    this.AddNewRuleButton.IsEnabled = this.MainViewModel.IsInDrawingState ? false : true;
+                    this.EndOfRuleButton.IsEnabled = this.MainViewModel.IsInDrawingState ? true : false;
+                    this.DonePickingContextButton.IsEnabled = this.MainViewModel.IsInDrawingState ? true : false;
+
                     this.PrimaryDiagramCanvas.Cursor = this.MainViewModel.IsInDrawingState ? Cursors.Cross : Cursors.Arrow;
+                    
                     break;
                 case "IsOrthogonalityToggleEnabled":
                     this.OrthogonalityCheckBox.IsEnabled = this.MainViewModel.IsOrthogonalityToggleEnabled;

@@ -13,8 +13,8 @@
             <DataGrid x:Name="CurrentRulesTable" ItemsSource="{Binding}" AutoGenerateColumns="True" AutoGeneratingColumn="HandelCurrentRulesTableColumnGenerated" IsReadOnly="False" Margin="10,10,10,10" SelectionMode="Single" SelectionUnit="FullRow"> 
             </DataGrid>
             
-            <Button Content="Add New Rule" Width="100" HorizontalAlignment="Center" Margin="10,10,10,1" Command="{Binding StartDrawingCommand}"/>
-            <Button Content="End of Rule" Width="100" HorizontalAlignment="Center" Margin="10,1,10,1" Command="{Binding EndDrawingCommand}"/>
+            <Button x:Name="AddNewRuleButton" Content="Add New Rule" Width="100" HorizontalAlignment="Center" Margin="10,10,10,1" Command="{Binding StartDrawingCommand}"/>
+            <Button x:Name="EndOfRuleButton" Content="End of Rule" IsEnabled="False" Width="100" HorizontalAlignment="Center" Margin="10,1,10,1" Command="{Binding EndDrawingCommand}"/>
             <CheckBox x:Name="OrthogonalityCheckBox" Content="Orthogonal" IsThreeState="False" Command="{Binding ToggleOrthogonalDrawingCommand}" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}" HorizontalAlignment="Center" Margin="10,1,10,10"></CheckBox>
             
             <Button Content="Repeat Selected Rule" Width="130" HorizontalAlignment="Center" Margin="10,10,10,1" Command="{Binding StartDrawingCommand}"/>
@@ -38,7 +38,7 @@
         
         <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Height="30" DockPanel.Dock="Bottom" Background="Gray">
             <TextBlock Name="StatusLabel" Text="Status Bar" Foreground="White" FontStyle="Italic" VerticalAlignment="Center" Margin="10,10,10,10"></TextBlock>
-            <Button Content="Pick Context" Width="100" Height="20" IsEnabled="False"></Button>
+            <Button x:Name="DonePickingContextButton" Content="Done Picking Context" Width="150" Height="20" IsEnabled="False"></Button>
         </StackPanel>
         
         <local:DiagramRenderingCanvas x:Name="PrimaryDiagramCanvas" ></local:DiagramRenderingCanvas>
