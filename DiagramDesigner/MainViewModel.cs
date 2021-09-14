@@ -32,15 +32,15 @@ namespace DiagramDesigner
 
         private WinPoint? LastAddedPoint = null;
 
-        private bool _isInDrawingState = false;
-        public bool IsInDrawingState
+        private MainViewModelState _state = MainViewModelState.ViewingState;
+        public MainViewModelState State
         {
             private set 
             {
-                this.IsOrthogonalityToggleEnabled = !value;
-                SetProperty(ref _isInDrawingState, value); 
+                this.IsOrthogonalityToggleEnabled = value != MainViewModelState.ViewingState;
+                SetProperty(ref _state, value); 
             }
-            get { return this._isInDrawingState; }
+            get { return this._state; }
         }
 
         public bool IsDrawingOrthogonally { get; private set; } = true;
@@ -52,8 +52,9 @@ namespace DiagramDesigner
             get { return this._isOrthogonalityToggleEnabled; }
         }
 
-        public ICommand StartDrawingCommand { set; get; }
-        public ICommand EndDrawingCommand { set; get; }
+        public ICommand AddNewRuleCommand { set; get; }
+        public ICommand DonePickingContextCommand { set; get; }
+        public ICommand DoneAddingRuleCommand { set; get; }
         public ICommand ClearGeometryCommand { set; get; }
         public ICommand ResolveProgramsCommand { get; set; }
         public ICommand AddNewProgramRequirementCommand { set; get; }
@@ -65,8 +66,9 @@ namespace DiagramDesigner
 
         public MainViewModel()
         {
-            this.StartDrawingCommand = new DelegateCommand(ExecuteStartDrawing);
-            this.EndDrawingCommand = new DelegateCommand(ExecuteEndDrawing);
+            this.AddNewRuleCommand = new DelegateCommand(ExecuteAddNewRule);
+            this.DonePickingContextCommand = new DelegateCommand(ExecuteDonePickingContext);
+            this.DoneAddingRuleCommand = new DelegateCommand(ExecuteDoneAddingRule);
             this.ClearGeometryCommand = new DelegateCommand(ExecuteClearGeometry);
             this.ResolveProgramsCommand = new DelegateCommand(ExecuteResolvePrograms);
             this.AddNewProgramRequirementCommand = new DelegateCommand(ExecuteAddNewRowToRequirementsTable);
@@ -137,15 +139,21 @@ namespace DiagramDesigner
             }
 		}
 
-        private void ExecuteStartDrawing(object obj)
+        private void ExecuteAddNewRule(object obj)
         {
             this.Model.CreateNewWallEntity();
-            this.IsInDrawingState = true;
+            this.State = MainViewModelState.ContextPickingState;
         }
 
-        private void ExecuteEndDrawing(object obj)
+        private void ExecuteDonePickingContext(object obj)
+		{
+            this.State = MainViewModelState.EditingState;
+            // TODO
+		}
+
+        private void ExecuteDoneAddingRule(object obj)
         {
-            this.IsInDrawingState = false;
+            this.State = MainViewModelState.ViewingState;
             this.NewEdgePreviewData = null;
             this.LastAddedPoint = null;
             this.HandelGraphicsModified(this, null);
@@ -153,7 +161,7 @@ namespace DiagramDesigner
 
         private void ExecuteClearGeometry(object obj)
 		{
-            this.ExecuteEndDrawing(obj);
+            this.ExecuteDoneAddingRule(obj);
             this.Model.RemoveAllWallsAndPrograms();
 		}
 
@@ -182,58 +190,74 @@ namespace DiagramDesigner
 
         public void HandleMouseMovedEvent(object sender, EventArgs e)
         {
-            if (this.IsInDrawingState)
+            var mea = (MouseEventArgs)e;
+            switch (this.State)
             {
-                var mea = (MouseEventArgs)e;
-                if (this.NewEdgePreviewData != null)
-                {
-                    this.NewEdgePreviewData.EndPoint = new WinPoint(mea.LocationX, mea.LocationY);
-                    this.HandelGraphicsModified(this, null);
-                }
+                case MainViewModelState.EditingState:
+					if (this.NewEdgePreviewData != null)
+					{
+						this.NewEdgePreviewData.EndPoint = new WinPoint(mea.LocationX, mea.LocationY);
+						this.HandelGraphicsModified(this, null);
+					}
+					break;
+                default:
+                    break;
             }
         }
 
         public void HandleMouseLeftClickedEvent(object sender, EventArgs e)
         {
-            if (this.IsInDrawingState)
+            var mea = (MouseEventArgs)e;
+            switch (this.State)
             {
-                var mea = (MouseEventArgs)e;
-                if (this.WallsToRender != null)
+                case MainViewModelState.EditingState:
+                    this.MouseLeftClickedInEditingState(mea);
+					break;
+                case MainViewModelState.ContextPickingState:
+                    // TODO
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void MouseLeftClickedInEditingState(MouseEventArgs mea)
+		{
+            if (this.WallsToRender != null)
+            {
+                var newPoint = new WinPoint(mea.LocationX, mea.LocationY);
+
+                // handle orthogonal restrictions
+                if (this.IsDrawingOrthogonally)
                 {
-                    var newPoint = new WinPoint(mea.LocationX, mea.LocationY);
-
-                    // handle orthogonal restrictions
-                    if (this.IsDrawingOrthogonally)
-					{
-                        if (!(this.LastAddedPoint is null))
-						{
-                            newPoint = Utilities.PointOrthogonal((WinPoint)this.LastAddedPoint, newPoint);
-						}
-					}
-
-                    // snap to point or line nearby
-                    var pointCloseBy = this.FindPointCloseBy(newPoint);
-                    var pointOnLineCloseBy = this.FindPointOnLine(newPoint);
-                    if (!(pointCloseBy is null))
-					{
-                        // prioritize pointCloseBy
-                        newPoint = (WinPoint)pointCloseBy;
-					} 
-                    else if (!(pointOnLineCloseBy is null))
-					{
-                        newPoint = (WinPoint)pointOnLineCloseBy;
-					}
-                    
-                    this.Model.AddPointToWallEntityAtIndex(Utilities.ConvertWindowsPointToPoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count-1);
-                    this.LastAddedPoint = newPoint;
-                    if (this.NewEdgePreviewData is null)
-					{
-                        this.NewEdgePreviewData = new DirectedLine(newPoint, newPoint);
-					} 
-                    else
-					{
-                        this.NewEdgePreviewData.StartPoint = newPoint;
+                    if (!(this.LastAddedPoint is null))
+                    {
+                        newPoint = Utilities.PointOrthogonal((WinPoint)this.LastAddedPoint, newPoint);
                     }
+                }
+
+                // snap to point or line nearby
+                var pointCloseBy = this.FindPointCloseBy(newPoint);
+                var pointOnLineCloseBy = this.FindPointOnLine(newPoint);
+                if (!(pointCloseBy is null))
+                {
+                    // prioritize pointCloseBy
+                    newPoint = (WinPoint)pointCloseBy;
+                }
+                else if (!(pointOnLineCloseBy is null))
+                {
+                    newPoint = (WinPoint)pointOnLineCloseBy;
+                }
+
+                this.Model.AddPointToWallEntityAtIndex(Utilities.ConvertWindowsPointToPoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count - 1);
+                this.LastAddedPoint = newPoint;
+                if (this.NewEdgePreviewData is null)
+                {
+                    this.NewEdgePreviewData = new DirectedLine(newPoint, newPoint);
+                }
+                else
+                {
+                    this.NewEdgePreviewData.StartPoint = newPoint;
                 }
             }
         }

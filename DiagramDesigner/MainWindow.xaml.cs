@@ -53,16 +53,36 @@ namespace DiagramDesigner
                 case "ChartsToRender":
                     this.UpdateCurrentProgramsCharts();
                     break;
-                case "IsInDrawingState":
-                    this.AddNewRuleButton.IsEnabled = this.MainViewModel.IsInDrawingState ? false : true;
-                    this.EndOfRuleButton.IsEnabled = this.MainViewModel.IsInDrawingState ? true : false;
-                    this.DonePickingContextButton.IsEnabled = this.MainViewModel.IsInDrawingState ? true : false;
-
-                    this.PrimaryDiagramCanvas.Cursor = this.MainViewModel.IsInDrawingState ? Cursors.Cross : Cursors.Arrow;
-                    
+                case "State":
+                    this.MatchStateToModelState();
                     break;
                 case "IsOrthogonalityToggleEnabled":
                     this.OrthogonalityCheckBox.IsEnabled = this.MainViewModel.IsOrthogonalityToggleEnabled;
+                    break;
+            }
+        }
+
+        private void MatchStateToModelState()
+		{
+            switch (this.MainViewModel.State)
+            {
+                case MainViewModelState.ViewingState:
+                    this.PrimaryDiagramCanvas.Cursor = Cursors.Arrow;
+                    this.AddNewRuleButton.IsEnabled = true;
+                    this.DoneAddingRuleButton.IsEnabled = false;
+                    this.DonePickingContextButton.IsEnabled = false;
+                    break;
+                case MainViewModelState.ContextPickingState:
+                    this.PrimaryDiagramCanvas.Cursor = Cursors.Hand;
+                    this.AddNewRuleButton.IsEnabled = false;
+                    this.DoneAddingRuleButton.IsEnabled = false;
+                    this.DonePickingContextButton.IsEnabled = true;
+                    break;
+                case MainViewModelState.EditingState:
+                    this.PrimaryDiagramCanvas.Cursor = Cursors.Cross;
+                    this.AddNewRuleButton.IsEnabled = false;
+                    this.DoneAddingRuleButton.IsEnabled = true;
+                    this.DonePickingContextButton.IsEnabled = false;
                     break;
             }
         }
