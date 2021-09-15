@@ -4,6 +4,11 @@ using System.Text;
 
 namespace ShapeGrammarEngine
 {
+	/// <summary>
+	/// A shape in the context of shape grammar. Its definition is independent to any transformation that can 
+	/// potentially be applied to it. 
+	/// In this project, a shaped is defined as a graph that specifies the connections among the points
+	/// </summary>
 	public readonly struct Shape: IEquatable<Shape>
 	{
 		public readonly HashSet<(int, int)> Definition;
@@ -11,6 +16,15 @@ namespace ShapeGrammarEngine
 		public Shape(HashSet<(int, int)> definition)
 		{
 			this.Definition = definition;
+		}
+
+		public static Shape CreateShapeFromPolylines(List<List<(double X, double Y)>> polylines)
+		{
+			if (polylines is null)
+			{
+				throw new ArgumentNullException();
+			}
+			throw new FailedToBuildShapeException(); // stub	
 		}
 
 		public static bool operator ==(Shape lhs, Shape rhs)
@@ -41,4 +55,6 @@ namespace ShapeGrammarEngine
 			return true;
 		}
 	}
+
+	class FailedToBuildShapeException: Exception { }
 }

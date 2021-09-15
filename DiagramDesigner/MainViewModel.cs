@@ -148,8 +148,12 @@ namespace DiagramDesigner
 
         private void ExecuteDonePickingContext(object obj)
 		{
+            // convert selection to connections of points in wall entities
+            
+
+
+
             this.State = MainViewModelState.EditingState;
-            // TODO
 		}
 
         private void ExecuteDoneAddingRule(object obj)

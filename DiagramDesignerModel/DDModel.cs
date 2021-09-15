@@ -40,6 +40,11 @@ namespace DiagramDesignerModel
             this.OnModelChanged();
 		}
 
+        public void CreateRule(Shape leftHandShape, Shape rightHandShape)
+		{
+
+		}
+
         public void RemoveAllWallsAndPrograms()
 		{
             this.WallEntities.Clear();
