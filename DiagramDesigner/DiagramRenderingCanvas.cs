@@ -33,7 +33,10 @@ namespace DiagramDesigner
             AddLogicalChild(sourceVisual);
         }
 
-		public void RenderVisual(List<List<WinPoint>> wallsToRender, (WinPoint startPoint, WinPoint endPoint) newEdgePreview, List<ProgramToRender> programsToRender, double scaleBarUnitLength)
+		public void RenderVisual(List<List<WinPoint>> wallsToRender, 
+            List<Tuple<int, int, int>> segmentsToHighlight,
+            (WinPoint startPoint, WinPoint endPoint) newEdgePreview, 
+            List<ProgramToRender> programsToRender, double scaleBarUnitLength)
         {
             Random random = new Random(1);
             using (DrawingContext dc = sourceVisual.RenderOpen())
@@ -42,7 +45,25 @@ namespace DiagramDesigner
                 // draw walls
                 for (int i = 0; i < wallsToRender.Count; i++)
                 {
-                    this.DrawPolyline(dc, wallsToRender[i], new Pen(Brushes.Black, 2));
+                    //this.DrawPolyline(dc, wallsToRender[i], new Pen(Brushes.Black, 2));
+                    var points = wallsToRender[i];
+                    for (int j = 0; j < points.Count - 1; j++)
+                    {
+                        var startPoint = new WinPoint((int)points[j].X, (int)points[j].Y);
+                        var endPoint = new WinPoint((int)points[j + 1].X, (int)points[j + 1].Y);
+
+                        Pen pen;
+                        if (segmentsToHighlight.Contains(new Tuple<int, int, int>(i, j, j+1)))
+						{
+                            pen = new Pen(Brushes.Red, 2);
+						}
+                        else
+						{
+                            pen = new Pen(Brushes.Black, 2);
+                        }
+
+                        dc.DrawLine(pen, startPoint, endPoint);
+                    }
                 }
 
                 // draw the programs
@@ -110,16 +131,6 @@ namespace DiagramDesigner
             h = lineGoesUp ? h - ScaleBarHeight : h + ScaleBarHeight;
             var p5 = new WinPoint(w, h);
             context.DrawLine(ScaleBarPen, p4, p5);
-        }
-
-        private void DrawPolyline(DrawingContext context, List<WinPoint> points, Pen pen)
-        {
-            for (int i = 0; i < points.Count - 1; i++)
-            {
-                var startPoint = new WinPoint((int)points[i].X, (int)points[i].Y);
-                var endPoint = new WinPoint((int)points[i + 1].X, (int)points[i + 1].Y);
-                context.DrawLine(pen, startPoint, endPoint);
-            }
         }
 
         private void DrawPolygonFill(DrawingContext context, List<WinPoint> points, Brush brush)

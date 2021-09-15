@@ -24,6 +24,7 @@ namespace DiagramDesigner
         public DataTable CurrentRulesTable => this.Model.CurrentRules;
         public ProgramsSummaryTable CurrentProgramsDataTable { get;} = new ProgramsSummaryTable(); // for the pie chart
         public List<List<WinPoint>> WallsToRender { get; private set; }
+        public List<Tuple<int, int, int>> WallsToHighlight { get; private set; } = new List<Tuple<int, int, int>>();
         public List<ProgramToRender> ProgramsToRender { get; private set; }
 
         private readonly (WinPoint startPoint, WinPoint endPoint) NewEdgePreviewDefault = (new WinPoint(0, 0), new WinPoint(0, 0));
@@ -214,7 +215,7 @@ namespace DiagramDesigner
                     this.MouseLeftClickedInEditingState(mea);
 					break;
                 case MainViewModelState.ContextPickingState:
-                    // TODO
+                    this.MouseLeftClickedInContextPickingState(mea);
                     break;
                 default:
                     break;
@@ -262,13 +263,58 @@ namespace DiagramDesigner
             }
         }
 
+        private void MouseLeftClickedInContextPickingState(MouseEventArgs mea)
+		{
+            var result = this.FindLineClicked(new WinPoint(mea.LocationX, mea.LocationY));
+            if (!(result is null)) 
+            {
+                if (!this.WallsToHighlight.Contains(result))
+				{
+                    this.WallsToHighlight.Add(result);
+                }
+                else
+				{
+                    var s = this.WallsToHighlight.Remove(result);
+                    Debug.Assert(s);
+				}
+                this.HandelGraphicsModified(this, null);
+            } 
+		}
+
         /// <summary>
-        /// Find a Windows Point close by measured by pixel. 
-        /// This is intended for the UI feature that snap new points to existing points close by.
+        /// Find the line segment on screen clicked
         /// </summary>
-        /// <param name="wPoint"> The new point </param>
-        /// <returns> A point in WallEntity on screen in close proximity, or null if no existing point qualifies </returns>
-        private WinPoint? FindPointCloseBy(WinPoint wPoint)
+        /// <param name="clickLocation"> location of the click </param>
+        /// <returns> a tuple containing the index of the geometry, 
+        /// the two consecutive indexes of the points representing the line on the geometry, 
+        /// or null if no line is clicked </returns>
+        private Tuple<int, int, int> FindLineClicked(WinPoint clickLocation)
+		{
+            const double tolerance = 2;
+            for (int i = 0; i < this.WallsToRender.Count; i++)
+            {
+                for (int j = 0; j < this.WallsToRender[i].Count - 1; j++)
+                {
+                    var endPoint1 = this.WallsToRender[i][j];
+                    var endPoint2 = this.WallsToRender[i][j + 1];
+                    var result = Utilities.DistanceFromWinPointToLine(clickLocation, endPoint1, endPoint2);
+                    if (!(result is null) && result.Item1 <= tolerance)
+                    {
+                        Debug.Assert(j + 1 < this.WallsToRender[i].Count);
+                        return new Tuple<int, int, int>(i, j, j + 1);
+                    }
+                }
+            }
+            return null;
+        }
+
+		/// <summary>
+		/// Find a Windows Point close by measured by pixel. 
+		/// This is intended for the UI feature that snap new points to existing points close by.
+		/// </summary>
+		/// <param name="wPoint"> The new point </param>
+		/// <returns> A point in WallEntity on screen in close proximity, or null if no existing point qualifies </returns>
+		private WinPoint? FindPointCloseBy(WinPoint wPoint)
         {
             const double maxDistance = 5;
             for (int i = 0; i < this.WallsToRender.Count; i++)

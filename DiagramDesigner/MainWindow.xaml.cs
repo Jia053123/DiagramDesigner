@@ -94,7 +94,11 @@ namespace DiagramDesigner
 
         public void UpdateDiagramRendering()
         {
-            PrimaryDiagramCanvas.RenderVisual(this.MainViewModel.WallsToRender, this.MainViewModel.NewEdgePreview, this.MainViewModel.ProgramsToRender, this.MainViewModel.DisplayUnitOverRealUnit);
+            PrimaryDiagramCanvas.RenderVisual(this.MainViewModel.WallsToRender,
+                this.MainViewModel.WallsToHighlight, 
+                this.MainViewModel.NewEdgePreview, 
+                this.MainViewModel.ProgramsToRender, 
+                this.MainViewModel.DisplayUnitOverRealUnit);
         }
 
         public void UpdateProgramsRequirementsPieChart()
