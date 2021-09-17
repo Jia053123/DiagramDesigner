@@ -38,7 +38,7 @@ namespace ShapeGrammarEngine
             leftHandShapeColumn.ColumnName = "LeftHandShape";
             leftHandShapeColumn.ReadOnly = true;
             leftHandShapeColumn.Unique = false;
-            leftHandShapeColumn.DefaultValue = new Shape(new HashSet<(int, int)>());
+            leftHandShapeColumn.DefaultValue = new Shape(new HashSet<Connection>());
             this.Columns.Add(leftHandShapeColumn);
 
             var rightHandShapeColumn = new DataColumn();
@@ -46,7 +46,7 @@ namespace ShapeGrammarEngine
             rightHandShapeColumn.ColumnName = "RightHandShape";
             rightHandShapeColumn.ReadOnly = true;
             rightHandShapeColumn.Unique = false;
-            rightHandShapeColumn.DefaultValue = new Shape(new HashSet<(int, int)>());
+            rightHandShapeColumn.DefaultValue = new Shape(new HashSet<Connection>());
             this.Columns.Add(rightHandShapeColumn);
         }
     }

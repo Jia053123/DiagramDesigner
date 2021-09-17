@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace ShapeGrammarEngine
@@ -7,13 +8,17 @@ namespace ShapeGrammarEngine
 	/// <summary>
 	/// A shape in the context of shape grammar. Its definition is independent to any transformation that can 
 	/// potentially be applied to it. 
-	/// In this project, a shaped is defined as a graph that specifies the connections among the points
+	/// In this project, a shape is defined as a graph that specifies the connections among the points
 	/// </summary>
 	public readonly struct Shape: IEquatable<Shape>
 	{
-		public readonly HashSet<(int, int)> Definition;
+		/// <summary>
+		/// A shape is defined as a graph: each tuple in the set represents a connection in the graph between two nodes. 
+		/// Each node is represented by a unique label in the form of an integer. All labels in a definition 
+		/// </summary>
+		public readonly HashSet<Connection> Definition;
 
-		public Shape(HashSet<(int, int)> definition)
+		public Shape(HashSet<Connection> definition)
 		{
 			this.Definition = definition;
 		}
@@ -24,7 +29,48 @@ namespace ShapeGrammarEngine
 			{
 				throw new ArgumentNullException();
 			}
-			throw new FailedToBuildShapeException(); // stub	
+
+			// step1: label all unique points
+			var labelDictionary = new Dictionary<(double X, double Y), int>();
+			int label = 0;
+			foreach (List<(double, double)> polyline in polylines)
+			{
+				foreach ((double X, double Y) p in polyline)
+				{
+					if (!labelDictionary.ContainsKey(p))
+					{
+						labelDictionary.Add(p, label);
+						label++;
+					}
+				}
+			}
+
+			// step2: convert all line segments to connections
+			var connections = new HashSet<Connection>();
+			foreach (List<(double, double)> polyline in polylines)
+			{
+				for (int i = 0; i < polyline.Count - 1; i++)
+				{
+					var p1 = polyline[i];
+					var p2 = polyline[i + 1];
+					int label1, label2;
+					var s1 = labelDictionary.TryGetValue(p1, out label1);
+					var s2 = labelDictionary.TryGetValue(p2, out label2);
+					Debug.Assert(s1 && s2);
+
+					var c = new Connection(label1, label2);
+					connections.Add(c);
+				}
+			}
+
+			// step3: make new shape
+			var newShape = new Shape(connections);
+			return newShape;
+		}
+
+		public bool IsOfThisShape(List<List<(double X, double Y)>> polylines)
+		{
+			return false; // stub
 		}
 
 		public static bool operator ==(Shape lhs, Shape rhs)
@@ -44,9 +90,9 @@ namespace ShapeGrammarEngine
 				return false;
 			}
 
-			foreach ((int, int) connection in this.Definition)
+			foreach (Connection c in this.Definition)
 			{
-				if (! (s.Definition.Contains((connection.Item1, connection.Item2)) || s.Definition.Contains((connection.Item2, connection.Item1))))
+				if (! s.Definition.Contains(c))
 				{
 					return false;
 				}
