@@ -11,12 +11,12 @@ namespace DiagramDesigner
 {
 	static class Utilities
 	{
-		public static WinPoint ConvertPointToWindowsPoint(Point p, double winPointUnitOverPointUnit)
+		public static WinPoint ConvertPointToWindowsPointOnScreen(Point p, double winPointUnitOverPointUnit)
 		{
 			return new WinPoint(p.coordinateX * winPointUnitOverPointUnit, p.coordinateY * winPointUnitOverPointUnit);
 		}
 
-		public static  Point ConvertWindowsPointToPoint (WinPoint wp, double winPointUnitOverPointUnit)
+		public static  Point ConvertWindowsPointOnScreenToPoint (WinPoint wp, double winPointUnitOverPointUnit)
 		{
 			return new Point(wp.X / winPointUnitOverPointUnit, wp.Y / winPointUnitOverPointUnit);
 		}

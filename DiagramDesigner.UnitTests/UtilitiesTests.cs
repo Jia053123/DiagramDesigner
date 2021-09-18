@@ -12,7 +12,7 @@ namespace DiagramDesigner.UnitTests
 		{
 			var p = new Point(-1, 1.5);
 			var winPointUnitOverPointUnit = 2;
-			var wp = Utilities.ConvertPointToWindowsPoint(p, winPointUnitOverPointUnit);
+			var wp = Utilities.ConvertPointToWindowsPointOnScreen(p, winPointUnitOverPointUnit);
 
 			Assert.AreEqual(wp.X, -2);
 			Assert.AreEqual(wp.Y, 3);
@@ -23,7 +23,7 @@ namespace DiagramDesigner.UnitTests
 		{
 			var wp = new WinPoint(5, -2);
 			var winPointUnitOverPointUnit = 2;
-			var p = Utilities.ConvertWindowsPointToPoint(wp, winPointUnitOverPointUnit);
+			var p = Utilities.ConvertWindowsPointOnScreenToPoint(wp, winPointUnitOverPointUnit);
 
 			Assert.AreEqual(p.coordinateX, 2.5);
 			Assert.AreEqual(p.coordinateY, -1);

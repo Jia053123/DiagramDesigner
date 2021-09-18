@@ -69,7 +69,13 @@ namespace ShapeGrammarEngineUnitTests
 			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new List<List<(double, double)>> { new List<(double, double)> { (1, 0), (1, 2) }, new List<(double, double)> { (0, 1), (2, 1) } }));
 		}
 
-			[Test]
+		[Test]
+		public void TestCreateShapeFromPolylines_InputGeometryOverlapWithItself_ThrowArgumentException()
+		{
+			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new List<List<(double, double)>> { new List<(double, double)> { (0, -1), (0, 1), (0, 0), (0, 0.5) } }));
+		}
+
+		[Test]
 		public void TestConformsWithGeometry_EdgeCases()
 		{
 			var shape = new Shape(new HashSet<Connection> { new Connection(0, 1) });

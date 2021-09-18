@@ -37,12 +37,30 @@ namespace ShapeGrammarEngine
 				throw new ArgumentNullException();
 			}
 
+			// Check for intersections and overlaps
 			var allSegments = new List<LineSegment>();
-			foreach (List<(double, double)> polyline in polylines)
+			foreach (List<(double X, double Y)> polyline in polylines)
 			{
 				for (int i = 0; i < polyline.Count - 1; i++)
 				{
-					
+					var p = new Point(polyline[i].X, polyline[i].Y);
+					var nextP = new Point(polyline[i+1].X, polyline[i+1].Y);
+					allSegments.Add(new LineSegment(p, nextP));
+				}
+			}
+
+			for (int i = 0; i < allSegments.Count; i++)
+			{
+				for (int j = i+1; j < allSegments.Count; j++)
+				{
+					if (!(allSegments[i].FindIntersection(allSegments[j]) is null))
+					{
+						throw new ArgumentException("the input intersects with itself");
+					}
+					if (LineSegment.DoOverlap(allSegments[i], allSegments[i+1]))
+					{
+						throw new ArgumentException("the input overlaps with itself");
+					}
 				}
 			}
 

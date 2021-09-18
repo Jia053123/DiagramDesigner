@@ -281,11 +281,12 @@ namespace BasicGeometries
 		}
 
 		/// <summary>
-		/// Whether two segments overlap, either partially or fully
+		/// Whether two segments overlap, either partially or fully; 
+		/// Merely sharing an endpoint does not count
 		/// </summary>
 		/// <param name="ls1"> one segment </param>
 		/// <param name="ls2"> another segment </param>
-		/// <returns> whether they overlap, either partially or fully </returns>
+		/// <returns> whether they overlap </returns>
 		public static bool DoOverlap(LineSegment ls1, LineSegment ls2)
 		{
 			if (LineSegment.AreParallel(ls1, ls2))
