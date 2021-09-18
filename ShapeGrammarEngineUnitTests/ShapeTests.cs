@@ -53,12 +53,39 @@ namespace ShapeGrammarEngineUnitTests
 		[Test]
 		public void TestCreateShapeFromPolylines_MultiplePolylines()
 		{
-			var result1 = Shape.CreateShapeFromPolylines(new List<List<(double, double)>> { new List<(double, double)> { (0, 0), (0, 1) },
-			 new List<(double, double)> { (0, 0), (1, 0), (0, 1) }});
+			var result1 = Shape.CreateShapeFromPolylines(new List<List<(double, double)>> { 
+				new List<(double, double)> { (0, 0), (0, 1) },
+				new List<(double, double)> { (0, 0), (1, 0), (0, 1) }});
 			Assert.AreEqual(3, result1.Definition.Count);
 			Assert.IsTrue(result1.Definition.Contains(new Connection(0, 1)));
 			Assert.IsTrue(result1.Definition.Contains(new Connection(0, 2)));
 			Assert.IsTrue(result1.Definition.Contains(new Connection(2, 1)));
+		}
+
+		[Test]
+		public void TestCreateShapeFromPolylines_InputGeometryIntersectsWithItself_ThrowArgumentException()
+		{
+			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new List<List<(double, double)>> { new List<(double, double)> { (0, -1), (0, 1), (1, 0), (-1, 0) } }));
+			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new List<List<(double, double)>> { new List<(double, double)> { (1, 0), (1, 2) }, new List<(double, double)> { (0, 1), (2, 1) } }));
+		}
+
+			[Test]
+		public void TestConformsWithGeometry_EdgeCases()
+		{
+			var shape = new Shape(new HashSet<Connection> { new Connection(0, 1) });
+
+			Assert.Throws<ArgumentNullException>(() => shape.ConformsWithGeometry(null));
+
+			Assert.IsFalse(shape.ConformsWithGeometry(new List<List<(double X, double Y)>>()));
+			Assert.IsFalse(shape.ConformsWithGeometry(new List<List<(double X, double Y)>> { new List<(double X, double Y)>() }));
+		}
+
+		[Test]
+		public void TestConformsWithGeometry_OnePolyline()
+		{
+			var shape1 = new Shape(new HashSet<Connection> { new Connection(0, 1) });
+			var geometry1 = new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (-5, 2.1), (20, 20) } };
+			Assert.IsTrue(shape1.ConformsWithGeometry(geometry1));
 		}
 	}
 }

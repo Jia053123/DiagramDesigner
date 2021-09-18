@@ -13,6 +13,8 @@ namespace ShapeGrammarEngineUnitTests
 		{
 			Assert.Throws<ArgumentException>(() => new Connection(1, -2));
 			Assert.Throws<ArgumentException>(() => new Connection(-1, -2));
+			Assert.Throws<ArgumentException>(() => new Connection(-1, -1));
+			Assert.Throws<ArgumentException>(() => new Connection(1, 1));
 
 			var c1 = new Connection(0, 2);
 			Assert.AreEqual(0, c1.LabelOfFirstNode);

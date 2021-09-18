@@ -23,11 +23,26 @@ namespace ShapeGrammarEngine
 			this.Definition = definition;
 		}
 
+		/// <summary>
+		/// Extract a graph-based shape instance from a geometry. The geometry must not intersect with itself
+		/// The output shape is guaranteed to conform with the input geometry
+		/// </summary>
+		/// <param name="polylines"></param>
+		/// <returns></returns>
 		public static Shape CreateShapeFromPolylines(List<List<(double X, double Y)>> polylines)
 		{
 			if (polylines is null)
 			{
 				throw new ArgumentNullException();
+			}
+
+			var allSegments = new List<(double X1, double Y1, double X2, double Y2)>();
+			foreach (List<(double, double)> polyline in polylines)
+			{
+				for (int i = 0; i < polyline.Count - 1; i++)
+				{
+
+				}
 			}
 
 			// step1: label all unique points
@@ -66,11 +81,18 @@ namespace ShapeGrammarEngine
 			// step3: make new shape
 			var newShape = new Shape(connections);
 			return newShape;
+
+			// TODO: Debug.Assert conformity 
 		}
 
-		public bool IsOfThisShape(List<List<(double X, double Y)>> polylines)
+		public bool ConformsWithGeometry(List<List<(double X, double Y)>> polylines)
 		{
-			return false; // stub
+			if (polylines is null)
+			{
+				throw new ArgumentNullException();
+			}
+			return true;
+			// step1: 
 		}
 
 		public static bool operator ==(Shape lhs, Shape rhs)

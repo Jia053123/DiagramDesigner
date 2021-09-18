@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using WinPoint = System.Windows.Point;
-using Point = DiagramDesignerEngine.Point;
+using Point = BasicGeometries.Point;
 using System;
 
 namespace DiagramDesigner.UnitTests

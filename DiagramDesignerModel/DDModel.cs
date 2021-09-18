@@ -1,4 +1,5 @@
-﻿using DiagramDesignerEngine;
+﻿using BasicGeometries;
+using DiagramDesignerEngine;
 using ShapeGrammarEngine;
 using System;
 using System.Collections.Generic;

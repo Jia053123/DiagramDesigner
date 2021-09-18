@@ -4,6 +4,7 @@ using System.Text;
 using WinPoint = System.Windows.Point;
 using DiagramDesignerEngine;
 using System.Runtime.CompilerServices;
+using BasicGeometries;
 
 [assembly: InternalsVisibleToAttribute("DiagramDesigner.UnitTests")]
 namespace DiagramDesigner

@@ -5,9 +5,9 @@ using System.Text;
 namespace ShapeGrammarEngine
 {
 	/// <summary>
-	/// Represents a connection between two nodes in a shape definition. 
+	/// Represents a connection between two different nodes in a shape definition. 
 	/// Each node is represnted by a label in the form of a positive integer
-	/// LabelOfFirstNode is always smaller or equal to LabelOfSecondNode
+	/// LabelOfFirstNode is always smaller to LabelOfSecondNode
 	/// </summary>
 	public readonly struct Connection : IEquatable<Connection>
 	{
@@ -16,11 +16,17 @@ namespace ShapeGrammarEngine
 
 		public Connection(int label1, int label2)
 		{
+			if (label1 == label2)
+			{
+				throw new ArgumentException("a node cannot connect to itself");
+			}
+			
 			if (label1 < 0 || label2 < 0)
 			{
 				throw new ArgumentException("a label cannot be negative");
 			}
-			if (label1 <= label2)
+
+			if (label1 < label2)
 			{
 				this.LabelOfFirstNode = label1;
 				this.LabelOfSecondNode = label2;

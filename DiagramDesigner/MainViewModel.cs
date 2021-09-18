@@ -10,6 +10,7 @@ using WinPoint = System.Windows.Point;
 using System.Data;
 using DiagramDesignerModel;
 using System.Diagnostics;
+using BasicGeometries;
 
 namespace DiagramDesigner
 {

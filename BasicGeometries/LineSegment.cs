@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace DiagramDesignerEngine
+namespace BasicGeometries
 {
 	/// <summary>
 	/// A straight line segment defined by its two end points. The two end points cannot be the same point. 
@@ -57,7 +57,7 @@ namespace DiagramDesignerEngine
 		/// </summary>
 		/// <param name="ls"> A LineSegment to check for intersection </param>
 		/// <returns> the point of intersection; null if not found </returns>
-		internal Point? FindIntersection(LineSegment ls)
+		public Point? FindIntersection(LineSegment ls)
 		{
 			if (LineSegment.DoOverlap(this, ls))
 			{
@@ -141,7 +141,7 @@ namespace DiagramDesignerEngine
 		/// </summary>
 		/// <param name="p"> The point to check </param>
 		/// <returns> false if the point is not on the segment </returns>
-		internal bool ContainsPoint(Point p)
+		public bool ContainsPoint(Point p)
 		{
 			double maximumDistanceTolerance = 0.000001;
 			var A = p.coordinateX - this.FirstPoint.coordinateX;
@@ -201,7 +201,7 @@ namespace DiagramDesignerEngine
 		/// </summary>
 		/// <param name="pointsToSplit"> A list of points on the segment at which to split; the do not have to be unique. Can be empty </param>
 		/// <returns> The list of split segments, or the original segment if list is empty </returns>
-		internal List<LineSegment> SplitAtPoints(List<Point> pointsToSplit)
+		public List<LineSegment> SplitAtPoints(List<Point> pointsToSplit)
 		{
 			var splitSegments = new List<LineSegment>();
 
@@ -286,7 +286,7 @@ namespace DiagramDesignerEngine
 		/// <param name="ls1"> one segment </param>
 		/// <param name="ls2"> another segment </param>
 		/// <returns> whether they overlap, either partially or fully </returns>
-		internal static bool DoOverlap(LineSegment ls1, LineSegment ls2)
+		public static bool DoOverlap(LineSegment ls1, LineSegment ls2)
 		{
 			if (LineSegment.AreParallel(ls1, ls2))
 			{
@@ -332,7 +332,7 @@ namespace DiagramDesignerEngine
 		/// <param name="ls2"></param>
 		/// <returns> the list of points to split; 
 		/// return an empty list if the segments completely overlap or do not overlap at all </returns>
-		internal static List<Point> PointsToSplitIfOverlap(LineSegment ls1, LineSegment ls2)
+		public static List<Point> PointsToSplitIfOverlap(LineSegment ls1, LineSegment ls2)
 		{
 			if (LineSegment.DoOverlap(ls1, ls2))
 			{
