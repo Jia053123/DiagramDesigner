@@ -72,19 +72,19 @@ namespace BasicGeometries
 			}
 
 			// handle T shaped cases separately to avoid tolerance problem
-			if (ls.ContainsPoint(this.FirstPoint))
+			if (ls.RoughlyContainsPoint(this.FirstPoint))
 			{
 				return this.FirstPoint;
 			}
-			if (ls.ContainsPoint(this.SecondPoint))
+			if (ls.RoughlyContainsPoint(this.SecondPoint))
 			{
 				return this.SecondPoint;
 			}
-			if (this.ContainsPoint(ls.FirstPoint))
+			if (this.RoughlyContainsPoint(ls.FirstPoint))
 			{
 				return ls.FirstPoint;
 			}
-			if (this.ContainsPoint(ls.SecondPoint))
+			if (this.RoughlyContainsPoint(ls.SecondPoint))
 			{
 				return ls.SecondPoint;
 			}
@@ -137,11 +137,11 @@ namespace BasicGeometries
 		}
 
 		/// <summary>
-		/// Check whether the point is on the segment
+		/// Check whether the point is on the segment with small tolerance
 		/// </summary>
 		/// <param name="p"> The point to check </param>
 		/// <returns> false if the point is not on the segment </returns>
-		public bool ContainsPoint(Point p)
+		public bool RoughlyContainsPoint(Point p)
 		{
 			double maximumDistanceTolerance = 0.000001;
 			var A = p.coordinateX - this.FirstPoint.coordinateX;
@@ -171,7 +171,7 @@ namespace BasicGeometries
 		}
 
 		/// <summary>
-		/// Split the segment at the point
+		/// Split the segment at the point. Uses RoughlyContainsPoint() to determine if the point is on the segment
 		/// </summary>
 		/// <param name="pointToSplit"></param>
 		/// <returns> The split segments; 
@@ -179,7 +179,7 @@ namespace BasicGeometries
 		/// if the point is at SecondPoint, the first item is the original segment, and the second item is null </returns>
 		private (LineSegment?, LineSegment?) SplitAtPoint(Point pointToSplit)
 		{
-			if (!this.ContainsPoint(pointToSplit))
+			if (!this.RoughlyContainsPoint(pointToSplit))
 			{
 				throw new ArgumentException("Point not on segment");
 			}
@@ -197,7 +197,7 @@ namespace BasicGeometries
 		}
 
 		/// <summary>
-		/// Split the segment at every point in the list
+		/// Split the segment at every point in the list. Uses SplitAtPoint() to split each segment
 		/// </summary>
 		/// <param name="pointsToSplit"> A list of points on the segment at which to split; the do not have to be unique. Can be empty </param>
 		/// <returns> The list of split segments, or the original segment if list is empty </returns>
@@ -291,10 +291,10 @@ namespace BasicGeometries
 			if (LineSegment.AreParallel(ls1, ls2))
 			{
 				int numOfContainment = 0;
-				if (ls1.ContainsPoint(ls2.FirstPoint)) { numOfContainment++; }
-				if (ls1.ContainsPoint(ls2.SecondPoint)) { numOfContainment++; }
-				if (ls2.ContainsPoint(ls1.FirstPoint)) { numOfContainment++; }
-				if (ls2.ContainsPoint(ls1.SecondPoint)) { numOfContainment++; }
+				if (ls1.RoughlyContainsPoint(ls2.FirstPoint)) { numOfContainment++; }
+				if (ls1.RoughlyContainsPoint(ls2.SecondPoint)) { numOfContainment++; }
+				if (ls2.RoughlyContainsPoint(ls1.FirstPoint)) { numOfContainment++; }
+				if (ls2.RoughlyContainsPoint(ls1.SecondPoint)) { numOfContainment++; }
 				
 				if (numOfContainment < 2)
 				{

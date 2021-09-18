@@ -126,33 +126,33 @@ namespace DiagramDesignerEngine.UnitTests
 		public void TestContainsPoint_1()
 		{
 			var ls1 = new LineSegment(new Point(-1, 0), new Point(1, 0));
-			Assert.IsTrue(ls1.ContainsPoint(new Point(0, 0)));
-			Assert.IsFalse(ls1.ContainsPoint(new Point(0, 1)));
-			Assert.IsTrue(ls1.ContainsPoint(new Point(-1, 0)));
-			Assert.IsTrue(ls1.ContainsPoint(new Point(1, 0)));
+			Assert.IsTrue(ls1.RoughlyContainsPoint(new Point(0, 0)));
+			Assert.IsFalse(ls1.RoughlyContainsPoint(new Point(0, 1)));
+			Assert.IsTrue(ls1.RoughlyContainsPoint(new Point(-1, 0)));
+			Assert.IsTrue(ls1.RoughlyContainsPoint(new Point(1, 0)));
 
 			var ls2 = new LineSegment(new Point(0, -1), new Point(0, 1));
-			Assert.IsTrue(ls2.ContainsPoint(new Point(0, 0)));
-			Assert.IsFalse(ls2.ContainsPoint(new Point(1, 0)));
+			Assert.IsTrue(ls2.RoughlyContainsPoint(new Point(0, 0)));
+			Assert.IsFalse(ls2.RoughlyContainsPoint(new Point(1, 0)));
 
 			var ls3 = new LineSegment(new Point(-2, -3), new Point(0, 1));
-			Assert.IsTrue(ls3.ContainsPoint(new Point(-1, -1)));
-			Assert.IsFalse(ls3.ContainsPoint(new Point(1, 1)));
+			Assert.IsTrue(ls3.RoughlyContainsPoint(new Point(-1, -1)));
+			Assert.IsFalse(ls3.RoughlyContainsPoint(new Point(1, 1)));
 		}
 
 		[Test]
 		public void TestContainsPoint_2()
 		{
 			var ls5 = new LineSegment(new Point(120, 68.5), new Point(210, 159));
-			Assert.IsTrue(ls5.ContainsPoint(new Point(157.63185905670764, 106.34092494035603)));
+			Assert.IsTrue(ls5.RoughlyContainsPoint(new Point(157.63185905670764, 106.34092494035603)));
 		}
 
 		[Test]
 		public void TestContainsPoint_3()
 		{
 			var ls5 = new LineSegment(new Point(49.6, 41.6), new Point(50.2, 70.8));
-			Assert.IsTrue(ls5.ContainsPoint(new Point(49.79315357561548, 51.000140679953105)));
-			Assert.IsTrue(ls5.ContainsPoint(new Point(50.072572098475966, 64.59850879249707)));
+			Assert.IsTrue(ls5.RoughlyContainsPoint(new Point(49.79315357561548, 51.000140679953105)));
+			Assert.IsTrue(ls5.RoughlyContainsPoint(new Point(50.072572098475966, 64.59850879249707)));
 		}
 
 		[Test]

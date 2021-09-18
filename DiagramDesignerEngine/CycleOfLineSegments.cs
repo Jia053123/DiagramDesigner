@@ -81,7 +81,7 @@ namespace DiagramDesignerEngine
 			// if the point is on the cycle, return true
 			foreach (LineSegment ls in this.Cycle)
 			{
-				if (ls.ContainsPoint(point))
+				if (ls.RoughlyContainsPoint(point))
 				{
 					return true;
 				}

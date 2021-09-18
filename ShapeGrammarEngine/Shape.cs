@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BasicGeometries;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -29,19 +30,19 @@ namespace ShapeGrammarEngine
 		/// </summary>
 		/// <param name="polylines"></param>
 		/// <returns></returns>
-		public static Shape CreateShapeFromPolylines(List<List<(double X, double Y)>> polylines)
+		public static Shape CreateShapeFromPolylines(List<List<(double, double)>> polylines)
 		{
 			if (polylines is null)
 			{
 				throw new ArgumentNullException();
 			}
 
-			var allSegments = new List<(double X1, double Y1, double X2, double Y2)>();
+			var allSegments = new List<LineSegment>();
 			foreach (List<(double, double)> polyline in polylines)
 			{
 				for (int i = 0; i < polyline.Count - 1; i++)
 				{
-
+					
 				}
 			}
 
