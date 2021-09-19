@@ -11,9 +11,9 @@ namespace ShapeGrammarEngineUnitTests
 		public void TestCreateShapeFromPolylines_EdgeCases()
 		{
 			Assert.Throws<ArgumentNullException>(() => Shape.CreateShapeFromPolylines(null));
-
-			var result1 = Shape.CreateShapeFromPolylines(new List<List<(double, double)>> { new List<(double, double)>() });
-			Assert.AreEqual(0, result1.Definition.Count);
+			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new List<List<(double, double)>>()));
+			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new List<List<(double, double)>> { new List<(double, double)>() }));
+			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new List<List<(double, double)>> { new List<(double, double)> { (0,1) } }));
 		}
 
 		[Test]

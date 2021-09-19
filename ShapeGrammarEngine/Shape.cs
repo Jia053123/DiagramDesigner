@@ -38,6 +38,19 @@ namespace ShapeGrammarEngine
 				throw new ArgumentNullException();
 			}
 
+			if (polylines.Count == 0)
+			{
+				throw new ArgumentException("must have at least one polyline");
+			}
+
+			foreach (List<(double, double)> pl in polylines)
+			{
+				if (pl.Count < 2)
+				{
+					throw new ArgumentException("each polyline must have at least 2 points");
+				}
+			}
+
 			// Check for intersections and overlaps
 			var allSegments = new List<LineSegment>();
 			foreach (List<(double X, double Y)> polyline in polylines)
@@ -123,28 +136,28 @@ namespace ShapeGrammarEngine
 			{
 				uniqueCoordinates.UnionWith(pl);
 			}
-			List<Point> uniquePoints = uniqueCoordinates.Select(c => new Point(c.X, c.Y)).ToList(); 
+			var uniqueCoordinatesList = new List<(double, double)>(uniqueCoordinates);
 
 			// step2: generate all potential ways each unique point can be labeled
-			var allPotentialLabeling = Utilities.GenerateAllPermutations(0, uniquePoints.Count);
+			var allPotentialLabeling = Utilities.GenerateAllPermutations(0, uniqueCoordinatesList.Count-1);
 
 			// step3: check if there is one potential labeling with which the input would match the definition of this shape
 			foreach (List<int> labeling in allPotentialLabeling)
 			{
-				// make dictionary
-				Debug.Assert(uniquePoints.Count == labeling.Count);
-				var labelDictionary = new Dictionary<Point, int>();
-				for (int i = 0; i < uniquePoints.Count; i++)
+				Debug.Assert(uniqueCoordinatesList.Count == labeling.Count);
+				var labelDictionary = new Dictionary<(double X, double Y), int>();
+				for (int i = 0; i < uniqueCoordinatesList.Count; i++)
 				{
-					labelDictionary.Add(uniquePoints[i], labeling[i]);
+					labelDictionary.Add(uniqueCoordinatesList[i], labeling[i]);
 				}
-				
 
+				var connections = Shape.ConvertPolylinesToConnections(polylines, labelDictionary);
 
+				if (this.Definition.SetEquals(connections))
+				{
+					return true;
+				}
 			}
-			
-			
-			
 			return false;
 		}
 
