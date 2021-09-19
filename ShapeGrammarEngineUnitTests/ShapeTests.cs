@@ -43,7 +43,7 @@ namespace ShapeGrammarEngineUnitTests
 			Assert.IsTrue(result2.Definition.Contains(new Connection(0, 1)));
 			Assert.IsTrue(result2.Definition.Contains(new Connection(1, 2)));
 
-			var result3 = Shape.CreateShapeFromPolylines(new List<List<(double, double)>> { new List<(double, double)> { (0, 0), (1, 1), (2, 2), (0, 0) } });
+			var result3 = Shape.CreateShapeFromPolylines(new List<List<(double, double)>> { new List<(double, double)> { (0, 0), (1, 1), (1, 0), (0, 0) } });
 			Assert.AreEqual(3, result3.Definition.Count);
 			Assert.IsTrue(result3.Definition.Contains(new Connection(0, 1)));
 			Assert.IsTrue(result3.Definition.Contains(new Connection(1, 2)));

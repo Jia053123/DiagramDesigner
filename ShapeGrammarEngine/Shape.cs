@@ -81,6 +81,16 @@ namespace ShapeGrammarEngine
 			}
 
 			// step2: convert all line segments to connections
+			var connections = Shape.ConvertPolylinesToConnections(polylines, labelDictionary);
+		
+			// step3: make new shape
+			var newShape = new Shape(connections);
+			//Debug.Assert(newShape.ConformsWithGeometry(polylines));
+			return newShape;
+		}
+
+		private static HashSet<Connection> ConvertPolylinesToConnections(List<List<(double, double)>> polylines, Dictionary<(double X, double Y), int> labeling)
+		{
 			var connections = new HashSet<Connection>();
 			foreach (List<(double, double)> polyline in polylines)
 			{
@@ -89,21 +99,17 @@ namespace ShapeGrammarEngine
 					var p1 = polyline[i];
 					var p2 = polyline[i + 1];
 					int label1, label2;
-					var s1 = labelDictionary.TryGetValue(p1, out label1);
-					var s2 = labelDictionary.TryGetValue(p2, out label2);
+					var s1 = labeling.TryGetValue(p1, out label1);
+					var s2 = labeling.TryGetValue(p2, out label2);
 					Debug.Assert(s1 && s2);
 
 					var c = new Connection(label1, label2);
 					connections.Add(c);
 				}
 			}
-
-			// step3: make new shape
-			var newShape = new Shape(connections);
-			Debug.Assert(newShape.ConformsWithGeometry(polylines));
-			return newShape;
+			return connections;
 		}
-
+	
 		public bool ConformsWithGeometry(List<List<(double, double)>> polylines)
 		{
 			if (polylines is null)
@@ -117,12 +123,26 @@ namespace ShapeGrammarEngine
 			{
 				uniqueCoordinates.UnionWith(pl);
 			}
-			HashSet<Point> uniquePoints = new HashSet<Point>(uniqueCoordinates.Select(c => new Point(c.X, c.Y)).ToList());
+			List<Point> uniquePoints = uniqueCoordinates.Select(c => new Point(c.X, c.Y)).ToList(); 
 
 			// step2: generate all potential ways each unique point can be labeled
 			var allPotentialLabeling = Utilities.GenerateAllPermutations(0, uniquePoints.Count);
 
-			bool conforms = false;
+			// step3: check if there is one potential labeling with which the input would match the definition of this shape
+			foreach (List<int> labeling in allPotentialLabeling)
+			{
+				// make dictionary
+				Debug.Assert(uniquePoints.Count == labeling.Count);
+				var labelDictionary = new Dictionary<Point, int>();
+				for (int i = 0; i < uniquePoints.Count; i++)
+				{
+					labelDictionary.Add(uniquePoints[i], labeling[i]);
+				}
+				
+
+
+			}
+			
 			
 			
 			return false;
