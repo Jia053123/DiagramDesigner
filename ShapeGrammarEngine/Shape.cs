@@ -26,10 +26,10 @@ namespace ShapeGrammarEngine
 		}
 
 		/// <summary>
-		/// Extract a graph-based shape instance from a geometry. The geometry must not intersect with itself
+		/// Extract a graph-based shape instance from a non-empty geometry. The geometry must not intersect with itself
 		/// The output shape is guaranteed to conform with the input geometry
 		/// </summary>
-		/// <param name="polylines"></param>
+		/// <param name="polylines"> the input geometry. Must not be empty and each polyline must contain at least 2 points </param>
 		/// <returns></returns>
 		public static Shape CreateShapeFromPolylines(List<List<(double, double)>> polylines)
 		{
@@ -52,17 +52,7 @@ namespace ShapeGrammarEngine
 			}
 
 			// Check for intersections and overlaps
-			var allSegments = new List<LineSegment>();
-			foreach (List<(double X, double Y)> polyline in polylines)
-			{
-				for (int i = 0; i < polyline.Count - 1; i++)
-				{
-					var p = new Point(polyline[i].X, polyline[i].Y);
-					var nextP = new Point(polyline[i+1].X, polyline[i+1].Y);
-					allSegments.Add(new LineSegment(p, nextP));
-				}
-			}
-
+			var allSegments = Shape.ConvertPolylinesToLineSegments(polylines);
 			for (int i = 0; i < allSegments.Count; i++)
 			{
 				for (int j = i+1; j < allSegments.Count; j++)
@@ -102,6 +92,21 @@ namespace ShapeGrammarEngine
 			return newShape;
 		}
 
+		private static List<LineSegment> ConvertPolylinesToLineSegments(List<List<(double, double)>> polylines) 
+		{
+			var allSegments = new List<LineSegment>();
+			foreach (List<(double X, double Y)> polyline in polylines)
+			{
+				for (int i = 0; i < polyline.Count - 1; i++)
+				{
+					var p = new Point(polyline[i].X, polyline[i].Y);
+					var nextP = new Point(polyline[i + 1].X, polyline[i + 1].Y);
+					allSegments.Add(new LineSegment(p, nextP));
+				}
+			}
+			return allSegments;
+		}
+
 		private static HashSet<Connection> ConvertPolylinesToConnections(List<List<(double, double)>> polylines, Dictionary<(double X, double Y), int> labeling)
 		{
 			var connections = new HashSet<Connection>();
@@ -135,6 +140,10 @@ namespace ShapeGrammarEngine
 			foreach (List<(double, double)> pl in polylines)
 			{
 				uniqueCoordinates.UnionWith(pl);
+			}
+			if (uniqueCoordinates.Count < 2)
+			{
+				throw new ArgumentException("the input polylines geometry must have at least 2 unique points");
 			}
 			var uniqueCoordinatesList = new List<(double, double)>(uniqueCoordinates);
 
