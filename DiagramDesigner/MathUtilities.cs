@@ -9,7 +9,7 @@ using BasicGeometries;
 [assembly: InternalsVisibleToAttribute("DiagramDesigner.UnitTests")]
 namespace DiagramDesigner
 {
-	static class Utilities
+	static class MathUtilities
 	{
 		public static WinPoint ConvertPointToWindowsPointOnScreen(Point p, double winPointUnitOverPointUnit)
 		{
@@ -55,7 +55,7 @@ namespace DiagramDesigner
 				var projY = endPoint1.Y + param * D;
 				var projWinPoint = new WinPoint(projX, projY);
 
-				return new Tuple<double, WinPoint>(Utilities.DistanceBetweenWinPoints(wp, projWinPoint), projWinPoint);
+				return new Tuple<double, WinPoint>(MathUtilities.DistanceBetweenWinPoints(wp, projWinPoint), projWinPoint);
 			} 
 			else
 			{

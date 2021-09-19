@@ -2,14 +2,29 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DiagramDesignerEngine
+namespace ListOperations
 {
-	static class ListUtilities
+	static public class ListUtilities
 	{
+		/// <summary>
+		/// Whether the container list contains a list with equal content in the same order as the one provied
+		/// </summary>
+		public static bool DoesContainList<T>(List<List<T>> containerList, List<T> containedList) where T : IEquatable<T>
+		{
+			foreach (List<T> l in containerList)
+			{
+				if (ListUtilities.AreContentsEqualInOrder(l, containedList))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
 		/// <summary>
 		/// whether the two lists contain exactly the same items, regardless of the order
 		/// </summary>
-		internal static bool AreContentsEqual<T>(List<T> list1, List<T> list2) where T : IEquatable<T>
+		public static bool AreContentsEqual<T>(List<T> list1, List<T> list2) where T : IEquatable<T>
 		{
 			if (list1.Count != list2.Count)
 			{
@@ -37,7 +52,7 @@ namespace DiagramDesignerEngine
 		/// <summary>
 		/// whether the two lists contain exaclty the same items, in the same order
 		/// </summary>
-		internal static bool AreContentsEqualInOrder<T>(List<T> list1, List<T> list2) where T : IEquatable<T>
+		public static bool AreContentsEqualInOrder<T>(List<T> list1, List<T> list2) where T : IEquatable<T>
 		{
 			if (list1.Count != list2.Count)
 			{

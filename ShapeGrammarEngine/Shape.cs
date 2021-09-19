@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 namespace ShapeGrammarEngine
@@ -15,7 +16,7 @@ namespace ShapeGrammarEngine
 	{
 		/// <summary>
 		/// A shape is defined as a graph: each tuple in the set represents a connection in the graph between two nodes. 
-		/// Each node is represented by a unique label in the form of an integer. All labels in a definition 
+		/// Each node is represented by a unique label in the form of an integer. All labels in a definition from a consecutive sequence from 0
 		/// </summary>
 		public readonly HashSet<Connection> Definition;
 
@@ -99,20 +100,35 @@ namespace ShapeGrammarEngine
 
 			// step3: make new shape
 			var newShape = new Shape(connections);
+			Debug.Assert(newShape.ConformsWithGeometry(polylines));
 			return newShape;
-
-			// TODO: Debug.Assert conformity 
 		}
 
-		public bool ConformsWithGeometry(List<List<(double X, double Y)>> polylines)
+		public bool ConformsWithGeometry(List<List<(double, double)>> polylines)
 		{
 			if (polylines is null)
 			{
 				throw new ArgumentNullException();
 			}
-			return true;
-			// step1: 
+
+			// step1: find all unique points in the polylines
+			var uniqueCoordinates = new HashSet<(double X, double Y)>();
+			foreach (List<(double, double)> pl in polylines)
+			{
+				uniqueCoordinates.UnionWith(pl);
+			}
+			HashSet<Point> uniquePoints = new HashSet<Point>(uniqueCoordinates.Select(c => new Point(c.X, c.Y)).ToList());
+
+			// step2: generate all potential ways each unique point can be labeled
+			var allPotentialLabeling = Utilities.GenerateAllPermutations(0, uniquePoints.Count);
+
+			bool conforms = false;
+			
+			
+			return false;
 		}
+
+		//public bool EquivalentTo(Shape)
 
 		public static bool operator ==(Shape lhs, Shape rhs)
 		{

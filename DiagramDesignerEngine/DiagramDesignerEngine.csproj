@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BasicGeometries\BasicGeometries.csproj" />
+    <ProjectReference Include="..\ListOperations\ListOperations.csproj" />
   </ItemGroup>
 
 	<ItemGroup>

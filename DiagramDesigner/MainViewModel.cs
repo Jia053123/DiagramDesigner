@@ -92,7 +92,7 @@ namespace DiagramDesigner
                 this.WallsToRender.Add(new List<WinPoint>());
                 foreach (Point p in we.Geometry.PathsDefinedByPoints)
 				{
-                    this.WallsToRender.Last().Add(Utilities.ConvertPointToWindowsPointOnScreen(p, this.DisplayUnitOverRealUnit));
+                    this.WallsToRender.Last().Add(MathUtilities.ConvertPointToWindowsPointOnScreen(p, this.DisplayUnitOverRealUnit));
 				}
 			}
 
@@ -103,7 +103,7 @@ namespace DiagramDesigner
                 var perimeter = new List<WinPoint>();
                 foreach (Point p in ep.Perimeter)
 				{
-                    perimeter.Add(Utilities.ConvertPointToWindowsPointOnScreen(p, DisplayUnitOverRealUnit));
+                    perimeter.Add(MathUtilities.ConvertPointToWindowsPointOnScreen(p, DisplayUnitOverRealUnit));
 				}
 
                 var innerPerimeters = new List<List<WinPoint>>();
@@ -112,7 +112,7 @@ namespace DiagramDesigner
                     innerPerimeters.Add(new List<WinPoint>());
                     foreach (Point p in innerPerimeter)
 					{
-                        innerPerimeters.Last().Add(Utilities.ConvertPointToWindowsPointOnScreen(p, DisplayUnitOverRealUnit));
+                        innerPerimeters.Last().Add(MathUtilities.ConvertPointToWindowsPointOnScreen(p, DisplayUnitOverRealUnit));
 					}
 				}
 
@@ -238,7 +238,7 @@ namespace DiagramDesigner
                 {
                     if (!(this.LastAddedPoint is null))
                     {
-                        newPoint = Utilities.PointOrthogonal((WinPoint)this.LastAddedPoint, newPoint);
+                        newPoint = MathUtilities.PointOrthogonal((WinPoint)this.LastAddedPoint, newPoint);
                     }
                 }
 
@@ -255,7 +255,7 @@ namespace DiagramDesigner
                     newPoint = (WinPoint)pointOnLineCloseBy;
                 }
 
-                this.Model.AddPointToWallEntityAtIndex(Utilities.ConvertWindowsPointOnScreenToPoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count - 1);
+                this.Model.AddPointToWallEntityAtIndex(MathUtilities.ConvertWindowsPointOnScreenToPoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count - 1);
                 this.LastAddedPoint = newPoint;
                 if (this.NewEdgePreviewData is null)
                 {
@@ -302,7 +302,7 @@ namespace DiagramDesigner
                 {
                     var endPoint1 = this.WallsToRender[i][j];
                     var endPoint2 = this.WallsToRender[i][j + 1];
-                    var result = Utilities.DistanceFromWinPointToLine(clickLocation, endPoint1, endPoint2);
+                    var result = MathUtilities.DistanceFromWinPointToLine(clickLocation, endPoint1, endPoint2);
                     if (!(result is null) && result.Item1 <= tolerance)
                     {
                         Debug.Assert(j + 1 < this.WallsToRender[i].Count);
@@ -327,7 +327,7 @@ namespace DiagramDesigner
                 for (int j = 0; j < this.WallsToRender[i].Count; j++)
 				{
                     var p = this.WallsToRender[i][j];
-                    if (Utilities.DistanceBetweenWinPoints(wPoint, p) <= maxDistance)
+                    if (MathUtilities.DistanceBetweenWinPoints(wPoint, p) <= maxDistance)
 					{
                         return p;
 					}
@@ -351,7 +351,7 @@ namespace DiagramDesigner
                 {
                     var endPoint1 = this.WallsToRender[i][j];
                     var endPoint2 = this.WallsToRender[i][j+1];
-                    var result = Utilities.DistanceFromWinPointToLine(wPoint, endPoint1, endPoint2);
+                    var result = MathUtilities.DistanceFromWinPointToLine(wPoint, endPoint1, endPoint2);
                     if (!(result is null) && result.Item1 <= maxDistance)
                     {
                         return result.Item2;

@@ -4,10 +4,27 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DiagramDesignerEngine.UnitTests
+namespace ListOperations.UnitTests
 {
 	class ListUtilitiesTest
 	{
+		[Test]
+		public void TestDoesContainList()
+		{
+			var contained1 = new List<int> { 1, 2, 3 };
+			var container1 = new List<List<int>>();
+			Assert.IsFalse(ListUtilities.DoesContainList(container1, contained1));
+
+			var container2 = new List<List<int>> { new List<int> { 2, 3, 4 } };
+			Assert.IsFalse(ListUtilities.DoesContainList(container2, contained1));
+
+			var container3 = new List<List<int>> { new List<int> { 1, 3, 2 } };
+			Assert.IsFalse(ListUtilities.DoesContainList(container3, contained1));
+
+			var container4 = new List<List<int>> { new List<int> { 2, 3, 4 }, new List<int> { 1, 2, 3 } };
+			Assert.IsTrue(ListUtilities.DoesContainList(container4, contained1));
+		}
+
 		[Test]
 		public void TestAreContentsEqual()
 		{

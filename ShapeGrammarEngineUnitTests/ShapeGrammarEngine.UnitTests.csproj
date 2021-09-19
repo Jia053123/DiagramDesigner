@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ListOperations\ListOperations.csproj" />
     <ProjectReference Include="..\ShapeGrammarEngine\ShapeGrammarEngine.csproj" />
   </ItemGroup>
 
