@@ -16,7 +16,7 @@ namespace ShapeGrammarEngine
 	{
 		/// <summary>
 		/// A shape is defined as a graph: each tuple in the set represents a connection in the graph between two nodes. 
-		/// Each node is represented by a unique label in the form of an integer. All labels in a definition from a consecutive sequence from 0
+		/// Each node is represented by a unique label in the form of a positive integer. 
 		/// </summary>
 		public readonly HashSet<Connection> Definition;
 
@@ -25,12 +25,23 @@ namespace ShapeGrammarEngine
 			this.Definition = definition;
 		}
 
+		public HashSet<int> GetAllLabels()
+		{
+			var output = new HashSet<int>();
+			foreach (Connection c in this.Definition)
+			{
+				output.Add(c.LabelOfFirstNode);
+				output.Add(c.LabelOfSecondNode);
+			}
+			return output;
+		}
+
 		/// <summary>
 		/// Extract a graph-based shape instance from a non-empty geometry. The geometry must not intersect with itself
 		/// The output shape is guaranteed to conform with the input geometry
 		/// </summary>
 		/// <param name="polylines"> the input geometry. Must not be empty and each polyline must contain at least 2 points </param>
-		/// <returns></returns>
+		/// <returns> The output uses labels that together from a consecutive sequence from 0 </returns>
 		public static Shape CreateShapeFromPolylines(List<List<(double, double)>> polylines)
 		{
 			if (polylines is null)
@@ -168,6 +179,14 @@ namespace ShapeGrammarEngine
 				}
 			}
 			return false;
+		}
+
+		/// <summary>
+		/// Whether two shapes are equivalent despite potentially using a different set of labels
+		/// </summary>
+		public bool AreEquivalent(Shape shape1, Shape shape2)
+		{
+			return false; // TODO: stub
 		}
 
 		public static bool operator ==(Shape lhs, Shape rhs)
