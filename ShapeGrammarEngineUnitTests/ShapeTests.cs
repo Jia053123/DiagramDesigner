@@ -81,9 +81,8 @@ namespace ShapeGrammarEngineUnitTests
 			var shape = new Shape(new HashSet<Connection> { new Connection(0, 1) });
 
 			Assert.Throws<ArgumentNullException>(() => shape.ConformsWithGeometry(null));
-
-			Assert.IsFalse(shape.ConformsWithGeometry(new List<List<(double X, double Y)>>()));
-			Assert.IsFalse(shape.ConformsWithGeometry(new List<List<(double X, double Y)>> { new List<(double X, double Y)>() }));
+			Assert.Throws<ArgumentException>(() => shape.ConformsWithGeometry(new List<List<(double X, double Y)>>()));
+			Assert.Throws<ArgumentException>(() => shape.ConformsWithGeometry(new List<List<(double X, double Y)>> { new List<(double X, double Y)>() }));
 		}
 
 		[Test]
@@ -92,6 +91,33 @@ namespace ShapeGrammarEngineUnitTests
 			var shape1 = new Shape(new HashSet<Connection> { new Connection(0, 1) });
 			var geometry1 = new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (-5, 2.1), (20, 20) } };
 			Assert.IsTrue(shape1.ConformsWithGeometry(geometry1));
+
+			var shape2 = new Shape(new HashSet<Connection> { new Connection(0, 1), new Connection(1, 2), new Connection(2, 0) });
+			var geometry2 = new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (-5, 2.1), (20, 20), (5, 10), (-5, 2.1) } };
+			Assert.IsTrue(shape2.ConformsWithGeometry(geometry2));
+
+			var geometry3 = new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (-5, 2.1), (20, 20), (5, 10), (2, 5), (-5, 2.1) } };
+			Assert.IsFalse(shape2.ConformsWithGeometry(geometry3));
+
+			var geometry4 = new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (-5, 2.1), (20, 20), (5, 10), (2, 5) } };
+			Assert.IsFalse(shape2.ConformsWithGeometry(geometry4));
+		}
+
+		[Test]
+		public void TestConformsWithGeometry_MultiplePolylines()
+		{
+			var shape1 = new Shape(new HashSet<Connection> { new Connection(0, 1), new Connection(1, 2), new Connection(2, 0) });
+			var geometry1 = new List<List<(double X, double Y)>> { 
+				new List<(double X, double Y)> { (-5, 2.1), (20, 20) }, 
+				new List<(double X, double Y)> { (5, 10), (20, 20) }, 
+				new List<(double X, double Y)>{ (5, 10), (-5, 2.1) } };
+			Assert.IsTrue(shape1.ConformsWithGeometry(geometry1));
+
+			var geometry2 = new List<List<(double X, double Y)>> {
+				new List<(double X, double Y)> { (-5, 2.1), (20, 20) },
+				new List<(double X, double Y)> { (5, 10), (19, 20) },
+				new List<(double X, double Y)>{ (5, 10), (-5, 2.1) } };
+			Assert.IsFalse(shape1.ConformsWithGeometry(geometry2));
 		}
 	}
 }
