@@ -88,7 +88,7 @@ namespace ShapeGrammarEngine
 		
 			// step3: make new shape
 			var newShape = new Shape(connections);
-			//Debug.Assert(newShape.ConformsWithGeometry(polylines));
+			Debug.Assert(newShape.ConformsWithGeometry(polylines));
 			return newShape;
 		}
 
@@ -169,8 +169,6 @@ namespace ShapeGrammarEngine
 			}
 			return false;
 		}
-
-		//public bool EquivalentTo(Shape)
 
 		public static bool operator ==(Shape lhs, Shape rhs)
 		{
