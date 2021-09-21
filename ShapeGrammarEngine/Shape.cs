@@ -62,7 +62,6 @@ namespace ShapeGrammarEngine
 				}
 			}
 
-			// Check for intersections and overlaps
 			var allSegments = Shape.ConvertPolylinesToLineSegments(polylines);
 			for (int i = 0; i < allSegments.Count; i++)
 			{
@@ -93,11 +92,9 @@ namespace ShapeGrammarEngine
 					}
 				}
 			}
-
 			// step2: convert all line segments to connections
 			var connections = Shape.ConvertPolylinesToConnections(polylines, labelDictionary);
 		
-			// step3: make new shape
 			var newShape = new Shape(connections);
 			Debug.Assert(newShape.ConformsWithGeometry(polylines));
 			return newShape;
@@ -146,7 +143,7 @@ namespace ShapeGrammarEngine
 				throw new ArgumentNullException();
 			}
 
-			// step1: find all unique points in the polylines
+			// step1: find all unique points in the polylines and check if the count is the same as the count of labels in shape
 			var uniqueCoordinates = new HashSet<(double X, double Y)>();
 			foreach (List<(double, double)> pl in polylines)
 			{
@@ -158,8 +155,13 @@ namespace ShapeGrammarEngine
 			}
 			var uniqueCoordinatesList = new List<(double, double)>(uniqueCoordinates);
 
+			if (uniqueCoordinates.Count != this.GetAllLabels().Count)
+			{
+				return false;
+			}
+
 			// step2: generate all potential ways each unique point can be labeled
-			var allPotentialLabeling = Utilities.GenerateAllPermutations(0, uniqueCoordinatesList.Count-1);
+			var allPotentialLabeling = Utilities.GenerateAllPermutations(new List<int>(this.GetAllLabels()));
 
 			// step3: check if there is one potential labeling with which the input would match the definition of this shape
 			foreach (List<int> labeling in allPotentialLabeling)

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using ListOperations;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ShapeGrammarEngine
@@ -7,52 +9,61 @@ namespace ShapeGrammarEngine
 	static internal class Utilities
 	{
 		/// <summary>
-		/// Generate all permutations of a consecutive sequence of positive integers
+		/// Generate all unique permutations of a list
 		/// </summary>
-		/// <param name="start"> The first member of the sequence </param>
-		/// <param name="end"> The last member of the sequence </param>
-		/// <returns> All permutations of the sequence </returns>
-		static internal List<List<int>> GenerateAllPermutations(int start, int end)
+		/// <returns> All unique permutations </returns>
+		static internal List<List<T>> GenerateAllPermutations<T>(List<T> listToPermutate) where T : IEquatable<T>
 		{
-			if (start < 0 || end < 0)
+			if (listToPermutate.Count == 0)
 			{
-				throw new ArgumentException("the arguments cannot be negative");
+				throw new ArgumentException("listToPermutate must have at least one entry");
 			}
 
-			int small, large;
-
-			if (start < end)
+			List < List < T >> helper(int beginningIndex, int endIndex)
 			{
-				small = start;
-				large = end;
-			}
-			else
-			{
-				small = end;
-				large = start;
-			}
-
-
-			// terminal case: if there is only one member, output that member
-			if (small == large)
-			{
-				return new List<List<int>> { new List<int> { small } };
-			}
-
-			// otherwise, get all permutations of all members other than the first one, 
-			// then for each permutation in the result insert the first member at all possible locations, creating the new set of permutations
-			var result = Utilities.GenerateAllPermutations(small + 1, large);
-			var output = new List<List<int>>();
-			foreach (List<int> permutation in result)
-			{
-				for (int i = 0; i < permutation.Count + 1; i++)
+				// terminal case: if there is only one member, output that member
+				if (beginningIndex == endIndex)
 				{
-					var newPermutation = new List<int>(permutation);
-					newPermutation.Insert(i, small);
-					output.Add(newPermutation);
+					return new List<List<T>> { new List<T> { listToPermutate[beginningIndex] } };
+				}
+
+				// otherwise, get all permutations of all members other than the first one, 
+				// then for each permutation in the result insert the first member at all possible locations, creating the new set of permutations
+				var result = helper(beginningIndex + 1, endIndex);
+				var output = new List<List<T>>();
+				foreach (List<T> permutation in result)
+				{
+					for (int i = 0; i < permutation.Count + 1; i++)
+					{
+						var newPermutation = new List<T>(permutation);
+						newPermutation.Insert(i, listToPermutate[beginningIndex]);
+						output.Add(newPermutation);
+					}
+				}
+				return output;
+			}
+
+			var permutations = helper(0, listToPermutate.Count - 1);
+			var duplicateIndexes = new List<int>();
+			for (int i = 0; i < permutations.Count; i++)
+			{
+				for (int j = i+1; j < permutations.Count; j++)
+				{
+					if (ListUtilities.AreContentsEqualInOrder(permutations[i], permutations[j]))
+					{
+						duplicateIndexes.Add(j);
+					}
 				}
 			}
-			return output;
+
+			duplicateIndexes.Sort();
+			duplicateIndexes.Reverse();
+			foreach (int indexToRemove in duplicateIndexes)
+			{
+				permutations.RemoveAt(indexToRemove);
+			}
+
+			return permutations;
 		}
 	}
 }

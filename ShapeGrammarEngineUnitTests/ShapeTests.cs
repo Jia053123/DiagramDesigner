@@ -117,7 +117,7 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestConformsWithGeometry_OnePolyline()
+		public void TestConformsWithGeometry_OnePolylineAndNonConsecutiveLabels()
 		{
 			var shape1 = new Shape(new HashSet<Connection> { new Connection(0, 1) });
 			var geometry1 = new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (-5, 2.1), (20, 20) } };
@@ -135,7 +135,7 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestConformsWithGeometry_MultiplePolylines()
+		public void TestConformsWithGeometry_MultiplePolylinesAndNonConsecutiveLabels()
 		{
 			var shape1 = new Shape(new HashSet<Connection> { new Connection(0, 4), new Connection(4, 2), new Connection(2, 0) });
 			var geometry1 = new List<List<(double X, double Y)>> { 
