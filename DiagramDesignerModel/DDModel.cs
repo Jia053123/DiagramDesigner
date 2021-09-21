@@ -19,7 +19,7 @@ namespace DiagramDesignerModel
 
         public List<EnclosedProgram> Programs { get; private set; } = new List<EnclosedProgram>();
 
-        public RulesDataTable CurrentRules { get; } = new RulesDataTable();
+        public GrammarRulesDataTable CurrentRules { get; } = new GrammarRulesDataTable();
 
         public event EventHandler ModelChanged;
 

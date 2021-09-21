@@ -8,7 +8,15 @@ namespace ShapeGrammarEngineUnitTests
 	public class ShapeTests
 	{
 		[Test]
-		public void TestConstructor()
+		public void TestConstructor_EmptySet_CreateEmptyShape()
+		{
+			Assert.DoesNotThrow(() => new Shape(new HashSet<Connection>()));
+			var emptyShape = new Shape(new HashSet<Connection>());
+			Assert.AreEqual(0, emptyShape.Definition.Count);
+		}
+
+		[Test]
+		public void TestConstructor_NormalCases()
 		{
 			var c1 = new Connection(1, 2);
 			var c2 = new Connection(2, 3);
@@ -39,7 +47,15 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestGetAllLabels()
+		public void TestGetAllLabels_EmptyShape()
+		{
+			var emptyShape = new Shape(new HashSet<Connection>());
+			var result = emptyShape.GetAllLabels();
+			Assert.AreEqual(0, result.Count);
+		}
+
+		[Test]
+		public void TestGetAllLabels_NonEmptyShape()
 		{
 			var c1 = new Connection(1, 2);
 			var c2 = new Connection(2, 4);
@@ -57,9 +73,21 @@ namespace ShapeGrammarEngineUnitTests
 		public void TestCreateShapeFromPolylines_EdgeCases()
 		{
 			Assert.Throws<ArgumentNullException>(() => Shape.CreateShapeFromPolylines(null));
-			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new List<List<(double, double)>>()));
-			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new List<List<(double, double)>> { new List<(double, double)>() }));
-			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new List<List<(double, double)>> { new List<(double, double)> { (0,1) } }));
+
+			var pls1 = new List<List<(double, double)>>();
+			Assert.DoesNotThrow(() => Shape.CreateShapeFromPolylines(pls1));
+			var shape1 = Shape.CreateShapeFromPolylines(pls1);
+			Assert.AreEqual(0, shape1.Definition.Count);
+
+			var pls2 = new List<List<(double, double)>> { new List<(double, double)>() };
+			Assert.DoesNotThrow(() => Shape.CreateShapeFromPolylines(pls2));
+			var shape2 = Shape.CreateShapeFromPolylines(pls2);
+			Assert.AreEqual(0, shape2.Definition.Count);
+
+			var pls3 = new List<List<(double, double)>> { new List<(double, double)> { (0, 1) } };
+			Assert.DoesNotThrow(() => Shape.CreateShapeFromPolylines(pls3));
+			var shape3 = Shape.CreateShapeFromPolylines(pls3);
+			Assert.AreEqual(0, shape3.Definition.Count);
 		}
 
 		[Test]
@@ -109,16 +137,26 @@ namespace ShapeGrammarEngineUnitTests
 		[Test]
 		public void TestConformsWithGeometry_EdgeCases()
 		{
-			var shape = new Shape(new HashSet<Connection> { new Connection(0, 1) });
+			var shape1 = Shape.CreateEmptyShape();
+			Assert.Throws<ArgumentNullException>(() => shape1.ConformsWithGeometry(null));
+			Assert.IsTrue(shape1.ConformsWithGeometry(new List<List<(double X, double Y)>>()));
+			Assert.IsTrue(shape1.ConformsWithGeometry(new List<List<(double X, double Y)>> { new List<(double X, double Y)>() }));
+			Assert.IsTrue(shape1.ConformsWithGeometry(new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (1, 1) } }));
+			Assert.IsFalse(shape1.ConformsWithGeometry(new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (1, 1), (1, 2) }}));
 
-			Assert.Throws<ArgumentNullException>(() => shape.ConformsWithGeometry(null));
-			Assert.Throws<ArgumentException>(() => shape.ConformsWithGeometry(new List<List<(double X, double Y)>>()));
-			Assert.Throws<ArgumentException>(() => shape.ConformsWithGeometry(new List<List<(double X, double Y)>> { new List<(double X, double Y)>() }));
+			var shape2 = new Shape(new HashSet<Connection> { new Connection(0, 1) });
+			Assert.Throws<ArgumentNullException>(() => shape2.ConformsWithGeometry(null));
+			Assert.DoesNotThrow(() => shape2.ConformsWithGeometry(new List<List<(double X, double Y)>>()));
+			Assert.DoesNotThrow(() => shape2.ConformsWithGeometry(new List<List<(double X, double Y)>> { new List<(double X, double Y)>() }));
 		}
 
 		[Test]
 		public void TestConformsWithGeometry_OnePolylineAndNonConsecutiveLabels()
 		{
+			var shape0 = new Shape(new HashSet<Connection> { new Connection(0, 1) });
+			var geometry0 = new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (-5, 2.1) } };
+			Assert.IsFalse(shape0.ConformsWithGeometry(geometry0));
+
 			var shape1 = new Shape(new HashSet<Connection> { new Connection(0, 1) });
 			var geometry1 = new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (-5, 2.1), (20, 20) } };
 			Assert.IsTrue(shape1.ConformsWithGeometry(geometry1));

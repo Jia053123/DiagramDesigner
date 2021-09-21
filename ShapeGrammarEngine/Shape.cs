@@ -36,12 +36,39 @@ namespace ShapeGrammarEngine
 			return output;
 		}
 
+		public static Shape CreateEmptyShape()
+		{
+			return new Shape(new HashSet<Connection>());
+		}
+
 		/// <summary>
-		/// Extract a graph-based shape instance from a non-empty geometry. The geometry must not intersect with itself
+		/// Remove any polyline with less than 2 points
+		/// </summary>
+		private static void CleanUpPolylineGeometry(ref List<List<(double, double)>> polylineGeometry)
+		{
+			var indexesToRemove = new List<int>();
+			for (int i = 0; i < polylineGeometry.Count; i++)
+			{
+				var pl = polylineGeometry[i];
+				if (pl.Count < 2)
+				{
+					indexesToRemove.Add(i);
+				}
+			}
+			indexesToRemove.Sort();
+			indexesToRemove.Reverse();
+			foreach (int index in indexesToRemove)
+			{
+				polylineGeometry.RemoveAt(index);
+			}
+		}
+
+		/// <summary>
+		/// Extract a graph-based shape instance from a geometry. The geometry must not intersect with itself
 		/// The output shape is guaranteed to conform with the input geometry
 		/// </summary>
-		/// <param name="polylines"> the input geometry. Must not be empty and each polyline must contain at least 2 points </param>
-		/// <returns> The output uses labels that together from a consecutive sequence from 0 </returns>
+		/// <param name="polylines"> the input geometry.</param>
+		/// <returns> The output shape with labels that together from a consecutive integer sequence from 0 </returns>
 		public static Shape CreateShapeFromPolylines(List<List<(double, double)>> polylines)
 		{
 			if (polylines is null)
@@ -49,17 +76,11 @@ namespace ShapeGrammarEngine
 				throw new ArgumentNullException();
 			}
 
+			Shape.CleanUpPolylineGeometry(ref polylines);
+
 			if (polylines.Count == 0)
 			{
-				throw new ArgumentException("must have at least one polyline");
-			}
-
-			foreach (List<(double, double)> pl in polylines)
-			{
-				if (pl.Count < 2)
-				{
-					throw new ArgumentException("each polyline must have at least 2 points");
-				}
+				return Shape.CreateEmptyShape();
 			}
 
 			var allSegments = Shape.ConvertPolylinesToLineSegments(polylines);
@@ -141,6 +162,13 @@ namespace ShapeGrammarEngine
 			if (polylines is null)
 			{
 				throw new ArgumentNullException();
+			}
+
+			Shape.CleanUpPolylineGeometry(ref polylines);
+
+			if (polylines.Count == 0)
+			{
+				return this.Definition.Count == 0 ? true : false;
 			}
 
 			// step1: find all unique points in the polylines and check if the count is the same as the count of labels in shape

@@ -5,9 +5,9 @@ using System.Text;
 
 namespace ShapeGrammarEngine
 {
-    public class RulesDataTable : DataTable
+    public class GrammarRulesDataTable : DataTable
     {
-        public RulesDataTable()
+        public GrammarRulesDataTable()
         {
             var nameColumn = new DataColumn();
             nameColumn.DataType = System.Type.GetType("System.String");
