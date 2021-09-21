@@ -74,17 +74,17 @@ namespace ShapeGrammarEngineUnitTests
 		{
 			Assert.Throws<ArgumentNullException>(() => Shape.CreateShapeFromPolylines(null));
 
-			var pls1 = new List<List<(double, double)>>();
+			var pls1 = new PolylineGroup(new List<List<(double, double)>>());
 			Assert.DoesNotThrow(() => Shape.CreateShapeFromPolylines(pls1));
 			var shape1 = Shape.CreateShapeFromPolylines(pls1);
 			Assert.AreEqual(0, shape1.Definition.Count);
 
-			var pls2 = new List<List<(double, double)>> { new List<(double, double)>() };
+			var pls2 = new PolylineGroup( new List<List<(double, double)>> { new List<(double, double)>() });
 			Assert.DoesNotThrow(() => Shape.CreateShapeFromPolylines(pls2));
 			var shape2 = Shape.CreateShapeFromPolylines(pls2);
 			Assert.AreEqual(0, shape2.Definition.Count);
 
-			var pls3 = new List<List<(double, double)>> { new List<(double, double)> { (0, 1) } };
+			var pls3 = new PolylineGroup( new List<List<(double, double)>> { new List<(double, double)> { (0, 1) } });
 			Assert.DoesNotThrow(() => Shape.CreateShapeFromPolylines(pls3));
 			var shape3 = Shape.CreateShapeFromPolylines(pls3);
 			Assert.AreEqual(0, shape3.Definition.Count);
@@ -93,16 +93,16 @@ namespace ShapeGrammarEngineUnitTests
 		[Test]
 		public void TestCreateShapeFromPolylines_OnePolyline()
 		{
-			var result1 = Shape.CreateShapeFromPolylines(new List<List<(double, double)>> { new List<(double, double)> { (0, 0), (0, 1) } });
+			var result1 = Shape.CreateShapeFromPolylines(new PolylineGroup( new List<List<(double, double)>> { new List<(double, double)> { (0, 0), (0, 1) } }));
 			Assert.AreEqual(1, result1.Definition.Count);
 			Assert.IsTrue(result1.Definition.Contains(new Connection(0, 1)));
 
-			var result2 = Shape.CreateShapeFromPolylines(new List<List<(double, double)>> { new List<(double, double)> { (0, 0), (0, 1), (0, 3) } });
+			var result2 = Shape.CreateShapeFromPolylines(new PolylineGroup( new List<List<(double, double)>> { new List<(double, double)> { (0, 0), (0, 1), (0, 3) } }));
 			Assert.AreEqual(2, result2.Definition.Count);
 			Assert.IsTrue(result2.Definition.Contains(new Connection(0, 1)));
 			Assert.IsTrue(result2.Definition.Contains(new Connection(1, 2)));
 
-			var result3 = Shape.CreateShapeFromPolylines(new List<List<(double, double)>> { new List<(double, double)> { (0, 0), (1, 1), (1, 0), (0, 0) } });
+			var result3 = Shape.CreateShapeFromPolylines(new PolylineGroup( new List<List<(double, double)>> { new List<(double, double)> { (0, 0), (1, 1), (1, 0), (0, 0) } }));
 			Assert.AreEqual(3, result3.Definition.Count);
 			Assert.IsTrue(result3.Definition.Contains(new Connection(0, 1)));
 			Assert.IsTrue(result3.Definition.Contains(new Connection(1, 2)));
@@ -112,9 +112,9 @@ namespace ShapeGrammarEngineUnitTests
 		[Test]
 		public void TestCreateShapeFromPolylines_MultiplePolylines()
 		{
-			var result1 = Shape.CreateShapeFromPolylines(new List<List<(double, double)>> { 
+			var result1 = Shape.CreateShapeFromPolylines( new PolylineGroup( new List<List<(double, double)>> { 
 				new List<(double, double)> { (0, 0), (0, 1) },
-				new List<(double, double)> { (0, 0), (1, 0), (0, 1) }});
+				new List<(double, double)> { (0, 0), (1, 0), (0, 1) }}));
 			Assert.AreEqual(3, result1.Definition.Count);
 			Assert.IsTrue(result1.Definition.Contains(new Connection(0, 1)));
 			Assert.IsTrue(result1.Definition.Contains(new Connection(0, 2)));
@@ -124,14 +124,14 @@ namespace ShapeGrammarEngineUnitTests
 		[Test]
 		public void TestCreateShapeFromPolylines_InputGeometryIntersectsWithItself_ThrowArgumentException()
 		{
-			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new List<List<(double, double)>> { new List<(double, double)> { (0, -1), (0, 1), (1, 0), (-1, 0) } }));
-			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new List<List<(double, double)>> { new List<(double, double)> { (1, 0), (1, 2) }, new List<(double, double)> { (0, 1), (2, 1) } }));
+			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new PolylineGroup( new List<List<(double, double)>> { new List<(double, double)> { (0, -1), (0, 1), (1, 0), (-1, 0) } })));
+			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new PolylineGroup( new List<List<(double, double)>> { new List<(double, double)> { (1, 0), (1, 2) }, new List<(double, double)> { (0, 1), (2, 1) } })));
 		}
 
 		[Test]
 		public void TestCreateShapeFromPolylines_InputGeometryOverlapWithItself_ThrowArgumentException()
 		{
-			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new List<List<(double, double)>> { new List<(double, double)> { (0, -1), (0, 1), (0, 0), (0, 0.5) } }));
+			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new PolylineGroup( new List<List<(double, double)>> { new List<(double, double)> { (0, -1), (0, 1), (0, 0), (0, 0.5) } })));
 		}
 
 		[Test]
@@ -139,36 +139,36 @@ namespace ShapeGrammarEngineUnitTests
 		{
 			var shape1 = Shape.CreateEmptyShape();
 			Assert.Throws<ArgumentNullException>(() => shape1.ConformsWithGeometry(null));
-			Assert.IsTrue(shape1.ConformsWithGeometry(new List<List<(double X, double Y)>>()));
-			Assert.IsTrue(shape1.ConformsWithGeometry(new List<List<(double X, double Y)>> { new List<(double X, double Y)>() }));
-			Assert.IsTrue(shape1.ConformsWithGeometry(new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (1, 1) } }));
-			Assert.IsFalse(shape1.ConformsWithGeometry(new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (1, 1), (1, 2) }}));
+			Assert.IsTrue(shape1.ConformsWithGeometry(new PolylineGroup(new List<List<(double X, double Y)>>())));
+			Assert.IsTrue(shape1.ConformsWithGeometry(new PolylineGroup(new List<List<(double X, double Y)>> { new List<(double X, double Y)>() })));
+			Assert.IsTrue(shape1.ConformsWithGeometry(new PolylineGroup(new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (1, 1) } })));
+			Assert.IsFalse(shape1.ConformsWithGeometry(new PolylineGroup(new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (1, 1), (1, 2) }})));
 
 			var shape2 = new Shape(new HashSet<Connection> { new Connection(0, 1) });
 			Assert.Throws<ArgumentNullException>(() => shape2.ConformsWithGeometry(null));
-			Assert.DoesNotThrow(() => shape2.ConformsWithGeometry(new List<List<(double X, double Y)>>()));
-			Assert.DoesNotThrow(() => shape2.ConformsWithGeometry(new List<List<(double X, double Y)>> { new List<(double X, double Y)>() }));
+			Assert.DoesNotThrow(() => shape2.ConformsWithGeometry(new PolylineGroup(new List<List<(double X, double Y)>>())));
+			Assert.DoesNotThrow(() => shape2.ConformsWithGeometry(new PolylineGroup(new List<List<(double X, double Y)>> { new List<(double X, double Y)>() })));
 		}
 
 		[Test]
 		public void TestConformsWithGeometry_OnePolylineAndNonConsecutiveLabels()
 		{
 			var shape0 = new Shape(new HashSet<Connection> { new Connection(0, 1) });
-			var geometry0 = new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (-5, 2.1) } };
+			var geometry0 = new PolylineGroup(new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (-5, 2.1) } });
 			Assert.IsFalse(shape0.ConformsWithGeometry(geometry0));
 
 			var shape1 = new Shape(new HashSet<Connection> { new Connection(0, 1) });
-			var geometry1 = new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (-5, 2.1), (20, 20) } };
+			var geometry1 = new PolylineGroup(new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (-5, 2.1), (20, 20) } });
 			Assert.IsTrue(shape1.ConformsWithGeometry(geometry1));
 
 			var shape2 = new Shape(new HashSet<Connection> { new Connection(0, 1), new Connection(1, 3), new Connection(3, 0) });
-			var geometry2 = new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (-5, 2.1), (20, 20), (5, 10), (-5, 2.1) } };
+			var geometry2 = new PolylineGroup(new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (-5, 2.1), (20, 20), (5, 10), (-5, 2.1) } });
 			Assert.IsTrue(shape2.ConformsWithGeometry(geometry2));
 
-			var geometry3 = new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (-5, 2.1), (20, 20), (5, 10), (2, 5), (-5, 2.1) } };
+			var geometry3 = new PolylineGroup(new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (-5, 2.1), (20, 20), (5, 10), (2, 5), (-5, 2.1) } });
 			Assert.IsFalse(shape2.ConformsWithGeometry(geometry3));
 
-			var geometry4 = new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (-5, 2.1), (20, 20), (5, 10), (2, 5) } };
+			var geometry4 = new PolylineGroup(new List<List<(double X, double Y)>> { new List<(double X, double Y)> { (-5, 2.1), (20, 20), (5, 10), (2, 5) } });
 			Assert.IsFalse(shape2.ConformsWithGeometry(geometry4));
 		}
 
@@ -176,16 +176,16 @@ namespace ShapeGrammarEngineUnitTests
 		public void TestConformsWithGeometry_MultiplePolylinesAndNonConsecutiveLabels()
 		{
 			var shape1 = new Shape(new HashSet<Connection> { new Connection(0, 4), new Connection(4, 2), new Connection(2, 0) });
-			var geometry1 = new List<List<(double X, double Y)>> { 
+			var geometry1 = new PolylineGroup(new List<List<(double X, double Y)>> { 
 				new List<(double X, double Y)> { (-5, 2.1), (20, 20) }, 
 				new List<(double X, double Y)> { (5, 10), (20, 20) }, 
-				new List<(double X, double Y)>{ (5, 10), (-5, 2.1) } };
+				new List<(double X, double Y)>{ (5, 10), (-5, 2.1) } });
 			Assert.IsTrue(shape1.ConformsWithGeometry(geometry1));
 
-			var geometry2 = new List<List<(double X, double Y)>> {
+			var geometry2 = new PolylineGroup(new List<List<(double X, double Y)>> {
 				new List<(double X, double Y)> { (-5, 2.1), (20, 20) },
 				new List<(double X, double Y)> { (5, 10), (19, 20) },
-				new List<(double X, double Y)>{ (5, 10), (-5, 2.1) } };
+				new List<(double X, double Y)>{ (5, 10), (-5, 2.1) } });
 			Assert.IsFalse(shape1.ConformsWithGeometry(geometry2));
 		}
 	}

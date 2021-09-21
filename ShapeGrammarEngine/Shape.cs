@@ -42,67 +42,32 @@ namespace ShapeGrammarEngine
 		}
 
 		/// <summary>
-		/// Remove any polyline with less than 2 points
-		/// </summary>
-		private static void CleanUpPolylineGeometry(ref List<List<(double, double)>> polylineGeometry)
-		{
-			var indexesToRemove = new List<int>();
-			for (int i = 0; i < polylineGeometry.Count; i++)
-			{
-				var pl = polylineGeometry[i];
-				if (pl.Count < 2)
-				{
-					indexesToRemove.Add(i);
-				}
-			}
-			indexesToRemove.Sort();
-			indexesToRemove.Reverse();
-			foreach (int index in indexesToRemove)
-			{
-				polylineGeometry.RemoveAt(index);
-			}
-		}
-
-		/// <summary>
 		/// Extract a graph-based shape instance from a geometry. The geometry must not intersect with itself
 		/// The output shape is guaranteed to conform with the input geometry
 		/// </summary>
 		/// <param name="polylines"> the input geometry.</param>
 		/// <returns> The output shape with labels that together from a consecutive integer sequence from 0 </returns>
-		public static Shape CreateShapeFromPolylines(List<List<(double, double)>> polylines)
+		public static Shape CreateShapeFromPolylines(PolylineGroup polylineGroup)
 		{
-			if (polylines is null)
+			if (polylineGroup is null)
 			{
 				throw new ArgumentNullException();
 			}
 
-			Shape.CleanUpPolylineGeometry(ref polylines);
-
-			if (polylines.Count == 0)
+			if (polylineGroup.Polylines.Count == 0)
 			{
 				return Shape.CreateEmptyShape();
 			}
 
-			var allSegments = Shape.ConvertPolylinesToLineSegments(polylines);
-			for (int i = 0; i < allSegments.Count; i++)
+			if (polylineGroup.DoesIntersectOrOverlapWithItself())
 			{
-				for (int j = i+1; j < allSegments.Count; j++)
-				{
-					if (!(allSegments[i].FindIntersection(allSegments[j]) is null))
-					{
-						throw new ArgumentException("the input intersects with itself");
-					}
-					if (LineSegment.DoOverlap(allSegments[i], allSegments[i+1]))
-					{
-						throw new ArgumentException("the input overlaps with itself");
-					}
-				}
+				throw new ArgumentException("polylineGroup intersects or overlaps with itself");
 			}
-
-			// step1: label all unique points
+			
+			// label all unique points
 			var labelDictionary = new Dictionary<(double X, double Y), int>();
 			int label = 0;
-			foreach (List<(double, double)> polyline in polylines)
+			foreach (List<(double, double)> polyline in polylineGroup.Polylines)
 			{
 				foreach ((double X, double Y) p in polyline)
 				{
@@ -113,76 +78,33 @@ namespace ShapeGrammarEngine
 					}
 				}
 			}
-			// step2: convert all line segments to connections
-			var connections = Shape.ConvertPolylinesToConnections(polylines, labelDictionary);
+
+			var connections = polylineGroup.ConvertToConnections(labelDictionary);
 		
 			var newShape = new Shape(connections);
-			Debug.Assert(newShape.ConformsWithGeometry(polylines));
+			Debug.Assert(newShape.ConformsWithGeometry(polylineGroup));
 			return newShape;
 		}
 
-		private static List<LineSegment> ConvertPolylinesToLineSegments(List<List<(double, double)>> polylines) 
+		public bool ConformsWithGeometry(PolylineGroup polylineGroup)
 		{
-			var allSegments = new List<LineSegment>();
-			foreach (List<(double X, double Y)> polyline in polylines)
-			{
-				for (int i = 0; i < polyline.Count - 1; i++)
-				{
-					var p = new Point(polyline[i].X, polyline[i].Y);
-					var nextP = new Point(polyline[i + 1].X, polyline[i + 1].Y);
-					allSegments.Add(new LineSegment(p, nextP));
-				}
-			}
-			return allSegments;
-		}
-
-		private static HashSet<Connection> ConvertPolylinesToConnections(List<List<(double, double)>> polylines, Dictionary<(double X, double Y), int> labeling)
-		{
-			var connections = new HashSet<Connection>();
-			foreach (List<(double, double)> polyline in polylines)
-			{
-				for (int i = 0; i < polyline.Count - 1; i++)
-				{
-					var p1 = polyline[i];
-					var p2 = polyline[i + 1];
-					int label1, label2;
-					var s1 = labeling.TryGetValue(p1, out label1);
-					var s2 = labeling.TryGetValue(p2, out label2);
-					Debug.Assert(s1 && s2);
-
-					var c = new Connection(label1, label2);
-					connections.Add(c);
-				}
-			}
-			return connections;
-		}
-	
-		public bool ConformsWithGeometry(List<List<(double, double)>> polylines)
-		{
-			if (polylines is null)
+			if (polylineGroup is null)
 			{
 				throw new ArgumentNullException();
 			}
 
-			Shape.CleanUpPolylineGeometry(ref polylines);
-
-			if (polylines.Count == 0)
+			if (polylineGroup.Polylines.Count == 0)
 			{
 				return this.Definition.Count == 0 ? true : false;
 			}
 
 			// step1: find all unique points in the polylines and check if the count is the same as the count of labels in shape
 			var uniqueCoordinates = new HashSet<(double X, double Y)>();
-			foreach (List<(double, double)> pl in polylines)
+			foreach (List<(double, double)> pl in polylineGroup.Polylines)
 			{
 				uniqueCoordinates.UnionWith(pl);
 			}
-			if (uniqueCoordinates.Count < 2)
-			{
-				throw new ArgumentException("the input polylines geometry must have at least 2 unique points");
-			}
 			var uniqueCoordinatesList = new List<(double, double)>(uniqueCoordinates);
-
 			if (uniqueCoordinates.Count != this.GetAllLabels().Count)
 			{
 				return false;
@@ -201,7 +123,7 @@ namespace ShapeGrammarEngine
 					labelDictionary.Add(uniqueCoordinatesList[i], labeling[i]);
 				}
 
-				var connections = Shape.ConvertPolylinesToConnections(polylines, labelDictionary);
+				var connections = polylineGroup.ConvertToConnections(labelDictionary);
 
 				if (this.Definition.SetEquals(connections))
 				{
