@@ -2,11 +2,10 @@
 using DiagramDesignerEngine;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace DiagramDesignerModel
 {
-    public class EnclosedProgram
+	public class EnclosedProgram
     {
         public String Name { get; private set; }
         public double Area { get { return this.CalculateEnclosedArea(); } }

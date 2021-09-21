@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using ShapeGrammarEngine;
 using ListOperations;
 using System.Linq;

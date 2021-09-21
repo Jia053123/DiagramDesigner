@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using DiagramDesignerEngine;
 using System;
 using BasicGeometries;
 

@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
-using System.Text;
 using System.Windows.Controls;
 using System.Windows.Media;
 using WinPoint = System.Windows.Point;
 
 namespace DiagramDesigner
 {
-    class PieChartCanvas : Canvas
+	class PieChartCanvas : Canvas
     {
         private DataTable DataSource { get; set; }
         private String KeyColumnName;

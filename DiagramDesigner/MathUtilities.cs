@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using WinPoint = System.Windows.Point;
-using DiagramDesignerEngine;
 using System.Runtime.CompilerServices;
 using BasicGeometries;
 

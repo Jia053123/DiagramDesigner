@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DiagramDesigner
 {
-    class MouseEventArgs : EventArgs
+	class MouseEventArgs : EventArgs
     {
         public readonly double LocationX;
         public readonly double LocationY;

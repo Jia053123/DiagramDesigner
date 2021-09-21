@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
-using System.Text;
 
 namespace ShapeGrammarEngine
 {
-    public class GrammarRulesDataTable : DataTable
+	public class GrammarRulesDataTable : DataTable
     {
         public GrammarRulesDataTable()
         {

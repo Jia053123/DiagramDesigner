@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ShapeGrammarEngine
+﻿namespace ShapeGrammarEngine
 {
 	class GrammarRule
 	{
@@ -23,6 +19,11 @@ namespace ShapeGrammarEngine
 		{
 			this.ShapeBefore = shapeBefore;
 			this.ShapeAfter = shapeAfter;
+		}
+
+		public PolylineGroup ApplyToPolylines(PolylineGroup polylines)
+		{
+			return null; 
 		}
 	}
 }

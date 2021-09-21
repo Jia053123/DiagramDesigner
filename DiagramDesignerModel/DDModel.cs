@@ -1,17 +1,15 @@
 ﻿using BasicGeometries;
-using DiagramDesignerEngine;
 using ShapeGrammarEngine;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace DiagramDesignerModel
 {
-    /// <summary>
-    /// In the context of shape grammar, the collection of entities reflects the current description of the diagram. 
-    /// A change in the collection reflects a change of the description but not necessarily a change of the appearance of the diagram. 
-    /// </summary>
-    public class DDModel
+	/// <summary>
+	/// In the context of shape grammar, the collection of entities reflects the current description of the diagram. 
+	/// A change in the collection reflects a change of the description but not necessarily a change of the appearance of the diagram. 
+	/// </summary>
+	public class DDModel
     {
         public ProgramRequirementsTable ProgramRequirements { get; } = new ProgramRequirementsTable();
 

@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Input;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows.Controls;
 
 namespace DiagramDesigner

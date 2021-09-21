@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
-using DiagramDesignerEngine;
-using System.Diagnostics;
 using BasicGeometries;
 
 namespace DiagramDesignerEngine.UnitTests

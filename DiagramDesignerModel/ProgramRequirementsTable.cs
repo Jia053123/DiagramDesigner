@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Text;
+﻿using System.Data;
 
 namespace DiagramDesignerModel
 {
-    public class ProgramRequirementsTable : DataTable
+	public class ProgramRequirementsTable : DataTable
     {
         public ProgramRequirementsTable()
         {

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows.Input;
 
 namespace DiagramDesigner
 {
-    class DelegateCommand : ICommand
+	class DelegateCommand : ICommand
     {
         Action<object> execute;
 

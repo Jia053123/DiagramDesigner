@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 [assembly: InternalsVisibleTo("DiagramDesignerEngine.UnitTests")]
 namespace BasicGeometries
 {
-    public readonly struct Point: IEquatable<Point>
+	public readonly struct Point: IEquatable<Point>
     {
         // setting these to internal in order to make them readonly to the ViewModel
         public double coordinateX { get; }

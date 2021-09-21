@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel;
 using System.Windows.Input;
 using System.Runtime.CompilerServices;
-using DiagramDesignerEngine;
 using System.Linq;
 using WinPoint = System.Windows.Point;
 using System.Data;
@@ -14,10 +12,10 @@ using BasicGeometries;
 
 namespace DiagramDesigner
 {
-    /// <summary>
-    /// Manage events between the UI and the engine
-    /// </summary>
-    class MainViewModel : INotifyPropertyChanged
+	/// <summary>
+	/// Manage events between the UI and the engine
+	/// </summary>
+	class MainViewModel : INotifyPropertyChanged
     {
         private DDModel Model = new DDModel();
         public double DisplayUnitOverRealUnit { get; set; } = 5;
