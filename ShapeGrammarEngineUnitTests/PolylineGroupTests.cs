@@ -6,6 +6,15 @@ namespace ShapeGrammarEngine.UnitTests
 	class PolylineGroupTests
 	{
 		[Test]
+		public void TestCreateEmptyPolylineGroup()
+		{
+			var emptyGroup = PolylineGroup.CreateEmptyPolylineGroup();
+			var emptyShape = Shape.CreateEmptyShape();
+			Assert.AreEqual(0, emptyGroup.Polylines.Count);
+			Assert.IsTrue(emptyShape.ConformsWithGeometry(emptyGroup));
+		}
+
+		[Test]
 		public void TestDoesIntersectOrOverlapWithItself_Intersect()
 		{
 			Assert.IsTrue(new PolylineGroup(new List<List<(double, double)>> { new List<(double, double)> { (0, -1), (0, 1), (1, 0), (-1, 0) } }).DoesIntersectOrOverlapWithItself());

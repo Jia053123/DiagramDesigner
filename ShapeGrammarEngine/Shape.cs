@@ -166,6 +166,4 @@ namespace ShapeGrammarEngine
 			return true;
 		}
 	}
-
-	class FailedToBuildShapeException: Exception { }
 }

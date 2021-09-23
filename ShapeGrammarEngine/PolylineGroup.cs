@@ -18,6 +18,10 @@ namespace ShapeGrammarEngine
 			this.CleanUp();
 		}
 
+		public static PolylineGroup CreateEmptyPolylineGroup() {
+			return new PolylineGroup(new List<List<(double, double)>>());
+		}
+
 		/// <summary>
 		/// Remove any polyline with less than 2 points and thereby doesn't form a line
 		/// </summary>
