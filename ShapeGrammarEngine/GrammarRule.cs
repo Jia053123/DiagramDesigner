@@ -70,6 +70,10 @@ namespace ShapeGrammarEngine
 			{
 				throw new ArgumentException("polylines does not conform with ShapeBefore");
 			}
+			
+
+
+
 
 			return null; // stub
 		}

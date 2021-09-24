@@ -8,12 +8,12 @@ namespace DiagramDesigner
 {
 	static class MathUtilities
 	{
-		public static WinPoint ConvertPointToWindowsPointOnScreen(Point p, double winPointUnitOverPointUnit)
+		public static WinPoint ConvertRealScaledPointToWindowsPointOnScreen(Point p, double winPointUnitOverPointUnit)
 		{
 			return new WinPoint(p.coordinateX * winPointUnitOverPointUnit, p.coordinateY * winPointUnitOverPointUnit);
 		}
 
-		public static  Point ConvertWindowsPointOnScreenToPoint (WinPoint wp, double winPointUnitOverPointUnit)
+		public static  Point ConvertWindowsPointOnScreenToRealScalePoint (WinPoint wp, double winPointUnitOverPointUnit)
 		{
 			return new Point(wp.X / winPointUnitOverPointUnit, wp.Y / winPointUnitOverPointUnit);
 		}
