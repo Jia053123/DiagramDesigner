@@ -26,9 +26,10 @@ namespace ShapeGrammarEngine
 		/// </summary>
 		public bool CheckForMinimumProgramSize { get; private set; } = true;
 
-
 		public bool IsATerminalRule { get; private set; }
 
+		private List<RuleApplicationRecord> ApplicationRecords = new List<RuleApplicationRecord>();
+	
 		/// <summary>
 		/// shapeBefore and shapeAfter share the same set of labels, so having the same label in both parameters means 
 		/// the point corresponding to that node will stay the same when the rule is applied
@@ -55,7 +56,7 @@ namespace ShapeGrammarEngine
 				throw new ArgumentException("geometryAfter does not conform with ShapeAfter");
 			}
 
-			// TODO: stub
+			this.ApplicationRecords.Add(new RuleApplicationRecord(geometryBefore, geometryAfter));
 		}
 
 		/// <summary>
@@ -70,10 +71,7 @@ namespace ShapeGrammarEngine
 				throw new ArgumentException("polylines does not conform with ShapeBefore");
 			}
 
-
 			return null; // stub
 		}
-
-
 	}
 }
