@@ -6,13 +6,13 @@ namespace ShapeGrammarEngine
 {
 	public class PolylineGroup
 	{
-		private List<List<(double X, double Y)>> polylines = new List<List<(double, double)>>();
+		private List<List<Point>> polylines = new List<List<Point>>();
 		/// <summary>
 		/// each polyline has at least 2 points
 		/// </summary>
-		public List<List<(double X, double Y)>> PolylinesCopy { get { return new List<List<(double X, double Y)>>(this.polylines); } }
+		public List<List<Point>> PolylinesCopy { get { return new List<List<Point>>(this.polylines); } }
 
-		public PolylineGroup(List<List<(double, double)>> polylines)
+		public PolylineGroup(List<List<Point>> polylines)
 		{
 			if (polylines is null)
 			{
@@ -23,7 +23,7 @@ namespace ShapeGrammarEngine
 		}
 
 		public static PolylineGroup CreateEmptyPolylineGroup() {
-			return new PolylineGroup(new List<List<(double, double)>>());
+			return new PolylineGroup(new List<List<Point>>());
 		}
 
 		public bool IsEmpty()
@@ -76,22 +76,22 @@ namespace ShapeGrammarEngine
 		private List<LineSegment> ConvertToLineSegments()
 		{
 			var allSegments = new List<LineSegment>();
-			foreach (List<(double X, double Y)> polyline in this.polylines)
+			foreach (List<Point> polyline in this.polylines)
 			{
 				for (int i = 0; i < polyline.Count - 1; i++)
 				{
-					var p = new Point(polyline[i].X, polyline[i].Y);
-					var nextP = new Point(polyline[i + 1].X, polyline[i + 1].Y);
+					var p = new Point(polyline[i].coordinateX, polyline[i].coordinateY);
+					var nextP = new Point(polyline[i + 1].coordinateX, polyline[i + 1].coordinateY);
 					allSegments.Add(new LineSegment(p, nextP));
 				}
 			}
 			return allSegments;
 		}
 
-		public HashSet<Connection> ConvertToConnections(Dictionary<(double X, double Y), int> labeling)
+		public HashSet<Connection> ConvertToConnections(Dictionary<Point, int> labeling)
 		{
 			var connections = new HashSet<Connection>();
-			foreach (List<(double, double)> polyline in this.polylines)
+			foreach (List<Point> polyline in this.polylines)
 			{
 				for (int i = 0; i < polyline.Count - 1; i++)
 				{

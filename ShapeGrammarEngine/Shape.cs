@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BasicGeometries;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -62,11 +63,11 @@ namespace ShapeGrammarEngine
 			}
 			
 			// label all unique points
-			var labelDictionary = new Dictionary<(double X, double Y), int>();
+			var labelDictionary = new Dictionary<Point, int>();
 			int label = 0;
-			foreach (List<(double, double)> polyline in polylineGroup.PolylinesCopy)
+			foreach (List<Point> polyline in polylineGroup.PolylinesCopy)
 			{
-				foreach ((double X, double Y) p in polyline)
+				foreach (Point p in polyline)
 				{
 					if (!labelDictionary.ContainsKey(p))
 					{
@@ -96,12 +97,12 @@ namespace ShapeGrammarEngine
 			}
 
 			// step1: find all unique points in the polylines and check if the count is the same as the count of labels in shape
-			var uniqueCoordinates = new HashSet<(double X, double Y)>();
-			foreach (List<(double, double)> pl in polylineGroup.PolylinesCopy)
+			var uniqueCoordinates = new HashSet<Point>();
+			foreach (List<Point> pl in polylineGroup.PolylinesCopy)
 			{
 				uniqueCoordinates.UnionWith(pl);
 			}
-			var uniqueCoordinatesList = new List<(double, double)>(uniqueCoordinates);
+			var uniqueCoordinatesList = new List<Point>(uniqueCoordinates);
 			if (uniqueCoordinates.Count != this.GetAllLabels().Count)
 			{
 				return false;
@@ -114,7 +115,7 @@ namespace ShapeGrammarEngine
 			foreach (List<int> labeling in allPotentialLabeling)
 			{
 				Debug.Assert(uniqueCoordinatesList.Count == labeling.Count);
-				var labelDictionary = new Dictionary<(double X, double Y), int>();
+				var labelDictionary = new Dictionary<Point, int>();
 				for (int i = 0; i < uniqueCoordinatesList.Count; i++)
 				{
 					labelDictionary.Add(uniqueCoordinatesList[i], labeling[i]);
