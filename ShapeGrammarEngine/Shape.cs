@@ -51,7 +51,7 @@ namespace ShapeGrammarEngine
 				throw new ArgumentNullException();
 			}
 
-			if (polylineGroup.Polylines.Count == 0)
+			if (polylineGroup.PolylinesCopy.Count == 0)
 			{
 				return Shape.CreateEmptyShape();
 			}
@@ -64,7 +64,7 @@ namespace ShapeGrammarEngine
 			// label all unique points
 			var labelDictionary = new Dictionary<(double X, double Y), int>();
 			int label = 0;
-			foreach (List<(double, double)> polyline in polylineGroup.Polylines)
+			foreach (List<(double, double)> polyline in polylineGroup.PolylinesCopy)
 			{
 				foreach ((double X, double Y) p in polyline)
 				{
@@ -90,14 +90,14 @@ namespace ShapeGrammarEngine
 				throw new ArgumentNullException();
 			}
 
-			if (polylineGroup.Polylines.Count == 0)
+			if (polylineGroup.PolylinesCopy.Count == 0)
 			{
 				return this.Definition.Count == 0 ? true : false;
 			}
 
 			// step1: find all unique points in the polylines and check if the count is the same as the count of labels in shape
 			var uniqueCoordinates = new HashSet<(double X, double Y)>();
-			foreach (List<(double, double)> pl in polylineGroup.Polylines)
+			foreach (List<(double, double)> pl in polylineGroup.PolylinesCopy)
 			{
 				uniqueCoordinates.UnionWith(pl);
 			}
