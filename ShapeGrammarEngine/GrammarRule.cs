@@ -47,11 +47,11 @@ namespace ShapeGrammarEngine
 		/// <param name="geometryAfter"> The geometry in the example after the rule is applied </param>
 		public void LearnFromExample(PolylineGroup geometryBefore, PolylineGroup geometryAfter)
 		{
-			if (!this.ShapeBefore.ConformsWithGeometry(geometryBefore))
+			if (!this.ShapeBefore.ConformsWithGeometry(geometryBefore, out _))
 			{
 				throw new ArgumentException("geometryBefore does not conform with ShapeBefore");
 			}
-			if (!this.ShapeAfter.ConformsWithGeometry(geometryAfter))
+			if (!this.ShapeAfter.ConformsWithGeometry(geometryAfter, out _))
 			{
 				throw new ArgumentException("geometryAfter does not conform with ShapeAfter");
 			}
@@ -66,12 +66,13 @@ namespace ShapeGrammarEngine
 		/// <returns> the geometry after the rule is applied. It will confrom with ShapeAfter </returns>
 		public PolylineGroup ApplyToGeometry(PolylineGroup polylines)
 		{
-			if (!this.ShapeBefore.ConformsWithGeometry(polylines))
+			// step1: confirm that the input conforms with LHS (left hand shape) 
+			if (!this.ShapeBefore.ConformsWithGeometry(polylines, out _))
 			{
 				throw new ArgumentException("polylines does not conform with ShapeBefore");
 			}
 			
-
+			// step2: label the input
 
 
 

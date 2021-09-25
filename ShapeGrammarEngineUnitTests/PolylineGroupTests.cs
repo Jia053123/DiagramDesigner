@@ -12,7 +12,7 @@ namespace ShapeGrammarEngine.UnitTests
 			var emptyGroup = PolylineGroup.CreateEmptyPolylineGroup();
 			var emptyShape = Shape.CreateEmptyShape();
 			Assert.AreEqual(0, emptyGroup.PolylinesCopy.Count);
-			Assert.IsTrue(emptyShape.ConformsWithGeometry(emptyGroup));
+			Assert.IsTrue(emptyShape.ConformsWithGeometry(emptyGroup, out _));
 		}
 
 		[Test]

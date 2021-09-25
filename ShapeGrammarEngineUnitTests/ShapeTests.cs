@@ -138,56 +138,84 @@ namespace ShapeGrammarEngineUnitTests
 		[Test]
 		public void TestConformsWithGeometry_EdgeCases()
 		{
-			var shape1 = Shape.CreateEmptyShape();
-			Assert.Throws<ArgumentNullException>(() => shape1.ConformsWithGeometry(null));
-			Assert.IsTrue(shape1.ConformsWithGeometry(new PolylineGroup(new List<List<Point>>())));
-			Assert.IsTrue(shape1.ConformsWithGeometry(new PolylineGroup(new List<List<Point>> { new List<Point>() })));
-			Assert.IsTrue(shape1.ConformsWithGeometry(new PolylineGroup(new List<List<Point>> { new List<Point> { new Point(1, 1) } })));
-			Assert.IsFalse(shape1.ConformsWithGeometry(new PolylineGroup(new List<List<Point>> { new List<Point> { new Point(1, 1), new Point(1, 2) }})));
+			var emptyShape = Shape.CreateEmptyShape();
+			Assert.Throws<ArgumentNullException>(() => emptyShape.ConformsWithGeometry(null, out _));
+
+			Dictionary<Point, int> output;
+			Assert.IsTrue(emptyShape.ConformsWithGeometry(new PolylineGroup(new List<List<Point>>()), out output));
+			Assert.AreEqual(0, output.Count);
+
+			Assert.IsTrue(emptyShape.ConformsWithGeometry(new PolylineGroup(new List<List<Point>> { new List<Point>() }), out output));
+			Assert.AreEqual(0, output.Count);
+
+			Assert.IsTrue(emptyShape.ConformsWithGeometry(new PolylineGroup(new List<List<Point>> { new List<Point> { new Point(1, 1) } }), out output));
+			Assert.AreEqual(0, output.Count);
+
+			Assert.IsFalse(emptyShape.ConformsWithGeometry(new PolylineGroup(new List<List<Point>> { new List<Point> { new Point(1, 1), new Point(1, 2) }}), out output));
+			Assert.IsNull(output);
 
 			var shape2 = new Shape(new HashSet<Connection> { new Connection(0, 1) });
-			Assert.Throws<ArgumentNullException>(() => shape2.ConformsWithGeometry(null));
-			Assert.DoesNotThrow(() => shape2.ConformsWithGeometry(new PolylineGroup(new List<List<Point>>())));
-			Assert.DoesNotThrow(() => shape2.ConformsWithGeometry(new PolylineGroup(new List<List<Point>> { new List<Point>() })));
+			Assert.Throws<ArgumentNullException>(() => shape2.ConformsWithGeometry(null, out _));
+			Assert.DoesNotThrow(() => shape2.ConformsWithGeometry(new PolylineGroup(new List<List<Point>>()), out _));
+			Assert.DoesNotThrow(() => shape2.ConformsWithGeometry(new PolylineGroup(new List<List<Point>> { new List<Point>() }), out _));
 		}
 
 		[Test]
 		public void TestConformsWithGeometry_OnePolylineAndNonConsecutiveLabels()
 		{
+			Dictionary<Point, int> output;
+
 			var shape0 = new Shape(new HashSet<Connection> { new Connection(0, 1) });
 			var geometry0 = new PolylineGroup(new List<List<Point>> { new List<Point> { new Point(-5, 2.1) } });
-			Assert.IsFalse(shape0.ConformsWithGeometry(geometry0));
+			Assert.IsFalse(shape0.ConformsWithGeometry(geometry0, out output));
+			Assert.IsNull(output);
 
 			var shape1 = new Shape(new HashSet<Connection> { new Connection(0, 1) });
 			var geometry1 = new PolylineGroup(new List<List<Point>> { new List<Point> { new Point(-5, 2.1), new Point(20, 20) } });
-			Assert.IsTrue(shape1.ConformsWithGeometry(geometry1));
+			Assert.IsTrue(shape1.ConformsWithGeometry(geometry1, out output));
+			Assert.AreEqual(2, output.Count);
+			Assert.IsTrue(output.ContainsKey(new Point(-5, 2.1)));
+			Assert.IsTrue(output.ContainsKey(new Point(20, 20)));
 
 			var shape2 = new Shape(new HashSet<Connection> { new Connection(0, 1), new Connection(1, 3), new Connection(3, 0) });
 			var geometry2 = new PolylineGroup(new List<List<Point>> { new List<Point> { new Point(-5, 2.1), new Point(20, 20), new Point(5, 10), new Point(-5, 2.1) } });
-			Assert.IsTrue(shape2.ConformsWithGeometry(geometry2));
+			Assert.IsTrue(shape2.ConformsWithGeometry(geometry2, out output));
+			Assert.AreEqual(3, output.Count);
+			Assert.IsTrue(output.ContainsKey(new Point(-5, 2.1)));
+			Assert.IsTrue(output.ContainsKey(new Point(20, 20)));
+			Assert.IsTrue(output.ContainsKey(new Point(5, 10)));
 
 			var geometry3 = new PolylineGroup(new List<List<Point>> { new List<Point> { new Point(-5, 2.1), new Point(20, 20), new Point(5, 10), new Point(2, 5), new Point(-5, 2.1) } });
-			Assert.IsFalse(shape2.ConformsWithGeometry(geometry3));
+			Assert.IsFalse(shape2.ConformsWithGeometry(geometry3, out output));
+			Assert.IsNull(output);
 
 			var geometry4 = new PolylineGroup(new List<List<Point>> { new List<Point> { new Point(-5, 2.1), new Point(20, 20), new Point(5, 10), new Point(2, 5) } });
-			Assert.IsFalse(shape2.ConformsWithGeometry(geometry4));
+			Assert.IsFalse(shape2.ConformsWithGeometry(geometry4, out output));
+			Assert.IsNull(output);
 		}
 
 		[Test]
 		public void TestConformsWithGeometry_MultiplePolylinesAndNonConsecutiveLabels()
 		{
+			Dictionary<Point, int> output;
+
 			var shape1 = new Shape(new HashSet<Connection> { new Connection(0, 4), new Connection(4, 2), new Connection(2, 0) });
 			var geometry1 = new PolylineGroup(new List<List<Point>> { 
 				new List<Point> { new Point(-5, 2.1), new Point(20, 20) }, 
 				new List<Point> { new Point(5, 10), new Point(20, 20) }, 
 				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) } });
-			Assert.IsTrue(shape1.ConformsWithGeometry(geometry1));
+			Assert.IsTrue(shape1.ConformsWithGeometry(geometry1, out output));
+			Assert.AreEqual(3, output.Count);
+			Assert.IsTrue(output.ContainsKey(new Point(-5, 2.1)));
+			Assert.IsTrue(output.ContainsKey(new Point(20, 20)));
+			Assert.IsTrue(output.ContainsKey(new Point(5, 10)));
 
 			var geometry2 = new PolylineGroup(new List<List<Point>> {
 				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
 				new List<Point> { new Point(5, 10), new Point(19, 20) },
 				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) } });
-			Assert.IsFalse(shape1.ConformsWithGeometry(geometry2));
+			Assert.IsFalse(shape1.ConformsWithGeometry(geometry2, out output));
+			Assert.IsNull(output);
 		}
 	}
 }

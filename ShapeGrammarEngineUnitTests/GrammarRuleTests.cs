@@ -56,14 +56,14 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
-		public void TestApplyToGeometry_ValidInput_OutputConfromsWithRule()
+		public void TestApplyToGeometry_ValidInput_OutputConfromsWithRule_1()
 		{
 			var shape1 = new Shape(new HashSet<Connection> { new Connection(1, 2) });
 			var shape2 = new Shape(new HashSet<Connection> { new Connection(1, 2), new Connection(2, 3) });
 			var rule1 = new GrammarRule(shape1, shape2);
 			var polyGroup1 = new PolylineGroup(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(0, 1) } });
 			var result1 = rule1.ApplyToGeometry(polyGroup1);
-			Assert.IsTrue(shape2.ConformsWithGeometry(result1));
+			Assert.IsTrue(shape2.ConformsWithGeometry(result1, out _));
 		}
 	}
 }

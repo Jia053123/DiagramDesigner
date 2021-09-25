@@ -80,11 +80,18 @@ namespace ShapeGrammarEngine
 			var connections = polylineGroup.ConvertToConnections(labelDictionary);
 		
 			var newShape = new Shape(connections);
-			Debug.Assert(newShape.ConformsWithGeometry(polylineGroup));
+			Debug.Assert(newShape.ConformsWithGeometry(polylineGroup, out _));
 			return newShape;
 		}
 
-		public bool ConformsWithGeometry(PolylineGroup polylineGroup)
+		/// <summary>
+		/// Wheher the input is of this shape
+		/// </summary>
+		/// <param name="polylineGroup"> the polyline geometry to check against this shape </param>
+		/// <param name="labeling"> if the input is of this shape, output how each point in the polylines is labeled 
+		/// (not guaranteed to be the only solution); otherwise output null </param>
+		/// <returns> whether the intput is of this shape </returns>
+		public bool ConformsWithGeometry(PolylineGroup polylineGroup, out Dictionary<Point, int> labeling)
 		{
 			if (polylineGroup is null)
 			{
@@ -93,7 +100,16 @@ namespace ShapeGrammarEngine
 
 			if (polylineGroup.PolylinesCopy.Count == 0)
 			{
-				return this.Definition.Count == 0 ? true : false;
+				if (this.Definition.Count == 0)
+				{
+					labeling = new Dictionary<Point, int>();
+					return true;
+				}
+				else
+				{
+					labeling = null;
+					return false;
+				}
 			}
 
 			// step1: find all unique points in the polylines and check if the count is the same as the count of labels in shape
@@ -105,6 +121,7 @@ namespace ShapeGrammarEngine
 			var uniqueCoordinatesList = new List<Point>(uniqueCoordinates);
 			if (uniqueCoordinates.Count != this.GetAllLabels().Count)
 			{
+				labeling = null;
 				return false;
 			}
 
@@ -112,22 +129,24 @@ namespace ShapeGrammarEngine
 			var allPotentialLabeling = Utilities.GenerateAllPermutations(new List<int>(this.GetAllLabels()));
 
 			// step3: check if there is one potential labeling with which the input would match the definition of this shape
-			foreach (List<int> labeling in allPotentialLabeling)
+			foreach (List<int> l in allPotentialLabeling)
 			{
-				Debug.Assert(uniqueCoordinatesList.Count == labeling.Count);
+				Debug.Assert(uniqueCoordinatesList.Count == l.Count);
 				var labelDictionary = new Dictionary<Point, int>();
 				for (int i = 0; i < uniqueCoordinatesList.Count; i++)
 				{
-					labelDictionary.Add(uniqueCoordinatesList[i], labeling[i]);
+					labelDictionary.Add(uniqueCoordinatesList[i], l[i]);
 				}
 
 				var connections = polylineGroup.ConvertToConnections(labelDictionary);
 
 				if (this.Definition.SetEquals(connections))
 				{
+					labeling = labelDictionary;
 					return true;
 				}
 			}
+			labeling = null;
 			return false;
 		}
 
