@@ -61,7 +61,7 @@ namespace ShapeGrammarEngineUnitTests
 			var c1 = new Connection(1, 2);
 			var c2 = new Connection(2, 4);
 			var c3 = new Connection(0, 4);
-			var shape1 = new Shape(new HashSet<Connection> {c1, c2, c3 });
+			var shape1 = new Shape(new HashSet<Connection> { c1, c2, c3 });
 			var result1 = shape1.GetAllLabels();
 			Assert.AreEqual(4, result1.Count);
 			Assert.IsTrue(result1.Contains(1));
@@ -73,37 +73,37 @@ namespace ShapeGrammarEngineUnitTests
 		[Test]
 		public void TestCreateShapeFromPolylines_EdgeCases()
 		{
-			Assert.Throws<ArgumentNullException>(() => Shape.CreateShapeFromPolylines(null));
+			Assert.Throws<ArgumentNullException>(() => Shape.CreateShapeFromPolylines(null, null));
 
 			var pls1 = new PolylineGroup(new List<List<Point>>());
-			Assert.DoesNotThrow(() => Shape.CreateShapeFromPolylines(pls1));
-			var shape1 = Shape.CreateShapeFromPolylines(pls1);
+			Assert.DoesNotThrow(() => Shape.CreateShapeFromPolylines(pls1, null));
+			var shape1 = Shape.CreateShapeFromPolylines(pls1, null);
 			Assert.AreEqual(0, shape1.Definition.Count);
 
-			var pls2 = new PolylineGroup( new List<List<Point>> { new List<Point>() });
-			Assert.DoesNotThrow(() => Shape.CreateShapeFromPolylines(pls2));
-			var shape2 = Shape.CreateShapeFromPolylines(pls2);
+			var pls2 = new PolylineGroup(new List<List<Point>> { new List<Point>() });
+			Assert.DoesNotThrow(() => Shape.CreateShapeFromPolylines(pls2, null));
+			var shape2 = Shape.CreateShapeFromPolylines(pls2, null);
 			Assert.AreEqual(0, shape2.Definition.Count);
 
-			var pls3 = new PolylineGroup( new List<List<Point>> { new List<Point> { new Point(0, 1) } });
-			Assert.DoesNotThrow(() => Shape.CreateShapeFromPolylines(pls3));
-			var shape3 = Shape.CreateShapeFromPolylines(pls3);
+			var pls3 = new PolylineGroup(new List<List<Point>> { new List<Point> { new Point(0, 1) } });
+			Assert.DoesNotThrow(() => Shape.CreateShapeFromPolylines(pls3, null));
+			var shape3 = Shape.CreateShapeFromPolylines(pls3, null);
 			Assert.AreEqual(0, shape3.Definition.Count);
 		}
 
 		[Test]
-		public void TestCreateShapeFromPolylines_OnePolyline()
+		public void TestCreateShapeFromPolylines_OnePolylineWithoutPredefinedLabeling()
 		{
-			var result1 = Shape.CreateShapeFromPolylines(new PolylineGroup( new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(0, 1) } }));
+			var result1 = Shape.CreateShapeFromPolylines(new PolylineGroup(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(0, 1) } }), null);
 			Assert.AreEqual(1, result1.Definition.Count);
 			Assert.IsTrue(result1.Definition.Contains(new Connection(0, 1)));
 
-			var result2 = Shape.CreateShapeFromPolylines(new PolylineGroup( new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(0, 1), new Point(0, 3) } }));
+			var result2 = Shape.CreateShapeFromPolylines(new PolylineGroup(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(0, 1), new Point(0, 3) } }), null);
 			Assert.AreEqual(2, result2.Definition.Count);
 			Assert.IsTrue(result2.Definition.Contains(new Connection(0, 1)));
 			Assert.IsTrue(result2.Definition.Contains(new Connection(1, 2)));
 
-			var result3 = Shape.CreateShapeFromPolylines(new PolylineGroup( new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(1, 1), new Point(1, 0), new Point(0, 0) } }));
+			var result3 = Shape.CreateShapeFromPolylines(new PolylineGroup(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(1, 1), new Point(1, 0), new Point(0, 0) } }), null);
 			Assert.AreEqual(3, result3.Definition.Count);
 			Assert.IsTrue(result3.Definition.Contains(new Connection(0, 1)));
 			Assert.IsTrue(result3.Definition.Contains(new Connection(1, 2)));
@@ -111,11 +111,57 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestCreateShapeFromPolylines_MultiplePolylines()
+		public void TestCreateShapeFromPolylines_OnePolylineWithPredefinedLabeling()
 		{
-			var result1 = Shape.CreateShapeFromPolylines( new PolylineGroup( new List<List<Point>> { 
+			var labeling = new Dictionary<Point, int>();
+			labeling.Add(new Point(0, 0), 100);
+			labeling.Add(new Point(0, 1), 110);
+			labeling.Add(new Point(0, 3), 130);
+			labeling.Add(new Point(0, 10), 140);
+
+			var result1 = Shape.CreateShapeFromPolylines(new PolylineGroup(new List<List<Point>> {
+				new List<Point> { new Point(0, 0), new Point(0, 1) } }), labeling);
+			Assert.AreEqual(1, result1.Definition.Count);
+			Assert.IsTrue(result1.Definition.Contains(new Connection(100, 110)));
+
+			var result2 = Shape.CreateShapeFromPolylines(new PolylineGroup(new List<List<Point>> {
+				new List<Point> { new Point(0, 0), new Point(0, 1), new Point(0, 3) } }), labeling);
+			Assert.AreEqual(2, result2.Definition.Count);
+			Assert.IsTrue(result2.Definition.Contains(new Connection(100, 110)));
+			Assert.IsTrue(result2.Definition.Contains(new Connection(110, 130)));
+
+			var result3 = Shape.CreateShapeFromPolylines(new PolylineGroup(new List<List<Point>> {
+				new List<Point> { new Point(0, 0), new Point(1, 1), new Point(1, 0), new Point(0, 0) } }), labeling);
+			Assert.AreEqual(3, result3.Definition.Count);
+			Assert.IsTrue(result3.Definition.Contains(new Connection(100, 141)));
+			Assert.IsTrue(result3.Definition.Contains(new Connection(141, 142)));
+			Assert.IsTrue(result3.Definition.Contains(new Connection(142, 100)));
+		}
+
+		[Test]
+		public void TestCreateShapeFromPolylines_MultiplePolylinesWithoutPredefinedLabeling()
+		{
+			var result1 = Shape.CreateShapeFromPolylines(new PolylineGroup(new List<List<Point>> {
 				new List<Point> { new Point(0, 0), new Point(0, 1) },
-				new List<Point> { new Point(0, 0), new Point(1, 0), new Point(0, 1) }}));
+				new List<Point> { new Point(0, 0), new Point(1, 0), new Point(0, 1) }}), null);
+			Assert.AreEqual(3, result1.Definition.Count);
+			Assert.IsTrue(result1.Definition.Contains(new Connection(0, 1)));
+			Assert.IsTrue(result1.Definition.Contains(new Connection(0, 2)));
+			Assert.IsTrue(result1.Definition.Contains(new Connection(2, 1)));
+		}
+
+		[Test]
+		public void TestCreateShapeFromPolylines_MultiplePolylinesWithPredefinedLabeling()
+		{
+			var labeling = new Dictionary<Point, int>();
+			labeling.Add(new Point(0, 0), 100);
+			labeling.Add(new Point(0, 1), 110);
+			labeling.Add(new Point(0, 3), 130);
+			labeling.Add(new Point(0, 10), 140);
+
+			var result1 = Shape.CreateShapeFromPolylines(new PolylineGroup(new List<List<Point>> {
+				new List<Point> { new Point(0, 0), new Point(0, 1) },
+				new List<Point> { new Point(0, 0), new Point(1, 0), new Point(0, 1) }}), null);
 			Assert.AreEqual(3, result1.Definition.Count);
 			Assert.IsTrue(result1.Definition.Contains(new Connection(0, 1)));
 			Assert.IsTrue(result1.Definition.Contains(new Connection(0, 2)));
@@ -125,14 +171,16 @@ namespace ShapeGrammarEngineUnitTests
 		[Test]
 		public void TestCreateShapeFromPolylines_InputGeometryIntersectsWithItself_ThrowArgumentException()
 		{
-			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new PolylineGroup( new List<List<Point>> { new List<Point> { new Point(0, -1), new Point(0, 1), new Point(1, 0), new Point(-1, 0) } })));
-			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new PolylineGroup( new List<List<Point>> { new List<Point> { new Point(1, 0), new Point(1, 2) }, new List<Point> { new Point(0, 1), new Point(2, 1) } })));
+			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new PolylineGroup( new List<List<Point>> { 
+				new List<Point> { new Point(0, -1), new Point(0, 1), new Point(1, 0), new Point(-1, 0) } }), null));
+			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new PolylineGroup( new List<List<Point>> { 
+				new List<Point> { new Point(1, 0), new Point(1, 2) }, new List<Point> { new Point(0, 1), new Point(2, 1) } }), null));
 		}
 
 		[Test]
 		public void TestCreateShapeFromPolylines_InputGeometryOverlapWithItself_ThrowArgumentException()
 		{
-			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new PolylineGroup( new List<List<Point>> { new List<Point> { new Point(0, -1), new Point(0, 1), new Point(0, 0), new Point(0, 0.5) } })));
+			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new PolylineGroup( new List<List<Point>> { new List<Point> { new Point(0, -1), new Point(0, 1), new Point(0, 0), new Point(0, 0.5) } }), null));
 		}
 
 		[Test]
@@ -178,18 +226,21 @@ namespace ShapeGrammarEngineUnitTests
 			Assert.IsTrue(output.ContainsKey(new Point(20, 20)));
 
 			var shape2 = new Shape(new HashSet<Connection> { new Connection(0, 1), new Connection(1, 3), new Connection(3, 0) });
-			var geometry2 = new PolylineGroup(new List<List<Point>> { new List<Point> { new Point(-5, 2.1), new Point(20, 20), new Point(5, 10), new Point(-5, 2.1) } });
+			var geometry2 = new PolylineGroup(new List<List<Point>> { 
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20), new Point(5, 10), new Point(-5, 2.1) } });
 			Assert.IsTrue(shape2.ConformsWithGeometry(geometry2, out output));
 			Assert.AreEqual(3, output.Count);
 			Assert.IsTrue(output.ContainsKey(new Point(-5, 2.1)));
 			Assert.IsTrue(output.ContainsKey(new Point(20, 20)));
 			Assert.IsTrue(output.ContainsKey(new Point(5, 10)));
 
-			var geometry3 = new PolylineGroup(new List<List<Point>> { new List<Point> { new Point(-5, 2.1), new Point(20, 20), new Point(5, 10), new Point(2, 5), new Point(-5, 2.1) } });
+			var geometry3 = new PolylineGroup(new List<List<Point>> { 
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20), new Point(5, 10), new Point(2, 5), new Point(-5, 2.1) } });
 			Assert.IsFalse(shape2.ConformsWithGeometry(geometry3, out output));
 			Assert.IsNull(output);
 
-			var geometry4 = new PolylineGroup(new List<List<Point>> { new List<Point> { new Point(-5, 2.1), new Point(20, 20), new Point(5, 10), new Point(2, 5) } });
+			var geometry4 = new PolylineGroup(new List<List<Point>> { 
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20), new Point(5, 10), new Point(2, 5) } });
 			Assert.IsFalse(shape2.ConformsWithGeometry(geometry4, out output));
 			Assert.IsNull(output);
 		}

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace ShapeGrammarEngine
 {
@@ -41,11 +42,14 @@ namespace ShapeGrammarEngine
 
 		/// <summary>
 		/// Extract a graph-based shape instance from a geometry. The geometry must not intersect with itself
-		/// The output shape is guaranteed to conform with the input geometry
+		/// The output shape is guaranteed to conform with the input geometry. 
+		/// If labeling is null, label the shape with consecutive integers from 0; otherwise, label according to the labeling. 
+		/// If a point not in the dictionary is found, new labels are generated as consecutive integers starting from the largest label in the dictionary
 		/// </summary>
 		/// <param name="polylines"> the input geometry.</param>
-		/// <returns> The output shape with labels that together from a consecutive integer sequence from 0 </returns>
-		public static Shape CreateShapeFromPolylines(PolylineGroup polylineGroup)
+		/// <param name="labeling"> the pre-defined labels for specific points </param>
+		/// <returns> The output shape. </returns>
+		public static Shape CreateShapeFromPolylines(PolylineGroup polylineGroup, Dictionary<Point, int> labeling)
 		{
 			if (polylineGroup is null)
 			{
@@ -61,18 +65,31 @@ namespace ShapeGrammarEngine
 			{
 				throw new ArgumentException("polylineGroup intersects or overlaps with itself");
 			}
-			
+
 			// label all unique points
-			var labelDictionary = new Dictionary<Point, int>();
-			int label = 0;
+			Dictionary<Point, int> labelDictionary;
+			int nextNewLabel;
+			if (labeling is null)
+			{
+				labelDictionary = new Dictionary<Point, int>();
+				nextNewLabel = 0;
+			}
+			else
+			{
+				labelDictionary = labeling;
+				List<int> allLabels = labelDictionary.Values.ToList();
+				allLabels.Sort();
+				nextNewLabel = allLabels.Last() + 1;
+			}
+			
 			foreach (List<Point> polyline in polylineGroup.PolylinesCopy)
 			{
 				foreach (Point p in polyline)
 				{
 					if (!labelDictionary.ContainsKey(p))
 					{
-						labelDictionary.Add(p, label);
-						label++;
+						labelDictionary.Add(p, nextNewLabel);
+						nextNewLabel++;
 					}
 				}
 			}
