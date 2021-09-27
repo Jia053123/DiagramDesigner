@@ -47,9 +47,9 @@ namespace ShapeGrammarEngine
 		/// If a point not in the dictionary is found, new labels are generated as consecutive integers starting from the largest label in the dictionary
 		/// </summary>
 		/// <param name="polylines"> the input geometry.</param>
-		/// <param name="labeling"> the pre-defined labels for specific points </param>
+		/// <param name="preDefinedLabeling"> the pre-defined labels for specific points </param>
 		/// <returns> The output shape. </returns>
-		public static Shape CreateShapeFromPolylines(PolylineGroup polylineGroup, Dictionary<Point, int> labeling)
+		public static Shape CreateShapeFromPolylines(PolylineGroup polylineGroup, Dictionary<Point, int> preDefinedLabeling, out Dictionary<Point, int> newShapeLabeling)
 		{
 			if (polylineGroup is null)
 			{
@@ -58,6 +58,7 @@ namespace ShapeGrammarEngine
 
 			if (polylineGroup.PolylinesCopy.Count == 0)
 			{
+				newShapeLabeling = new Dictionary<Point, int>();
 				return Shape.CreateEmptyShape();
 			}
 
@@ -69,14 +70,14 @@ namespace ShapeGrammarEngine
 			// label all unique points
 			Dictionary<Point, int> labelDictionary;
 			int nextNewLabel;
-			if (labeling is null)
+			if (preDefinedLabeling is null)
 			{
 				labelDictionary = new Dictionary<Point, int>();
 				nextNewLabel = 0;
 			}
 			else
 			{
-				labelDictionary = labeling;
+				labelDictionary = new Dictionary<Point, int>(preDefinedLabeling); // make a copy to avoid outputing the input object
 				List<int> allLabels = labelDictionary.Values.ToList();
 				allLabels.Sort();
 				nextNewLabel = allLabels.Last() + 1;
@@ -98,6 +99,7 @@ namespace ShapeGrammarEngine
 		
 			var newShape = new Shape(connections);
 			Debug.Assert(newShape.ConformsWithGeometry(polylineGroup, out _));
+			newShapeLabeling = labelDictionary;
 			return newShape;
 		}
 

@@ -9,6 +9,78 @@ namespace ShapeGrammarEngine.UnitTests
 	class GrammarRuleTests
 	{
 		[Test]
+		public void TestCreateGrammarRuleFromOneExample_OnePolyline_1()
+		{
+			var polyGroup1 = new PolylineGroup(new List<List<Point>> { 
+				new List<Point> { new Point(0, 0), new Point(0, 1) } });
+			var polyGroup2 = new PolylineGroup(new List<List<Point>> {
+				new List<Point> { new Point(0, 0),  new Point(0, 2), new Point(0, 3) } });
+
+			Dictionary<Point, int> labeling;
+			var rule = GrammarRule.CreateGrammarRuleFromOneExample(polyGroup1, polyGroup2, out labeling);
+
+			Assert.IsTrue(labeling.ContainsKey(new Point(0, 0)));
+			int label0;
+			labeling.TryGetValue(new Point(0, 0), out label0);
+
+			Assert.IsTrue(labeling.ContainsKey(new Point(0, 1)));
+			int label1;
+			labeling.TryGetValue(new Point(0, 1), out label1);
+
+			Assert.IsTrue(labeling.ContainsKey(new Point(0, 2)));
+			int label2;
+			labeling.TryGetValue(new Point(0, 2), out label2);
+
+			Assert.IsTrue(labeling.ContainsKey(new Point(0, 3)));
+			int label3;
+			labeling.TryGetValue(new Point(0, 3), out label3);
+
+			Assert.IsTrue(rule.LeftHandShape.ConformsWithGeometry(polyGroup1, out _));
+			Assert.IsTrue(rule.RightHandShape.ConformsWithGeometry(polyGroup2, out _));
+
+			Assert.IsTrue(rule.LeftHandShape.Definition.Contains(new Connection(label0, label1)));
+			Assert.IsTrue(rule.RightHandShape.Definition.Contains(new Connection(label0, label2)));
+			Assert.IsTrue(rule.RightHandShape.Definition.Contains(new Connection(label2, label3)));
+		}
+
+		[Test]
+		public void TestCreateGrammarRuleFromOneExample_MultiplePolylines_1()
+		{
+			var polyGroup1 = new PolylineGroup(new List<List<Point>> {
+				new List<Point> { new Point(0, 0), new Point(1, 1) }, 
+				new List<Point> { new Point(0, 0), new Point(0, 2) } });
+			var polyGroup2 = new PolylineGroup(new List<List<Point>> {
+				new List<Point> { new Point(0, 0),  new Point(0, 2), new Point(0, 3) } });
+
+			Dictionary<Point, int> labeling;
+			var rule = GrammarRule.CreateGrammarRuleFromOneExample(polyGroup1, polyGroup2, out labeling);
+
+			Assert.IsTrue(labeling.ContainsKey(new Point(0, 0)));
+			int label00;
+			labeling.TryGetValue(new Point(0, 0), out label00);
+
+			Assert.IsTrue(labeling.ContainsKey(new Point(1, 1)));
+			int label11;
+			labeling.TryGetValue(new Point(1, 1), out label11);
+
+			Assert.IsTrue(labeling.ContainsKey(new Point(0, 2)));
+			int label02;
+			labeling.TryGetValue(new Point(0, 2), out label02);
+
+			Assert.IsTrue(labeling.ContainsKey(new Point(0, 3)));
+			int label03;
+			labeling.TryGetValue(new Point(0, 3), out label03);
+
+			Assert.IsTrue(rule.LeftHandShape.ConformsWithGeometry(polyGroup1, out _));
+			Assert.IsTrue(rule.RightHandShape.ConformsWithGeometry(polyGroup2, out _));
+
+			Assert.IsTrue(rule.LeftHandShape.Definition.Contains(new Connection(label00, label11)));
+			Assert.IsTrue(rule.LeftHandShape.Definition.Contains(new Connection(label00, label02)));
+			Assert.IsTrue(rule.RightHandShape.Definition.Contains(new Connection(label00, label02)));
+			Assert.IsTrue(rule.RightHandShape.Definition.Contains(new Connection(label02, label03)));
+		}
+
+		[Test]
 		public void TestLearnFromExample_NullInput_ThrowNullException()
 		{
 			var shape1 = Shape.CreateEmptyShape();

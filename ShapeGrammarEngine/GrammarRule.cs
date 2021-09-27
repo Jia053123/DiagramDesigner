@@ -7,13 +7,13 @@ namespace ShapeGrammarEngine
 	class GrammarRule
 	{
 		/// <summary>
-		/// The shape on the left hand side of the rule. It shares labels with ShapeAfter
+		/// The shape before the rule is applied. It shares labels with RightHandShape
 		/// </summary>
-		public Shape ShapeBefore { get; private set; }
+		public Shape LeftHandShape { get; private set; }
 		/// <summary>
 		/// The shape on the right hand side of the rule. It shares labels with ShapeBefore  
 		/// </summary>
-		public Shape ShapeAfter { get; private set; }
+		public Shape RightHandShape { get; private set; }
 
 		public List<Connection> ConnectionsErased { get; private set; }
 
@@ -30,15 +30,32 @@ namespace ShapeGrammarEngine
 		public bool IsATerminalRule { get; private set; }
 
 		private List<RuleApplicationRecord> ApplicationRecords = new List<RuleApplicationRecord>();
-	
+
 		/// <summary>
-		/// shapeBefore and shapeAfter share the same set of labels, so having the same label in both parameters means 
+		/// Create a shape grammar rule given its both sides
+		/// leftHandShape and rightHandShape share the same set of labels, so having the same label in both parameters means 
 		/// the point corresponding to that node will stay the same when the rule is applied
 		/// </summary>
-		public GrammarRule(Shape shapeBefore, Shape shapeAfter)
+		public GrammarRule(Shape leftHandShape, Shape rightHandShape)
 		{
-			this.ShapeBefore = shapeBefore;
-			this.ShapeAfter = shapeAfter;
+			this.LeftHandShape = leftHandShape;
+			this.RightHandShape = rightHandShape;
+		}
+
+		/// <summary>
+		/// Create a shape grammar rule given a single example of its application
+		/// </summary>
+		/// <param name="geometryBefore"> the group of polylines before the rule is applied </param>
+		/// <param name="geometryAfter"> the group of polylines after the rule is applied </param>
+		/// <param name="labeling"> outputs the labeling used in this creation </param>
+		public static GrammarRule CreateGrammarRuleFromOneExample(PolylineGroup geometryBefore, PolylineGroup geometryAfter, out Dictionary<Point, int> labeling)
+		{
+			Dictionary<Point, int> lhsLabeling, sharedLabeling;
+			var lhs = Shape.CreateShapeFromPolylines(geometryBefore, null, out lhsLabeling);
+			var rhs = Shape.CreateShapeFromPolylines(geometryAfter, lhsLabeling, out sharedLabeling);
+
+			labeling = sharedLabeling;
+			return new GrammarRule(lhs, rhs);
 		}
 
 		/// <summary>
@@ -48,11 +65,11 @@ namespace ShapeGrammarEngine
 		/// <param name="geometryAfter"> The geometry in the example after the rule is applied </param>
 		public void LearnFromExample(PolylineGroup geometryBefore, PolylineGroup geometryAfter)
 		{
-			if (!this.ShapeBefore.ConformsWithGeometry(geometryBefore, out _))
+			if (!this.LeftHandShape.ConformsWithGeometry(geometryBefore, out _))
 			{
 				throw new ArgumentException("geometryBefore does not conform with ShapeBefore");
 			}
-			if (!this.ShapeAfter.ConformsWithGeometry(geometryAfter, out _))
+			if (!this.RightHandShape.ConformsWithGeometry(geometryAfter, out _))
 			{
 				throw new ArgumentException("geometryAfter does not conform with ShapeAfter");
 			}
@@ -63,20 +80,20 @@ namespace ShapeGrammarEngine
 		/// <summary>
 		/// Apply the rule with knowledge learnt from examples. 
 		/// </summary>
-		/// <param name="polylines"> the geometry on which the rule will be applied. It must confrom with ShapeBefore </param>
-		/// <returns> the geometry after the rule is applied. It will confrom with ShapeAfter </returns>
+		/// <param name="polylines"> the geometry on which the rule will be applied. It must confrom with LeftHandShape </param>
+		/// <returns> the geometry after the rule is applied. It will confrom with RightHandShape </returns>
 		public PolylineGroup ApplyToGeometry(PolylineGroup polylines)
 		{
 			// Step1: check and label the polylines
 			Dictionary<Point, int> labeling;
-			var doesConform = this.ShapeBefore.ConformsWithGeometry(polylines, out labeling);
+			var doesConform = this.LeftHandShape.ConformsWithGeometry(polylines, out labeling);
 			if (! doesConform)
 			{
 				throw new ArgumentException("polylines does not conform with ShapeBefore");
 			}
 			
 			// Step2: remove the points to be removed
-
+			
 
 			return null; // stub
 		}
