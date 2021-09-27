@@ -82,10 +82,37 @@ namespace ShapeGrammarEngine
 		/// <param name="pointIndex"> the index of the point in the specified polyline </param>
 		public void ErasePoint(int polylineIndex, int pointIndex)
 		{
-			
+			// check indexes in range
+			if (polylineIndex < 0 || polylineIndex > this.polylines.Count-1)
+			{
+				throw new ArgumentOutOfRangeException("polylineIndex is out of range");
+			}
+			if (pointIndex < 0 || pointIndex > this.polylines[polylineIndex].Count-1)
+			{
+				throw new ArgumentOutOfRangeException("pointIndex is out of range");
+			}
+
+			List<Point> polylineBefore = null;
+			List<Point> polylineAfter = null;
+
+			var polyline = this.polylines[polylineIndex];
+			polylineBefore = polyline.GetRange(0, pointIndex);
+			polylineAfter = polyline.GetRange(pointIndex + 1, polyline.Count - 1 - pointIndex);
+
+			this.polylines.RemoveAt(polylineIndex);
+			if (polylineAfter is object && polylineAfter.Count > 0)
+			{
+				this.polylines.Insert(polylineIndex, polylineAfter);
+			}
+			if (polylineBefore is object && polylineBefore.Count > 0)
+			{
+				this.polylines.Insert(polylineIndex, polylineBefore);
+			}
+
+			this.CleanUpPolylines();
 		}
 
-		private List<LineSegment> ConvertToLineSegments()
+			private List<LineSegment> ConvertToLineSegments()
 		{
 			var allSegments = new List<LineSegment>();
 			foreach (List<Point> polyline in this.polylines)
