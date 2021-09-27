@@ -1,5 +1,6 @@
 ﻿using BasicGeometries;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 
 namespace ShapeGrammarEngine.UnitTests
@@ -26,6 +27,35 @@ namespace ShapeGrammarEngine.UnitTests
 		public void TestDoesIntersectOrOverlapWithItself_Overlap()
 		{
 			Assert.IsTrue(new PolylineGroup(new List<List<Point>> { new List<Point> { new Point(0, -1), new Point(0, 1), new Point(0, 0), new Point(0, 0.5) } }).DoesIntersectOrOverlapWithItself());
+		}
+		
+		[Test]
+		public void TestErasePoint_EdgeCases()
+		{
+			var group1 = new PolylineGroup(new List<List<Point>>{
+				new List<Point> { new Point(0,0) } });
+			Assert.Throws<ArgumentException>(() => group1.ErasePoint(0, 1));
+			Assert.Throws<ArgumentException>(() => group1.ErasePoint(1, 0));
+			Assert.Throws<ArgumentException>(() => group1.ErasePoint(1, 1));
+			Assert.DoesNotThrow(() => group1.ErasePoint(0, 0));
+		}
+
+		[Test]
+		public void TestErasePoint_DoesNotBreakUpPolyline()
+		{
+			
+		}
+
+		[Test]
+		public void TestErasePoint_BreakUpPolyline()
+		{
+
+		}
+
+		[Test]
+		public void TestErasePoint_MultipleInstances()
+		{
+
 		}
 
 		[Test]

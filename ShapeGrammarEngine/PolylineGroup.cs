@@ -73,6 +73,18 @@ namespace ShapeGrammarEngine
 			return false;
 		}
 
+		/// <summary>
+		/// Erase a point from the group of polilines. 
+		/// As a result, any line with the point as an endpoint is removed, potentially breaking a polyline into two. 
+		/// If there are multiple occurances of the same point, only the instance specified is erased.
+		/// </summary>
+		/// <param name="polylineIndex"> the index of the polyline that contains the point </param>
+		/// <param name="pointIndex"> the index of the point in the specified polyline </param>
+		public void ErasePoint(int polylineIndex, int pointIndex)
+		{
+			
+		}
+
 		private List<LineSegment> ConvertToLineSegments()
 		{
 			var allSegments = new List<LineSegment>();
