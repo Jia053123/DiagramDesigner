@@ -37,99 +37,61 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 		
 		[Test]
-		public void TestErasePoint_EdgeCases()
+		public void TestEraseSegment_EdgeCases()
 		{
 			var group0 = new PolylineGroup(new List<List<Point>>());
-			Assert.Throws<ArgumentOutOfRangeException>(() => group0.ErasePoint(0, 0));
+			Assert.Throws<ArgumentOutOfRangeException>(() => group0.EraseSegment(0, 0));
 
 			var group1 = new PolylineGroup(new List<List<Point>>{
 				new List<Point> { new Point(0,0), new Point(0,1) } });
-			Assert.Throws<ArgumentOutOfRangeException>(() => group1.ErasePoint(0, 2));
-			Assert.Throws<ArgumentOutOfRangeException>(() => group1.ErasePoint(1, 0));
-			Assert.Throws<ArgumentOutOfRangeException>(() => group1.ErasePoint(1, 2));
+			Assert.Throws<ArgumentOutOfRangeException>(() => group1.EraseSegment(0, 2));
+			Assert.Throws<ArgumentOutOfRangeException>(() => group1.EraseSegment(0, 1));
+			Assert.Throws<ArgumentOutOfRangeException>(() => group1.EraseSegment(1, 0));
+			Assert.Throws<ArgumentOutOfRangeException>(() => group1.EraseSegment(1, 1));
 		}
 
 		[Test]
-		public void TestErasePoint_SimpleCases()
+		public void TestEraseSegment_SegmentAtTheBeginning_RemoveTheFirstPoint()
 		{
 			var group1 = new PolylineGroup(new List<List<Point>>{
+				new List<Point> {new Point(0,0), new Point(1,0)},
 				new List<Point> { new Point(0,0), new Point(0,1) } });
-			Assert.DoesNotThrow(() => group1.ErasePoint(0, 1));
-			Assert.AreEqual(0, group1.PolylinesCopy.Count);
+			Assert.DoesNotThrow(() => group1.EraseSegment(1, 0));
+			Assert.AreEqual(1, group1.PolylinesCopy.Count);
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(group1.PolylinesCopy[0], new List<Point> { new Point(0, 0), new Point(1, 0)}));
 
 			var group2 = new PolylineGroup(new List<List<Point>>{
-				new List<Point> { new Point(0,0), new Point(0,1) } });
-			Assert.DoesNotThrow(() => group2.ErasePoint(0, 0));
-			Assert.AreEqual(0, group2.PolylinesCopy.Count);
-		}
-
-		[Test]
-		public void TestErasePoint_AtEndOfPolyline_RemoveTheEndOfPolyline()
-		{
-			var group1 = new PolylineGroup(new List<List<Point>>{
 				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) } });
-			group1.ErasePoint(0, 0);
-			Assert.AreEqual(1, group1.PolylinesCopy.Count);
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(group1.PolylinesCopy[0], new List<Point> { new Point(1, 1), new Point(2, 2), new Point(3, 3) }));
-
-			group1.ErasePoint(0, 2);
-			Assert.AreEqual(1, group1.PolylinesCopy.Count);
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(group1.PolylinesCopy[0], new List<Point> { new Point(1, 1), new Point(2, 2) }));
+			Assert.DoesNotThrow(() => group2.EraseSegment(0, 0));
+			Assert.AreEqual(1, group2.PolylinesCopy.Count);
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(group2.PolylinesCopy[0], new List<Point> {new Point(1,1), new Point(2, 2), new Point(3, 3) }));
 		}
 
 		[Test]
-		public void TestErasePoint_AtEndOfTwoPointPolyline_RemoveTheWholePolylineAlongWithTheLastPoint()
+		public void TestEraseSegment_SegmentAtTheEnd_RemoveTheLastPoint()
 		{
-			var group1 = new PolylineGroup(new List<List<Point>>{ 
-				new List<Point> { new Point(0,0), new Point(1,1) },
-				new List<Point> { new Point(0,0), new Point(0,1) } });
-			group1.ErasePoint(0, 1);
-			Assert.AreEqual(1, group1.PolylinesCopy.Count);
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(group1.PolylinesCopy[0], new List<Point> { new Point(0, 0), new Point(0, 1) }));
-		}
-
-		[Test]
-		public void TestErasePoint_InTheSecondOrSecondLastPoint_RemoveTheFirstOrLastTwoPoints()
-		{
-			var group1 = new PolylineGroup(new List<List<Point>>{
-				new List<Point> { new Point(0,0), new Point(1,1), new Point(2, 2), new Point(3,3) },
-				new List<Point> { new Point(0,0), new Point(0,1) } });
-			group1.ErasePoint(0, 1);
-			Assert.AreEqual(2, group1.PolylinesCopy.Count);
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(group1.PolylinesCopy[0], new List<Point> { new Point(2, 2), new Point(3, 3) }));
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(group1.PolylinesCopy[1], new List<Point> { new Point(0, 0), new Point(0, 1) }));
-
-			var group2 = new PolylineGroup(new List<List<Point>>{
-				new List<Point> { new Point(0,0), new Point(1,1), new Point(2, 2), new Point(3,3) },
-				new List<Point> { new Point(0,0), new Point(0,1) } });
-			group2.ErasePoint(0, 2);
-			Assert.AreEqual(2, group2.PolylinesCopy.Count);
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(group2.PolylinesCopy[0], new List<Point> { new Point(0, 0), new Point(1, 1) }));
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(group2.PolylinesCopy[1], new List<Point> { new Point(0, 0), new Point(0, 1) }));
-
 			var group3 = new PolylineGroup(new List<List<Point>>{
-				new List<Point> { new Point(0,0), new Point(1,1) },
-				new List<Point> { new Point(0,0), new Point(0,1), new Point(0,2) } });
-			group3.ErasePoint(1, 1);
+				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) } });
+			Assert.DoesNotThrow(() => group3.EraseSegment(0, 2));
 			Assert.AreEqual(1, group3.PolylinesCopy.Count);
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(group3.PolylinesCopy[0], new List<Point> { new Point(0, 0), new Point(1, 1) }));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(group3.PolylinesCopy[0], new List<Point> { new Point(0, 0), new Point(1, 1), new Point(2, 2) }));
 		}
 
 		[Test]
-		public void TestErasePoint_InTheMiddleOfPolyline_BreakUpPolyline()
+		public void TestEraseSegment_SegmentInTheMiddle_BreaksUp()
 		{
-			var group1 = new PolylineGroup(new List<List<Point>>{
-				new List<Point> { new Point(0,0), new Point(1,0) },
-				new List<Point> { new Point(0,0), new Point(1,1), new Point(2, 2), new Point(3,3), new Point(4,4) },
-				new List<Point> { new Point(0,0), new Point(0,1) } });
-			group1.ErasePoint(1, 2);
-			Assert.AreEqual(4, group1.PolylinesCopy.Count);
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(group1.PolylinesCopy[0], new List<Point> { new Point(0, 0), new Point(1, 0) }));
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(group1.PolylinesCopy[1], new List<Point> { new Point(0, 0), new Point(1, 1) }));
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(group1.PolylinesCopy[2], new List<Point> { new Point(3, 3), new Point(4, 4) }));
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(group1.PolylinesCopy[3], new List<Point> { new Point(0, 0), new Point(0, 1) }));
+			var group4 = new PolylineGroup(new List<List<Point>>{
+				new List<Point> { new Point(0,0), new Point(0,1), new Point(0,2) },
+				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) },
+				new List<Point> { new Point(0,0), new Point(1,0), new Point(2,0) },});
+			Assert.DoesNotThrow(() => group4.EraseSegment(1, 1));
+			Assert.AreEqual(4, group4.PolylinesCopy.Count);
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(group4.PolylinesCopy[0], new List<Point> { new Point(0, 0), new Point(0, 1), new Point(0, 2) }));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(group4.PolylinesCopy[1], new List<Point> { new Point(0, 0), new Point(1, 1) }));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(group4.PolylinesCopy[2], new List<Point> { new Point(2, 2), new Point(3, 3) }));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(group4.PolylinesCopy[3], new List<Point> { new Point(0, 0), new Point(1, 0), new Point(2, 0) }));
 		}
-	
+
 		[Test]
 		public void TestConvertToConnections()
 		{

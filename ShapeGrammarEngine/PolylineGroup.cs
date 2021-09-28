@@ -74,30 +74,28 @@ namespace ShapeGrammarEngine
 		}
 
 		/// <summary>
-		/// Erase a point from the group of polilines. 
-		/// As a result, any line with the point as an endpoint is removed, potentially breaking a polyline into two. 
-		/// If there are multiple occurances of the same point, only the instance specified is erased.
+		/// Erase a single line segment from the group, breaking up the polyline. 
 		/// </summary>
-		/// <param name="polylineIndex"> the index of the polyline that contains the point </param>
-		/// <param name="pointIndex"> the index of the point in the specified polyline </param>
-		public void ErasePoint(int polylineIndex, int pointIndex)
+		/// <param name="polylineIndex"> the index of the polyline that contains the segment </param>
+		/// <param name="startPointIndex"> the index first endpoint of the segment; 
+		/// the index for the second endpoint is this index plus 1 </param>
+		public void EraseSegment(int polylineIndex, int startPointIndex)
 		{
-			// check indexes in range
-			if (polylineIndex < 0 || polylineIndex > this.polylines.Count-1)
+			if (polylineIndex < 0 || polylineIndex > this.polylines.Count - 1)
 			{
 				throw new ArgumentOutOfRangeException("polylineIndex is out of range");
 			}
-			if (pointIndex < 0 || pointIndex > this.polylines[polylineIndex].Count-1)
+			if (startPointIndex < 0 || startPointIndex > this.polylines[polylineIndex].Count - 2)
 			{
-				throw new ArgumentOutOfRangeException("pointIndex is out of range");
+				throw new ArgumentOutOfRangeException("startPointIndex is out of range");
 			}
 
 			List<Point> polylineBefore = null;
 			List<Point> polylineAfter = null;
 
 			var polyline = this.polylines[polylineIndex];
-			polylineBefore = polyline.GetRange(0, pointIndex);
-			polylineAfter = polyline.GetRange(pointIndex + 1, polyline.Count - 1 - pointIndex);
+			polylineBefore = polyline.GetRange(0, startPointIndex + 1);
+			polylineAfter = polyline.GetRange(startPointIndex + 1, polyline.Count - 1 - startPointIndex);
 
 			this.polylines.RemoveAt(polylineIndex);
 			if (polylineAfter is object && polylineAfter.Count > 0)
@@ -112,7 +110,7 @@ namespace ShapeGrammarEngine
 			this.CleanUpPolylines();
 		}
 
-			private List<LineSegment> ConvertToLineSegments()
+		private List<LineSegment> ConvertToLineSegments()
 		{
 			var allSegments = new List<LineSegment>();
 			foreach (List<Point> polyline in this.polylines)

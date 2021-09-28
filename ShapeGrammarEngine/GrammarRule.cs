@@ -77,6 +77,34 @@ namespace ShapeGrammarEngine
 			this.ApplicationRecords.Add(new RuleApplicationRecord(geometryBefore, geometryAfter));
 		}
 
+		//private HashSet<int> PointsToBeRemoved()
+		//{
+		//	var ptbr = new HashSet<int>(this.LeftHandShape.GetAllLabels());
+		//	ptbr.ExceptWith(this.RightHandShape.GetAllLabels());
+		//	return ptbr;
+		//}
+
+		//private HashSet<int> PointsToBeAdded()
+		//{
+		//	var ptba = new HashSet<int>(this.RightHandShape.GetAllLabels());
+		//	ptba.ExceptWith(this.LeftHandShape.GetAllLabels());
+		//	return ptba;
+		//}
+
+		private HashSet<Connection> ConnectionsToBeRemoved()
+		{
+			var cbuptbr = new HashSet<Connection>(this.LeftHandShape.Definition);
+			cbuptbr.ExceptWith(this.RightHandShape.Definition);
+			return cbuptbr;
+		}
+
+		private HashSet<Connection> ConnectionsToBeAdded()
+		{
+			var cbuptba = new HashSet<Connection>(this.RightHandShape.Definition);
+			cbuptba.ExceptWith(this.LeftHandShape.Definition);
+			return cbuptba;
+		}
+
 		/// <summary>
 		/// Apply the rule with knowledge learnt from examples. 
 		/// </summary>
@@ -91,10 +119,9 @@ namespace ShapeGrammarEngine
 			{
 				throw new ArgumentException("polylines does not conform with ShapeBefore");
 			}
-			
-			// Step2: remove the points to be removed
-			
 
+			// Step2: remove the connections to be removed
+		
 			return null; // stub
 		}
 	}
