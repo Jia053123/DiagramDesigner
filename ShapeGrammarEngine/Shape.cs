@@ -49,22 +49,22 @@ namespace ShapeGrammarEngine
 		/// <param name="polylines"> the input geometry.</param>
 		/// <param name="preDefinedLabeling"> the pre-defined labels for specific points </param>
 		/// <returns> The output shape. </returns>
-		public static Shape CreateShapeFromPolylines(PolylineGroup polylineGroup, Dictionary<Point, int> preDefinedLabeling, out Dictionary<Point, int> newShapeLabeling)
+		public static Shape CreateShapeFromPolylines(PolylineGeometry polylineGeometry, Dictionary<Point, int> preDefinedLabeling, out Dictionary<Point, int> newShapeLabeling)
 		{
-			if (polylineGroup is null)
+			if (polylineGeometry is null)
 			{
 				throw new ArgumentNullException();
 			}
 
-			if (polylineGroup.PolylinesCopy.Count == 0)
+			if (polylineGeometry.PolylinesCopy.Count == 0)
 			{
 				newShapeLabeling = new Dictionary<Point, int>();
 				return Shape.CreateEmptyShape();
 			}
 
-			if (polylineGroup.DoesIntersectOrOverlapWithItself())
+			if (polylineGeometry.DoesIntersectOrOverlapWithItself())
 			{
-				throw new ArgumentException("polylineGroup intersects or overlaps with itself");
+				throw new ArgumentException("polylineGeometry intersects or overlaps with itself");
 			}
 
 			// label all unique points
@@ -83,7 +83,7 @@ namespace ShapeGrammarEngine
 				nextNewLabel = allLabels.Last() + 1;
 			}
 			
-			foreach (List<Point> polyline in polylineGroup.PolylinesCopy)
+			foreach (List<Point> polyline in polylineGeometry.PolylinesCopy)
 			{
 				foreach (Point p in polyline)
 				{
@@ -95,10 +95,10 @@ namespace ShapeGrammarEngine
 				}
 			}
 
-			var connections = polylineGroup.ConvertToConnections(labelDictionary);
+			var connections = polylineGeometry.ConvertToConnections(labelDictionary);
 		
 			var newShape = new Shape(connections);
-			Debug.Assert(newShape.ConformsWithGeometry(polylineGroup, out _));
+			Debug.Assert(newShape.ConformsWithGeometry(polylineGeometry, out _));
 			newShapeLabeling = labelDictionary;
 			return newShape;
 		}
@@ -106,18 +106,18 @@ namespace ShapeGrammarEngine
 		/// <summary>
 		/// Wheher the input is of this shape
 		/// </summary>
-		/// <param name="polylineGroup"> the polyline geometry to check against this shape </param>
+		/// <param name="polylineGeometry"> the polyline geometry to check against this shape </param>
 		/// <param name="labeling"> if the input is of this shape, output how each point in the polylines is labeled 
 		/// (not guaranteed to be the only solution); otherwise output null </param>
 		/// <returns> whether the intput is of this shape </returns>
-		public bool ConformsWithGeometry(PolylineGroup polylineGroup, out Dictionary<Point, int> labeling)
+		public bool ConformsWithGeometry(PolylineGeometry polylineGeometry, out Dictionary<Point, int> labeling)
 		{
-			if (polylineGroup is null)
+			if (polylineGeometry is null)
 			{
 				throw new ArgumentNullException();
 			}
 
-			if (polylineGroup.PolylinesCopy.Count == 0)
+			if (polylineGeometry.PolylinesCopy.Count == 0)
 			{
 				if (this.Definition.Count == 0)
 				{
@@ -133,7 +133,7 @@ namespace ShapeGrammarEngine
 
 			// step1: find all unique points in the polylines and check if the count is the same as the count of labels in shape
 			var uniqueCoordinates = new HashSet<Point>();
-			foreach (List<Point> pl in polylineGroup.PolylinesCopy)
+			foreach (List<Point> pl in polylineGeometry.PolylinesCopy)
 			{
 				uniqueCoordinates.UnionWith(pl);
 			}
@@ -157,7 +157,7 @@ namespace ShapeGrammarEngine
 					labelDictionary.Add(uniqueCoordinatesList[i], l[i]);
 				}
 
-				var connections = polylineGroup.ConvertToConnections(labelDictionary);
+				var connections = polylineGeometry.ConvertToConnections(labelDictionary);
 
 				if (this.Definition.SetEquals(connections))
 				{

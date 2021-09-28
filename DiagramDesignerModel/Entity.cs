@@ -9,7 +9,7 @@ namespace DiagramDesignerModel
 	public abstract class Entity {
         public bool Isfixed;
         internal Shape UnderlyingShape { get { return this.Geometry.UnderlyingShape; } }
-		public abstract PolylineGeometry Geometry { get; protected set; }
+		public abstract PolylineEntityGeometry Geometry { get; protected set; }
 
 		internal void AddPointToGeometry(Point p)
 		{

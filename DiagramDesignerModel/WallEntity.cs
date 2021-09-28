@@ -3,7 +3,7 @@
 	public class WallEntity : Entity
     {
         public double WallThickness { get; internal set; }
-        public override PolylineGeometry Geometry { get; protected set; } = new PolylineGeometry();
+        public override PolylineEntityGeometry Geometry { get; protected set; } = new PolylineEntityGeometry();
 
         public WallEntity(double thickness)
 		{

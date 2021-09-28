@@ -4,7 +4,7 @@ using ShapeGrammarEngine;
 
 namespace DiagramDesignerModel
 {
-	public class PolylineGeometry
+	public class PolylineEntityGeometry
     {
         public List<Point> PathsDefinedByPoints { get; internal set; } = new List<Point>();
         internal Shape UnderlyingShape { get; private set; }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace ShapeGrammarEngine
 {
-	public class PolylineGroup
+	public class PolylineGeometry
 	{
 		private List<List<Point>> polylines = new List<List<Point>>();
 		/// <summary>
@@ -12,7 +12,7 @@ namespace ShapeGrammarEngine
 		/// </summary>
 		public List<List<Point>> PolylinesCopy { get { return new List<List<Point>>(this.polylines); } }
 
-		public PolylineGroup(List<List<Point>> polylines)
+		public PolylineGeometry(List<List<Point>> polylines)
 		{
 			if (polylines is null)
 			{
@@ -22,8 +22,8 @@ namespace ShapeGrammarEngine
 			this.CleanUpPolylines();
 		}
 
-		public static PolylineGroup CreateEmptyPolylineGroup() {
-			return new PolylineGroup(new List<List<Point>>());
+		public static PolylineGeometry CreateEmptyPolylineGeometry() {
+			return new PolylineGeometry(new List<List<Point>>());
 		}
 
 		public bool IsEmpty()
@@ -74,7 +74,7 @@ namespace ShapeGrammarEngine
 		}
 
 		/// <summary>
-		/// Erase a single line segment from the group, breaking up the polyline. 
+		/// Erase a single line segment from the geometry, breaking up the polyline. 
 		/// </summary>
 		/// <param name="polylineIndex"> the index of the polyline that contains the segment </param>
 		/// <param name="startPointIndex"> the index first endpoint of the segment; 

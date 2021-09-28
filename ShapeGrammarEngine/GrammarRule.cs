@@ -34,7 +34,7 @@ namespace ShapeGrammarEngine
 		/// <summary>
 		/// Create a shape grammar rule given its both sides
 		/// leftHandShape and rightHandShape share the same set of labels, so having the same label in both parameters means 
-		/// the point corresponding to that node will stay the same when the rule is applied
+		/// the point corresponding to that node will stay the same when the rule is applied. Otherwise, the point is added or removed
 		/// </summary>
 		public GrammarRule(Shape leftHandShape, Shape rightHandShape)
 		{
@@ -48,7 +48,7 @@ namespace ShapeGrammarEngine
 		/// <param name="geometryBefore"> the group of polylines before the rule is applied </param>
 		/// <param name="geometryAfter"> the group of polylines after the rule is applied </param>
 		/// <param name="labeling"> outputs the labeling used in this creation </param>
-		public static GrammarRule CreateGrammarRuleFromOneExample(PolylineGroup geometryBefore, PolylineGroup geometryAfter, out Dictionary<Point, int> labeling)
+		public static GrammarRule CreateGrammarRuleFromOneExample(PolylineGeometry geometryBefore, PolylineGeometry geometryAfter, out Dictionary<Point, int> labeling)
 		{
 			Dictionary<Point, int> lhsLabeling, sharedLabeling;
 			var lhs = Shape.CreateShapeFromPolylines(geometryBefore, null, out lhsLabeling);
@@ -63,7 +63,7 @@ namespace ShapeGrammarEngine
 		/// </summary>
 		/// <param name="geometryBefore"> The geometry in the example before the rule is applied </param>
 		/// <param name="geometryAfter"> The geometry in the example after the rule is applied </param>
-		public void LearnFromExample(PolylineGroup geometryBefore, PolylineGroup geometryAfter)
+		public void LearnFromExample(PolylineGeometry geometryBefore, PolylineGeometry geometryAfter)
 		{
 			if (!this.LeftHandShape.ConformsWithGeometry(geometryBefore, out _))
 			{
@@ -76,20 +76,6 @@ namespace ShapeGrammarEngine
 
 			this.ApplicationRecords.Add(new RuleApplicationRecord(geometryBefore, geometryAfter));
 		}
-
-		//private HashSet<int> PointsToBeRemoved()
-		//{
-		//	var ptbr = new HashSet<int>(this.LeftHandShape.GetAllLabels());
-		//	ptbr.ExceptWith(this.RightHandShape.GetAllLabels());
-		//	return ptbr;
-		//}
-
-		//private HashSet<int> PointsToBeAdded()
-		//{
-		//	var ptba = new HashSet<int>(this.RightHandShape.GetAllLabels());
-		//	ptba.ExceptWith(this.LeftHandShape.GetAllLabels());
-		//	return ptba;
-		//}
 
 		private HashSet<Connection> ConnectionsToBeRemoved()
 		{
@@ -110,7 +96,7 @@ namespace ShapeGrammarEngine
 		/// </summary>
 		/// <param name="polylines"> the geometry on which the rule will be applied. It must confrom with LeftHandShape </param>
 		/// <returns> the geometry after the rule is applied. It will confrom with RightHandShape </returns>
-		public PolylineGroup ApplyToGeometry(PolylineGroup polylines)
+		public PolylineGeometry ApplyToGeometry(PolylineGeometry polylines)
 		{
 			// Step1: check and label the polylines
 			Dictionary<Point, int> labeling;
@@ -121,7 +107,8 @@ namespace ShapeGrammarEngine
 			}
 
 			// Step2: remove the connections to be removed
-		
+			
+
 			return null; // stub
 		}
 	}

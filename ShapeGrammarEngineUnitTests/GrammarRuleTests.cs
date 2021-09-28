@@ -11,13 +11,13 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestCreateGrammarRuleFromOneExample_OnePolyline_1()
 		{
-			var polyGroup1 = new PolylineGroup(new List<List<Point>> { 
+			var polyGeo1 = new PolylineGeometry(new List<List<Point>> { 
 				new List<Point> { new Point(0, 0), new Point(0, 1) } });
-			var polyGroup2 = new PolylineGroup(new List<List<Point>> {
+			var polyGeo2 = new PolylineGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0),  new Point(0, 2), new Point(0, 3) } });
 
 			Dictionary<Point, int> labeling;
-			var rule = GrammarRule.CreateGrammarRuleFromOneExample(polyGroup1, polyGroup2, out labeling);
+			var rule = GrammarRule.CreateGrammarRuleFromOneExample(polyGeo1, polyGeo2, out labeling);
 
 			Assert.IsTrue(labeling.ContainsKey(new Point(0, 0)));
 			int label0;
@@ -35,8 +35,8 @@ namespace ShapeGrammarEngine.UnitTests
 			int label3;
 			labeling.TryGetValue(new Point(0, 3), out label3);
 
-			Assert.IsTrue(rule.LeftHandShape.ConformsWithGeometry(polyGroup1, out _));
-			Assert.IsTrue(rule.RightHandShape.ConformsWithGeometry(polyGroup2, out _));
+			Assert.IsTrue(rule.LeftHandShape.ConformsWithGeometry(polyGeo1, out _));
+			Assert.IsTrue(rule.RightHandShape.ConformsWithGeometry(polyGeo2, out _));
 
 			Assert.IsTrue(rule.LeftHandShape.Definition.Contains(new Connection(label0, label1)));
 			Assert.IsTrue(rule.RightHandShape.Definition.Contains(new Connection(label0, label2)));
@@ -46,14 +46,14 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestCreateGrammarRuleFromOneExample_MultiplePolylines_1()
 		{
-			var polyGroup1 = new PolylineGroup(new List<List<Point>> {
+			var polyGeo1 = new PolylineGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0), new Point(1, 1) }, 
 				new List<Point> { new Point(0, 0), new Point(0, 2) } });
-			var polyGroup2 = new PolylineGroup(new List<List<Point>> {
+			var polyGeo2 = new PolylineGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0),  new Point(0, 2), new Point(0, 3) } });
 
 			Dictionary<Point, int> labeling;
-			var rule = GrammarRule.CreateGrammarRuleFromOneExample(polyGroup1, polyGroup2, out labeling);
+			var rule = GrammarRule.CreateGrammarRuleFromOneExample(polyGeo1, polyGeo2, out labeling);
 
 			Assert.IsTrue(labeling.ContainsKey(new Point(0, 0)));
 			int label00;
@@ -71,8 +71,8 @@ namespace ShapeGrammarEngine.UnitTests
 			int label03;
 			labeling.TryGetValue(new Point(0, 3), out label03);
 
-			Assert.IsTrue(rule.LeftHandShape.ConformsWithGeometry(polyGroup1, out _));
-			Assert.IsTrue(rule.RightHandShape.ConformsWithGeometry(polyGroup2, out _));
+			Assert.IsTrue(rule.LeftHandShape.ConformsWithGeometry(polyGeo1, out _));
+			Assert.IsTrue(rule.RightHandShape.ConformsWithGeometry(polyGeo2, out _));
 
 			Assert.IsTrue(rule.LeftHandShape.Definition.Contains(new Connection(label00, label11)));
 			Assert.IsTrue(rule.LeftHandShape.Definition.Contains(new Connection(label00, label02)));
@@ -86,12 +86,12 @@ namespace ShapeGrammarEngine.UnitTests
 			var shape1 = Shape.CreateEmptyShape();
 			var shape2 = Shape.CreateEmptyShape();
 			var emptyRule = new GrammarRule(shape1, shape2);
-			var emptyPolylineGroup = PolylineGroup.CreateEmptyPolylineGroup();
+			var emptyPolylineGeo = PolylineGeometry.CreateEmptyPolylineGeometry();
 
 			Assert.Throws<ArgumentNullException>(() => emptyRule.LearnFromExample(null, null));
-			Assert.Throws<ArgumentNullException>(() => emptyRule.LearnFromExample(emptyPolylineGroup, null));
-			Assert.Throws<ArgumentNullException>(() => emptyRule.LearnFromExample(null, emptyPolylineGroup));
-			Assert.DoesNotThrow(() => emptyRule.LearnFromExample(emptyPolylineGroup, emptyPolylineGroup));
+			Assert.Throws<ArgumentNullException>(() => emptyRule.LearnFromExample(emptyPolylineGeo, null));
+			Assert.Throws<ArgumentNullException>(() => emptyRule.LearnFromExample(null, emptyPolylineGeo));
+			Assert.DoesNotThrow(() => emptyRule.LearnFromExample(emptyPolylineGeo, emptyPolylineGeo));
 		}
 
 		[Test]
@@ -100,10 +100,10 @@ namespace ShapeGrammarEngine.UnitTests
 			var shape1 = Shape.CreateEmptyShape();
 			var shape2 = Shape.CreateEmptyShape();
 			var emptyRule = new GrammarRule(shape1, shape2);
-			var emptyPolylineGroup = PolylineGroup.CreateEmptyPolylineGroup();
+			var emptyPolylineGeo = PolylineGeometry.CreateEmptyPolylineGeometry();
 
 			Assert.Throws<ArgumentNullException>(() => emptyRule.ApplyToGeometry(null));
-			Assert.DoesNotThrow(() => emptyRule.ApplyToGeometry(emptyPolylineGroup));
+			Assert.DoesNotThrow(() => emptyRule.ApplyToGeometry(emptyPolylineGeo));
 		}
 
 		[Test]
@@ -112,8 +112,8 @@ namespace ShapeGrammarEngine.UnitTests
 			var shape1 = new Shape(new HashSet<Connection> { new Connection(1, 2) });
 			var shape2 = new Shape(new HashSet<Connection> { new Connection(1, 2), new Connection(2, 3) });
 			var rule1 = new GrammarRule(shape1, shape2);
-			var polyGroup1 = new PolylineGroup(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(0, 1), new Point(0, 2) } });
-			Assert.Throws<ArgumentException>(() => rule1.ApplyToGeometry(polyGroup1));
+			var polyGeo1 = new PolylineGeometry(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(0, 1), new Point(0, 2) } });
+			Assert.Throws<ArgumentException>(() => rule1.ApplyToGeometry(polyGeo1));
 		}
 
 		[Test]
@@ -122,8 +122,8 @@ namespace ShapeGrammarEngine.UnitTests
 			var es1 = Shape.CreateEmptyShape();
 			var es2 = Shape.CreateEmptyShape();
 			var emptyRule = new GrammarRule(es1, es2);
-			var emptyPolylineGroup = PolylineGroup.CreateEmptyPolylineGroup();
-			var result = emptyRule.ApplyToGeometry(emptyPolylineGroup);
+			var emptyPolylineGeo = PolylineGeometry.CreateEmptyPolylineGeometry();
+			var result = emptyRule.ApplyToGeometry(emptyPolylineGeo);
 			Assert.IsTrue(result.IsEmpty());
 		}
 
@@ -133,8 +133,8 @@ namespace ShapeGrammarEngine.UnitTests
 			var shape1 = new Shape(new HashSet<Connection> { new Connection(1, 2) });
 			var shape2 = new Shape(new HashSet<Connection> { new Connection(1, 2), new Connection(2, 3) });
 			var rule1 = new GrammarRule(shape1, shape2);
-			var polyGroup1 = new PolylineGroup(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(0, 1) } });
-			var result1 = rule1.ApplyToGeometry(polyGroup1);
+			var polyGeo1 = new PolylineGeometry(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(0, 1) } });
+			var result1 = rule1.ApplyToGeometry(polyGeo1);
 			Assert.IsTrue(shape2.ConformsWithGeometry(result1, out _));
 		}
 	}
