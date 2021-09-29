@@ -20,72 +20,135 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestDoesIntersectOrOverlapWithItself_Intersect()
 		{
-			Assert.IsTrue(new PolylineGeometry(new List<List<Point>> { 
-				new List<Point> { new Point(0, -1), new Point(0, 1), new Point(1, 0), new Point(-1, 0) } }).DoesIntersectOrOverlapWithItself());
-			Assert.IsTrue(new PolylineGeometry(new List<List<Point>> { 
+			Assert.Throws<ArgumentException>(() => new PolylineGeometry(new List<List<Point>> { 
+				new List<Point> { new Point(0, -1), new Point(0, 1), new Point(1, 0), new Point(-1, 0) } }));
+			Assert.Throws<ArgumentException>(() => new PolylineGeometry(new List<List<Point>> { 
 				new List<Point> { new Point(1, 0), new Point(1, 2) }, 
-				new List<Point> { new Point(0, 1), new Point(2, 1) } }).DoesIntersectOrOverlapWithItself());
-			Assert.IsTrue(new PolylineGeometry(new List<List<Point>>{
+				new List<Point> { new Point(0, 1), new Point(2, 1) } }));
+			Assert.Throws<ArgumentException>(() => new PolylineGeometry(new List<List<Point>>{
 				new List<Point> { new Point(0,0), new Point(1,1) },
-				new List<Point> { new Point(0,0), new Point(1,1) } }).DoesIntersectOrOverlapWithItself());
+				new List<Point> { new Point(0,0), new Point(1,1) } }));
 		}
 
 		[Test]
 		public void TestDoesIntersectOrOverlapWithItself_Overlap()
 		{
-			Assert.IsTrue(new PolylineGeometry(new List<List<Point>> { 
-				new List<Point> { new Point(0, -1), new Point(0, 1), new Point(0, 0), new Point(0, 0.5) } }).DoesIntersectOrOverlapWithItself());
-		}
-		
-		[Test]
-		public void TestEraseSegment_EdgeCases()
-		{
-			var geo0 = new PolylineGeometry(new List<List<Point>>());
-			Assert.Throws<ArgumentOutOfRangeException>(() => geo0.EraseSegment(0, 0));
-
-			var geo1 = new PolylineGeometry(new List<List<Point>>{
-				new List<Point> { new Point(0,0), new Point(0,1) } });
-			Assert.Throws<ArgumentOutOfRangeException>(() => geo1.EraseSegment(0, 2));
-			Assert.Throws<ArgumentOutOfRangeException>(() => geo1.EraseSegment(0, 1));
-			Assert.Throws<ArgumentOutOfRangeException>(() => geo1.EraseSegment(1, 0));
-			Assert.Throws<ArgumentOutOfRangeException>(() => geo1.EraseSegment(1, 1));
+			Assert.Throws<ArgumentException>(() => new PolylineGeometry(new List<List<Point>> { 
+				new List<Point> { new Point(0, -1), new Point(0, 1), new Point(0, 0), new Point(0, 0.5) } }));
 		}
 
 		[Test]
-		public void TestEraseSegment_SegmentAtTheBeginning_RemoveTheFirstPoint()
-		{
-			var geo1 = new PolylineGeometry(new List<List<Point>>{
-				new List<Point> {new Point(0,0), new Point(1,0)},
-				new List<Point> { new Point(0,0), new Point(0,1) } });
-			Assert.DoesNotThrow(() => geo1.EraseSegment(1, 0));
-			Assert.AreEqual(1, geo1.PolylinesCopy.Count);
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo1.PolylinesCopy[0], new List<Point> { new Point(0, 0), new Point(1, 0)}));
-
-			var geo2 = new PolylineGeometry(new List<List<Point>>{
-				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) } });
-			Assert.DoesNotThrow(() => geo2.EraseSegment(0, 0));
-			Assert.AreEqual(1, geo2.PolylinesCopy.Count);
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo2.PolylinesCopy[0], new List<Point> {new Point(1,1), new Point(2, 2), new Point(3, 3) }));
-		}
-
-		[Test]
-		public void TestEraseSegment_SegmentAtTheEnd_RemoveTheLastPoint()
-		{
-			var geo3 = new PolylineGeometry(new List<List<Point>>{
-				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) } });
-			Assert.DoesNotThrow(() => geo3.EraseSegment(0, 2));
-			Assert.AreEqual(1, geo3.PolylinesCopy.Count);
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo3.PolylinesCopy[0], new List<Point> { new Point(0, 0), new Point(1, 1), new Point(2, 2) }));
-		}
-
-		[Test]
-		public void TestEraseSegment_SegmentInTheMiddle_BreaksUp()
+		public void TestEraseSegmentByPoints_NotASegment()
 		{
 			var geo4 = new PolylineGeometry(new List<List<Point>>{
 				new List<Point> { new Point(0,0), new Point(0,1), new Point(0,2) },
 				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) },
 				new List<Point> { new Point(0,0), new Point(1,0), new Point(2,0) },});
-			Assert.DoesNotThrow(() => geo4.EraseSegment(1, 1));
+			var s1 = geo4.EraseSegmentByPoints(new Point(0, 0), new Point(2, 2));
+			Assert.IsFalse(s1);
+			Assert.AreEqual(3, geo4.PolylinesCopy.Count);
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo4.PolylinesCopy[0], new List<Point> { new Point(0, 0), new Point(0, 1), new Point(0, 2) }));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo4.PolylinesCopy[1], new List<Point> { new Point(0, 0), new Point(1, 1), new Point(2, 2), new Point(3, 3) }));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo4.PolylinesCopy[2], new List<Point> { new Point(0, 0), new Point(1, 0), new Point(2, 0) }));
+
+			var s2 = geo4.EraseSegmentByPoints(new Point(0, 2), new Point(2, 0));
+			Assert.IsFalse(s2);
+
+			var s3 = geo4.EraseSegmentByPoints(new Point(0, 0), new Point(0, 0));
+			Assert.IsFalse(s3);
+		}
+
+		[Test]
+		public void TestEraseSegmentByPoints_InTheMiddle()
+		{
+			var geo4 = new PolylineGeometry(new List<List<Point>>{
+				new List<Point> { new Point(0,0), new Point(0,1), new Point(0,2) },
+				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) },
+				new List<Point> { new Point(0,0), new Point(1,0), new Point(2,0) },});
+			var s = geo4.EraseSegmentByPoints(new Point(1,1), new Point(2,2));
+			Assert.IsTrue(s);
+			Assert.AreEqual(4, geo4.PolylinesCopy.Count);
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo4.PolylinesCopy[0], new List<Point> { new Point(0, 0), new Point(0, 1), new Point(0, 2) }));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo4.PolylinesCopy[1], new List<Point> { new Point(0, 0), new Point(1, 1) }));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo4.PolylinesCopy[2], new List<Point> { new Point(2, 2), new Point(3, 3) }));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo4.PolylinesCopy[3], new List<Point> { new Point(0, 0), new Point(1, 0), new Point(2, 0) }));
+		}
+
+		[Test]
+		public void TestEraseSegmentByPoints_AtTheBeginning()
+		{
+			var geo4 = new PolylineGeometry(new List<List<Point>>{
+				new List<Point> { new Point(0,0), new Point(0,1), new Point(0,2) },
+				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) } });
+			var s = geo4.EraseSegmentByPoints(new Point(1, 1), new Point(0, 0));
+			Assert.IsTrue(s);
+			Assert.AreEqual(2, geo4.PolylinesCopy.Count);
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo4.PolylinesCopy[0], new List<Point> { new Point(0, 0), new Point(0, 1), new Point(0, 2) }));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo4.PolylinesCopy[1], new List<Point> { new Point(1, 1), new Point(2, 2), new Point(3, 3) }));
+		}
+
+		[Test]
+		public void TestEraseSegmentByPoints_AtTheEnd()
+		{
+			var geo4 = new PolylineGeometry(new List<List<Point>>{
+				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) },
+				new List<Point> { new Point(0,0), new Point(1,0), new Point(2,0) },});
+			var s = geo4.EraseSegmentByPoints(new Point(3, 3), new Point(2, 2));
+			Assert.IsTrue(s);
+			Assert.AreEqual(2, geo4.PolylinesCopy.Count);
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo4.PolylinesCopy[0], new List<Point> { new Point(0, 0), new Point(1, 1), new Point(2, 2)}));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo4.PolylinesCopy[1], new List<Point> { new Point(0, 0), new Point(1, 0), new Point(2, 0) }));
+		}
+
+		[Test]
+		public void TestEraseSegmentByIndexes_EdgeCases()
+		{
+			var geo0 = new PolylineGeometry(new List<List<Point>>());
+			Assert.Throws<ArgumentOutOfRangeException>(() => geo0.EraseSegmentByIndexes(0, 0));
+
+			var geo1 = new PolylineGeometry(new List<List<Point>>{
+				new List<Point> { new Point(0,0), new Point(0,1) } });
+			Assert.Throws<ArgumentOutOfRangeException>(() => geo1.EraseSegmentByIndexes(0, 2));
+			Assert.Throws<ArgumentOutOfRangeException>(() => geo1.EraseSegmentByIndexes(0, 1));
+			Assert.Throws<ArgumentOutOfRangeException>(() => geo1.EraseSegmentByIndexes(1, 0));
+			Assert.Throws<ArgumentOutOfRangeException>(() => geo1.EraseSegmentByIndexes(1, 1));
+		}
+
+		[Test]
+		public void TestEraseSegmentByIndexes_SegmentAtTheBeginning_RemoveTheFirstPoint()
+		{
+			var geo1 = new PolylineGeometry(new List<List<Point>>{
+				new List<Point> {new Point(0,0), new Point(1,0)},
+				new List<Point> { new Point(0,0), new Point(0,1) } });
+			Assert.DoesNotThrow(() => geo1.EraseSegmentByIndexes(1, 0));
+			Assert.AreEqual(1, geo1.PolylinesCopy.Count);
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo1.PolylinesCopy[0], new List<Point> { new Point(0, 0), new Point(1, 0)}));
+
+			var geo2 = new PolylineGeometry(new List<List<Point>>{
+				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) } });
+			Assert.DoesNotThrow(() => geo2.EraseSegmentByIndexes(0, 0));
+			Assert.AreEqual(1, geo2.PolylinesCopy.Count);
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo2.PolylinesCopy[0], new List<Point> {new Point(1,1), new Point(2, 2), new Point(3, 3) }));
+		}
+
+		[Test]
+		public void TestEraseSegmentByIndexes_SegmentAtTheEnd_RemoveTheLastPoint()
+		{
+			var geo3 = new PolylineGeometry(new List<List<Point>>{
+				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) } });
+			Assert.DoesNotThrow(() => geo3.EraseSegmentByIndexes(0, 2));
+			Assert.AreEqual(1, geo3.PolylinesCopy.Count);
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo3.PolylinesCopy[0], new List<Point> { new Point(0, 0), new Point(1, 1), new Point(2, 2) }));
+		}
+
+		[Test]
+		public void TestEraseSegmentByIndexes_SegmentInTheMiddle_BreaksUp()
+		{
+			var geo4 = new PolylineGeometry(new List<List<Point>>{
+				new List<Point> { new Point(0,0), new Point(0,1), new Point(0,2) },
+				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) },
+				new List<Point> { new Point(0,0), new Point(1,0), new Point(2,0) },});
+			Assert.DoesNotThrow(() => geo4.EraseSegmentByIndexes(1, 1));
 			Assert.AreEqual(4, geo4.PolylinesCopy.Count);
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo4.PolylinesCopy[0], new List<Point> { new Point(0, 0), new Point(0, 1), new Point(0, 2) }));
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo4.PolylinesCopy[1], new List<Point> { new Point(0, 0), new Point(1, 1) }));

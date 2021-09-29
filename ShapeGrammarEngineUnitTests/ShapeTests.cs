@@ -289,12 +289,12 @@ namespace ShapeGrammarEngineUnitTests
 			Assert.IsTrue(output.ContainsKey(new Point(5, 10)));
 
 			var geometry3 = new PolylineGeometry(new List<List<Point>> { 
-				new List<Point> { new Point(-5, 2.1), new Point(20, 20), new Point(5, 10), new Point(2, 5), new Point(-5, 2.1) } });
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20), new Point(10, 5), new Point(2, -5), new Point(-5, 2.1) } });
 			Assert.IsFalse(shape2.ConformsWithGeometry(geometry3, out output));
 			Assert.IsNull(output);
 
 			var geometry4 = new PolylineGeometry(new List<List<Point>> { 
-				new List<Point> { new Point(-5, 2.1), new Point(20, 20), new Point(5, 10), new Point(2, 5) } });
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20), new Point(10, 5), new Point(2, 5) } });
 			Assert.IsFalse(shape2.ConformsWithGeometry(geometry4, out output));
 			Assert.IsNull(output);
 		}

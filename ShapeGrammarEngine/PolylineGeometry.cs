@@ -8,7 +8,8 @@ namespace ShapeGrammarEngine
 	{
 		private List<List<Point>> polylines = new List<List<Point>>();
 		/// <summary>
-		/// each polyline has at least 2 points
+		/// The polylines forming the geometry; They must not intersect or overlap with itself or each other. 
+		/// Each polyline consists of at least 2 points
 		/// </summary>
 		public List<List<Point>> PolylinesCopy { get { return new List<List<Point>>(this.polylines); } }
 
@@ -19,7 +20,11 @@ namespace ShapeGrammarEngine
 				throw new ArgumentNullException();
 			}
 			this.polylines = polylines;
-			this.CleanUpPolylines();
+			this.RemoveEmptyOrOnePointPolylines();
+			if (this.DoesIntersectOrOverlapWithItself())
+			{
+				throw new ArgumentException("The polylines intersect or overlap with itself");
+			}
 		}
 
 		public static PolylineGeometry CreateEmptyPolylineGeometry() {
@@ -34,7 +39,7 @@ namespace ShapeGrammarEngine
 		/// <summary>
 		/// Remove any polyline with less than 2 points and thereby doesn't form a line
 		/// </summary>
-		private void CleanUpPolylines()
+		private void RemoveEmptyOrOnePointPolylines()
 		{
 			var indexesToRemove = new List<int>();
 			for (int i = 0; i < this.polylines.Count; i++)
@@ -53,7 +58,7 @@ namespace ShapeGrammarEngine
 			}
 		}
 
-		public bool DoesIntersectOrOverlapWithItself()
+		private bool DoesIntersectOrOverlapWithItself()
 		{
 			var allSegments = this.ConvertToLineSegments();
 			for (int i = 0; i < allSegments.Count; i++)
@@ -74,12 +79,37 @@ namespace ShapeGrammarEngine
 		}
 
 		/// <summary>
-		/// Erase a single line segment from the geometry, breaking up the polyline. 
+		/// Erase a single linesegment from the geometry, potentially breaking up a polyline. 
+		/// Because the geometry is not supposed to overlap with itself, there can be at most one eligiable segment. 
+		/// </summary>
+		/// <param name="endPoint1"> One of the two endpoints </param>
+		/// <param name="endPoint2"> One of the two endpoints </param>
+		/// <returns> whether the operation succeeded </returns>
+		public bool EraseSegmentByPoints(Point endPoint1, Point endPoint2)
+		{
+			for (int i = 0; i < this.polylines.Count; i++)
+			{
+				var pl = this.polylines[i];
+				for (int j = 0; j < pl.Count - 1; j++)
+				{
+					if ((pl[j] == endPoint1 && pl[j+1] == endPoint2) || 
+						(pl[j] == endPoint2 && pl[j+1] == endPoint1))
+					{
+						this.EraseSegmentByIndexes(i, j);
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// Erase a single line segment from the geometry, potentially breaking up a polyline. 
 		/// </summary>
 		/// <param name="polylineIndex"> the index of the polyline that contains the segment </param>
 		/// <param name="startPointIndex"> the index first endpoint of the segment; 
 		/// the index for the second endpoint is this index plus 1 </param>
-		public void EraseSegment(int polylineIndex, int startPointIndex)
+		public void EraseSegmentByIndexes(int polylineIndex, int startPointIndex)
 		{
 			if (polylineIndex < 0 || polylineIndex > this.polylines.Count - 1)
 			{
@@ -107,7 +137,7 @@ namespace ShapeGrammarEngine
 				this.polylines.Insert(polylineIndex, polylineBefore);
 			}
 
-			this.CleanUpPolylines();
+			this.RemoveEmptyOrOnePointPolylines();
 		}
 
 		private List<LineSegment> ConvertToLineSegments()

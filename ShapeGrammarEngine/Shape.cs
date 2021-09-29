@@ -62,11 +62,6 @@ namespace ShapeGrammarEngine
 				return Shape.CreateEmptyShape();
 			}
 
-			if (polylineGeometry.DoesIntersectOrOverlapWithItself())
-			{
-				throw new ArgumentException("polylineGeometry intersects or overlaps with itself");
-			}
-
 			// label all unique points
 			Dictionary<Point, int> labelDictionary;
 			int nextNewLabel;
