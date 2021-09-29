@@ -20,7 +20,7 @@ namespace ShapeGrammarEngine
 				throw new ArgumentNullException();
 			}
 			this.polylines = polylines;
-			this.RemoveEmptyOrOnePointPolylines();
+			this.CleanUpPolylines();
 			if (this.DoesIntersectOrOverlapWithItself())
 			{
 				throw new ArgumentException("The polylines intersect or overlap with itself");
@@ -39,7 +39,7 @@ namespace ShapeGrammarEngine
 		/// <summary>
 		/// Remove any polyline with less than 2 points and thereby doesn't form a line
 		/// </summary>
-		private void RemoveEmptyOrOnePointPolylines()
+		private void CleanUpPolylines()
 		{
 			var indexesToRemove = new List<int>();
 			for (int i = 0; i < this.polylines.Count; i++)
@@ -56,6 +56,8 @@ namespace ShapeGrammarEngine
 			{
 				this.polylines.RemoveAt(index);
 			}
+
+			// TODO: merge connected polylines
 		}
 
 		private bool DoesIntersectOrOverlapWithItself()
@@ -79,7 +81,25 @@ namespace ShapeGrammarEngine
 		}
 
 		/// <summary>
-		/// Erase a single linesegment from the geometry, potentially breaking up a polyline. 
+		/// Add a single segment to the geometry, potentially merging two polylines
+		/// </summary>
+		/// <param name="endPoint1"> One of the two endpoints </param>
+		/// <param name="endPoint2"> One of the two endpoints </param>
+		public void AddSegmentByPoints(Point endPoint1, Point endPoint2)
+		{
+			if (endPoint1 == endPoint2)
+			{
+				throw new ArgumentException("two endpoints cannot be identical");
+			}
+
+			var newPolyline = new List<Point> { endPoint1, endPoint2 };
+			this.polylines.Add(newPolyline);
+
+			this.CleanUpPolylines();
+		}
+
+		/// <summary>
+		/// Erase a single segment from the geometry, potentially breaking up a polyline. 
 		/// Because the geometry is not supposed to overlap with itself, there can be at most one eligiable segment. 
 		/// </summary>
 		/// <param name="endPoint1"> One of the two endpoints </param>
@@ -87,6 +107,10 @@ namespace ShapeGrammarEngine
 		/// <returns> whether the operation succeeded </returns>
 		public bool EraseSegmentByPoints(Point endPoint1, Point endPoint2)
 		{
+			if (endPoint1 == endPoint2)
+			{
+				throw new ArgumentException("two endpoints cannot be identical");
+			}
 			for (int i = 0; i < this.polylines.Count; i++)
 			{
 				var pl = this.polylines[i];
@@ -137,7 +161,7 @@ namespace ShapeGrammarEngine
 				this.polylines.Insert(polylineIndex, polylineBefore);
 			}
 
-			this.RemoveEmptyOrOnePointPolylines();
+			this.CleanUpPolylines();
 		}
 
 		private List<LineSegment> ConvertToLineSegments()

@@ -38,12 +38,53 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
+		public void TestAddSegmentByPoints_IndenticalEndPoints_ThrowException()
+		{
+			var geo = PolylineGeometry.CreateEmptyPolylineGeometry();
+			Assert.Throws<ArgumentException>(() => geo.AddSegmentByPoints(new Point(0, 0), new Point(0, 0)));
+		}
+
+		[Test]
+		public void TestAddSegmentByPoints_DoesNotConnectToEndsOfExistingPolylines_AddNewPolyline()
+		{
+			var geo = PolylineGeometry.CreateEmptyPolylineGeometry();
+			geo.AddSegmentByPoints(new Point(0, 0), new Point(0, 1));
+			Assert.AreEqual(1, geo.PolylinesCopy.Count);
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo.PolylinesCopy[0], new List<Point> { new Point(0, 0), new Point(0, 1) }));
+			
+			geo.AddSegmentByPoints(new Point(0, 0), new Point(1, 1));
+			Assert.AreEqual(2, geo.PolylinesCopy.Count);
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo.PolylinesCopy[0], new List<Point> { new Point(0, 0), new Point(0, 1) }));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo.PolylinesCopy[1], new List<Point> { new Point(0, 0), new Point(1, 1) }));
+		}
+
+		[Test]
+		public void TestAddSegmentByPoints_ConnectsToEndsOfExistingPolylines_AddToEndOfExistingPolyline()
+		{
+			
+		}
+
+		[Test]
+		public void TestAddSegmentByPoints_ConnectEndsOfTwoExistingPolylines_MergeIntoOneLongPolyline()
+		{
+
+		}
+
+		[Test]
+		public void TestEraseSegmentByPoints_IdenticalEndPoints_ThrowException()
+		{
+			var geo = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(0,1)}});
+			Assert.Throws<ArgumentException>(() => geo.EraseSegmentByPoints(new Point(0, 0), new Point(0, 0)));
+		}
+
+		[Test]
 		public void TestEraseSegmentByPoints_NotASegment()
 		{
 			var geo4 = new PolylineGeometry(new List<List<Point>>{
 				new List<Point> { new Point(0,0), new Point(0,1), new Point(0,2) },
 				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) },
-				new List<Point> { new Point(0,0), new Point(1,0), new Point(2,0) },});
+				new List<Point> { new Point(0,0), new Point(1,0), new Point(2,0) }});
 			var s1 = geo4.EraseSegmentByPoints(new Point(0, 0), new Point(2, 2));
 			Assert.IsFalse(s1);
 			Assert.AreEqual(3, geo4.PolylinesCopy.Count);
@@ -64,7 +105,7 @@ namespace ShapeGrammarEngine.UnitTests
 			var geo4 = new PolylineGeometry(new List<List<Point>>{
 				new List<Point> { new Point(0,0), new Point(0,1), new Point(0,2) },
 				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) },
-				new List<Point> { new Point(0,0), new Point(1,0), new Point(2,0) },});
+				new List<Point> { new Point(0,0), new Point(1,0), new Point(2,0) }});
 			var s = geo4.EraseSegmentByPoints(new Point(1,1), new Point(2,2));
 			Assert.IsTrue(s);
 			Assert.AreEqual(4, geo4.PolylinesCopy.Count);
@@ -92,7 +133,7 @@ namespace ShapeGrammarEngine.UnitTests
 		{
 			var geo4 = new PolylineGeometry(new List<List<Point>>{
 				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) },
-				new List<Point> { new Point(0,0), new Point(1,0), new Point(2,0) },});
+				new List<Point> { new Point(0,0), new Point(1,0), new Point(2,0) }});
 			var s = geo4.EraseSegmentByPoints(new Point(3, 3), new Point(2, 2));
 			Assert.IsTrue(s);
 			Assert.AreEqual(2, geo4.PolylinesCopy.Count);
@@ -147,7 +188,7 @@ namespace ShapeGrammarEngine.UnitTests
 			var geo4 = new PolylineGeometry(new List<List<Point>>{
 				new List<Point> { new Point(0,0), new Point(0,1), new Point(0,2) },
 				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) },
-				new List<Point> { new Point(0,0), new Point(1,0), new Point(2,0) },});
+				new List<Point> { new Point(0,0), new Point(1,0), new Point(2,0) }});
 			Assert.DoesNotThrow(() => geo4.EraseSegmentByIndexes(1, 1));
 			Assert.AreEqual(4, geo4.PolylinesCopy.Count);
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo4.PolylinesCopy[0], new List<Point> { new Point(0, 0), new Point(0, 1), new Point(0, 2) }));

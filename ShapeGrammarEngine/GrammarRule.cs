@@ -1,6 +1,7 @@
 ﻿using BasicGeometries;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace ShapeGrammarEngine
 {
@@ -107,9 +108,39 @@ namespace ShapeGrammarEngine
 			}
 
 			// Step2: remove the connections to be removed
-			
+			var reversedLabeling = this.ReverseLabeling(labeling);
+			foreach(Connection c in this.ConnectionsToBeRemoved())
+			{
+				Point endPoint1, endPoint2;
+
+				var s1 = reversedLabeling.TryGetValue(c.LabelOfFirstNode, out endPoint1);
+				var s2 = reversedLabeling.TryGetValue(c.LabelOfSecondNode, out endPoint2);
+				Debug.Assert(s1 && s2);
+
+				polylines.EraseSegmentByPoints(endPoint1, endPoint2);
+			}
+
+			// Step3: add the connections to be added
+			foreach (Connection c in this.ConnectionsToBeAdded())
+			{
+				
+
+
+
+			}
 
 			return null; // stub
+		}
+
+		private Dictionary<int, Point> ReverseLabeling(Dictionary<Point, int> labeling)
+		{
+			var reversedLabeling = new Dictionary<int, Point>();
+			foreach (var entry in labeling)
+			{
+				if (!reversedLabeling.ContainsKey(entry.Value))
+					reversedLabeling.Add(entry.Value, entry.Key);
+			}
+			return reversedLabeling;
 		}
 	}
 }
