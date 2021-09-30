@@ -51,6 +51,25 @@ namespace BasicGeometries
 		}
 
 		/// <summary>
+		/// Locate the other endpoint of a line segment given one endpoint, the angle and the length
+		/// </summary>
+		/// <param name="endPoint1"> the known endpoint of the segment </param>
+		/// <param name="angle"> the angle in radian counter clock wise from positive x axis </param>
+		/// <param name="length"> the absolute length of this segment. It must be greater than 0 </param>
+		/// <returns> the other endpoint of this line segment </returns>
+		public static Point LocateOtherEndPoint(Point endPoint1, double angle, double length)
+		{
+			if (length <= 0)
+			{
+				throw new ArgumentException("length must be greater than zero");
+			}
+
+			var dx = length * Math.Cos(angle);
+			var dy = length * Math.Sin(angle);
+			return new Point(endPoint1.coordinateX + dx, endPoint1.coordinateY + dy);
+		}
+
+		/// <summary>
 		/// Line segments do not intersect if they overlap or merely share an endpoint. 
 		/// They do intersect if they form a T shape. 
 		/// </summary>

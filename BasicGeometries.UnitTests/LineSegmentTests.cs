@@ -65,6 +65,29 @@ namespace DiagramDesignerEngine.UnitTests
 		}
 
 		[Test]
+		public void TestLocateOtherEndPoint_EdgeCases()
+		{
+			var p = new Point(0, 0);
+			Assert.Throws<ArgumentException>(() => LineSegment.LocateOtherEndPoint(p, 1, 0));
+		}
+
+		[Test]
+		public void TestLocateOtherEndPoint_NormalCases()
+		{
+			double tolerance = 0.00000001;
+
+			var p0 = new Point(0, 0);
+			var p1 = LineSegment.LocateOtherEndPoint(p0, 0, 1);
+			Assert.IsTrue(Point.DistanceBetweenPoints(new Point(1,0), p1) < tolerance);
+
+			var p2 = LineSegment.LocateOtherEndPoint(p0, Math.PI/2, 1);
+			Assert.IsTrue(Point.DistanceBetweenPoints(new Point(0,1), p2) < tolerance);
+
+			var p3 = LineSegment.LocateOtherEndPoint(p0, -1*Math.PI / 2, 1);
+			Assert.IsTrue(Point.DistanceBetweenPoints(new Point(0, -1), p3) < tolerance);
+		}
+
+		[Test]
 		public void TestFindIntersection_1()
 		{
 			var ls1 = new LineSegment(new Point(-1, 0), new Point(1, 0));

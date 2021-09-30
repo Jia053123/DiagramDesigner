@@ -123,11 +123,11 @@ namespace ShapeGrammarEngine
 			// Step3: add the connections to be added
 			foreach (Connection c in this.ConnectionsToBeAdded())
 			{
-				
-
-
+				// Step3.1: Find all past examples 
 
 			}
+
+			
 
 			return null; // stub
 		}
