@@ -108,24 +108,9 @@ namespace ShapeGrammarEngine
 			}
 
 			var resultPolylines = new PolylineGeometry(polylines.PolylinesCopy);
-
-			// Step2: add the connections to be added
-			var connectionsToAdd = new Queue<Connection>(this.ConnectionsToBeAdded());
-			bool progressMade;
-			while (connectionsToAdd.Count > 0)
-			{
-				int beforeCount = connectionsToAdd.Count;
-				this.AddConnectionsWithOneOrTwoExistingPoint(ref connectionsToAdd, ref resultPolylines);
-				progressMade = beforeCount < connectionsToAdd.Count;
-				if (!progressMade)
-				{
-					// TODO: define one connection using a hypothetical connection
-
-				}
-			}
-
-			// Step3: remove the connections to be removed
 			var reversedLabeling = this.ReverseLabeling(labeling);
+
+			// Step2: remove the connections to be removed
 			foreach (Connection c in this.ConnectionsToBeRemoved())
 			{
 				Point endPoint1, endPoint2;
@@ -137,10 +122,25 @@ namespace ShapeGrammarEngine
 				polylines.EraseSegmentByPoints(endPoint1, endPoint2);
 			}
 
+			// Step3: add the connections to be added
+			var connectionsToAdd = new Queue<Connection>(this.ConnectionsToBeAdded());
+			bool progressMade;
+			while (connectionsToAdd.Count > 0)
+			{
+				int beforeCount = connectionsToAdd.Count;
+				this.AddConnectionsWithOneOrTwoExistingPoint(ref connectionsToAdd, reversedLabeling, ref resultPolylines);
+				progressMade = beforeCount < connectionsToAdd.Count;
+				if (!progressMade)
+				{
+					// TODO: define one connection using a hypothetical connection
+
+				}
+			}
+
 			return resultPolylines;
 		}
 
-		private void AddConnectionsWithOneOrTwoExistingPoint(ref Queue<Connection> connectionsToAdd, ref PolylineGeometry geometryToModify)
+		private void AddConnectionsWithOneOrTwoExistingPoint(ref Queue<Connection> connectionsToAdd, Dictionary<int, Point> reverseLabeling, ref PolylineGeometry geometryToModify)
 		{
 			for (int i = 0; i < connectionsToAdd.Count; i++)
 			{
@@ -149,23 +149,32 @@ namespace ShapeGrammarEngine
 					this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfSecondNode))
 				{
 					// simply connect the existing points
-					
+					Point endpoint1, endpoint2;
+					var s1 = reverseLabeling.TryGetValue(newConnection.LabelOfFirstNode, out endpoint1);
+					var s2 = reverseLabeling.TryGetValue(newConnection.LabelOfSecondNode, out endpoint2);
+					Debug.Assert(s1 && s2);
+					geometryToModify.AddSegmentByPoints(endpoint1, endpoint2);
 				}
-				else if (this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfFirstNode) &&
+				else if (this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfFirstNode) && 
 					!this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfSecondNode))
 				{
-
+					
 				}
-				else if (!this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfFirstNode) &&
+				else if (!this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfFirstNode) && 
 					this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfSecondNode))
 				{
-
+					
 				}
 				else
 				{
 					connectionsToAdd.Enqueue(newConnection);
 				}
 			}
+		}
+
+		private Point AssignSecondPointForConnection(Point existingPoint, int labelForExistingPoint, int labelForPointToAssign)
+		{
+			throw new NotImplementedException();
 		}
 
 		private Dictionary<int, Point> ReverseLabeling(Dictionary<Point, int> labeling)
