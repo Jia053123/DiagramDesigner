@@ -99,7 +99,7 @@ namespace ShapeGrammarEngine
 		/// <returns> the geometry after the rule is applied. It will confrom with RightHandShape </returns>
 		public PolylineGeometry ApplyToGeometry(PolylineGeometry polylines)
 		{
-			// Step1: check and label the polylines
+			// Step1: check for conformity and label the input geometry
 			Dictionary<Point, int> labeling;
 			var doesConform = this.LeftHandShape.ConformsWithGeometry(polylines, out labeling);
 			if (! doesConform)
@@ -107,9 +107,26 @@ namespace ShapeGrammarEngine
 				throw new ArgumentException("polylines does not conform with ShapeBefore");
 			}
 
-			// Step2: remove the connections to be removed
+			var resultPolylines = new PolylineGeometry(polylines.PolylinesCopy);
+
+			// Step2: add the connections to be added
+			var connectionsToAdd = new Queue<Connection>(this.ConnectionsToBeAdded());
+			bool progressMade;
+			while (connectionsToAdd.Count > 0)
+			{
+				int beforeCount = connectionsToAdd.Count;
+				this.AddConnectionsWithOneOrTwoExistingPoint(ref connectionsToAdd, ref resultPolylines);
+				progressMade = beforeCount < connectionsToAdd.Count;
+				if (!progressMade)
+				{
+					// TODO: define one connection using a hypothetical connection
+
+				}
+			}
+
+			// Step3: remove the connections to be removed
 			var reversedLabeling = this.ReverseLabeling(labeling);
-			foreach(Connection c in this.ConnectionsToBeRemoved())
+			foreach (Connection c in this.ConnectionsToBeRemoved())
 			{
 				Point endPoint1, endPoint2;
 
@@ -120,16 +137,35 @@ namespace ShapeGrammarEngine
 				polylines.EraseSegmentByPoints(endPoint1, endPoint2);
 			}
 
-			// Step3: add the connections to be added
-			foreach (Connection c in this.ConnectionsToBeAdded())
+			return resultPolylines;
+		}
+
+		private void AddConnectionsWithOneOrTwoExistingPoint(ref Queue<Connection> connectionsToAdd, ref PolylineGeometry geometryToModify)
+		{
+			for (int i = 0; i < connectionsToAdd.Count; i++)
 			{
-				// Step3.1: Find all past examples 
+				var newConnection = connectionsToAdd.Dequeue();
+				if (this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfFirstNode) &&
+					this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfSecondNode))
+				{
+					// simply connect the existing points
+					
+				}
+				else if (this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfFirstNode) &&
+					!this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfSecondNode))
+				{
 
+				}
+				else if (!this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfFirstNode) &&
+					this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfSecondNode))
+				{
+
+				}
+				else
+				{
+					connectionsToAdd.Enqueue(newConnection);
+				}
 			}
-
-			
-
-			return null; // stub
 		}
 
 		private Dictionary<int, Point> ReverseLabeling(Dictionary<Point, int> labeling)
