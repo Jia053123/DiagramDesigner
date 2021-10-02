@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BasicGeometries;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,14 +9,15 @@ namespace ShapeGrammarEngine
 	{
 		public readonly PolylineGeometry GeometryBefore;
 		public readonly PolylineGeometry GeometryAfter;
+		public readonly Dictionary<int, Point> ReversedLabeling;
 
-		public RuleApplicationRecord(PolylineGeometry geoBefore, PolylineGeometry geoAfter)
+		public RuleApplicationRecord(PolylineGeometry geoBefore, PolylineGeometry geoAfter, Dictionary<Point, int> labeling)
 		{
 			if ((geoBefore is null) || (geoAfter is null))
 			{
 				throw new ArgumentNullException();
 			}
-
+			this.ReversedLabeling = GrammarRule.ReverseLabeling(labeling);
 			this.GeometryBefore = geoBefore;
 			this.GeometryAfter = geoAfter;
 		}

@@ -75,7 +75,10 @@ namespace ShapeGrammarEngine
 				throw new ArgumentException("geometryAfter does not conform with ShapeAfter");
 			}
 
-			this.ApplicationRecords.Add(new RuleApplicationRecord(geometryBefore, geometryAfter));
+			Dictionary<Point, int> labeling;
+			_ = GrammarRule.CreateGrammarRuleFromOneExample(geometryBefore, geometryAfter, out labeling);
+
+			this.ApplicationRecords.Add(new RuleApplicationRecord(geometryBefore, geometryAfter, labeling));
 		}
 
 		private HashSet<Connection> ConnectionsToBeRemoved()
@@ -95,20 +98,20 @@ namespace ShapeGrammarEngine
 		/// <summary>
 		/// Apply the rule with knowledge learnt from examples. 
 		/// </summary>
-		/// <param name="polylines"> the geometry on which the rule will be applied. It must confrom with LeftHandShape </param>
+		/// <param name="polyGeo"> the geometry on which the rule will be applied. It must confrom with LeftHandShape </param>
 		/// <returns> the geometry after the rule is applied. It will confrom with RightHandShape </returns>
-		public PolylineGeometry ApplyToGeometry(PolylineGeometry polylines)
+		public PolylineGeometry ApplyToGeometry(PolylineGeometry polyGeo)
 		{
 			// Step1: check for conformity and label the input geometry
 			Dictionary<Point, int> labeling;
-			var doesConform = this.LeftHandShape.ConformsWithGeometry(polylines, out labeling);
+			var doesConform = this.LeftHandShape.ConformsWithGeometry(polyGeo, out labeling);
 			if (! doesConform)
 			{
 				throw new ArgumentException("polylines does not conform with ShapeBefore");
 			}
 
-			var resultPolylines = new PolylineGeometry(polylines.PolylinesCopy);
-			var reversedLabeling = this.ReverseLabeling(labeling);
+			var resultPolylines = new PolylineGeometry(polyGeo.PolylinesCopy);
+			var reversedLabeling = GrammarRule.ReverseLabeling(labeling);
 
 			// Step2: remove the connections to be removed
 			foreach (Connection c in this.ConnectionsToBeRemoved())
@@ -119,10 +122,10 @@ namespace ShapeGrammarEngine
 				var s2 = reversedLabeling.TryGetValue(c.LabelOfSecondNode, out endPoint2);
 				Debug.Assert(s1 && s2);
 
-				polylines.EraseSegmentByPoints(endPoint1, endPoint2);
+				polyGeo.EraseSegmentByPoints(endPoint1, endPoint2);
 			}
 
-			// Step3: add the connections to be added
+			// Step3: add the connections to be added. If intersection happens, retry
 			var connectionsToAdd = new Queue<Connection>(this.ConnectionsToBeAdded());
 			bool progressMade;
 			while (connectionsToAdd.Count > 0)
@@ -132,7 +135,7 @@ namespace ShapeGrammarEngine
 				progressMade = beforeCount < connectionsToAdd.Count;
 				if (!progressMade)
 				{
-					// TODO: define one connection using a hypothetical connection
+					// TODO: define one connection using a hypothetical connection, allowing intersection. This one will be marked to be removed
 
 				}
 			}
@@ -158,12 +161,24 @@ namespace ShapeGrammarEngine
 				else if (this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfFirstNode) && 
 					!this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfSecondNode))
 				{
-					
+					var labelForExistingPoint = newConnection.LabelOfFirstNode;
+					var labelForPointToAssign = newConnection.LabelOfSecondNode;
+					Point existingPoint;
+					var s = reverseLabeling.TryGetValue(labelForExistingPoint, out existingPoint);
+					Debug.Assert(s);
+					var assignedPoint = this.AssignSecondPointForConnection(existingPoint, labelForExistingPoint, labelForPointToAssign);
+					geometryToModify.AddSegmentByPoints(existingPoint, assignedPoint);
 				}
 				else if (!this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfFirstNode) && 
 					this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfSecondNode))
 				{
-					
+					var labelForExistingPoint = newConnection.LabelOfSecondNode;
+					var labelForPointToAssign = newConnection.LabelOfFirstNode;
+					Point existingPoint;
+					var s = reverseLabeling.TryGetValue(labelForExistingPoint, out existingPoint);
+					Debug.Assert(s);
+					var assignedPoint = this.AssignSecondPointForConnection(existingPoint, labelForExistingPoint, labelForPointToAssign);
+					geometryToModify.AddSegmentByPoints(existingPoint, assignedPoint);
 				}
 				else
 				{
@@ -174,10 +189,56 @@ namespace ShapeGrammarEngine
 
 		private Point AssignSecondPointForConnection(Point existingPoint, int labelForExistingPoint, int labelForPointToAssign)
 		{
-			throw new NotImplementedException();
+			// Step1: find all past occurences of the two endpoints
+			var pastLeftHandGeometries = new List<PolylineGeometry>();
+			var pastExistingPoints = new List<Point>();
+			var pastAssignedPoints = new List<Point>();
+			foreach (RuleApplicationRecord rar  in this.ApplicationRecords)
+			{
+				pastLeftHandGeometries.Add(rar.GeometryBefore);
+
+				Point pastExistingPoint, pastAssignedPoint;
+				var s1 = rar.ReversedLabeling.TryGetValue(labelForExistingPoint, out pastExistingPoint);
+				var s2 = rar.ReversedLabeling.TryGetValue(labelForPointToAssign, out pastAssignedPoint);
+				Debug.Assert(s1 && s2);
+				pastExistingPoints.Add(pastExistingPoint);
+				pastAssignedPoints.Add(pastAssignedPoint);
+			}
+
+			// Step2: assign angle and length
+			var assignedAngle = GrammarRule.AssignAngle(existingPoint, pastLeftHandGeometries, pastExistingPoints, pastAssignedPoints);
+			var assignedLength = GrammarRule.AssignLength(existingPoint, pastLeftHandGeometries, pastExistingPoints, pastAssignedPoints);
+
+			// Step3: locate assigned point from existing point, angle and length
+			var assignedPoint = LineSegment.LocateOtherEndPoint(existingPoint, assignedAngle, assignedLength);
+			return assignedPoint;
 		}
 
-		private Dictionary<int, Point> ReverseLabeling(Dictionary<Point, int> labeling)
+		private static double AssignAngle(Point existingPoint, List<PolylineGeometry> pastLeftHandGeometries, List<Point> pastExistingPoints, List<Point> pastAssignedPoints)
+		{
+			for (int i = 0; i < pastLeftHandGeometries.Count; i++)
+			{
+				var plfg = pastLeftHandGeometries[i];
+				var pep = pastExistingPoints[i];
+				var pap = pastAssignedPoints[i];
+
+
+			}
+		}
+
+		private static double AssignLength(Point existingPoint, List<PolylineGeometry> pastLeftHandGeometries, List<Point> pastExistingPoints, List<Point> pastAssignedPoints)
+		{
+			for (int i = 0; i < pastLeftHandGeometries.Count; i++)
+			{
+				var plfg = pastLeftHandGeometries[i];
+				var pep = pastExistingPoints[i];
+				var pap = pastAssignedPoints[i];
+
+
+			}
+		}
+
+		public static Dictionary<int, Point> ReverseLabeling(Dictionary<Point, int> labeling)
 		{
 			var reversedLabeling = new Dictionary<int, Point>();
 			foreach (var entry in labeling)
