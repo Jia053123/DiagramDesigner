@@ -1,4 +1,5 @@
 ﻿using BasicGeometries;
+using ListOperations;
 using System;
 using System.Collections.Generic;
 
@@ -201,6 +202,11 @@ namespace ShapeGrammarEngine
 				}
 			}
 			return connections;
+		}
+
+		public bool IsGeometryIdenticalWith(PolylineGeometry pg)
+		{
+			return false;
 		}
 	}
 }

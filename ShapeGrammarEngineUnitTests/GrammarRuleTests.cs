@@ -41,6 +41,9 @@ namespace ShapeGrammarEngine.UnitTests
 			Assert.IsTrue(rule.LeftHandShape.Definition.Contains(new Connection(label0, label1)));
 			Assert.IsTrue(rule.RightHandShape.Definition.Contains(new Connection(label0, label2)));
 			Assert.IsTrue(rule.RightHandShape.Definition.Contains(new Connection(label2, label3)));
+
+			Assert.AreEqual(1, rule.ApplicationRecords.Count);
+			Assert.AreEqual
 		}
 
 		[Test]
@@ -136,6 +139,18 @@ namespace ShapeGrammarEngine.UnitTests
 			var polyGeo1 = new PolylineGeometry(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(0, 1) } });
 			var result1 = rule1.ApplyToGeometry(polyGeo1);
 			Assert.IsTrue(shape2.ConformsWithGeometry(result1, out _));
+		}
+
+		[Test]
+		public void TestAssignAngle()
+		{
+			
+		}
+
+		[Test]
+		public void TestAssignLegnth()
+		{
+
 		}
 	}
 }

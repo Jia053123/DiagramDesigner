@@ -44,7 +44,30 @@ namespace ListOperations.UnitTests
 		}
 
 		[Test]
-		public void TestAreContentsEqualInOrder()
+		public void TestAreContentsEqualInOrder_TwoDimentionalLists()
+		{
+			var ls1 = new List<int> { 1, 2, 3, 4, 5 };
+			var ls2 = new List<int> { 3, 4, 5 };
+			var ls3 = new List<int> { 1, 2, 4 };
+
+			var lls01 = new List<List<int>>();
+			var lls02 = new List<List<int>>();
+			var lls1 = new List<List<int>> { ls1, ls2, ls3 };
+			var lls2 = new List<List<int>> { ls1, ls2, ls3 };
+			var lls3 = new List<List<int>> { ls1, ls2 };
+			var lls4 = new List<List<int>> { ls1, ls3, ls2 };
+
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(lls01, lls02));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(lls01, lls02));
+			Assert.IsFalse(ListUtilities.AreContentsEqualInOrder(lls1, lls01));
+			Assert.IsFalse(ListUtilities.AreContentsEqualInOrder(lls01, lls1));
+			Assert.IsFalse(ListUtilities.AreContentsEqualInOrder(lls2, lls1));
+			Assert.IsFalse(ListUtilities.AreContentsEqualInOrder(lls1, lls3));
+			Assert.IsFalse(ListUtilities.AreContentsEqualInOrder(lls4, lls1));
+		}
+
+		[Test]
+		public void TestAreContentsEqualInOrder_OneDimentionalLists()
 		{
 			var ls1 = new LineSegment(new Point(-1, -2), new Point(-1, 2));
 			var ls2 = new LineSegment(new Point(-1, 2), new Point(1, 2));

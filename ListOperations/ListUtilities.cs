@@ -5,6 +5,7 @@ namespace ListOperations
 {
 	static public class ListUtilities
 	{
+
 		/// <summary>
 		/// Whether the container list contains a list with equal content in the same order as the one provied
 		/// </summary>
@@ -46,6 +47,27 @@ namespace ListOperations
 			}
 
 			return allItemsFound;
+		}
+
+		/// <summary>
+		/// whether the two lists and their contain exaclty identical sublists, in the same order
+		/// </summary>
+		public static bool AreContentsEqualInOrder<T>(List<List<T>> list1, List<List<T>> list2) where T : IEquatable<T>
+		{
+			if (list1.Count != list2.Count)
+			{
+				return false;
+			}
+
+			for (int i = 0; i < list1.Count; i++)
+			{
+				if (ListUtilities.AreContentsEqualInOrder(list1[i], list2[i]))
+				{
+					return false;
+				}
+			}
+
+			return true;
 		}
 
 		/// <summary>

@@ -30,7 +30,7 @@ namespace ShapeGrammarEngine
 
 		public bool IsATerminalRule { get; private set; }
 
-		private List<RuleApplicationRecord> ApplicationRecords = new List<RuleApplicationRecord>();
+		internal List<RuleApplicationRecord> ApplicationRecords = new List<RuleApplicationRecord>();
 
 		/// <summary>
 		/// Create a shape grammar rule given its both sides
@@ -56,7 +56,9 @@ namespace ShapeGrammarEngine
 			var rhs = Shape.CreateShapeFromPolylines(geometryAfter, lhsLabeling, out sharedLabeling);
 
 			labeling = sharedLabeling;
-			return new GrammarRule(lhs, rhs);
+			var newRule = new GrammarRule(lhs, rhs);
+			//newRule.ApplicationRecords.Add(new RuleApplicationRecord(geometryBefore, geometryAfter, labeling));
+			return newRule;
 		}
 
 		/// <summary>
@@ -151,7 +153,7 @@ namespace ShapeGrammarEngine
 				if (this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfFirstNode) &&
 					this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfSecondNode))
 				{
-					// simply connect the existing points
+					// both endpoints already exist: simply connect the existing points
 					Point endpoint1, endpoint2;
 					var s1 = reverseLabeling.TryGetValue(newConnection.LabelOfFirstNode, out endpoint1);
 					var s2 = reverseLabeling.TryGetValue(newConnection.LabelOfSecondNode, out endpoint2);
@@ -182,6 +184,7 @@ namespace ShapeGrammarEngine
 				}
 				else
 				{
+					// neither endpoints exist yet: leave it for later
 					connectionsToAdd.Enqueue(newConnection);
 				}
 			}
@@ -214,7 +217,7 @@ namespace ShapeGrammarEngine
 			return assignedPoint;
 		}
 
-		private static double AssignAngle(Point existingPoint, List<PolylineGeometry> pastLeftHandGeometries, List<Point> pastExistingPoints, List<Point> pastAssignedPoints)
+		internal static double AssignAngle(Point existingPoint, List<PolylineGeometry> pastLeftHandGeometries, List<Point> pastExistingPoints, List<Point> pastAssignedPoints)
 		{
 			for (int i = 0; i < pastLeftHandGeometries.Count; i++)
 			{
@@ -222,11 +225,13 @@ namespace ShapeGrammarEngine
 				var pep = pastExistingPoints[i];
 				var pap = pastAssignedPoints[i];
 
-
+				
 			}
+
+			return -1; // stub
 		}
 
-		private static double AssignLength(Point existingPoint, List<PolylineGeometry> pastLeftHandGeometries, List<Point> pastExistingPoints, List<Point> pastAssignedPoints)
+		internal static double AssignLength(Point existingPoint, List<PolylineGeometry> pastLeftHandGeometries, List<Point> pastExistingPoints, List<Point> pastAssignedPoints)
 		{
 			for (int i = 0; i < pastLeftHandGeometries.Count; i++)
 			{
@@ -234,8 +239,10 @@ namespace ShapeGrammarEngine
 				var pep = pastExistingPoints[i];
 				var pap = pastAssignedPoints[i];
 
-
+				
 			}
+
+			return -1; // stub
 		}
 
 		public static Dictionary<int, Point> ReverseLabeling(Dictionary<Point, int> labeling)
