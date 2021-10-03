@@ -42,6 +42,26 @@ namespace DiagramDesignerEngine.UnitTests
 			//Assert.AreEqual(p1.GetHashCode(), p5.GetHashCode());
 		}
 
+		private bool AreClose(double num1, double num2, double tolerance)
+		{
+			return Math.Abs(num1 - num2) < tolerance;
+		}
+
+		[Test]
+		public void TestAngleTowardsPoint()
+		{
+			double tolerance = 0.00000001;
+			var p0 = new Point(0, 0);
+			var p1 = new Point(2, 0);
+			var p2 = new Point(0, 1);
+
+			Assert.Throws<ArgumentException>(() => p1.AngleTowardsPoint(p1));
+			Assert.IsTrue(AreClose(0, p0.AngleTowardsPoint(p1), tolerance));
+			Assert.IsTrue(AreClose(Math.PI, p1.AngleTowardsPoint(p0), tolerance));
+			Assert.IsTrue(AreClose(Math.PI * 0.5, p0.AngleTowardsPoint(p2), tolerance));
+			Assert.IsTrue(AreClose(Math.PI * 1.5, p2.AngleTowardsPoint(p0), tolerance));
+		}
+
 		[Test]
 		public void TestDistanceBetweenPoints()
 		{

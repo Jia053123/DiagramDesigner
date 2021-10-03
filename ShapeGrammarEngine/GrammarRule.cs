@@ -225,11 +225,10 @@ namespace ShapeGrammarEngine
 				var plfg = pastLeftHandGeometries[i];
 				var pep = pastExistingPoints[i];
 				var pap = pastAssignedPoints[i];
-
+				
 				
 			}
 
-			return -1; // stub
 		}
 
 		internal static double AssignLength(Point existingPoint, List<PolylineGeometry> pastLeftHandGeometries, List<Point> pastExistingPoints, List<Point> pastAssignedPoints)

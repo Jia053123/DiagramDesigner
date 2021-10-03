@@ -249,7 +249,7 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestAssignAngle_MultipleExamples_HandleDifferentProportionsAndOrders_NonOrthogonal()
 		{
-
+			
 		}
 
 		[Test]

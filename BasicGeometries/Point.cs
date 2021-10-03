@@ -16,6 +16,26 @@ namespace BasicGeometries
 			this.coordinateY = y; 
         }
 
+		/// <summary>
+		/// Assume there is a vector from this point towards the input point, 
+		/// calculate the angle from the (1, 0) vector to this vector, counter-clockwise. 
+		/// This value is always non-negative and smaller than 2pi
+		/// </summary>
+		/// <param name="point"> the point towards which the angle is measured. Cannot be identical to this </param>
+		public double AngleTowardsPoint(Point point)
+		{
+			if (this == point)
+			{
+				throw new ArgumentException("the other point cannot be the same as this point");
+			}
+			var result = Math.Atan2(point.coordinateY - this.coordinateY, point.coordinateX - this.coordinateX);
+			if (result < 0)
+			{
+				result += Math.PI * 2;
+			}
+			return result;
+		}
+
 		public override int GetHashCode() => (this.coordinateX, this.coordinateY).GetHashCode();
 
 		public static bool operator == (Point lhs, Point rhs)
