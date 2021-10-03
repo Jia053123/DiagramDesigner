@@ -5,6 +5,20 @@ namespace ListOperations
 {
 	static public class ListUtilities
 	{
+		/// <summary>
+		/// Whether the container list's sublists contain the item
+		/// </summary>
+		public static bool DoesContainItem<T>(List<List<T>> containerList, T item) where T : IEquatable<T>
+		{
+			foreach (List<T> sl in containerList)
+			{
+				if (sl.Contains(item))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
 
 		/// <summary>
 		/// Whether the container list contains a list with equal content in the same order as the one provied

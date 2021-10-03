@@ -7,6 +7,18 @@ namespace ListOperations.UnitTests
 	class ListUtilitiesTest
 	{
 		[Test]
+		public void TestDoesContainItem()
+		{
+			var container0 = new List<List<int>>();
+			Assert.IsFalse(ListUtilities.DoesContainItem(container0, 1));
+
+			var container1 = new List<List<int>> { new List<int> { 2, 3, 4 }, new List<int> { 1, 2, 3, 5 } };
+			Assert.IsTrue(ListUtilities.DoesContainItem(container1, 2));
+			Assert.IsTrue(ListUtilities.DoesContainItem(container1, 5));
+			Assert.IsFalse(ListUtilities.DoesContainItem(container1, 10));
+		}
+
+		[Test]
 		public void TestDoesContainList()
 		{
 			var contained1 = new List<int> { 1, 2, 3 };
