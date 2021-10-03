@@ -58,10 +58,11 @@ namespace ListOperations.UnitTests
 			var lls4 = new List<List<int>> { ls1, ls3, ls2 };
 
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(lls01, lls02));
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(lls01, lls02));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(lls1, lls2));
+
 			Assert.IsFalse(ListUtilities.AreContentsEqualInOrder(lls1, lls01));
 			Assert.IsFalse(ListUtilities.AreContentsEqualInOrder(lls01, lls1));
-			Assert.IsFalse(ListUtilities.AreContentsEqualInOrder(lls2, lls1));
+
 			Assert.IsFalse(ListUtilities.AreContentsEqualInOrder(lls1, lls3));
 			Assert.IsFalse(ListUtilities.AreContentsEqualInOrder(lls4, lls1));
 		}

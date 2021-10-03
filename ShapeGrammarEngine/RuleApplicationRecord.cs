@@ -13,7 +13,7 @@ namespace ShapeGrammarEngine
 
 		public RuleApplicationRecord(PolylineGeometry geoBefore, PolylineGeometry geoAfter, Dictionary<Point, int> labeling)
 		{
-			if ((geoBefore is null) || (geoAfter is null))
+			if ((geoBefore is null) || (geoAfter is null) || (labeling is null))
 			{
 				throw new ArgumentNullException();
 			}

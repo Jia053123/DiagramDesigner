@@ -43,7 +43,8 @@ namespace ShapeGrammarEngine.UnitTests
 			Assert.IsTrue(rule.RightHandShape.Definition.Contains(new Connection(label2, label3)));
 
 			Assert.AreEqual(1, rule.ApplicationRecords.Count);
-			Assert.AreEqual
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(polyGeo1.PolylinesCopy, rule.ApplicationRecords[0].GeometryBefore.PolylinesCopy));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(polyGeo2.PolylinesCopy, rule.ApplicationRecords[0].GeometryAfter.PolylinesCopy));
 		}
 
 		[Test]
@@ -81,6 +82,10 @@ namespace ShapeGrammarEngine.UnitTests
 			Assert.IsTrue(rule.LeftHandShape.Definition.Contains(new Connection(label00, label02)));
 			Assert.IsTrue(rule.RightHandShape.Definition.Contains(new Connection(label00, label02)));
 			Assert.IsTrue(rule.RightHandShape.Definition.Contains(new Connection(label02, label03)));
+
+			Assert.AreEqual(1, rule.ApplicationRecords.Count);
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(polyGeo1.PolylinesCopy, rule.ApplicationRecords[0].GeometryBefore.PolylinesCopy));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(polyGeo2.PolylinesCopy, rule.ApplicationRecords[0].GeometryAfter.PolylinesCopy));
 		}
 
 		[Test]

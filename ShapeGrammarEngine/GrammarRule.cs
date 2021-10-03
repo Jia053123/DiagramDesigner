@@ -57,7 +57,7 @@ namespace ShapeGrammarEngine
 
 			labeling = sharedLabeling;
 			var newRule = new GrammarRule(lhs, rhs);
-			//newRule.ApplicationRecords.Add(new RuleApplicationRecord(geometryBefore, geometryAfter, labeling));
+			newRule.ApplicationRecords.Add(new RuleApplicationRecord(geometryBefore, geometryAfter, labeling));
 			return newRule;
 		}
 
