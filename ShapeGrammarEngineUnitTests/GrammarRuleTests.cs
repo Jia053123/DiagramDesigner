@@ -142,9 +142,109 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
-		public void TestAssignAngle()
+		public void TestApplyToGeometry_SingleExample()
 		{
-			
+			var pastLeftHandGeos = new List<PolylineGeometry>();
+			var pastExistingPs = new List<Point>();
+			var pastAssignedPs = new List<Point>();
+			//  _________            __________
+			// |                    |          
+			// |              =>    |          
+			// |                    |__________
+			//     
+			var geo1L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) }});
+			pastLeftHandGeos.Add(geo1L);
+			pastExistingPs.Add(new Point(0, -1));
+			pastAssignedPs.Add(new Point(1, -1));
+
+			Assert.AreEqual(0, GrammarRule.AssignAngle(new Point(0, -5), pastLeftHandGeos, pastExistingPs, pastAssignedPs));
+		}
+
+		[Test]
+		public void TestAssignAngle_MultipleExamples_HandleDifferentProportions()
+		{
+			var pastLeftHandGeos = new List<PolylineGeometry>();
+			var pastExistingPs = new List<Point>();
+			var pastAssignedPs = new List<Point>();
+			//  _________            __________
+			// |                    |          
+			// |              =>    |          
+			// |                    |__________
+			//     
+			var geo1L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) }});
+			pastLeftHandGeos.Add(geo1L);
+			pastExistingPs.Add(new Point(0, -1));
+			pastAssignedPs.Add(new Point(1, -1));
+
+			//  ______________            _______________
+			// |                         |          
+			// |                   =>    |          
+			// |                         |_______________
+			//    
+			var geo2L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(2,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) }});
+			pastLeftHandGeos.Add(geo2L);
+			pastExistingPs.Add(new Point(0, -1));
+			pastAssignedPs.Add(new Point(2, -1));
+
+			Assert.AreEqual(0, GrammarRule.AssignAngle(new Point(1, -4), pastLeftHandGeos, pastExistingPs, pastAssignedPs));
+		}
+
+		[Test]
+		public void TestAssignAngle_MultipleExamples_HandleDifferentProportionsAndOrders()
+		{
+			var pastLeftHandGeos = new List<PolylineGeometry>();
+			var pastExistingPs = new List<Point>();
+			var pastAssignedPs = new List<Point>();
+			//  _________            __________
+			// |                    |          
+			// |              =>    |          
+			// |                    |__________
+			//     
+			var geo1L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) }});
+			pastLeftHandGeos.Add(geo1L);
+			pastExistingPs.Add(new Point(0, -1));
+			pastAssignedPs.Add(new Point(1, -1));
+
+			//  ______________            _______________
+			// |                         |          
+			// |                   =>    |          
+			// |                         |_________
+			//   
+			var geo2L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(2,0), new Point(0,0)},
+				new List<Point>{new Point(0,-2), new Point(0,0) }});
+			pastLeftHandGeos.Add(geo2L);
+			pastExistingPs.Add(new Point(0, -1));
+			pastAssignedPs.Add(new Point(1, -1));
+
+			//  _________            __________
+			// |                    |          
+			// |              =>    |          
+			// |                    |
+			// |                    |
+			// |                    |__________________
+			//     
+			var geo3L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,-2), new Point(0,0), new Point(1,0) }});
+			pastLeftHandGeos.Add(geo3L);
+			pastExistingPs.Add(new Point(0, -2));
+			pastAssignedPs.Add(new Point(2, -2));
+
+			Assert.AreEqual(0, GrammarRule.AssignAngle(new Point(-1, -4), pastLeftHandGeos, pastExistingPs, pastAssignedPs));
+		}
+
+		[Test]
+		public void TestAssignAngle_MultipleExamples_HandleDifferentProportionsAndOrders_NonOrthogonal()
+		{
+
 		}
 
 		[Test]

@@ -219,6 +219,7 @@ namespace ShapeGrammarEngine
 
 		internal static double AssignAngle(Point existingPoint, List<PolylineGeometry> pastLeftHandGeometries, List<Point> pastExistingPoints, List<Point> pastAssignedPoints)
 		{
+			// check past left hand geo contains past point
 			for (int i = 0; i < pastLeftHandGeometries.Count; i++)
 			{
 				var plfg = pastLeftHandGeometries[i];
