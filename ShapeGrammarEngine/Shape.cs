@@ -47,7 +47,7 @@ namespace ShapeGrammarEngine
 		/// If a point not in the dictionary is found, new labels are generated as consecutive integers starting from the largest label in the dictionary
 		/// </summary>
 		/// <param name="polylines"> the input geometry.</param>
-		/// <param name="preDefinedLabeling"> the pre-defined labels for specific points </param>
+		/// <param name="preDefinedLabeling"> the pre-defined labels for specific points; if null, assume it is empty </param>
 		/// <returns> The output shape. </returns>
 		public static Shape CreateShapeFromPolylines(PolylineGeometry polylineGeometry, Dictionary<Point, int> preDefinedLabeling, out Dictionary<Point, int> newShapeLabeling)
 		{
@@ -107,6 +107,25 @@ namespace ShapeGrammarEngine
 		/// <returns> whether the intput is of this shape </returns>
 		public bool ConformsWithGeometry(PolylineGeometry polylineGeometry, out Dictionary<Point, int> labeling)
 		{
+			try
+			{
+				labeling = this.SolveLabeling(polylineGeometry, null);
+				return true;
+			}
+			catch (ShapeMatchFailureException)
+			{
+				labeling = null;
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// Find one way the geometry can conform with this shape, given a partial solution
+		/// </summary>
+		/// <returns> union of the solution with the input partial solution </returns>
+		/// <exception cref="ShapeMatchFailureException"> throws when the input geometry is not of this shape </exception>
+		public Dictionary<Point, int> SolveLabeling(PolylineGeometry polylineGeometry, Dictionary<Point, int> partialLabelingSolution)
+		{
 			if (polylineGeometry is null)
 			{
 				throw new ArgumentNullException();
@@ -116,13 +135,11 @@ namespace ShapeGrammarEngine
 			{
 				if (this.Definition.Count == 0)
 				{
-					labeling = new Dictionary<Point, int>();
-					return true;
+					return new Dictionary<Point, int>();
 				}
 				else
 				{
-					labeling = null;
-					return false;
+					throw new ShapeMatchFailureException("the shape definition is empty whereas the input geometry is not");
 				}
 			}
 
@@ -132,36 +149,53 @@ namespace ShapeGrammarEngine
 			{
 				uniqueCoordinates.UnionWith(pl);
 			}
-			var uniqueCoordinatesList = new List<Point>(uniqueCoordinates);
 			if (uniqueCoordinates.Count != this.GetAllLabels().Count)
 			{
-				labeling = null;
-				return false;
+				throw new ShapeMatchFailureException("input geometry has more unique points than there are labels in this shape");
 			}
 
 			// step2: generate all potential ways each unique point can be labeled
-			var allPotentialLabeling = Utilities.GenerateAllPermutations(new List<int>(this.GetAllLabels()));
+			var coordinatesToWorkOn = new HashSet<Point>(uniqueCoordinates);
+			if (partialLabelingSolution is object)
+			{
+				coordinatesToWorkOn.ExceptWith(partialLabelingSolution.Keys);
+			}
+			var coordinatesToWorkOnList = new List<Point>(coordinatesToWorkOn);
+
+			var labelsLeftToWorkOn = this.GetAllLabels();
+			if (partialLabelingSolution is object)
+			{
+				labelsLeftToWorkOn.ExceptWith(partialLabelingSolution.Values);
+			}
+			var allPotentialLabelingForWhatsLeft = Utilities.GenerateAllPermutations(new List<int>(labelsLeftToWorkOn));
 
 			// step3: check if there is one potential labeling with which the input would match the definition of this shape
-			foreach (List<int> l in allPotentialLabeling)
+			foreach (List<int> labelingInstanceForWhatsLeft in allPotentialLabelingForWhatsLeft)
 			{
-				Debug.Assert(uniqueCoordinatesList.Count == l.Count);
-				var labelDictionary = new Dictionary<Point, int>();
-				for (int i = 0; i < uniqueCoordinatesList.Count; i++)
+				Debug.Assert(coordinatesToWorkOn.Count == labelingInstanceForWhatsLeft.Count);
+
+				Dictionary<Point, int> labelDictionaryForAllPointsAndLabels;
+				if (partialLabelingSolution is null)
 				{
-					labelDictionary.Add(uniqueCoordinatesList[i], l[i]);
+					labelDictionaryForAllPointsAndLabels = new Dictionary<Point, int>();
+				}
+				else
+				{
+					labelDictionaryForAllPointsAndLabels = new Dictionary<Point, int>(partialLabelingSolution);
+				}
+				for (int i = 0; i < coordinatesToWorkOn.Count; i++)
+				{
+					labelDictionaryForAllPointsAndLabels.Add(coordinatesToWorkOnList[i], labelingInstanceForWhatsLeft[i]);
 				}
 
-				var connections = polylineGeometry.ConvertToConnections(labelDictionary);
+				var connections = polylineGeometry.ConvertToConnections(labelDictionaryForAllPointsAndLabels);
 
 				if (this.Definition.SetEquals(connections))
 				{
-					labeling = labelDictionary;
-					return true;
+					return labelDictionaryForAllPointsAndLabels;
 				}
 			}
-			labeling = null;
-			return false;
+			throw new ShapeMatchFailureException("Failed to find a labeling that works");
 		}
 
 		/// <summary>
@@ -199,5 +233,11 @@ namespace ShapeGrammarEngine
 
 			return true;
 		}
+	}
+
+	class ShapeMatchFailureException : Exception 
+	{
+		public ShapeMatchFailureException() { }
+		public ShapeMatchFailureException(string message) : base(message) { }
 	}
 }

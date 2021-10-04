@@ -1,4 +1,5 @@
 ﻿using BasicGeometries;
+using ListOperations;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -62,11 +63,14 @@ namespace ShapeGrammarEngine
 		}
 
 		/// <summary>
-		/// Learn how the rule can be applied from examples in terms of proportions. 
+		/// Whether the input geometries are consistent with the rule
 		/// </summary>
-		/// <param name="geometryBefore"> The geometry in the example before the rule is applied </param>
-		/// <param name="geometryAfter"> The geometry in the example after the rule is applied </param>
-		public void LearnFromExample(PolylineGeometry geometryBefore, PolylineGeometry geometryAfter)
+		/// <param name="geometryBefore"> the geometry before the rule is applied </param>
+		/// <param name="geometryAfter"> the geometry after the rule is applied </param>
+		/// <param name="labeling"> if the input geometries are consistent with the rule, 
+		/// how their line segments map onto connections of the shapes in the rule; otherwise output null </param>
+		/// <returns> whether the input geometries are consistent with the rule </returns>
+		private bool ConformWithRule(PolylineGeometry geometryBefore, PolylineGeometry geometryAfter, out Dictionary<Point, int> labeling)
 		{
 			if (!this.LeftHandShape.ConformsWithGeometry(geometryBefore, out _))
 			{
@@ -77,8 +81,32 @@ namespace ShapeGrammarEngine
 				throw new ArgumentException("geometryAfter does not conform with ShapeAfter");
 			}
 
+			Dictionary<Point, int> l;
+			_ = this.LeftHandShape.ConformsWithGeometry(geometryBefore, out l);
+
+			labeling = null; // stub
+			return false; // stub
+		}
+
+		/// <summary>
+		/// Learn how the rule can be applied from examples in terms of proportions. 
+		/// </summary>
+		/// <param name="geometryBefore"> The geometry in the example before the rule is applied </param>
+		/// <param name="geometryAfter"> The geometry in the example after the rule is applied </param>
+		public void LearnFromExample(PolylineGeometry geometryBefore, PolylineGeometry geometryAfter)
+		{
+
+			if (!this.LeftHandShape.ConformsWithGeometry(geometryBefore, out _))
+			{
+				throw new ArgumentException("geometryBefore does not conform with ShapeBefore");
+			}
+			if (!this.RightHandShape.ConformsWithGeometry(geometryAfter, out _))
+			{
+				throw new ArgumentException("geometryAfter does not conform with ShapeAfter");
+			}
+
 			Dictionary<Point, int> labeling;
-			_ = GrammarRule.CreateGrammarRuleFromOneExample(geometryBefore, geometryAfter, out labeling);
+			_ = GrammarRule.CreateGrammarRuleFromOneExample(geometryBefore, geometryAfter, out labeling); // TODO: need to guarantee the labeling is consistant with the two shapes!
 
 			this.ApplicationRecords.Add(new RuleApplicationRecord(geometryBefore, geometryAfter, labeling));
 		}
@@ -219,15 +247,22 @@ namespace ShapeGrammarEngine
 
 		internal static double AssignAngle(Point existingPoint, List<PolylineGeometry> pastLeftHandGeometries, List<Point> pastExistingPoints, List<Point> pastAssignedPoints)
 		{
-			
+			// TODO: make a list of int of all connections to compile the "score" each connection get after going through the history
 			for (int i = 0; i < pastLeftHandGeometries.Count; i++)
 			{
 				var plfg = pastLeftHandGeometries[i];
 				var pep = pastExistingPoints[i];
 				var pap = pastAssignedPoints[i];
-				
-			}
+				if (!ListUtilities.DoesContainItem(plfg.PolylinesCopy, pep))
+				{
+					throw new ArgumentException("the past existing point is not in the past left hand geometry at index: " + i.ToString());
+				}
 
+				var angle = pep.AngleTowardsPoint(pap);
+				
+				// Find 
+			}
+			return -1;
 		}
 
 		internal static double AssignLength(Point existingPoint, List<PolylineGeometry> pastLeftHandGeometries, List<Point> pastExistingPoints, List<Point> pastAssignedPoints)

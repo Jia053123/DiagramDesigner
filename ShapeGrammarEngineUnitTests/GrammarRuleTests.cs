@@ -147,7 +147,23 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
-		public void TestApplyToGeometry_SingleExample()
+		public void TestAssignAngle__FaultyInput()
+		{
+			var pastLeftHandGeos = new List<PolylineGeometry>();
+			var pastExistingPs = new List<Point>();
+			var pastAssignedPs = new List<Point>();
+		  
+			var geo1L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) }});
+			pastLeftHandGeos.Add(geo1L);
+			pastExistingPs.Add(new Point(0, -100)); // not in the geometry
+			pastAssignedPs.Add(new Point(1, -1));
+			Assert.Throws<ArgumentException>(() => GrammarRule.AssignAngle(new Point(0, -5), pastLeftHandGeos, pastExistingPs, pastAssignedPs));
+		}
+
+		[Test]
+		public void TestAssignAngle__SingleExample()
 		{
 			var pastLeftHandGeos = new List<PolylineGeometry>();
 			var pastExistingPs = new List<Point>();
@@ -249,13 +265,13 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestAssignAngle_MultipleExamples_HandleDifferentProportionsAndOrders_NonOrthogonal()
 		{
-			
+			Assert.Fail();
 		}
 
 		[Test]
 		public void TestAssignLegnth()
 		{
-
+			Assert.Fail();
 		}
 	}
 }

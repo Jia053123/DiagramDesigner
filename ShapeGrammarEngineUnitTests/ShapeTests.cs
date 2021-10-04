@@ -322,5 +322,11 @@ namespace ShapeGrammarEngineUnitTests
 			Assert.IsFalse(shape1.ConformsWithGeometry(geometry2, out output));
 			Assert.IsNull(output);
 		}
+
+		[Test]
+		public void TestSolveLabeling()
+		{
+			Assert.Fail();
+		}
 	}
 }

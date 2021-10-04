@@ -95,8 +95,7 @@ namespace ShapeGrammarEngine.UnitTests
 			var s2 = geo4.EraseSegmentByPoints(new Point(0, 2), new Point(2, 0));
 			Assert.IsFalse(s2);
 
-			var s3 = geo4.EraseSegmentByPoints(new Point(0, 0), new Point(0, 0));
-			Assert.IsFalse(s3);
+			Assert.Throws<ArgumentException>(() => geo4.EraseSegmentByPoints(new Point(0, 0), new Point(0, 0)));
 		}
 
 		[Test]
