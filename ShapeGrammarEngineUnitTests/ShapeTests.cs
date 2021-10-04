@@ -324,9 +324,69 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestSolveLabeling()
+		public void TestSolveLabeling_EdgeCases()
 		{
-			Assert.Fail();
+			var shape0 = Shape.CreateEmptyShape();
+			var geometry0 = PolylineGeometry.CreateEmptyPolylineGeometry();
+			var result0 = shape0.SolveLabeling(geometry0, null);
+			Assert.AreEqual(0, result0.Count);
+
+			var shape1 = new Shape(new HashSet<Connection> 
+			{ 
+				new Connection(0, 4), 
+				new Connection(4, 2), 
+				new Connection(2, 0) 
+			});
+			var geometry1 = new PolylineGeometry(new List<List<Point>> 
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
+				new List<Point> { new Point(5, 10), new Point(20, 20) },
+				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) } 
+			});
+			var labeling1 = new Dictionary<Point, int> 
+			{
+				{ new Point(-5, 2.1), 0 },
+				{ new Point(5, 10), 2 },
+				{ new Point(20, 20), 4 }
+			};
+			var result1 = shape1.SolveLabeling(geometry1, labeling1);
+			Assert.AreEqual(3, result1.Count);
+			result1.TryGetValue(new Point(-5, 2.1), out var l1);
+			Assert.AreEqual(0, l1);
+			result1.TryGetValue(new Point(5, 10), out var l2);
+			Assert.AreEqual(2, l2);
+			result1.TryGetValue(new Point(20, 20), out var l3);
+			Assert.AreEqual(4, l3);
+		}
+
+		[Test]
+		public void TestSolveLabeling_NormalCases()
+		{
+			var shape1 = new Shape(new HashSet<Connection> 
+			{ 
+				new Connection(0, 4), 
+				new Connection(4, 2), 
+				new Connection(2, 0) 
+			});
+			var geometry1 = new PolylineGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
+				new List<Point> { new Point(5, 10), new Point(20, 20) },
+				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) }
+			});
+			var labeling1 = new Dictionary<Point, int>
+			{
+				{ new Point(-5, 2.1), 0 },
+				{ new Point(5, 10), 2 }
+			};
+			var result1 = shape1.SolveLabeling(geometry1, labeling1);
+			Assert.AreEqual(3, result1.Count);
+			result1.TryGetValue(new Point(-5, 2.1), out var l1);
+			Assert.AreEqual(0, l1);
+			result1.TryGetValue(new Point(5, 10), out var l2);
+			Assert.AreEqual(2, l2);
+			result1.TryGetValue(new Point(20, 20), out var l3);
+			Assert.AreEqual(4, l3);
 		}
 	}
 }

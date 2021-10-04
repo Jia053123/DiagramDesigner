@@ -160,16 +160,24 @@ namespace ShapeGrammarEngine
 			{
 				coordinatesToWorkOn.ExceptWith(partialLabelingSolution.Keys);
 			}
-			var coordinatesToWorkOnList = new List<Point>(coordinatesToWorkOn);
 
 			var labelsLeftToWorkOn = this.GetAllLabels();
 			if (partialLabelingSolution is object)
 			{
 				labelsLeftToWorkOn.ExceptWith(partialLabelingSolution.Values);
 			}
-			var allPotentialLabelingForWhatsLeft = Utilities.GenerateAllPermutations(new List<int>(labelsLeftToWorkOn));
+
+			Debug.Assert(coordinatesToWorkOn.Count == labelsLeftToWorkOn.Count);
+
+			if (labelsLeftToWorkOn.Count == 0)
+			{
+				// the input is in fact a complete solution
+				return new Dictionary<Point, int>(partialLabelingSolution);
+			}
 
 			// step3: check if there is one potential labeling with which the input would match the definition of this shape
+			var coordinatesToWorkOnList = new List<Point>(coordinatesToWorkOn);
+			var allPotentialLabelingForWhatsLeft = Utilities.GenerateAllPermutations(new List<int>(labelsLeftToWorkOn));
 			foreach (List<int> labelingInstanceForWhatsLeft in allPotentialLabelingForWhatsLeft)
 			{
 				Debug.Assert(coordinatesToWorkOn.Count == labelingInstanceForWhatsLeft.Count);
