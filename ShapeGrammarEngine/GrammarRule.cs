@@ -50,9 +50,9 @@ namespace ShapeGrammarEngine
 		/// <param name="geometryBefore"> the group of polylines before the rule is applied </param>
 		/// <param name="geometryAfter"> the group of polylines after the rule is applied </param>
 		/// <param name="labeling"> outputs the labeling used in this creation </param>
-		public static GrammarRule CreateGrammarRuleFromOneExample(PolylineGeometry geometryBefore, PolylineGeometry geometryAfter, out Dictionary<Point, int> labeling)
+		public static GrammarRule CreateGrammarRuleFromOneExample(PolylineGeometry geometryBefore, PolylineGeometry geometryAfter, out LabelingDictionary labeling)
 		{
-			Dictionary<Point, int> lhsLabeling, sharedLabeling;
+			LabelingDictionary lhsLabeling, sharedLabeling;
 			var lhs = Shape.CreateShapeFromPolylines(geometryBefore, null, out lhsLabeling);
 			var rhs = Shape.CreateShapeFromPolylines(geometryAfter, lhsLabeling, out sharedLabeling);
 
@@ -70,7 +70,7 @@ namespace ShapeGrammarEngine
 		/// <param name="labeling"> if the input geometries are consistent with the rule, 
 		/// how their line segments map onto connections of the shapes in the rule; otherwise output null </param>
 		/// <returns> whether the input geometries are consistent with the rule </returns>
-		private bool ConformWithRule(PolylineGeometry geometryBefore, PolylineGeometry geometryAfter, out Dictionary<Point, int> labeling)
+		private bool ConformWithRule(PolylineGeometry geometryBefore, PolylineGeometry geometryAfter, out LabelingDictionary labeling)
 		{
 			if (!this.LeftHandShape.ConformsWithGeometry(geometryBefore, out _))
 			{
@@ -81,8 +81,8 @@ namespace ShapeGrammarEngine
 				throw new ArgumentException("geometryAfter does not conform with ShapeAfter");
 			}
 
-			Dictionary<Point, int> l;
-			_ = this.LeftHandShape.ConformsWithGeometry(geometryBefore, out l);
+			LabelingDictionary lDic;
+			_ = this.LeftHandShape.ConformsWithGeometry(geometryBefore, out lDic);
 
 			labeling = null; // stub
 			return false; // stub
@@ -105,7 +105,7 @@ namespace ShapeGrammarEngine
 				throw new ArgumentException("geometryAfter does not conform with ShapeAfter");
 			}
 
-			Dictionary<Point, int> labeling;
+			LabelingDictionary labeling;
 			_ = GrammarRule.CreateGrammarRuleFromOneExample(geometryBefore, geometryAfter, out labeling); // TODO: need to guarantee the labeling is consistant with the two shapes!
 
 			this.ApplicationRecords.Add(new RuleApplicationRecord(geometryBefore, geometryAfter, labeling));
@@ -133,7 +133,7 @@ namespace ShapeGrammarEngine
 		public PolylineGeometry ApplyToGeometry(PolylineGeometry polyGeo)
 		{
 			// Step1: check for conformity and label the input geometry
-			Dictionary<Point, int> labeling;
+			LabelingDictionary labeling;
 			var doesConform = this.LeftHandShape.ConformsWithGeometry(polyGeo, out labeling);
 			if (! doesConform)
 			{
@@ -141,16 +141,12 @@ namespace ShapeGrammarEngine
 			}
 
 			var resultPolylines = new PolylineGeometry(polyGeo.PolylinesCopy);
-			var reversedLabeling = GrammarRule.ReverseLabeling(labeling);
 
 			// Step2: remove the connections to be removed
 			foreach (Connection c in this.ConnectionsToBeRemoved())
 			{
-				Point endPoint1, endPoint2;
-
-				var s1 = reversedLabeling.TryGetValue(c.LabelOfFirstNode, out endPoint1);
-				var s2 = reversedLabeling.TryGetValue(c.LabelOfSecondNode, out endPoint2);
-				Debug.Assert(s1 && s2);
+				Point endPoint1 = labeling.GetPointByLabel(c.LabelOfFirstNode);
+				Point endPoint2 = labeling.GetPointByLabel(c.LabelOfSecondNode);
 
 				polyGeo.EraseSegmentByPoints(endPoint1, endPoint2);
 			}
@@ -161,7 +157,7 @@ namespace ShapeGrammarEngine
 			while (connectionsToAdd.Count > 0)
 			{
 				int beforeCount = connectionsToAdd.Count;
-				this.AddConnectionsWithOneOrTwoExistingPoint(ref connectionsToAdd, reversedLabeling, ref resultPolylines);
+				this.AddConnectionsWithOneOrTwoExistingPoint(ref connectionsToAdd, labeling, ref resultPolylines);
 				progressMade = beforeCount < connectionsToAdd.Count;
 				if (!progressMade)
 				{
@@ -173,7 +169,7 @@ namespace ShapeGrammarEngine
 			return resultPolylines;
 		}
 
-		private void AddConnectionsWithOneOrTwoExistingPoint(ref Queue<Connection> connectionsToAdd, Dictionary<int, Point> reverseLabeling, ref PolylineGeometry geometryToModify)
+		private void AddConnectionsWithOneOrTwoExistingPoint(ref Queue<Connection> connectionsToAdd, LabelingDictionary reverseLabeling, ref PolylineGeometry geometryToModify)
 		{
 			for (int i = 0; i < connectionsToAdd.Count; i++)
 			{
@@ -182,10 +178,9 @@ namespace ShapeGrammarEngine
 					this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfSecondNode))
 				{
 					// both endpoints already exist: simply connect the existing points
-					Point endpoint1, endpoint2;
-					var s1 = reverseLabeling.TryGetValue(newConnection.LabelOfFirstNode, out endpoint1);
-					var s2 = reverseLabeling.TryGetValue(newConnection.LabelOfSecondNode, out endpoint2);
-					Debug.Assert(s1 && s2);
+					
+					Point endpoint1 = reverseLabeling.GetPointByLabel(newConnection.LabelOfFirstNode);
+					Point endpoint2 = reverseLabeling.GetPointByLabel(newConnection.LabelOfSecondNode);
 					geometryToModify.AddSegmentByPoints(endpoint1, endpoint2);
 				}
 				else if (this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfFirstNode) && 
@@ -193,9 +188,7 @@ namespace ShapeGrammarEngine
 				{
 					var labelForExistingPoint = newConnection.LabelOfFirstNode;
 					var labelForPointToAssign = newConnection.LabelOfSecondNode;
-					Point existingPoint;
-					var s = reverseLabeling.TryGetValue(labelForExistingPoint, out existingPoint);
-					Debug.Assert(s);
+					Point existingPoint = reverseLabeling.GetPointByLabel(labelForExistingPoint);
 					var assignedPoint = this.AssignSecondPointForConnection(existingPoint, labelForExistingPoint, labelForPointToAssign);
 					geometryToModify.AddSegmentByPoints(existingPoint, assignedPoint);
 				}
@@ -204,9 +197,8 @@ namespace ShapeGrammarEngine
 				{
 					var labelForExistingPoint = newConnection.LabelOfSecondNode;
 					var labelForPointToAssign = newConnection.LabelOfFirstNode;
-					Point existingPoint;
-					var s = reverseLabeling.TryGetValue(labelForExistingPoint, out existingPoint);
-					Debug.Assert(s);
+
+					Point existingPoint = reverseLabeling.GetPointByLabel(labelForExistingPoint);
 					var assignedPoint = this.AssignSecondPointForConnection(existingPoint, labelForExistingPoint, labelForPointToAssign);
 					geometryToModify.AddSegmentByPoints(existingPoint, assignedPoint);
 				}
@@ -227,11 +219,9 @@ namespace ShapeGrammarEngine
 			foreach (RuleApplicationRecord rar  in this.ApplicationRecords)
 			{
 				pastLeftHandGeometries.Add(rar.GeometryBefore);
-
-				Point pastExistingPoint, pastAssignedPoint;
-				var s1 = rar.ReversedLabeling.TryGetValue(labelForExistingPoint, out pastExistingPoint);
-				var s2 = rar.ReversedLabeling.TryGetValue(labelForPointToAssign, out pastAssignedPoint);
-				Debug.Assert(s1 && s2);
+				
+				Point pastExistingPoint = rar.Labeling.GetPointByLabel(labelForExistingPoint);
+				Point pastAssignedPoint = rar.Labeling.GetPointByLabel(labelForPointToAssign);
 				pastExistingPoints.Add(pastExistingPoint);
 				pastAssignedPoints.Add(pastAssignedPoint);
 			}
@@ -277,17 +267,6 @@ namespace ShapeGrammarEngine
 			}
 
 			return -1; // stub
-		}
-
-		public static Dictionary<int, Point> ReverseLabeling(Dictionary<Point, int> labeling)
-		{
-			var reversedLabeling = new Dictionary<int, Point>();
-			foreach (var entry in labeling)
-			{
-				if (!reversedLabeling.ContainsKey(entry.Value))
-					reversedLabeling.Add(entry.Value, entry.Key);
-			}
-			return reversedLabeling;
 		}
 	}
 }

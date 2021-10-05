@@ -204,7 +204,7 @@ namespace ShapeGrammarEngine.UnitTests
 				new List<Point> { new Point(5, 10), new Point(20, 20) },
 				new List<Point>{ new Point(5, 10), new Point(-5, 2.1), new Point(-6, -6) } });
 
-			var dic = new Dictionary<Point, int>();
+			var dic = new LabelingDictionary();
 			dic.Add(new Point(-5, 2.1), 1);
 			dic.Add(new Point(20, 20), 2);
 			dic.Add(new Point(5, 10), 3);

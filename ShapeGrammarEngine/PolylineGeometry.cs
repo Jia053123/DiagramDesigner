@@ -180,7 +180,7 @@ namespace ShapeGrammarEngine
 			return allSegments;
 		}
 
-		public HashSet<Connection> ConvertToConnections(Dictionary<Point, int> labeling)
+		public HashSet<Connection> ConvertToConnections(LabelingDictionary labeling)
 		{
 			var connections = new HashSet<Connection>();
 			foreach (List<Point> polyline in this.polylines)
@@ -189,14 +189,18 @@ namespace ShapeGrammarEngine
 				{
 					var p1 = polyline[i];
 					var p2 = polyline[i + 1];
+
 					int label1, label2;
-					var s1 = labeling.TryGetValue(p1, out label1);
-					var s2 = labeling.TryGetValue(p2, out label2);
-					if (!s1 || !s2)
+					try
+					{
+						label1 = labeling.GetLabelByPoint(p1);
+						label2 = labeling.GetLabelByPoint(p2);
+					}
+					catch (ArgumentException)
 					{
 						throw new ArgumentException("labeling dictionary doesn't match with the polylines");
 					}
-
+					
 					var c = new Connection(label1, label2);
 					connections.Add(c);
 				}

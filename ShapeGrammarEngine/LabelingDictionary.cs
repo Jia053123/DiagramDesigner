@@ -6,14 +6,53 @@ using System.Text;
 namespace ShapeGrammarEngine
 {
 	/// <summary>
-	/// Works just like a built-in dictionary except each Point and corresponding label must be unique
+	/// Stores the one to one mapping between the points in a geometry and their corresponding shape labels. 
 	/// </summary>
-	class LabelingDictionary
+	public class LabelingDictionary
 	{
-		private Dictionary<Point, int> dictionary = new Dictionary<Point, int>();
-		private Dictionary<int, Point> reversedDictionary = new Dictionary<int, Point>();
-		private HashSet<Point> allPoints = new HashSet<Point>();
-		private HashSet<int> allLabels = new HashSet<int>();
+		private Dictionary<Point, int> dictionary;
+		private Dictionary<int, Point> reversedDictionary;
+		private HashSet<Point> allPoints;
+		private HashSet<int> allLabels;
+		public int Count { get { return this.dictionary.Count; } }
+
+		public LabelingDictionary()
+		{
+			this.dictionary = new Dictionary<Point, int>();
+			this.reversedDictionary = new Dictionary<int, Point>();
+			this.allPoints = new HashSet<Point>();
+			this.allLabels = new HashSet<int>();
+		}
+
+		private LabelingDictionary(Dictionary<Point, int> dic, Dictionary<int, Point> revDic, HashSet<Point> allP, HashSet<int> allL)
+		{
+			this.dictionary = dic;
+			this.reversedDictionary = revDic;
+			this.allPoints = allP;
+			this.allLabels = allL;
+		}
+
+		public HashSet<Point> GetAllPoints()
+		{
+			return new HashSet<Point>(this.allPoints);
+		}
+
+		public HashSet<int> GetAllLabels()
+		{
+			return new HashSet<int>(this.allLabels);
+		}
+
+		public bool DoesContainPair(Point point, int label)
+		{
+			if (this.GetAllPoints().Contains(point))
+			{
+				if (this.GetLabelByPoint(point) == label)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
 
 		public bool Add(Point point, int label)
 		{
@@ -55,6 +94,18 @@ namespace ShapeGrammarEngine
 			{
 				throw new ArgumentException("point not found");
 			}
+		}
+
+		/// <summary>
+		/// Return a deep-copied duplicate instance
+		/// </summary>
+		public LabelingDictionary Copy()
+		{
+			return new LabelingDictionary ( 
+				new Dictionary<Point, int>(this.dictionary),
+				new Dictionary<int, Point>(this.reversedDictionary),
+				new HashSet<Point>(this.allPoints),
+				new HashSet<int>(this.allLabels));
 		}
 	}
 }

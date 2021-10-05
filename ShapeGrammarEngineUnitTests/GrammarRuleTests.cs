@@ -16,24 +16,20 @@ namespace ShapeGrammarEngine.UnitTests
 			var polyGeo2 = new PolylineGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0),  new Point(0, 2), new Point(0, 3) } });
 
-			Dictionary<Point, int> labeling;
+			LabelingDictionary labeling;
 			var rule = GrammarRule.CreateGrammarRuleFromOneExample(polyGeo1, polyGeo2, out labeling);
 
-			Assert.IsTrue(labeling.ContainsKey(new Point(0, 0)));
-			int label0;
-			labeling.TryGetValue(new Point(0, 0), out label0);
+			Assert.IsTrue(labeling.GetAllPoints().Contains(new Point(0, 0)));
+			int label0 = labeling.GetLabelByPoint(new Point(0, 0));
 
-			Assert.IsTrue(labeling.ContainsKey(new Point(0, 1)));
-			int label1;
-			labeling.TryGetValue(new Point(0, 1), out label1);
+			Assert.IsTrue(labeling.GetAllPoints().Contains(new Point(0, 1)));
+			int label1 = labeling.GetLabelByPoint(new Point(0, 1));
 
-			Assert.IsTrue(labeling.ContainsKey(new Point(0, 2)));
-			int label2;
-			labeling.TryGetValue(new Point(0, 2), out label2);
+			Assert.IsTrue(labeling.GetAllPoints().Contains(new Point(0, 2)));
+			int label2 = labeling.GetLabelByPoint(new Point(0, 2));
 
-			Assert.IsTrue(labeling.ContainsKey(new Point(0, 3)));
-			int label3;
-			labeling.TryGetValue(new Point(0, 3), out label3);
+			Assert.IsTrue(labeling.GetAllPoints().Contains(new Point(0, 3)));
+			int label3 = labeling.GetLabelByPoint(new Point(0, 3));
 
 			Assert.IsTrue(rule.LeftHandShape.ConformsWithGeometry(polyGeo1, out _));
 			Assert.IsTrue(rule.RightHandShape.ConformsWithGeometry(polyGeo2, out _));
@@ -56,24 +52,20 @@ namespace ShapeGrammarEngine.UnitTests
 			var polyGeo2 = new PolylineGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0),  new Point(0, 2), new Point(0, 3) } });
 
-			Dictionary<Point, int> labeling;
+			LabelingDictionary labeling;
 			var rule = GrammarRule.CreateGrammarRuleFromOneExample(polyGeo1, polyGeo2, out labeling);
 
-			Assert.IsTrue(labeling.ContainsKey(new Point(0, 0)));
-			int label00;
-			labeling.TryGetValue(new Point(0, 0), out label00);
+			Assert.IsTrue(labeling.GetAllPoints().Contains(new Point(0, 0)));
+			int label00 = labeling.GetLabelByPoint(new Point(0, 0));
 
-			Assert.IsTrue(labeling.ContainsKey(new Point(1, 1)));
-			int label11;
-			labeling.TryGetValue(new Point(1, 1), out label11);
+			Assert.IsTrue(labeling.GetAllPoints().Contains(new Point(1, 1)));
+			int label11 = labeling.GetLabelByPoint(new Point(1, 1));
 
-			Assert.IsTrue(labeling.ContainsKey(new Point(0, 2)));
-			int label02;
-			labeling.TryGetValue(new Point(0, 2), out label02);
+			Assert.IsTrue(labeling.GetAllPoints().Contains(new Point(0, 2)));
+			int label02 = labeling.GetLabelByPoint(new Point(0, 2));
 
-			Assert.IsTrue(labeling.ContainsKey(new Point(0, 3)));
-			int label03;
-			labeling.TryGetValue(new Point(0, 3), out label03);
+			Assert.IsTrue(labeling.GetAllPoints().Contains(new Point(0, 3)));
+			int label03 = labeling.GetLabelByPoint(new Point(0, 3));
 
 			Assert.IsTrue(rule.LeftHandShape.ConformsWithGeometry(polyGeo1, out _));
 			Assert.IsTrue(rule.RightHandShape.ConformsWithGeometry(polyGeo2, out _));

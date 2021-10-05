@@ -49,7 +49,7 @@ namespace ShapeGrammarEngine
 		/// <param name="polylines"> the input geometry.</param>
 		/// <param name="preDefinedLabeling"> the pre-defined labels for specific points; if null, assume it is empty </param>
 		/// <returns> The output shape. </returns>
-		public static Shape CreateShapeFromPolylines(PolylineGeometry polylineGeometry, Dictionary<Point, int> preDefinedLabeling, out Dictionary<Point, int> newShapeLabeling)
+		public static Shape CreateShapeFromPolylines(PolylineGeometry polylineGeometry, LabelingDictionary preDefinedLabeling, out LabelingDictionary newShapeLabeling)
 		{
 			if (polylineGeometry is null)
 			{
@@ -58,22 +58,22 @@ namespace ShapeGrammarEngine
 
 			if (polylineGeometry.PolylinesCopy.Count == 0)
 			{
-				newShapeLabeling = new Dictionary<Point, int>();
+				newShapeLabeling = new LabelingDictionary();
 				return Shape.CreateEmptyShape();
 			}
 
 			// label all unique points
-			Dictionary<Point, int> labelDictionary;
+			LabelingDictionary labelDictionary;
 			int nextNewLabel;
 			if (preDefinedLabeling is null)
 			{
-				labelDictionary = new Dictionary<Point, int>();
+				labelDictionary = new LabelingDictionary();
 				nextNewLabel = 0;
 			}
 			else
 			{
-				labelDictionary = new Dictionary<Point, int>(preDefinedLabeling); // make a copy to avoid outputing the input object
-				List<int> allLabels = labelDictionary.Values.ToList();
+				labelDictionary = preDefinedLabeling.Copy(); // make a copy to avoid outputing the input object
+				List<int> allLabels = labelDictionary.GetAllLabels().ToList();
 				allLabels.Sort();
 				nextNewLabel = allLabels.Last() + 1;
 			}
@@ -82,7 +82,7 @@ namespace ShapeGrammarEngine
 			{
 				foreach (Point p in polyline)
 				{
-					if (!labelDictionary.ContainsKey(p))
+					if (!labelDictionary.GetAllPoints().Contains(p))
 					{
 						labelDictionary.Add(p, nextNewLabel);
 						nextNewLabel++;
@@ -105,7 +105,7 @@ namespace ShapeGrammarEngine
 		/// <param name="labeling"> if the input is of this shape, output how each point in the polylines is labeled 
 		/// (not guaranteed to be the only solution); otherwise output null </param>
 		/// <returns> whether the intput is of this shape </returns>
-		public bool ConformsWithGeometry(PolylineGeometry polylineGeometry, out Dictionary<Point, int> labeling)
+		public bool ConformsWithGeometry(PolylineGeometry polylineGeometry, out LabelingDictionary labeling)
 		{
 			try
 			{
@@ -124,7 +124,7 @@ namespace ShapeGrammarEngine
 		/// </summary>
 		/// <returns> union of the solution with the input partial solution </returns>
 		/// <exception cref="ShapeMatchFailureException"> throws when the input geometry is not of this shape </exception>
-		public Dictionary<Point, int> SolveLabeling(PolylineGeometry polylineGeometry, Dictionary<Point, int> partialLabelingSolution)
+		public LabelingDictionary SolveLabeling(PolylineGeometry polylineGeometry, LabelingDictionary partialLabelingSolution)
 		{
 			if (polylineGeometry is null)
 			{
@@ -135,7 +135,7 @@ namespace ShapeGrammarEngine
 			{
 				if (this.Definition.Count == 0)
 				{
-					return new Dictionary<Point, int>();
+					return new LabelingDictionary();
 				}
 				else
 				{
@@ -158,13 +158,13 @@ namespace ShapeGrammarEngine
 			var coordinatesToWorkOn = new HashSet<Point>(uniqueCoordinates);
 			if (partialLabelingSolution is object)
 			{
-				coordinatesToWorkOn.ExceptWith(partialLabelingSolution.Keys);
+				coordinatesToWorkOn.ExceptWith(partialLabelingSolution.GetAllPoints());
 			}
 
 			var labelsLeftToWorkOn = this.GetAllLabels();
 			if (partialLabelingSolution is object)
 			{
-				labelsLeftToWorkOn.ExceptWith(partialLabelingSolution.Values);
+				labelsLeftToWorkOn.ExceptWith(partialLabelingSolution.GetAllLabels());
 			}
 
 			Debug.Assert(coordinatesToWorkOn.Count == labelsLeftToWorkOn.Count);
@@ -172,7 +172,7 @@ namespace ShapeGrammarEngine
 			if (labelsLeftToWorkOn.Count == 0)
 			{
 				// the input is in fact a complete solution
-				return new Dictionary<Point, int>(partialLabelingSolution);
+				return partialLabelingSolution.Copy();
 			}
 
 			// step3: check if there is one potential labeling with which the input would match the definition of this shape
@@ -182,14 +182,14 @@ namespace ShapeGrammarEngine
 			{
 				Debug.Assert(coordinatesToWorkOn.Count == labelingInstanceForWhatsLeft.Count);
 
-				Dictionary<Point, int> labelDictionaryForAllPointsAndLabels;
+				LabelingDictionary labelDictionaryForAllPointsAndLabels;
 				if (partialLabelingSolution is null)
 				{
-					labelDictionaryForAllPointsAndLabels = new Dictionary<Point, int>();
+					labelDictionaryForAllPointsAndLabels = new LabelingDictionary();
 				}
 				else
 				{
-					labelDictionaryForAllPointsAndLabels = new Dictionary<Point, int>(partialLabelingSolution);
+					labelDictionaryForAllPointsAndLabels = partialLabelingSolution.Copy();
 				}
 				for (int i = 0; i < coordinatesToWorkOn.Count; i++)
 				{

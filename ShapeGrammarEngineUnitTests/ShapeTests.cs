@@ -73,7 +73,7 @@ namespace ShapeGrammarEngineUnitTests
 		[Test]
 		public void TestCreateShapeFromPolylines_EdgeCases()
 		{
-			Dictionary<Point, int> newLabeling;
+			LabelingDictionary newLabeling;
 
 			Assert.Throws<ArgumentNullException>(() => Shape.CreateShapeFromPolylines(null, null, out _));
 
@@ -96,27 +96,10 @@ namespace ShapeGrammarEngineUnitTests
 			Assert.AreEqual(0, newLabeling.Count);
 		}
 
-		private bool DoesContainKeyValuePair(Dictionary<Point, int> dictionary, Point key, int value) 
-		{
-			if (dictionary.ContainsKey(key))
-			{
-				int result;
-				var success = dictionary.TryGetValue(key, out result);
-				if (success)
-				{
-					if (result.Equals(value))
-					{
-						return true;
-					}
-				}
-			}
-			return false;
-		}
-
 		[Test]
 		public void TestCreateShapeFromPolylines_OnePolylineWithoutPredefinedLabeling_1()
 		{
-			Dictionary<Point, int> newLabeling;
+			LabelingDictionary newLabeling;
 
 			var result1 = Shape.CreateShapeFromPolylines(new PolylineGeometry(new List<List<Point>> { 
 				new List<Point> { new Point(0, 0), new Point(0, 1) } }), null, out newLabeling);
@@ -124,14 +107,14 @@ namespace ShapeGrammarEngineUnitTests
 			Assert.IsTrue(result1.Definition.Contains(new Connection(0, 1)));
 
 			Assert.AreEqual(2, newLabeling.Count);
-			Assert.IsTrue(this.DoesContainKeyValuePair(newLabeling, new Point(0, 0), 0));
-			Assert.IsTrue(this.DoesContainKeyValuePair(newLabeling, new Point(0, 1), 1));
+			Assert.IsTrue(newLabeling.DoesContainPair(new Point(0, 0), 0));
+			Assert.IsTrue(newLabeling.DoesContainPair(new Point(0, 1), 1));
 		}
 
 		[Test]
 		public void TestCreateShapeFromPolylines_OnePolylineWithoutPredefinedLabeling_2()
 		{
-			Dictionary<Point, int> newLabeling;
+			LabelingDictionary newLabeling;
 
 			var result2 = Shape.CreateShapeFromPolylines(new PolylineGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0), new Point(0, 1), new Point(0, 3) } }), null, out newLabeling);
@@ -140,15 +123,15 @@ namespace ShapeGrammarEngineUnitTests
 			Assert.IsTrue(result2.Definition.Contains(new Connection(1, 2)));
 
 			Assert.AreEqual(3, newLabeling.Count);
-			Assert.IsTrue(this.DoesContainKeyValuePair(newLabeling, new Point(0, 0), 0));
-			Assert.IsTrue(this.DoesContainKeyValuePair(newLabeling, new Point(0, 1), 1));
-			Assert.IsTrue(this.DoesContainKeyValuePair(newLabeling, new Point(0, 3), 2));
+			Assert.IsTrue(newLabeling.DoesContainPair(new Point(0, 0), 0));
+			Assert.IsTrue(newLabeling.DoesContainPair(new Point(0, 1), 1));
+			Assert.IsTrue(newLabeling.DoesContainPair(new Point(0, 3), 2));
 		}
 
 		[Test]
 		public void TestCreateShapeFromPolylines_OnePolylineWithoutPredefinedLabeling_3()
 		{
-			Dictionary<Point, int> newLabeling;
+			LabelingDictionary newLabeling;
 
 			var result3 = Shape.CreateShapeFromPolylines(new PolylineGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0), new Point(1, 1), new Point(1, 0), new Point(0, 0) } }), null, out newLabeling);
@@ -158,15 +141,15 @@ namespace ShapeGrammarEngineUnitTests
 			Assert.IsTrue(result3.Definition.Contains(new Connection(2, 0)));
 
 			Assert.AreEqual(3, newLabeling.Count);
-			Assert.IsTrue(this.DoesContainKeyValuePair(newLabeling, new Point(0, 0), 0));
-			Assert.IsTrue(this.DoesContainKeyValuePair(newLabeling, new Point(1, 1), 1));
-			Assert.IsTrue(this.DoesContainKeyValuePair(newLabeling, new Point(1, 0), 2));
+			Assert.IsTrue(newLabeling.DoesContainPair(new Point(0, 0), 0));
+			Assert.IsTrue(newLabeling.DoesContainPair(new Point(1, 1), 1));
+			Assert.IsTrue(newLabeling.DoesContainPair(new Point(1, 0), 2));
 		}
 
 		[Test]
 		public void TestCreateShapeFromPolylines_OnePolylineWithPredefinedLabeling()
 		{
-			var labeling = new Dictionary<Point, int>();
+			var labeling = new LabelingDictionary();
 			labeling.Add(new Point(0, 0), 100);
 			labeling.Add(new Point(0, 1), 110);
 			labeling.Add(new Point(0, 3), 130);
@@ -243,7 +226,7 @@ namespace ShapeGrammarEngineUnitTests
 			var emptyShape = Shape.CreateEmptyShape();
 			Assert.Throws<ArgumentNullException>(() => emptyShape.ConformsWithGeometry(null, out _));
 
-			Dictionary<Point, int> output;
+			LabelingDictionary output;
 			Assert.IsTrue(emptyShape.ConformsWithGeometry(new PolylineGeometry(new List<List<Point>>()), out output));
 			Assert.AreEqual(0, output.Count);
 
@@ -265,7 +248,7 @@ namespace ShapeGrammarEngineUnitTests
 		[Test]
 		public void TestConformsWithGeometry_OnePolylineAndNonConsecutiveLabels()
 		{
-			Dictionary<Point, int> output;
+			LabelingDictionary output;
 
 			var shape0 = new Shape(new HashSet<Connection> { new Connection(0, 1) });
 			var geometry0 = new PolylineGeometry(new List<List<Point>> { new List<Point> { new Point(-5, 2.1) } });
@@ -276,17 +259,17 @@ namespace ShapeGrammarEngineUnitTests
 			var geometry1 = new PolylineGeometry(new List<List<Point>> { new List<Point> { new Point(-5, 2.1), new Point(20, 20) } });
 			Assert.IsTrue(shape1.ConformsWithGeometry(geometry1, out output));
 			Assert.AreEqual(2, output.Count);
-			Assert.IsTrue(output.ContainsKey(new Point(-5, 2.1)));
-			Assert.IsTrue(output.ContainsKey(new Point(20, 20)));
+			Assert.IsTrue(output.GetAllPoints().Contains(new Point(-5, 2.1)));
+			Assert.IsTrue(output.GetAllPoints().Contains(new Point(20, 20)));
 
 			var shape2 = new Shape(new HashSet<Connection> { new Connection(0, 1), new Connection(1, 3), new Connection(3, 0) });
 			var geometry2 = new PolylineGeometry(new List<List<Point>> { 
 				new List<Point> { new Point(-5, 2.1), new Point(20, 20), new Point(5, 10), new Point(-5, 2.1) } });
 			Assert.IsTrue(shape2.ConformsWithGeometry(geometry2, out output));
 			Assert.AreEqual(3, output.Count);
-			Assert.IsTrue(output.ContainsKey(new Point(-5, 2.1)));
-			Assert.IsTrue(output.ContainsKey(new Point(20, 20)));
-			Assert.IsTrue(output.ContainsKey(new Point(5, 10)));
+			Assert.IsTrue(output.GetAllPoints().Contains(new Point(-5, 2.1)));
+			Assert.IsTrue(output.GetAllPoints().Contains(new Point(20, 20)));
+			Assert.IsTrue(output.GetAllPoints().Contains(new Point(5, 10)));
 
 			var geometry3 = new PolylineGeometry(new List<List<Point>> { 
 				new List<Point> { new Point(-5, 2.1), new Point(20, 20), new Point(10, 5), new Point(2, -5), new Point(-5, 2.1) } });
@@ -302,7 +285,7 @@ namespace ShapeGrammarEngineUnitTests
 		[Test]
 		public void TestConformsWithGeometry_MultiplePolylinesAndNonConsecutiveLabels()
 		{
-			Dictionary<Point, int> output;
+			LabelingDictionary output;
 
 			var shape1 = new Shape(new HashSet<Connection> { new Connection(0, 4), new Connection(4, 2), new Connection(2, 0) });
 			var geometry1 = new PolylineGeometry(new List<List<Point>> { 
@@ -311,9 +294,9 @@ namespace ShapeGrammarEngineUnitTests
 				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) } });
 			Assert.IsTrue(shape1.ConformsWithGeometry(geometry1, out output));
 			Assert.AreEqual(3, output.Count);
-			Assert.IsTrue(output.ContainsKey(new Point(-5, 2.1)));
-			Assert.IsTrue(output.ContainsKey(new Point(20, 20)));
-			Assert.IsTrue(output.ContainsKey(new Point(5, 10)));
+			Assert.IsTrue(output.GetAllPoints().Contains(new Point(-5, 2.1)));
+			Assert.IsTrue(output.GetAllPoints().Contains(new Point(20, 20)));
+			Assert.IsTrue(output.GetAllPoints().Contains(new Point(5, 10)));
 
 			var geometry2 = new PolylineGeometry(new List<List<Point>> {
 				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
@@ -343,20 +326,18 @@ namespace ShapeGrammarEngineUnitTests
 				new List<Point> { new Point(5, 10), new Point(20, 20) },
 				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) } 
 			});
-			var labeling1 = new Dictionary<Point, int> 
-			{
-				{ new Point(-5, 2.1), 0 },
-				{ new Point(5, 10), 2 },
-				{ new Point(20, 20), 4 }
-			};
+			var labeling1 = new LabelingDictionary();
+
+			labeling1.Add(new Point(-5, 2.1), 0);
+			labeling1.Add(new Point(5, 10), 2);
+			labeling1.Add(new Point(20, 20), 4);
+			
 			var result1 = shape1.SolveLabeling(geometry1, labeling1);
 			Assert.AreEqual(3, result1.Count);
-			result1.TryGetValue(new Point(-5, 2.1), out var l1);
-			Assert.AreEqual(0, l1);
-			result1.TryGetValue(new Point(5, 10), out var l2);
-			Assert.AreEqual(2, l2);
-			result1.TryGetValue(new Point(20, 20), out var l3);
-			Assert.AreEqual(4, l3);
+
+			Assert.AreEqual(0, result1.GetLabelByPoint(new Point(-5, 2.1)));
+			Assert.AreEqual(2, result1.GetLabelByPoint(new Point(5, 10)));
+			Assert.AreEqual(4, result1.GetLabelByPoint(new Point(20, 20)));
 		}
 
 		[Test]
@@ -374,18 +355,16 @@ namespace ShapeGrammarEngineUnitTests
 				new List<Point> { new Point(5, 10), new Point(20, 20) },
 				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) }
 			});
-			var labeling1 = new Dictionary<Point, int>();
+			var labeling1 = new LabelingDictionary();
 			labeling1.Add(new Point(-5, 2.1), 0);
 			labeling1.Add(new Point(5, 10), 2);
 			
 			var result1 = shape1.SolveLabeling(geometry1, labeling1);
 			Assert.AreEqual(3, result1.Count);
-			result1.TryGetValue(new Point(-5, 2.1), out var l1);
-			Assert.AreEqual(0, l1);
-			result1.TryGetValue(new Point(5, 10), out var l2);
-			Assert.AreEqual(2, l2);
-			result1.TryGetValue(new Point(20, 20), out var l3);
-			Assert.AreEqual(4, l3);
+
+			Assert.AreEqual(0, result1.GetLabelByPoint(new Point(-5, 2.1)));
+			Assert.AreEqual(2, result1.GetLabelByPoint(new Point(5, 10)));
+			Assert.AreEqual(4, result1.GetLabelByPoint(new Point(20, 20)));
 		}
 	}
 }

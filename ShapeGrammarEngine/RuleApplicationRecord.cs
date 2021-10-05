@@ -9,15 +9,15 @@ namespace ShapeGrammarEngine
 	{
 		public readonly PolylineGeometry GeometryBefore;
 		public readonly PolylineGeometry GeometryAfter;
-		public readonly Dictionary<int, Point> ReversedLabeling;
+		public readonly LabelingDictionary Labeling;
 
-		public RuleApplicationRecord(PolylineGeometry geoBefore, PolylineGeometry geoAfter, Dictionary<Point, int> labeling)
+		public RuleApplicationRecord(PolylineGeometry geoBefore, PolylineGeometry geoAfter, LabelingDictionary labeling)
 		{
 			if ((geoBefore is null) || (geoAfter is null) || (labeling is null))
 			{
 				throw new ArgumentNullException();
 			}
-			this.ReversedLabeling = GrammarRule.ReverseLabeling(labeling);
+			this.Labeling = labeling;
 			this.GeometryBefore = geoBefore;
 			this.GeometryAfter = geoAfter;
 		}
