@@ -374,11 +374,10 @@ namespace ShapeGrammarEngineUnitTests
 				new List<Point> { new Point(5, 10), new Point(20, 20) },
 				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) }
 			});
-			var labeling1 = new Dictionary<Point, int>
-			{
-				{ new Point(-5, 2.1), 0 },
-				{ new Point(5, 10), 2 }
-			};
+			var labeling1 = new Dictionary<Point, int>();
+			labeling1.Add(new Point(-5, 2.1), 0);
+			labeling1.Add(new Point(5, 10), 2);
+			
 			var result1 = shape1.SolveLabeling(geometry1, labeling1);
 			Assert.AreEqual(3, result1.Count);
 			result1.TryGetValue(new Point(-5, 2.1), out var l1);
