@@ -81,11 +81,20 @@ namespace ShapeGrammarEngine
 				throw new ArgumentException("geometryAfter does not conform with ShapeAfter");
 			}
 
-			LabelingDictionary lDic;
-			_ = this.LeftHandShape.ConformsWithGeometry(geometryBefore, out lDic);
+			LabelingDictionary lDic = this.LeftHandShape.SolveLabeling(geometryBefore, null);
+			LabelingDictionary sharedDic;
+			try
+			{
+				sharedDic = this.RightHandShape.SolveLabeling(geometryAfter, lDic);
+			}
+			catch (ShapeMatchFailureException)
+			{
+				labeling = null;
+				return false;
+			}
 
-			labeling = null; // stub
-			return false; // stub
+			labeling = sharedDic;
+			return true;
 		}
 
 		/// <summary>
@@ -95,11 +104,6 @@ namespace ShapeGrammarEngine
 		/// <param name="geometryAfter"> The geometry in the example after the rule is applied </param>
 		public void LearnFromExample(PolylineGeometry geometryBefore, PolylineGeometry geometryAfter)
 		{
-			//try
-			//{
-			//	var leftLabeling = this.LeftHandShape.SolveLabeling(geometryBefore, null);
-			//}
-
 			if (!this.LeftHandShape.ConformsWithGeometry(geometryBefore, out _))
 			{
 				throw new ArgumentException("geometryBefore does not conform with ShapeBefore");
@@ -109,10 +113,12 @@ namespace ShapeGrammarEngine
 				throw new ArgumentException("geometryAfter does not conform with ShapeAfter");
 			}
 
-
-
 			LabelingDictionary labeling;
-			_ = GrammarRule.CreateGrammarRuleFromOneExample(geometryBefore, geometryAfter, out labeling); // TODO: need to guarantee the labeling is consistant with the two shapes!
+			var s = this.ConformWithRule(geometryBefore, geometryAfter, out labeling);
+			if (!s)
+			{
+				throw new ArgumentException("geometries does not conform with this rule");
+			}
 
 			this.ApplicationRecords.Add(new RuleApplicationRecord(geometryBefore, geometryAfter, labeling));
 		}

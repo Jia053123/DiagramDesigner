@@ -210,14 +210,6 @@ namespace ShapeGrammarEngine
 			throw new ShapeMatchFailureException("Failed to find a labeling that works");
 		}
 
-		/// <summary>
-		/// Whether two shapes are equivalent despite potentially using a different set of labels
-		/// </summary>
-		public bool AreEquivalent(Shape shape1, Shape shape2)
-		{
-			return false; // TODO: stub
-		}
-
 		public static bool operator ==(Shape lhs, Shape rhs)
 		{
 			return lhs.Equals(rhs);
