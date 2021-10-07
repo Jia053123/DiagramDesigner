@@ -95,6 +95,10 @@ namespace ShapeGrammarEngine
 		/// <param name="geometryAfter"> The geometry in the example after the rule is applied </param>
 		public void LearnFromExample(PolylineGeometry geometryBefore, PolylineGeometry geometryAfter)
 		{
+			//try
+			//{
+			//	var leftLabeling = this.LeftHandShape.SolveLabeling(geometryBefore, null);
+			//}
 
 			if (!this.LeftHandShape.ConformsWithGeometry(geometryBefore, out _))
 			{
@@ -104,6 +108,8 @@ namespace ShapeGrammarEngine
 			{
 				throw new ArgumentException("geometryAfter does not conform with ShapeAfter");
 			}
+
+
 
 			LabelingDictionary labeling;
 			_ = GrammarRule.CreateGrammarRuleFromOneExample(geometryBefore, geometryAfter, out labeling); // TODO: need to guarantee the labeling is consistant with the two shapes!

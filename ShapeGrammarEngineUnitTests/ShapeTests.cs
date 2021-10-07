@@ -307,31 +307,64 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestSolveLabeling_EdgeCases()
+		public void TestSolveLabeling_EmptyShape_OutputEmptyLabeling()
 		{
 			var shape0 = Shape.CreateEmptyShape();
 			var geometry0 = PolylineGeometry.CreateEmptyPolylineGeometry();
 			var result0 = shape0.SolveLabeling(geometry0, null);
 			Assert.AreEqual(0, result0.Count);
+		}
 
-			var shape1 = new Shape(new HashSet<Connection> 
-			{ 
-				new Connection(0, 4), 
-				new Connection(4, 2), 
-				new Connection(2, 0) 
+		[Test]
+		public void TestSolveLabeling_NullOrEmptyPartialSolution_OutputCorrectLabeling()
+		{
+			var shape1 = new Shape(new HashSet<Connection>
+			{
+				new Connection(0, 4),
+				new Connection(4, 2),
+				new Connection(2, 0)
 			});
-			var geometry1 = new PolylineGeometry(new List<List<Point>> 
+			var geometry1 = new PolylineGeometry(new List<List<Point>>
 			{
 				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
 				new List<Point> { new Point(5, 10), new Point(20, 20) },
-				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) } 
+				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) }
+			});
+			var labeling1 = new LabelingDictionary();
+			var result1 = shape1.SolveLabeling(geometry1, labeling1);
+			Assert.AreEqual(3, result1.Count);
+			Assert.AreEqual(0, result1.GetLabelByPoint(new Point(-5, 2.1)));
+			Assert.AreEqual(2, result1.GetLabelByPoint(new Point(5, 10)));
+			Assert.AreEqual(4, result1.GetLabelByPoint(new Point(20, 20)));
+
+			var result2 = shape1.SolveLabeling(geometry1, null);
+			Assert.AreEqual(3, result2.Count);
+			Assert.AreEqual(0, result2.GetLabelByPoint(new Point(-5, 2.1)));
+			Assert.AreEqual(2, result2.GetLabelByPoint(new Point(5, 10)));
+			Assert.AreEqual(4, result2.GetLabelByPoint(new Point(20, 20)));
+		}
+
+		[Test]
+		public void TestSolveLabeling_PerfectPartialSolution_OutputThePartialSolution()
+		{
+			var shape1 = new Shape(new HashSet<Connection>
+			{
+				new Connection(0, 4),
+				new Connection(4, 2),
+				new Connection(2, 0)
+			});
+			var geometry1 = new PolylineGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
+				new List<Point> { new Point(5, 10), new Point(20, 20) },
+				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) }
 			});
 			var labeling1 = new LabelingDictionary();
 
 			labeling1.Add(new Point(-5, 2.1), 0);
 			labeling1.Add(new Point(5, 10), 2);
 			labeling1.Add(new Point(20, 20), 4);
-			
+
 			var result1 = shape1.SolveLabeling(geometry1, labeling1);
 			Assert.AreEqual(3, result1.Count);
 
@@ -341,7 +374,7 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestSolveLabeling_NormalCases()
+		public void TestSolveLabeling_PartialSolutionInput_OutputCompleteSolutionWithUnusedEntries()
 		{
 			var shape1 = new Shape(new HashSet<Connection> 
 			{ 
@@ -358,13 +391,87 @@ namespace ShapeGrammarEngineUnitTests
 			var labeling1 = new LabelingDictionary();
 			labeling1.Add(new Point(-5, 2.1), 0);
 			labeling1.Add(new Point(5, 10), 2);
-			
+			labeling1.Add(new Point(10, 10), 5);
+
 			var result1 = shape1.SolveLabeling(geometry1, labeling1);
-			Assert.AreEqual(3, result1.Count);
+			Assert.AreEqual(4, result1.Count);
 
 			Assert.AreEqual(0, result1.GetLabelByPoint(new Point(-5, 2.1)));
 			Assert.AreEqual(2, result1.GetLabelByPoint(new Point(5, 10)));
 			Assert.AreEqual(4, result1.GetLabelByPoint(new Point(20, 20)));
+			Assert.AreEqual(5, result1.GetLabelByPoint(new Point(10, 10)));
+		}
+
+		[Test]
+		public void TestSolveLabeling_PartialSolutionLabelExistingPointWithWrongLabelInShape_ThrowShapeMatchFailureException()
+		{
+			var shape1 = new Shape(new HashSet<Connection>
+			{
+				new Connection(0, 4),
+				new Connection(4, 2),
+				new Connection(2, 5),
+				new Connection(5, 0)
+			});
+			var geometry1 = new PolylineGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
+				new List<Point> { new Point(5, 10), new Point(20, 20) },
+				new List<Point>{ new Point(5, 10), new Point(0, 10) },
+				new List<Point>{ new Point(-5, 2.1), new Point(0, 10) }
+			});
+
+			// This labeling is supposed to fail because 0 must be connected to 4
+			var labeling1 = new LabelingDictionary();
+			labeling1.Add(new Point(-5, 2.1), 0);
+			labeling1.Add(new Point(5, 10), 4);
+
+			Assert.Throws<ShapeMatchFailureException>(() => shape1.SolveLabeling(geometry1, labeling1)); 
+		}
+
+		[Test]
+		public void TestSolveLabeling_PartialSolutionLabelsExistingPointWithWrongLabel_ThrowShapeMatchFailureException()
+		{
+			var shape1 = new Shape(new HashSet<Connection>
+			{
+				new Connection(0, 4),
+				new Connection(4, 2),
+				new Connection(2, 0)
+			});
+			var geometry1 = new PolylineGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
+				new List<Point> { new Point(5, 10), new Point(20, 20) },
+				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) }
+			});
+			var labeling1 = new LabelingDictionary();
+			labeling1.Add(new Point(-5, 2.1), 0);
+			labeling1.Add(new Point(5, 10), 1);
+			labeling1.Add(new Point(10, 10), 5);
+
+			Assert.Throws<ShapeMatchFailureException>(() => shape1.SolveLabeling(geometry1, labeling1));
+		}
+
+		[Test]
+		public void TestSolveLabeling_PartialSolutionLabelsNonExistantPointWithLabelInShape_ThrowShapeMatchFailureException()
+		{
+			var shape1 = new Shape(new HashSet<Connection>
+			{
+				new Connection(0, 4),
+				new Connection(4, 2),
+				new Connection(2, 0)
+			});
+			var geometry1 = new PolylineGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
+				new List<Point> { new Point(5, 10), new Point(20, 20) },
+				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) }
+			});
+			var labeling1 = new LabelingDictionary();
+			labeling1.Add(new Point(-5, 2.1), 0);
+			labeling1.Add(new Point(5, 10), 1);
+			labeling1.Add(new Point(10, 10), 5);
+
+			Assert.Throws<ShapeMatchFailureException>(() => shape1.SolveLabeling(geometry1, labeling1));
 		}
 	}
 }

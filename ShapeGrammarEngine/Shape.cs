@@ -167,7 +167,10 @@ namespace ShapeGrammarEngine
 				labelsLeftToWorkOn.ExceptWith(partialLabelingSolution.GetAllLabels());
 			}
 
-			Debug.Assert(coordinatesToWorkOn.Count == labelsLeftToWorkOn.Count);
+			if (coordinatesToWorkOn.Count != labelsLeftToWorkOn.Count)
+			{
+				throw new ShapeMatchFailureException("remaining labels cannot map one to one with remaining unique corrdinates");
+			}
 
 			if (labelsLeftToWorkOn.Count == 0)
 			{
@@ -193,7 +196,8 @@ namespace ShapeGrammarEngine
 				}
 				for (int i = 0; i < coordinatesToWorkOn.Count; i++)
 				{
-					labelDictionaryForAllPointsAndLabels.Add(coordinatesToWorkOnList[i], labelingInstanceForWhatsLeft[i]);
+					var s = labelDictionaryForAllPointsAndLabels.Add(coordinatesToWorkOnList[i], labelingInstanceForWhatsLeft[i]);
+					Debug.Assert(s);
 				}
 
 				var connections = polylineGeometry.ConvertToConnections(labelDictionaryForAllPointsAndLabels);
