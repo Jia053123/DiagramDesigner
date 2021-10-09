@@ -311,25 +311,25 @@ namespace ShapeGrammarEngine
 		internal static double AssignValueBasedOnPastOccurances(double existingReferenceValue, List<(double referenceValue, double assignedValue)> pastData)
 		{
 			// figure out the range of ratio allowed
-			double minAssignedOverReferenceRatio = 1;
-			double maxAssignedOverReferenceRatio = 1;
+			double? minAssignedOverReferenceRatio = null;
+			double? maxAssignedOverReferenceRatio = null;
 			foreach ((double referenceValue, double assignedValue) entry in pastData)
 			{
 				var assignedOverReferenceRatio = entry.assignedValue / entry.referenceValue;
 
-				if (assignedOverReferenceRatio < minAssignedOverReferenceRatio)
+				if ((minAssignedOverReferenceRatio is null) || (assignedOverReferenceRatio < minAssignedOverReferenceRatio))
 				{
 					minAssignedOverReferenceRatio = assignedOverReferenceRatio;
 				}
 
-				if (assignedOverReferenceRatio > maxAssignedOverReferenceRatio)
+				if ((maxAssignedOverReferenceRatio is null) || (assignedOverReferenceRatio > maxAssignedOverReferenceRatio))
 				{
 					maxAssignedOverReferenceRatio = assignedOverReferenceRatio;
 				}
 			}
 
 			// assign with a random ratio in range
-			double ratioToUse = GrammarRule.RandomGenerator.NextDouble() * (maxAssignedOverReferenceRatio - minAssignedOverReferenceRatio) + minAssignedOverReferenceRatio;
+			double ratioToUse = (double)(GrammarRule.RandomGenerator.NextDouble() * (maxAssignedOverReferenceRatio - minAssignedOverReferenceRatio) + minAssignedOverReferenceRatio);
 			return ratioToUse * existingReferenceValue;
 		}
 	}

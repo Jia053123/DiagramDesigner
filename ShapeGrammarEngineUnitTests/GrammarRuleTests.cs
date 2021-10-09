@@ -11,7 +11,7 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestCreateGrammarRuleFromOneExample_OnePolyline_1()
 		{
-			var polyGeo1 = new PolylineGeometry(new List<List<Point>> { 
+			var polyGeo1 = new PolylineGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0), new Point(0, 1) } });
 			var polyGeo2 = new PolylineGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0),  new Point(0, 2), new Point(0, 3) } });
@@ -47,7 +47,7 @@ namespace ShapeGrammarEngine.UnitTests
 		public void TestCreateGrammarRuleFromOneExample_MultiplePolylines_1()
 		{
 			var polyGeo1 = new PolylineGeometry(new List<List<Point>> {
-				new List<Point> { new Point(0, 0), new Point(1, 1) }, 
+				new List<Point> { new Point(0, 0), new Point(1, 1) },
 				new List<Point> { new Point(0, 0), new Point(0, 2) } });
 			var polyGeo2 = new PolylineGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0),  new Point(0, 2), new Point(0, 3) } });
@@ -144,7 +144,7 @@ namespace ShapeGrammarEngine.UnitTests
 			var pastLeftHandGeos = new List<PolylineGeometry>();
 			var pastExistingPs = new List<Point>();
 			var pastAssignedPs = new List<Point>();
-		  
+
 			var geo1L = new PolylineGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
@@ -268,6 +268,28 @@ namespace ShapeGrammarEngine.UnitTests
 		public void TestAssignLegnth()
 		{
 			Assert.Fail();
+		}
+
+		[Test]
+		public void TestAssignValueBasedOnPastOccurances_OneToOneRatio()
+		{
+			var pastData1 = new List<(double, double)> { (1, 1), (2, 2), (100, 100) };
+			Assert.AreEqual(50, GrammarRule.AssignValueBasedOnPastOccurances(50, pastData1));
+		}
+
+		[Test]
+		public void TestAssignValueBasedOnPastOccurances_ConsistantRatio()
+		{
+			var pastData1 = new List<(double, double)> { (1, 2), (2, 4), (100, 200) };
+			Assert.AreEqual(100, GrammarRule.AssignValueBasedOnPastOccurances(50, pastData1));
+		}
+
+		[Test]
+		public void TestAssignValueBasedOnPastOccurances_VariableRatio()
+		{
+			var pastData1 = new List<(double, double)> { (1, 2), (2, 3), (100, 100) };
+			var assignedValue = GrammarRule.AssignValueBasedOnPastOccurances(1, pastData1);
+			Assert.IsTrue(assignedValue > 1 && assignedValue < 2);
 		}
 	}
 }
