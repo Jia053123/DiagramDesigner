@@ -231,7 +231,7 @@ namespace ShapeGrammarEngine
 		private Point AssignSecondPointForConnection(LabelingDictionary leftHandGeometryLabeling, Point existingPoint, int labelForExistingPoint, int labelForPointToAssign)
 		{
 			var assignedAngle = this.AssignAngle(leftHandGeometryLabeling, labelForExistingPoint, labelForPointToAssign);
-			var assignedLength = GrammarRule.AssignLength(existingPoint, pastLeftHandGeometries, pastExistingPoints, pastAssignedPoints);
+			var assignedLength = this.AssignLength(leftHandGeometryLabeling, labelForExistingPoint, labelForPointToAssign);
 
 			var assignedPoint = LineSegment.LocateOtherEndPoint(existingPoint, assignedAngle, assignedLength);
 			return assignedPoint;
@@ -281,17 +281,8 @@ namespace ShapeGrammarEngine
 		}
 
 
-		internal static double AssignLength(Point existingPoint, List<PolylineGeometry> pastLeftHandGeometries, List<Point> pastExistingPoints, List<Point> pastAssignedPoints)
+		internal double AssignLength(LabelingDictionary leftHandGeometryLabeling, int labelForExistingPoint, int labelForPointToAssign)
 		{
-			for (int i = 0; i < pastLeftHandGeometries.Count; i++)
-			{
-				var plfg = pastLeftHandGeometries[i];
-				var pep = pastExistingPoints[i];
-				var pap = pastAssignedPoints[i];
-
-
-			}
-
 			return -1; // stub
 		}
 
@@ -309,7 +300,7 @@ namespace ShapeGrammarEngine
 				var difference = data.referenceValue - data.assignedValue;
 				differences.Add(difference);
 			}
-			var variance = GrammarRule.CalculateVariance(differences);
+			var variance = Utilities.CalculateVariance(differences);
 			return variance * -1; // the lower the variance, the better this connection works as a reference
 		}
 
@@ -340,19 +331,6 @@ namespace ShapeGrammarEngine
 			// assign with a random ratio in range
 			double ratioToUse = GrammarRule.RandomGenerator.NextDouble() * (maxAssignedOverReferenceRatio - minAssignedOverReferenceRatio) + minAssignedOverReferenceRatio;
 			return ratioToUse * existingReferenceValue;
-		}
-
-		private static double CalculateVariance(List<double> data)
-		{
-			// calculate average
-			var average = data.Sum() / data.Count;
-			// calculate variance
-			double sumOfSquaredDiff = 0;
-			foreach (double entry in data)
-			{
-				sumOfSquaredDiff += Math.Pow(entry - average, 2);
-			}
-			return sumOfSquaredDiff / data.Count;
 		}
 	}
 }

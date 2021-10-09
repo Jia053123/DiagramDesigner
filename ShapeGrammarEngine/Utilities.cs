@@ -1,6 +1,7 @@
 ﻿using ListOperations;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ShapeGrammarEngine
 {
@@ -62,6 +63,19 @@ namespace ShapeGrammarEngine
 			}
 
 			return permutations;
+		}
+
+		internal static double CalculateVariance(List<double> data)
+		{
+			// calculate average
+			var average = data.Sum() / data.Count;
+			// calculate variance
+			double sumOfSquaredDiff = 0;
+			foreach (double entry in data)
+			{
+				sumOfSquaredDiff += Math.Pow(entry - average, 2);
+			}
+			return sumOfSquaredDiff / data.Count;
 		}
 	}
 }

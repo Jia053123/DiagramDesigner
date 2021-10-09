@@ -54,5 +54,15 @@ namespace ShapeGrammarEngineUnitTests
 			Assert.IsTrue(ListUtilities.DoesContainList(result1, new List<int> { 2, 4, 2 }));
 			Assert.IsTrue(ListUtilities.DoesContainList(result1, new List<int> { 4, 2, 2 }));
 		}
+
+		[Test]
+		public void TestCalculateVariance()
+		{
+			var data1 = new List<double> { 0, 0, 0, 0, 0 };
+			Assert.AreEqual(0, Utilities.CalculateVariance(data1));
+
+			var data2 = new List<double> { 1, 2, 3, 4, 5 };
+			Assert.AreEqual(2, Utilities.CalculateVariance(data2));
+		}
 	}
 }

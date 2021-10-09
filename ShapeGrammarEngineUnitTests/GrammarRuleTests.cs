@@ -151,7 +151,8 @@ namespace ShapeGrammarEngine.UnitTests
 			pastLeftHandGeos.Add(geo1L);
 			pastExistingPs.Add(new Point(0, -100)); // not in the geometry
 			pastAssignedPs.Add(new Point(1, -1));
-			Assert.Throws<ArgumentException>(() => GrammarRule.AssignAngle(new Point(0, -5), pastLeftHandGeos, pastExistingPs, pastAssignedPs));
+			//Assert.Throws<ArgumentException>(() => GrammarRule.AssignAngle(new Point(0, -5), pastLeftHandGeos, pastExistingPs, pastAssignedPs));
+			Assert.Fail();
 		}
 
 		[Test]
@@ -172,7 +173,8 @@ namespace ShapeGrammarEngine.UnitTests
 			pastExistingPs.Add(new Point(0, -1));
 			pastAssignedPs.Add(new Point(1, -1));
 
-			Assert.AreEqual(0, GrammarRule.AssignAngle(new Point(0, -5), pastLeftHandGeos, pastExistingPs, pastAssignedPs));
+			//Assert.AreEqual(0, GrammarRule.AssignAngle(new Point(0, -5), pastLeftHandGeos, pastExistingPs, pastAssignedPs));
+			Assert.Fail();
 		}
 
 		[Test]
@@ -205,7 +207,8 @@ namespace ShapeGrammarEngine.UnitTests
 			pastExistingPs.Add(new Point(0, -1));
 			pastAssignedPs.Add(new Point(2, -1));
 
-			Assert.AreEqual(0, GrammarRule.AssignAngle(new Point(1, -4), pastLeftHandGeos, pastExistingPs, pastAssignedPs));
+			//Assert.AreEqual(0, GrammarRule.AssignAngle(new Point(1, -4), pastLeftHandGeos, pastExistingPs, pastAssignedPs));
+			Assert.Fail();
 		}
 
 		[Test]
@@ -251,7 +254,8 @@ namespace ShapeGrammarEngine.UnitTests
 			pastExistingPs.Add(new Point(0, -2));
 			pastAssignedPs.Add(new Point(2, -2));
 
-			Assert.AreEqual(0, GrammarRule.AssignAngle(new Point(-1, -4), pastLeftHandGeos, pastExistingPs, pastAssignedPs));
+			//Assert.AreEqual(0, GrammarRule.AssignAngle(new Point(-1, -4), pastLeftHandGeos, pastExistingPs, pastAssignedPs));
+			Assert.Fail();
 		}
 
 		[Test]
