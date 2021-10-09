@@ -17,17 +17,17 @@ namespace ShapeGrammarEngine
 		/// A shape is defined as a graph: each tuple in the set represents a connection in the graph between two nodes. 
 		/// Each node is represented by a unique label in the form of a positive integer. 
 		/// </summary>
-		public readonly HashSet<Connection> Definition;
+		public readonly HashSet<Connection> DefiningConnections;
 
 		public Shape(HashSet<Connection> definition)
 		{
-			this.Definition = definition;
+			this.DefiningConnections = definition;
 		}
 
 		public HashSet<int> GetAllLabels()
 		{
 			var output = new HashSet<int>();
-			foreach (Connection c in this.Definition)
+			foreach (Connection c in this.DefiningConnections)
 			{
 				output.Add(c.LabelOfFirstNode);
 				output.Add(c.LabelOfSecondNode);
@@ -133,7 +133,7 @@ namespace ShapeGrammarEngine
 
 			if (polylineGeometry.PolylinesCopy.Count == 0)
 			{
-				if (this.Definition.Count == 0)
+				if (this.DefiningConnections.Count == 0)
 				{
 					return new LabelingDictionary();
 				}
@@ -202,7 +202,7 @@ namespace ShapeGrammarEngine
 
 				var connections = polylineGeometry.ConvertToConnections(labelDictionaryForAllPointsAndLabels);
 
-				if (this.Definition.SetEquals(connections))
+				if (this.DefiningConnections.SetEquals(connections))
 				{
 					return labelDictionaryForAllPointsAndLabels;
 				}
@@ -222,14 +222,14 @@ namespace ShapeGrammarEngine
 
 		private bool Equals(Shape s)
 		{
-			if (this.Definition.Count != s.Definition.Count)
+			if (this.DefiningConnections.Count != s.DefiningConnections.Count)
 			{
 				return false;
 			}
 
-			foreach (Connection c in this.Definition)
+			foreach (Connection c in this.DefiningConnections)
 			{
-				if (! s.Definition.Contains(c))
+				if (! s.DefiningConnections.Contains(c))
 				{
 					return false;
 				}

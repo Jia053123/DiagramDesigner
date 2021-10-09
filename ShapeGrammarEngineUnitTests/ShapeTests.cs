@@ -13,7 +13,7 @@ namespace ShapeGrammarEngineUnitTests
 		{
 			Assert.DoesNotThrow(() => new Shape(new HashSet<Connection>()));
 			var emptyShape = new Shape(new HashSet<Connection>());
-			Assert.AreEqual(0, emptyShape.Definition.Count);
+			Assert.AreEqual(0, emptyShape.DefiningConnections.Count);
 		}
 
 		[Test]
@@ -27,9 +27,9 @@ namespace ShapeGrammarEngineUnitTests
 			Assert.DoesNotThrow(() => new Shape(new HashSet<Connection> { c2, c3 }));
 
 			var shape1 = new Shape(new HashSet<Connection> { c2, c3 });
-			Assert.AreEqual(2, shape1.Definition.Count);
-			Assert.IsTrue(shape1.Definition.Contains(c2));
-			Assert.IsTrue(shape1.Definition.Contains(c3));
+			Assert.AreEqual(2, shape1.DefiningConnections.Count);
+			Assert.IsTrue(shape1.DefiningConnections.Contains(c2));
+			Assert.IsTrue(shape1.DefiningConnections.Contains(c3));
 		}
 
 		[Test]
@@ -80,19 +80,19 @@ namespace ShapeGrammarEngineUnitTests
 			var pls1 = new PolylineGeometry(new List<List<Point>>());
 			Assert.DoesNotThrow(() => Shape.CreateShapeFromPolylines(pls1, null, out _));
 			var shape1 = Shape.CreateShapeFromPolylines(pls1, null, out newLabeling);
-			Assert.AreEqual(0, shape1.Definition.Count);
+			Assert.AreEqual(0, shape1.DefiningConnections.Count);
 			Assert.AreEqual(0, newLabeling.Count);
 
 			var pls2 = new PolylineGeometry(new List<List<Point>> { new List<Point>() });
 			Assert.DoesNotThrow(() => Shape.CreateShapeFromPolylines(pls2, null, out _));
 			var shape2 = Shape.CreateShapeFromPolylines(pls2, null, out newLabeling);
-			Assert.AreEqual(0, shape2.Definition.Count);
+			Assert.AreEqual(0, shape2.DefiningConnections.Count);
 			Assert.AreEqual(0, newLabeling.Count);
 
 			var pls3 = new PolylineGeometry(new List<List<Point>> { new List<Point> { new Point(0, 1) } });
 			Assert.DoesNotThrow(() => Shape.CreateShapeFromPolylines(pls3, null, out _));
 			var shape3 = Shape.CreateShapeFromPolylines(pls3, null, out newLabeling);
-			Assert.AreEqual(0, shape3.Definition.Count);
+			Assert.AreEqual(0, shape3.DefiningConnections.Count);
 			Assert.AreEqual(0, newLabeling.Count);
 		}
 
@@ -103,8 +103,8 @@ namespace ShapeGrammarEngineUnitTests
 
 			var result1 = Shape.CreateShapeFromPolylines(new PolylineGeometry(new List<List<Point>> { 
 				new List<Point> { new Point(0, 0), new Point(0, 1) } }), null, out newLabeling);
-			Assert.AreEqual(1, result1.Definition.Count);
-			Assert.IsTrue(result1.Definition.Contains(new Connection(0, 1)));
+			Assert.AreEqual(1, result1.DefiningConnections.Count);
+			Assert.IsTrue(result1.DefiningConnections.Contains(new Connection(0, 1)));
 
 			Assert.AreEqual(2, newLabeling.Count);
 			Assert.IsTrue(newLabeling.DoesContainPair(new Point(0, 0), 0));
@@ -118,9 +118,9 @@ namespace ShapeGrammarEngineUnitTests
 
 			var result2 = Shape.CreateShapeFromPolylines(new PolylineGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0), new Point(0, 1), new Point(0, 3) } }), null, out newLabeling);
-			Assert.AreEqual(2, result2.Definition.Count);
-			Assert.IsTrue(result2.Definition.Contains(new Connection(0, 1)));
-			Assert.IsTrue(result2.Definition.Contains(new Connection(1, 2)));
+			Assert.AreEqual(2, result2.DefiningConnections.Count);
+			Assert.IsTrue(result2.DefiningConnections.Contains(new Connection(0, 1)));
+			Assert.IsTrue(result2.DefiningConnections.Contains(new Connection(1, 2)));
 
 			Assert.AreEqual(3, newLabeling.Count);
 			Assert.IsTrue(newLabeling.DoesContainPair(new Point(0, 0), 0));
@@ -135,10 +135,10 @@ namespace ShapeGrammarEngineUnitTests
 
 			var result3 = Shape.CreateShapeFromPolylines(new PolylineGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0), new Point(1, 1), new Point(1, 0), new Point(0, 0) } }), null, out newLabeling);
-			Assert.AreEqual(3, result3.Definition.Count);
-			Assert.IsTrue(result3.Definition.Contains(new Connection(0, 1)));
-			Assert.IsTrue(result3.Definition.Contains(new Connection(1, 2)));
-			Assert.IsTrue(result3.Definition.Contains(new Connection(2, 0)));
+			Assert.AreEqual(3, result3.DefiningConnections.Count);
+			Assert.IsTrue(result3.DefiningConnections.Contains(new Connection(0, 1)));
+			Assert.IsTrue(result3.DefiningConnections.Contains(new Connection(1, 2)));
+			Assert.IsTrue(result3.DefiningConnections.Contains(new Connection(2, 0)));
 
 			Assert.AreEqual(3, newLabeling.Count);
 			Assert.IsTrue(newLabeling.DoesContainPair(new Point(0, 0), 0));
@@ -157,21 +157,21 @@ namespace ShapeGrammarEngineUnitTests
 
 			var result1 = Shape.CreateShapeFromPolylines(new PolylineGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0), new Point(0, 1) } }), labeling, out _);
-			Assert.AreEqual(1, result1.Definition.Count);
-			Assert.IsTrue(result1.Definition.Contains(new Connection(100, 110)));
+			Assert.AreEqual(1, result1.DefiningConnections.Count);
+			Assert.IsTrue(result1.DefiningConnections.Contains(new Connection(100, 110)));
 
 			var result2 = Shape.CreateShapeFromPolylines(new PolylineGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0), new Point(0, 1), new Point(0, 3) } }), labeling, out _);
-			Assert.AreEqual(2, result2.Definition.Count);
-			Assert.IsTrue(result2.Definition.Contains(new Connection(100, 110)));
-			Assert.IsTrue(result2.Definition.Contains(new Connection(110, 130)));
+			Assert.AreEqual(2, result2.DefiningConnections.Count);
+			Assert.IsTrue(result2.DefiningConnections.Contains(new Connection(100, 110)));
+			Assert.IsTrue(result2.DefiningConnections.Contains(new Connection(110, 130)));
 
 			var result3 = Shape.CreateShapeFromPolylines(new PolylineGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0), new Point(1, 1), new Point(1, 0), new Point(0, 0) } }), labeling, out _);
-			Assert.AreEqual(3, result3.Definition.Count);
-			Assert.IsTrue(result3.Definition.Contains(new Connection(100, 141)));
-			Assert.IsTrue(result3.Definition.Contains(new Connection(141, 142)));
-			Assert.IsTrue(result3.Definition.Contains(new Connection(142, 100)));
+			Assert.AreEqual(3, result3.DefiningConnections.Count);
+			Assert.IsTrue(result3.DefiningConnections.Contains(new Connection(100, 141)));
+			Assert.IsTrue(result3.DefiningConnections.Contains(new Connection(141, 142)));
+			Assert.IsTrue(result3.DefiningConnections.Contains(new Connection(142, 100)));
 		}
 
 		[Test]
@@ -180,10 +180,10 @@ namespace ShapeGrammarEngineUnitTests
 			var result1 = Shape.CreateShapeFromPolylines(new PolylineGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0), new Point(0, 1) },
 				new List<Point> { new Point(0, 0), new Point(1, 0), new Point(0, 1) }}), null, out _);
-			Assert.AreEqual(3, result1.Definition.Count);
-			Assert.IsTrue(result1.Definition.Contains(new Connection(0, 1)));
-			Assert.IsTrue(result1.Definition.Contains(new Connection(0, 2)));
-			Assert.IsTrue(result1.Definition.Contains(new Connection(2, 1)));
+			Assert.AreEqual(3, result1.DefiningConnections.Count);
+			Assert.IsTrue(result1.DefiningConnections.Contains(new Connection(0, 1)));
+			Assert.IsTrue(result1.DefiningConnections.Contains(new Connection(0, 2)));
+			Assert.IsTrue(result1.DefiningConnections.Contains(new Connection(2, 1)));
 		}
 
 		[Test]
@@ -198,10 +198,10 @@ namespace ShapeGrammarEngineUnitTests
 			var result1 = Shape.CreateShapeFromPolylines(new PolylineGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0), new Point(0, 1) },
 				new List<Point> { new Point(0, 0), new Point(1, 0), new Point(0, 1) }}), null, out _);
-			Assert.AreEqual(3, result1.Definition.Count);
-			Assert.IsTrue(result1.Definition.Contains(new Connection(0, 1)));
-			Assert.IsTrue(result1.Definition.Contains(new Connection(0, 2)));
-			Assert.IsTrue(result1.Definition.Contains(new Connection(2, 1)));
+			Assert.AreEqual(3, result1.DefiningConnections.Count);
+			Assert.IsTrue(result1.DefiningConnections.Contains(new Connection(0, 1)));
+			Assert.IsTrue(result1.DefiningConnections.Contains(new Connection(0, 2)));
+			Assert.IsTrue(result1.DefiningConnections.Contains(new Connection(2, 1)));
 		}
 
 		[Test]

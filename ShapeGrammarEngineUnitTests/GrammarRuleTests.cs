@@ -34,9 +34,9 @@ namespace ShapeGrammarEngine.UnitTests
 			Assert.IsTrue(rule.LeftHandShape.ConformsWithGeometry(polyGeo1, out _));
 			Assert.IsTrue(rule.RightHandShape.ConformsWithGeometry(polyGeo2, out _));
 
-			Assert.IsTrue(rule.LeftHandShape.Definition.Contains(new Connection(label0, label1)));
-			Assert.IsTrue(rule.RightHandShape.Definition.Contains(new Connection(label0, label2)));
-			Assert.IsTrue(rule.RightHandShape.Definition.Contains(new Connection(label2, label3)));
+			Assert.IsTrue(rule.LeftHandShape.DefiningConnections.Contains(new Connection(label0, label1)));
+			Assert.IsTrue(rule.RightHandShape.DefiningConnections.Contains(new Connection(label0, label2)));
+			Assert.IsTrue(rule.RightHandShape.DefiningConnections.Contains(new Connection(label2, label3)));
 
 			Assert.AreEqual(1, rule.ApplicationRecords.Count);
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(polyGeo1.PolylinesCopy, rule.ApplicationRecords[0].GeometryBefore.PolylinesCopy));
@@ -70,10 +70,10 @@ namespace ShapeGrammarEngine.UnitTests
 			Assert.IsTrue(rule.LeftHandShape.ConformsWithGeometry(polyGeo1, out _));
 			Assert.IsTrue(rule.RightHandShape.ConformsWithGeometry(polyGeo2, out _));
 
-			Assert.IsTrue(rule.LeftHandShape.Definition.Contains(new Connection(label00, label11)));
-			Assert.IsTrue(rule.LeftHandShape.Definition.Contains(new Connection(label00, label02)));
-			Assert.IsTrue(rule.RightHandShape.Definition.Contains(new Connection(label00, label02)));
-			Assert.IsTrue(rule.RightHandShape.Definition.Contains(new Connection(label02, label03)));
+			Assert.IsTrue(rule.LeftHandShape.DefiningConnections.Contains(new Connection(label00, label11)));
+			Assert.IsTrue(rule.LeftHandShape.DefiningConnections.Contains(new Connection(label00, label02)));
+			Assert.IsTrue(rule.RightHandShape.DefiningConnections.Contains(new Connection(label00, label02)));
+			Assert.IsTrue(rule.RightHandShape.DefiningConnections.Contains(new Connection(label02, label03)));
 
 			Assert.AreEqual(1, rule.ApplicationRecords.Count);
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(polyGeo1.PolylinesCopy, rule.ApplicationRecords[0].GeometryBefore.PolylinesCopy));

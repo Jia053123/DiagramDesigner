@@ -3,6 +3,7 @@ using ListOperations;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace ShapeGrammarEngine
 {
@@ -30,6 +31,8 @@ namespace ShapeGrammarEngine
 		public bool CheckForMinimumProgramSize { get; private set; } = true;
 
 		public bool IsATerminalRule { get; private set; }
+
+		private static Random RandomGenerator = new Random(Environment.TickCount);
 
 		internal List<RuleApplicationRecord> ApplicationRecords = new List<RuleApplicationRecord>();
 
@@ -125,15 +128,15 @@ namespace ShapeGrammarEngine
 
 		private HashSet<Connection> ConnectionsToBeRemoved()
 		{
-			var cbuptbr = new HashSet<Connection>(this.LeftHandShape.Definition);
-			cbuptbr.ExceptWith(this.RightHandShape.Definition);
+			var cbuptbr = new HashSet<Connection>(this.LeftHandShape.DefiningConnections);
+			cbuptbr.ExceptWith(this.RightHandShape.DefiningConnections);
 			return cbuptbr;
 		}
 
 		private HashSet<Connection> ConnectionsToBeAdded()
 		{
-			var cbuptba = new HashSet<Connection>(this.RightHandShape.Definition);
-			cbuptba.ExceptWith(this.LeftHandShape.Definition);
+			var cbuptba = new HashSet<Connection>(this.RightHandShape.DefiningConnections);
+			cbuptba.ExceptWith(this.LeftHandShape.DefiningConnections);
 			return cbuptba;
 		}
 
@@ -160,7 +163,7 @@ namespace ShapeGrammarEngine
 				Point endPoint1 = labeling.GetPointByLabel(c.LabelOfFirstNode);
 				Point endPoint2 = labeling.GetPointByLabel(c.LabelOfSecondNode);
 
-				polyGeo.EraseSegmentByPoints(endPoint1, endPoint2);
+				resultPolylines.EraseSegmentByPoints(endPoint1, endPoint2);
 			}
 
 			// Step3: add the connections to be added. If intersection happens, retry
@@ -181,7 +184,10 @@ namespace ShapeGrammarEngine
 			return resultPolylines;
 		}
 
-		private void AddConnectionsWithOneOrTwoExistingPoint(ref Queue<Connection> connectionsToAdd, LabelingDictionary reverseLabeling, ref PolylineGeometry geometryToModify)
+		private void AddConnectionsWithOneOrTwoExistingPoint( 
+			ref Queue<Connection> connectionsToAdd, 
+			LabelingDictionary labeling, 
+			ref PolylineGeometry geometryToModify)
 		{
 			for (int i = 0; i < connectionsToAdd.Count; i++)
 			{
@@ -191,8 +197,8 @@ namespace ShapeGrammarEngine
 				{
 					// both endpoints already exist: simply connect the existing points
 					
-					Point endpoint1 = reverseLabeling.GetPointByLabel(newConnection.LabelOfFirstNode);
-					Point endpoint2 = reverseLabeling.GetPointByLabel(newConnection.LabelOfSecondNode);
+					Point endpoint1 = labeling.GetPointByLabel(newConnection.LabelOfFirstNode);
+					Point endpoint2 = labeling.GetPointByLabel(newConnection.LabelOfSecondNode);
 					geometryToModify.AddSegmentByPoints(endpoint1, endpoint2);
 				}
 				else if (this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfFirstNode) && 
@@ -200,8 +206,8 @@ namespace ShapeGrammarEngine
 				{
 					var labelForExistingPoint = newConnection.LabelOfFirstNode;
 					var labelForPointToAssign = newConnection.LabelOfSecondNode;
-					Point existingPoint = reverseLabeling.GetPointByLabel(labelForExistingPoint);
-					var assignedPoint = this.AssignSecondPointForConnection(existingPoint, labelForExistingPoint, labelForPointToAssign);
+					Point existingPoint = labeling.GetPointByLabel(labelForExistingPoint);
+					var assignedPoint = this.AssignSecondPointForConnection(labeling, existingPoint, labelForExistingPoint, labelForPointToAssign);
 					geometryToModify.AddSegmentByPoints(existingPoint, assignedPoint);
 				}
 				else if (!this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfFirstNode) && 
@@ -210,8 +216,8 @@ namespace ShapeGrammarEngine
 					var labelForExistingPoint = newConnection.LabelOfSecondNode;
 					var labelForPointToAssign = newConnection.LabelOfFirstNode;
 
-					Point existingPoint = reverseLabeling.GetPointByLabel(labelForExistingPoint);
-					var assignedPoint = this.AssignSecondPointForConnection(existingPoint, labelForExistingPoint, labelForPointToAssign);
+					Point existingPoint = labeling.GetPointByLabel(labelForExistingPoint);
+					var assignedPoint = this.AssignSecondPointForConnection(labeling, existingPoint, labelForExistingPoint, labelForPointToAssign);
 					geometryToModify.AddSegmentByPoints(existingPoint, assignedPoint);
 				}
 				else
@@ -222,50 +228,58 @@ namespace ShapeGrammarEngine
 			}
 		}
 
-		private Point AssignSecondPointForConnection(Point existingPoint, int labelForExistingPoint, int labelForPointToAssign)
+		private Point AssignSecondPointForConnection(LabelingDictionary leftHandGeometryLabeling, Point existingPoint, int labelForExistingPoint, int labelForPointToAssign)
 		{
-			// Step1: find all past occurences of the two endpoints
-			var pastLeftHandGeometries = new List<PolylineGeometry>();
-			var pastExistingPoints = new List<Point>();
-			var pastAssignedPoints = new List<Point>();
-			foreach (RuleApplicationRecord rar  in this.ApplicationRecords)
-			{
-				pastLeftHandGeometries.Add(rar.GeometryBefore);
-				
-				Point pastExistingPoint = rar.Labeling.GetPointByLabel(labelForExistingPoint);
-				Point pastAssignedPoint = rar.Labeling.GetPointByLabel(labelForPointToAssign);
-				pastExistingPoints.Add(pastExistingPoint);
-				pastAssignedPoints.Add(pastAssignedPoint);
-			}
-
-			// Step2: assign angle and length
-			var assignedAngle = GrammarRule.AssignAngle(existingPoint, pastLeftHandGeometries, pastExistingPoints, pastAssignedPoints);
+			var assignedAngle = this.AssignAngle(leftHandGeometryLabeling, labelForExistingPoint, labelForPointToAssign);
 			var assignedLength = GrammarRule.AssignLength(existingPoint, pastLeftHandGeometries, pastExistingPoints, pastAssignedPoints);
 
-			// Step3: locate assigned point from existing point, angle and length
 			var assignedPoint = LineSegment.LocateOtherEndPoint(existingPoint, assignedAngle, assignedLength);
 			return assignedPoint;
 		}
 
-		internal static double AssignAngle(Point existingPoint, List<PolylineGeometry> pastLeftHandGeometries, List<Point> pastExistingPoints, List<Point> pastAssignedPoints)
+		internal double AssignAngle(LabelingDictionary leftHandGeometryLabeling, int labelForExistingPoint, int labelForPointToAssign)
 		{
-			// TODO: make a list of int of all connections to compile the "score" each connection get after going through the history
-			for (int i = 0; i < pastLeftHandGeometries.Count; i++)
+			// Step1: make a list of scores for each connection 
+			var connections = new List<Connection>(this.LeftHandShape.DefiningConnections);
+			var scoreForEachConnection = new List<double>();
+			foreach (Connection _ in connections)
 			{
-				var plfg = pastLeftHandGeometries[i];
-				var pep = pastExistingPoints[i];
-				var pap = pastAssignedPoints[i];
-				if (!ListUtilities.DoesContainItem(plfg.PolylinesCopy, pep))
-				{
-					throw new ArgumentException("the past existing point is not in the past left hand geometry at index: " + i.ToString());
-				}
-
-				var angle = pep.AngleTowardsPoint(pap);
-				
-				// Find 
+				scoreForEachConnection.Add(0);
 			}
-			return -1;
+
+			// Step2: go through application history to assign a score for each connection
+			var referenceAndAssignedValueSummaryForEachConnectionForEachRecord = new List<List<(double referenceValue, double assignedValue)>>();
+			for (int i = 0; i < connections.Count; i++)
+			{
+				var connection = connections[i];
+				referenceAndAssignedValueSummaryForEachConnectionForEachRecord.Add(new List<(double, double)>());
+				foreach (RuleApplicationRecord record in this.ApplicationRecords)
+				{
+					Point pastExistingPoint = record.Labeling.GetPointByLabel(labelForExistingPoint);
+					Point pastAssignedPoint = record.Labeling.GetPointByLabel(labelForPointToAssign);
+					double pastAssignedAngle = pastExistingPoint.AngleTowardsPoint(pastAssignedPoint);
+
+					var pointFrom = record.Labeling.GetPointByLabel(connection.LabelOfFirstNode);
+					var pointTowards = record.Labeling.GetPointByLabel(connection.LabelOfSecondNode);
+					var refAngle = pointFrom.AngleTowardsPoint(pointTowards);
+
+					referenceAndAssignedValueSummaryForEachConnectionForEachRecord[i].Add((refAngle, pastAssignedAngle));
+				}
+				scoreForEachConnection[i] = GrammarRule.CalculateScoreForOneConnection(referenceAndAssignedValueSummaryForEachConnectionForEachRecord[i]);
+			}
+
+			// Step3: use the connection with the highest score as reference to assign this angle
+			var chosenConnectionIndex = scoreForEachConnection.IndexOf(scoreForEachConnection.Max());
+			var chosenConnection = connections[chosenConnectionIndex];
+			var referencePointFrom = leftHandGeometryLabeling.GetPointByLabel(chosenConnection.LabelOfFirstNode);
+			var referencePointTo = leftHandGeometryLabeling.GetPointByLabel(chosenConnection.LabelOfSecondNode);
+			var referenceAngle = referencePointFrom.AngleTowardsPoint(referencePointTo);
+			var referenceAndAssignedValueSummaryForChosenConnectionForEachRecord = referenceAndAssignedValueSummaryForEachConnectionForEachRecord[chosenConnectionIndex];
+
+			var assignedAngle = GrammarRule.AssignValueBasedOnPastOccurances(referenceAngle, referenceAndAssignedValueSummaryForChosenConnectionForEachRecord);
+			return assignedAngle;
 		}
+
 
 		internal static double AssignLength(Point existingPoint, List<PolylineGeometry> pastLeftHandGeometries, List<Point> pastExistingPoints, List<Point> pastAssignedPoints)
 		{
@@ -275,10 +289,70 @@ namespace ShapeGrammarEngine
 				var pep = pastExistingPoints[i];
 				var pap = pastAssignedPoints[i];
 
-				
+
 			}
 
 			return -1; // stub
+		}
+
+		/// <summary>
+		/// Calculate the score for one connection for the sake of choosing the best connection as the reference.
+		/// The higher the score the better this connection works as the reference. 
+		/// </summary>
+		/// <returns> The evaluated score which may be negative. Higher means better.  </returns>
+		internal static double CalculateScoreForOneConnection(List<(double referenceValue, double assignedValue)> pastData)
+		{
+			var differences = new List<double>();
+			// calculate differences
+			foreach ((double referenceValue, double assignedValue) data in pastData)
+			{
+				var difference = data.referenceValue - data.assignedValue;
+				differences.Add(difference);
+			}
+			var variance = GrammarRule.CalculateVariance(differences);
+			return variance * -1; // the lower the variance, the better this connection works as a reference
+		}
+
+		/// <summary>
+		/// Taken the past reference values (from the chosen connection) and assigned values into consideration, 
+		/// given the existing reference value, output the value to be assigned
+		/// </summary>
+		internal static double AssignValueBasedOnPastOccurances(double existingReferenceValue, List<(double referenceValue, double assignedValue)> pastData)
+		{
+			// figure out the range of ratio allowed
+			double minAssignedOverReferenceRatio = 1;
+			double maxAssignedOverReferenceRatio = 1;
+			foreach ((double referenceValue, double assignedValue) entry in pastData)
+			{
+				var assignedOverReferenceRatio = entry.assignedValue / entry.referenceValue;
+
+				if (assignedOverReferenceRatio < minAssignedOverReferenceRatio)
+				{
+					minAssignedOverReferenceRatio = assignedOverReferenceRatio;
+				}
+
+				if (assignedOverReferenceRatio > maxAssignedOverReferenceRatio)
+				{
+					maxAssignedOverReferenceRatio = assignedOverReferenceRatio;
+				}
+			}
+
+			// assign with a random ratio in range
+			double ratioToUse = GrammarRule.RandomGenerator.NextDouble() * (maxAssignedOverReferenceRatio - minAssignedOverReferenceRatio) + minAssignedOverReferenceRatio;
+			return ratioToUse * existingReferenceValue;
+		}
+
+		private static double CalculateVariance(List<double> data)
+		{
+			// calculate average
+			var average = data.Sum() / data.Count;
+			// calculate variance
+			double sumOfSquaredDiff = 0;
+			foreach (double entry in data)
+			{
+				sumOfSquaredDiff += Math.Pow(entry - average, 2);
+			}
+			return sumOfSquaredDiff / data.Count;
 		}
 	}
 }
