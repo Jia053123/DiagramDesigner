@@ -177,7 +177,7 @@ namespace ShapeGrammarEngine
 				if (!progressMade)
 				{
 					// TODO: define one connection using a hypothetical connection, allowing intersection. This one will be marked to be removed
-
+					throw new NotImplementedException();
 				}
 			}
 
@@ -186,7 +186,7 @@ namespace ShapeGrammarEngine
 
 		private void AddConnectionsWithOneOrTwoExistingPoint( 
 			ref Queue<Connection> connectionsToAdd, 
-			LabelingDictionary labeling, 
+			LabelingDictionary labelingForNewGeometry, 
 			ref PolylineGeometry geometryToModify)
 		{
 			for (int i = 0; i < connectionsToAdd.Count; i++)
@@ -197,8 +197,8 @@ namespace ShapeGrammarEngine
 				{
 					// both endpoints already exist: simply connect the existing points
 					
-					Point endpoint1 = labeling.GetPointByLabel(newConnection.LabelOfFirstNode);
-					Point endpoint2 = labeling.GetPointByLabel(newConnection.LabelOfSecondNode);
+					Point endpoint1 = labelingForNewGeometry.GetPointByLabel(newConnection.LabelOfFirstNode);
+					Point endpoint2 = labelingForNewGeometry.GetPointByLabel(newConnection.LabelOfSecondNode);
 					geometryToModify.AddSegmentByPoints(endpoint1, endpoint2);
 				}
 				else if (this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfFirstNode) && 
@@ -206,8 +206,8 @@ namespace ShapeGrammarEngine
 				{
 					var labelForExistingPoint = newConnection.LabelOfFirstNode;
 					var labelForPointToAssign = newConnection.LabelOfSecondNode;
-					Point existingPoint = labeling.GetPointByLabel(labelForExistingPoint);
-					var assignedPoint = this.AssignSecondPointForConnection(labeling, existingPoint, labelForExistingPoint, labelForPointToAssign);
+					Point existingPoint = labelingForNewGeometry.GetPointByLabel(labelForExistingPoint);
+					var assignedPoint = this.AssignSecondPointForConnection(labelingForNewGeometry, labelForExistingPoint, labelForPointToAssign);
 					geometryToModify.AddSegmentByPoints(existingPoint, assignedPoint);
 				}
 				else if (!this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfFirstNode) && 
@@ -216,8 +216,8 @@ namespace ShapeGrammarEngine
 					var labelForExistingPoint = newConnection.LabelOfSecondNode;
 					var labelForPointToAssign = newConnection.LabelOfFirstNode;
 
-					Point existingPoint = labeling.GetPointByLabel(labelForExistingPoint);
-					var assignedPoint = this.AssignSecondPointForConnection(labeling, existingPoint, labelForExistingPoint, labelForPointToAssign);
+					Point existingPoint = labelingForNewGeometry.GetPointByLabel(labelForExistingPoint);
+					var assignedPoint = this.AssignSecondPointForConnection(labelingForNewGeometry, labelForExistingPoint, labelForPointToAssign);
 					geometryToModify.AddSegmentByPoints(existingPoint, assignedPoint);
 				}
 				else
@@ -228,16 +228,17 @@ namespace ShapeGrammarEngine
 			}
 		}
 
-		private Point AssignSecondPointForConnection(LabelingDictionary leftHandGeometryLabeling, Point existingPoint, int labelForExistingPoint, int labelForPointToAssign)
+		private Point AssignSecondPointForConnection(LabelingDictionary NewGeometryLabeling, int labelForExistingPoint, int labelForPointToAssign)
 		{
-			var assignedAngle = this.AssignAngle(leftHandGeometryLabeling, labelForExistingPoint, labelForPointToAssign);
-			var assignedLength = this.AssignLength(leftHandGeometryLabeling, labelForExistingPoint, labelForPointToAssign);
+			var existingPoint = NewGeometryLabeling.GetPointByLabel(labelForExistingPoint);
+			var assignedAngle = this.AssignAngle(NewGeometryLabeling, labelForExistingPoint, labelForPointToAssign);
+			var assignedLength = this.AssignLength(NewGeometryLabeling, labelForExistingPoint, labelForPointToAssign);
 
 			var assignedPoint = LineSegment.LocateOtherEndPoint(existingPoint, assignedAngle, assignedLength);
 			return assignedPoint;
 		}
 
-		internal double AssignAngle(LabelingDictionary leftHandGeometryLabeling, int labelForExistingPoint, int labelForPointToAssign)
+		internal double AssignAngle(LabelingDictionary newGeometryLabeling, int labelForExistingPoint, int labelForPointToAssign)
 		{
 			// Step1: make a list of scores for each connection 
 			var connections = new List<Connection>(this.LeftHandShape.DefiningConnections);
@@ -271,8 +272,8 @@ namespace ShapeGrammarEngine
 			// Step3: use the connection with the highest score as reference to assign this angle
 			var chosenConnectionIndex = scoreForEachConnection.IndexOf(scoreForEachConnection.Max());
 			var chosenConnection = connections[chosenConnectionIndex];
-			var referencePointFrom = leftHandGeometryLabeling.GetPointByLabel(chosenConnection.LabelOfFirstNode);
-			var referencePointTo = leftHandGeometryLabeling.GetPointByLabel(chosenConnection.LabelOfSecondNode);
+			var referencePointFrom = newGeometryLabeling.GetPointByLabel(chosenConnection.LabelOfFirstNode);
+			var referencePointTo = newGeometryLabeling.GetPointByLabel(chosenConnection.LabelOfSecondNode);
 			var referenceAngle = referencePointFrom.AngleTowardsPoint(referencePointTo);
 			var referenceAndAssignedValueSummaryForChosenConnectionForEachRecord = referenceAndAssignedValueSummaryForEachConnectionForEachRecord[chosenConnectionIndex];
 

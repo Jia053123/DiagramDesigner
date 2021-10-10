@@ -158,9 +158,6 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestAssignAngle__SingleExample()
 		{
-			var pastLeftHandGeos = new List<PolylineGeometry>();
-			var pastExistingPs = new List<Point>();
-			var pastAssignedPs = new List<Point>();
 			//  _________            __________
 			// |                    |          
 			// |              =>    |          
@@ -169,12 +166,13 @@ namespace ShapeGrammarEngine.UnitTests
 			var geo1L = new PolylineGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
-			pastLeftHandGeos.Add(geo1L);
-			pastExistingPs.Add(new Point(0, -1));
-			pastAssignedPs.Add(new Point(1, -1));
+			var geo1R = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1)},
+				new List<Point>{new Point(0,-1), new Point(1,-1) } });
+			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out var labeling);
 
-			//Assert.AreEqual(0, GrammarRule.AssignAngle(new Point(0, -5), pastLeftHandGeos, pastExistingPs, pastAssignedPs));
-			Assert.Fail();
+			Assert.AreEqual(0, rule.AssignAngle(new Point(0, -5), labeling, pastExistingPs, pastAssignedPs));
 		}
 
 		[Test]
