@@ -271,6 +271,27 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
+		public void TestCalculateScoreForOneConnectionByDifference_NoDifference_ReturnZero()
+		{
+			var pastData1 = new List<(double, double)> { (1, 1), (3, 3), (5, 5) };
+			Assert.AreEqual(0, GrammarRule.CalculateScoreForOneConnectionByDifference(pastData1));
+		}
+
+		[Test]
+		public void TestCalculateScoreForOneConnectionByDifference_ConsistantDifference_ReturnZero()
+		{
+			var pastData1 = new List<(double, double)> { (1, 3), (8, 10), (36, 38) };
+			Assert.AreEqual(0, GrammarRule.CalculateScoreForOneConnectionByDifference(pastData1));
+		}
+
+		[Test]
+		public void TestCalculateScoreForOneConnectionByDifference_VariableDifference()
+		{
+			var pastData1 = new List<(double, double)> { (2, 2), (5, 7), (20, 24) };
+			Assert.AreEqual(-1 * 8 / 3.0, GrammarRule.CalculateScoreForOneConnectionByDifference(pastData1));
+		}
+
+		[Test]
 		public void TestCalculateScoreForOneConnectionByRatio_OneToOneRatio_ReturnZero()
 		{
 			var pastData1 = new List<(double, double)> { (1, 1), (3, 3), (5, 5) };

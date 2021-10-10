@@ -286,6 +286,26 @@ namespace ShapeGrammarEngine
 			return -1; // stub
 		}
 
+
+		/// <summary>
+		/// Calculate the score for one connection for the sake of choosing the best connection as the reference.
+		/// The higher the score the better this connection works as the reference. 
+		/// </summary>
+		/// <returns> The evaluated score which is equal to the negative of the variance 
+		/// of the difference between the reference and assigned values across history.  </returns>
+		internal static double CalculateScoreForOneConnectionByDifference(List<(double referenceValue, double assignedValue)> pastData)
+		{
+			var pastDifferences = new List<double>();
+			// calculate differences
+			foreach ((double referenceValue, double assignedValue) data in pastData)
+			{
+				var difference = data.assignedValue - data.referenceValue;
+				pastDifferences.Add(difference);
+			}
+			var variance = Utilities.CalculateVariance(pastDifferences);
+			return variance * -1; // the lower the variance, the better this connection works as a reference
+		}
+
 		/// <summary>
 		/// Calculate the score for one connection for the sake of choosing the best connection as the reference.
 		/// The higher the score the better this connection works as the reference. 
