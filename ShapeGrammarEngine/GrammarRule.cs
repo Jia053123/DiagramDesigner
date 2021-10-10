@@ -265,7 +265,7 @@ namespace ShapeGrammarEngine
 
 					referenceAndAssignedValueSummaryForEachConnectionForEachRecord[i].Add((refAngle, pastAssignedAngle));
 				}
-				scoreForEachConnection[i] = GrammarRule.CalculateScoreForOneConnection(referenceAndAssignedValueSummaryForEachConnectionForEachRecord[i]);
+				scoreForEachConnection[i] = GrammarRule.CalculateScoreForOneConnectionByRatio(referenceAndAssignedValueSummaryForEachConnectionForEachRecord[i]);
 			}
 
 			// Step3: use the connection with the highest score as reference to assign this angle
@@ -276,7 +276,7 @@ namespace ShapeGrammarEngine
 			var referenceAngle = referencePointFrom.AngleTowardsPoint(referencePointTo);
 			var referenceAndAssignedValueSummaryForChosenConnectionForEachRecord = referenceAndAssignedValueSummaryForEachConnectionForEachRecord[chosenConnectionIndex];
 
-			var assignedAngle = GrammarRule.AssignValueBasedOnPastOccurances(referenceAngle, referenceAndAssignedValueSummaryForChosenConnectionForEachRecord);
+			var assignedAngle = GrammarRule.AssignValueBasedOnPastOccurancesByRatio(referenceAngle, referenceAndAssignedValueSummaryForChosenConnectionForEachRecord);
 			return assignedAngle;
 		}
 
@@ -290,17 +290,22 @@ namespace ShapeGrammarEngine
 		/// Calculate the score for one connection for the sake of choosing the best connection as the reference.
 		/// The higher the score the better this connection works as the reference. 
 		/// </summary>
-		/// <returns> The evaluated score which may be negative. Higher means better.  </returns>
-		internal static double CalculateScoreForOneConnection(List<(double referenceValue, double assignedValue)> pastData)
+		/// <returns> The evaluated score which is equal to the negative of the variance 
+		/// of the ratio between the reference and assigned values across history.  </returns>
+		internal static double CalculateScoreForOneConnectionByRatio(List<(double referenceValue, double assignedValue)> pastData)
 		{
-			var differences = new List<double>();
+			var pastRatios = new List<double>();
 			// calculate differences
 			foreach ((double referenceValue, double assignedValue) data in pastData)
 			{
-				var difference = data.referenceValue - data.assignedValue;
-				differences.Add(difference);
+				if (data.referenceValue == 0)
+				{
+					throw new ArgumentException("One of the referenceValue is zero");
+				}
+				var ratio = data.assignedValue / data.referenceValue;
+				pastRatios.Add(ratio);
 			}
-			var variance = Utilities.CalculateVariance(differences);
+			var variance = Utilities.CalculateVariance(pastRatios);
 			return variance * -1; // the lower the variance, the better this connection works as a reference
 		}
 
@@ -308,14 +313,23 @@ namespace ShapeGrammarEngine
 		/// Taken the past reference values (from the chosen connection) and assigned values into consideration, 
 		/// given the existing reference value, output the value to be assigned
 		/// </summary>
-		internal static double AssignValueBasedOnPastOccurances(double existingReferenceValue, List<(double referenceValue, double assignedValue)> pastData)
+		/// <param name="existingReferenceValue"> the reference value from which the value is assigned </param>
+		/// <param name="pastData"> referenceValue item cannot be zero </param>
+		internal static double AssignValueBasedOnPastOccurancesByRatio(double existingReferenceValue, List<(double referenceValue, double assignedValue)> pastData)
 		{
 			// figure out the range of ratio allowed
 			double? minAssignedOverReferenceRatio = null;
 			double? maxAssignedOverReferenceRatio = null;
 			foreach ((double referenceValue, double assignedValue) entry in pastData)
 			{
-				var assignedOverReferenceRatio = entry.assignedValue / entry.referenceValue;
+				if (entry.referenceValue == 0)
+				{
+					throw new ArgumentException("one of the referenceValue is zero");
+				}
+				
+				var	assignedOverReferenceRatio = entry.assignedValue / entry.referenceValue;
+				
+				
 
 				if ((minAssignedOverReferenceRatio is null) || (assignedOverReferenceRatio < minAssignedOverReferenceRatio))
 				{

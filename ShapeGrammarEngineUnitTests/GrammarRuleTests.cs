@@ -271,25 +271,63 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
-		public void TestAssignValueBasedOnPastOccurances_OneToOneRatio()
+		public void TestCalculateScoreForOneConnectionByRatio_OneToOneRatio_ReturnZero()
+		{
+			var pastData1 = new List<(double, double)> { (1, 1), (3, 3), (5, 5) };
+			Assert.AreEqual(0, GrammarRule.CalculateScoreForOneConnectionByRatio(pastData1));
+		}
+
+		[Test]
+		public void TestCalculateScoreForOneConnectionByRatio_ConsistantRatio_ReturnZero()
+		{
+			var pastData1 = new List<(double, double)> { (1, 2), (5, 10), (20, 40) };
+			Assert.AreEqual(0, GrammarRule.CalculateScoreForOneConnectionByRatio(pastData1));
+		}
+
+		[Test]
+		public void TestCalculateScoreForOneConnectionByRatio_VariableRatio()
+		{
+			var pastData1 = new List<(double, double)> { (2, 2), (5, 10), (20, 30) };
+			Assert.AreEqual(-1 * 0.5/3, GrammarRule.CalculateScoreForOneConnectionByRatio(pastData1));
+		}
+
+		[Test]
+		public void TestCalculateScoreForOneConnectionByRatio_ReferenceValueIsZero_Throws()
+		{
+			var pastData1 = new List<(double, double)> { (1, 2), (0, 2) };
+			Assert.Throws<ArgumentException>(() => GrammarRule.CalculateScoreForOneConnectionByRatio(pastData1));
+		}
+
+		[Test]
+		public void TestAssignValueBasedOnPastOccurancesByRatio_OneToOneRatio()
 		{
 			var pastData1 = new List<(double, double)> { (1, 1), (2, 2), (100, 100) };
-			Assert.AreEqual(50, GrammarRule.AssignValueBasedOnPastOccurances(50, pastData1));
+			Assert.AreEqual(50, GrammarRule.AssignValueBasedOnPastOccurancesByRatio(50, pastData1));
 		}
 
 		[Test]
-		public void TestAssignValueBasedOnPastOccurances_ConsistantRatio()
+		public void TestAssignValueBasedOnPastOccurancesByRatio_ConsistantRatio()
 		{
 			var pastData1 = new List<(double, double)> { (1, 2), (2, 4), (100, 200) };
-			Assert.AreEqual(100, GrammarRule.AssignValueBasedOnPastOccurances(50, pastData1));
+			Assert.AreEqual(100, GrammarRule.AssignValueBasedOnPastOccurancesByRatio(50, pastData1));
 		}
 
 		[Test]
-		public void TestAssignValueBasedOnPastOccurances_VariableRatio()
+		public void TestAssignValueBasedOnPastOccurancesByRatio_VariableRatio()
 		{
-			var pastData1 = new List<(double, double)> { (1, 2), (2, 3), (100, 100) };
-			var assignedValue = GrammarRule.AssignValueBasedOnPastOccurances(1, pastData1);
-			Assert.IsTrue(assignedValue > 1 && assignedValue < 2);
+			var pastData1 = new List<(double, double)> { (1, 2), (2, 3), (100, 100), (5, 6) };
+			for (int i = 0; i < 10; i++) // since randomness is involved, repeat many times
+			{
+				var assignedValue = GrammarRule.AssignValueBasedOnPastOccurancesByRatio(1, pastData1);
+				Assert.IsTrue(assignedValue > 1 && assignedValue < 2);
+			}
+		}
+
+		[Test]
+		public void TestAssignValueBasedOnPastOccurancesByRatio_CasesInvolvingZero()
+		{
+			var pastData1 = new List<(double, double)> { (1, 2), (0, 2) };
+			Assert.Throws<ArgumentException>(() => GrammarRule.AssignValueBasedOnPastOccurancesByRatio(50, pastData1));
 		}
 	}
 }
