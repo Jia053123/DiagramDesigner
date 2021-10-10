@@ -156,7 +156,7 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
-		public void TestAssignAngle__SingleExample()
+		public void TestAssignAngle__RepeatAssignment()
 		{
 			//  _________            __________
 			// |                    |          
@@ -172,7 +172,21 @@ namespace ShapeGrammarEngine.UnitTests
 				new List<Point>{new Point(0,-1), new Point(1,-1) } });
 			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out var labeling);
 
-			Assert.AreEqual(0, rule.AssignAngle(new Point(0, -5), labeling, pastExistingPs, pastAssignedPs));
+			//  _________            __________
+			// |                    |          
+			// |              =>    |          
+			// |                    |__________
+			//    
+			var newGeoL = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) }});
+			rule.LeftHandShape.ConformsWithGeometry(newGeoL, out var newLabeling);
+
+			Assert.AreEqual(0, rule.AssignAngle(
+				newLabeling, 
+				labeling.GetLabelByPoint(new Point(0, -1)), 
+				labeling.GetLabelByPoint(new Point(1, -1))
+				));
 		}
 
 		[Test]

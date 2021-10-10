@@ -266,7 +266,7 @@ namespace ShapeGrammarEngine
 
 					referenceAndAssignedValueSummaryForEachConnectionForEachRecord[i].Add((refAngle, pastAssignedAngle));
 				}
-				scoreForEachConnection[i] = GrammarRule.CalculateScoreForOneConnectionByRatio(referenceAndAssignedValueSummaryForEachConnectionForEachRecord[i]);
+				scoreForEachConnection[i] = GrammarRule.CalculateScoreForOneConnectionByDifference(referenceAndAssignedValueSummaryForEachConnectionForEachRecord[i]);
 			}
 
 			// Step3: use the connection with the highest score as reference to assign this angle
@@ -277,7 +277,7 @@ namespace ShapeGrammarEngine
 			var referenceAngle = referencePointFrom.AngleTowardsPoint(referencePointTo);
 			var referenceAndAssignedValueSummaryForChosenConnectionForEachRecord = referenceAndAssignedValueSummaryForEachConnectionForEachRecord[chosenConnectionIndex];
 
-			var assignedAngle = GrammarRule.AssignValueBasedOnPastOccurancesByRatio(referenceAngle, referenceAndAssignedValueSummaryForChosenConnectionForEachRecord);
+			var assignedAngle = GrammarRule.AssignValueBasedOnPastOccurancesByDifference(referenceAngle, referenceAndAssignedValueSummaryForChosenConnectionForEachRecord);
 			return assignedAngle;
 		}
 
@@ -343,11 +343,6 @@ namespace ShapeGrammarEngine
 			double? maxAssignedMinusReferenceDiff = null;
 			foreach ((double referenceValue, double assignedValue) entry in pastData)
 			{
-				if (entry.referenceValue == 0)
-				{
-					throw new ArgumentException("one of the referenceValue is zero");
-				}
-
 				var assignedMinusReferenceDiff = entry.assignedValue - entry.referenceValue;
 
 				if ((minAssignedMinusReferenceDiff is null) || (assignedMinusReferenceDiff < minAssignedMinusReferenceDiff))
