@@ -334,6 +334,42 @@ namespace ShapeGrammarEngine
 		/// given the existing reference value, output the value to be assigned
 		/// </summary>
 		/// <param name="existingReferenceValue"> the reference value from which the value is assigned </param>
+		/// <param name="pastData"> referenceValue item can be zero </param>
+		internal static double AssignValueBasedOnPastOccurancesByDifference(double existingReferenceValue, List<(double referenceValue, double assignedValue)> pastData)
+		{
+			// figure out the range of ratio allowed
+			double? minAssignedMinusReferenceDiff = null;
+			double? maxAssignedMinusReferenceDiff = null;
+			foreach ((double referenceValue, double assignedValue) entry in pastData)
+			{
+				if (entry.referenceValue == 0)
+				{
+					throw new ArgumentException("one of the referenceValue is zero");
+				}
+
+				var assignedMinusReferenceDiff = entry.assignedValue - entry.referenceValue;
+
+				if ((minAssignedMinusReferenceDiff is null) || (assignedMinusReferenceDiff < minAssignedMinusReferenceDiff))
+				{
+					minAssignedMinusReferenceDiff = assignedMinusReferenceDiff;
+				}
+
+				if ((maxAssignedMinusReferenceDiff is null) || (assignedMinusReferenceDiff > maxAssignedMinusReferenceDiff))
+				{
+					maxAssignedMinusReferenceDiff = assignedMinusReferenceDiff;
+				} 
+			}
+
+			// assign with a random ratio in range
+			double differenceToUse = (double)(GrammarRule.RandomGenerator.NextDouble() * (maxAssignedMinusReferenceDiff - minAssignedMinusReferenceDiff) + minAssignedMinusReferenceDiff);
+			return differenceToUse + existingReferenceValue;
+		}
+
+		/// <summary>
+		/// Taken the past reference values (from the chosen connection) and assigned values into consideration, 
+		/// given the existing reference value, output the value to be assigned
+		/// </summary>
+		/// <param name="existingReferenceValue"> the reference value from which the value is assigned </param>
 		/// <param name="pastData"> referenceValue item cannot be zero </param>
 		internal static double AssignValueBasedOnPastOccurancesByRatio(double existingReferenceValue, List<(double referenceValue, double assignedValue)> pastData)
 		{

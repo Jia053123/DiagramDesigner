@@ -278,7 +278,7 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
-		public void TestCalculateScoreForOneConnectionByDifference_ConsistantDifference_ReturnZero()
+		public void TestCalculateScoreForOneConnectionByDifference_ConstantDifference_ReturnZero()
 		{
 			var pastData1 = new List<(double, double)> { (1, 3), (8, 10), (36, 38) };
 			Assert.AreEqual(0, GrammarRule.CalculateScoreForOneConnectionByDifference(pastData1));
@@ -320,6 +320,31 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
+		public void TestAssignValueBasedOnPastOccurancesByDifference_NoDifference()
+		{
+			var pastData1 = new List<(double, double)> { (1, 1), (2, 2), (100, 100) };
+			Assert.AreEqual(50, GrammarRule.AssignValueBasedOnPastOccurancesByDifference(50, pastData1));
+		}
+
+		[Test]
+		public void TestAssignValueBasedOnPastOccurancesByDifference_ConstantDifference()
+		{
+			var pastData1 = new List<(double, double)> { (5, 1), (27, 23), (104, 100) };
+			Assert.AreEqual(46, GrammarRule.AssignValueBasedOnPastOccurancesByDifference(50, pastData1));
+		}
+
+		[Test]
+		public void TestAssignValueBasedOnPastOccurancesByDifference_VariableDifference()
+		{
+			var pastData1 = new List<(double, double)> { (4, 3), (2, 3), (10, 13), (5, 3) };
+			for (int i = 0; i < 20; i++) // since randomness is involved, repeat many times
+			{
+				var assignedValue = GrammarRule.AssignValueBasedOnPastOccurancesByDifference(100, pastData1);
+				Assert.IsTrue(assignedValue > 98 && assignedValue < 103);
+			}
+		}
+
+		[Test]
 		public void TestAssignValueBasedOnPastOccurancesByRatio_OneToOneRatio()
 		{
 			var pastData1 = new List<(double, double)> { (1, 1), (2, 2), (100, 100) };
@@ -336,11 +361,11 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestAssignValueBasedOnPastOccurancesByRatio_VariableRatio()
 		{
-			var pastData1 = new List<(double, double)> { (1, 2), (2, 3), (100, 100), (5, 6) };
-			for (int i = 0; i < 10; i++) // since randomness is involved, repeat many times
+			var pastData1 = new List<(double, double)> { (1, 2), (2, 3), (10, 9), (5, 6) };
+			for (int i = 0; i < 20; i++) // since randomness is involved, repeat many times
 			{
-				var assignedValue = GrammarRule.AssignValueBasedOnPastOccurancesByRatio(1, pastData1);
-				Assert.IsTrue(assignedValue > 1 && assignedValue < 2);
+				var assignedValue = GrammarRule.AssignValueBasedOnPastOccurancesByRatio(100, pastData1);
+				Assert.IsTrue(assignedValue > 90 && assignedValue < 200);
 			}
 		}
 
