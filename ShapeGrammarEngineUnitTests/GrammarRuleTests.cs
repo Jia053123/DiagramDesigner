@@ -89,10 +89,10 @@ namespace ShapeGrammarEngine.UnitTests
 			var emptyRule = new GrammarRule(shape1, shape2);
 			var emptyPolylineGeo = PolylineGeometry.CreateEmptyPolylineGeometry();
 
-			Assert.Throws<ArgumentNullException>(() => emptyRule.LearnFromExample(null, null));
-			Assert.Throws<ArgumentNullException>(() => emptyRule.LearnFromExample(emptyPolylineGeo, null));
-			Assert.Throws<ArgumentNullException>(() => emptyRule.LearnFromExample(null, emptyPolylineGeo));
-			Assert.DoesNotThrow(() => emptyRule.LearnFromExample(emptyPolylineGeo, emptyPolylineGeo));
+			Assert.Throws<ArgumentNullException>(() => emptyRule.LearnFromExample(null, null, out _));
+			Assert.Throws<ArgumentNullException>(() => emptyRule.LearnFromExample(emptyPolylineGeo, null, out _));
+			Assert.Throws<ArgumentNullException>(() => emptyRule.LearnFromExample(null, emptyPolylineGeo, out _));
+			Assert.DoesNotThrow(() => emptyRule.LearnFromExample(emptyPolylineGeo, emptyPolylineGeo, out _));
 		}
 
 		[Test]
@@ -167,7 +167,7 @@ namespace ShapeGrammarEngine.UnitTests
 			newLabeling.Add(new Point(90, 90), 100);
 			Assert.Throws<ArgumentException>(() => rule.AssignAngle(
 				newLabeling, 
-				newLabeling.GetLabelByPoint(new Point(0, -1)),
+				oldLabeling.GetLabelByPoint(new Point(0, -1)),
 				oldLabeling.GetLabelByPoint(new Point(1, -1))));
 		}
 
@@ -234,7 +234,7 @@ namespace ShapeGrammarEngine.UnitTests
 			labelsList.Sort();
 			var labelNotInOldLabeling = labelsList.Last() + 1;
 			Assert.Throws<ArgumentException>(() => rule.AssignAngle(
-				newLabeling, 
+				oldLabeling, 
 				oldLabeling.GetLabelByPoint(new Point(0, -1)), 
 				labelNotInOldLabeling));
 		}
@@ -268,7 +268,7 @@ namespace ShapeGrammarEngine.UnitTests
 
 			Assert.AreEqual(0, rule.AssignAngle(
 				newLabeling, 
-				newLabeling.GetLabelByPoint(new Point(0, -1)), 
+				labeling.GetLabelByPoint(new Point(0, -1)), 
 				labeling.GetLabelByPoint(new Point(1, -1))
 				));
 		}
@@ -302,7 +302,7 @@ namespace ShapeGrammarEngine.UnitTests
 
 			Assert.AreEqual(0, rule.AssignAngle(
 				newLabeling,
-				newLabeling.GetLabelByPoint(new Point(0, -1)),
+				oldLabeling.GetLabelByPoint(new Point(0, -1)),
 				oldLabeling.GetLabelByPoint(new Point(1, -1))));
 		}
 
@@ -321,7 +321,7 @@ namespace ShapeGrammarEngine.UnitTests
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,-1), new Point(0,0)},
 				new List<Point>{new Point(1,-1), new Point(0,-1) } });
-			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out var oldLabeling);
+			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out var oldLabeling1);
 
 			//  ______________            _______________
 			// |                         |          
@@ -335,7 +335,7 @@ namespace ShapeGrammarEngine.UnitTests
 				new List<Point>{new Point(2,0), new Point(0,0)},
 				new List<Point>{new Point(0,0), new Point(0,-2)},
 				new List<Point>{new Point(1,-2), new Point(0,-2) } });
-			rule.LearnFromExample(geo2L, geo2R);
+			rule.LearnFromExample(geo2L, geo2R, out var oldLabeling2);
 
 			//  _________            __________
 			// |                    |          
@@ -345,13 +345,13 @@ namespace ShapeGrammarEngine.UnitTests
 			// |                    |__________________
 			//     
 			var newGeoL = new PolylineGeometry(new List<List<Point>> {
-				new List<Point>{new Point(0,-1), new Point(0,0), new Point(1,0) }});
+				new List<Point>{new Point(0,-2), new Point(0,0), new Point(1,0) }});
 			rule.LeftHandShape.ConformsWithGeometry(newGeoL, out var newLabeling);
 		
 			Assert.AreEqual(0, rule.AssignAngle(
 				newLabeling,
-				newLabeling.GetLabelByPoint(new Point(0, -1)),
-				oldLabeling.GetLabelByPoint(new Point(1, -1))));
+				oldLabeling1.GetLabelByPoint(new Point(0, -1)),
+				oldLabeling1.GetLabelByPoint(new Point(1, -1))));
 		}
 
 		[Test]

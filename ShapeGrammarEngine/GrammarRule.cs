@@ -105,7 +105,7 @@ namespace ShapeGrammarEngine
 		/// </summary>
 		/// <param name="geometryBefore"> The geometry in the example before the rule is applied </param>
 		/// <param name="geometryAfter"> The geometry in the example after the rule is applied </param>
-		public void LearnFromExample(PolylineGeometry geometryBefore, PolylineGeometry geometryAfter)
+		public void LearnFromExample(PolylineGeometry geometryBefore, PolylineGeometry geometryAfter, out LabelingDictionary labeling)
 		{
 			if (!this.LeftHandShape.ConformsWithGeometry(geometryBefore, out _))
 			{
@@ -116,14 +116,15 @@ namespace ShapeGrammarEngine
 				throw new ArgumentException("geometryAfter does not conform with ShapeAfter");
 			}
 
-			LabelingDictionary labeling;
-			var s = this.ConformWithRule(geometryBefore, geometryAfter, out labeling);
+			LabelingDictionary l;
+			var s = this.ConformWithRule(geometryBefore, geometryAfter, out l);
 			if (!s)
 			{
 				throw new ArgumentException("geometries does not conform with this rule");
 			}
 
-			this.ApplicationRecords.Add(new RuleApplicationRecord(geometryBefore, geometryAfter, labeling));
+			this.ApplicationRecords.Add(new RuleApplicationRecord(geometryBefore, geometryAfter, l));
+			labeling = l;
 		}
 
 		private HashSet<Connection> ConnectionsToBeRemoved()
@@ -245,7 +246,7 @@ namespace ShapeGrammarEngine
 		/// <param name="newGeometryLabeling"> Labeling for the geometry currently being modified. May contain labels from both left hand and right hand shape </param>
 		/// <param name="labelForExistingPoint"> The label for the point from which the angle is calculated </param>
 		/// <param name="labelForPointToAssign"> The label for the point towards which the angle is calculated </param>
-		/// <returns></returns>
+		/// <returns> The angle assigned is between 0 and 2pi </returns>
 		internal double AssignAngle(LabelingDictionary newGeometryLabeling, int labelForExistingPoint, int labelForPointToAssign)
 		{
 			var allLabelsInShapes = this.LeftHandShape.GetAllLabels();
@@ -301,6 +302,14 @@ namespace ShapeGrammarEngine
 			var referenceAndAssignedValueSummaryForChosenConnectionForEachRecord = referenceAndAssignedValueSummaryForEachConnectionForEachRecord[chosenConnectionIndex];
 
 			var assignedAngle = GrammarRule.AssignValueBasedOnPastOccurancesByDifference(referenceAngle, referenceAndAssignedValueSummaryForChosenConnectionForEachRecord);
+			while (assignedAngle > Math.PI * 2)
+			{
+				assignedAngle -= Math.PI * 2;
+			}
+			while (assignedAngle < 0)
+			{
+				assignedAngle += Math.PI * 2;
+			}
 			return assignedAngle;
 		}
 
@@ -361,7 +370,7 @@ namespace ShapeGrammarEngine
 		/// <param name="pastData"> referenceValue item can be zero </param>
 		internal static double AssignValueBasedOnPastOccurancesByDifference(double existingReferenceValue, List<(double referenceValue, double assignedValue)> pastData)
 		{
-			// figure out the range of ratio allowed
+			// figure out the range of difference allowed
 			double? minAssignedMinusReferenceDiff = null;
 			double? maxAssignedMinusReferenceDiff = null;
 			foreach ((double referenceValue, double assignedValue) entry in pastData)
