@@ -338,20 +338,22 @@ namespace ShapeGrammarEngine.UnitTests
 			rule.LearnFromExample(geo2L, geo2R, out var oldLabeling2);
 
 			//  _________            __________
-			// |                    |          
-			// |              =>    |          
+			// |                    |          |
+			// |              =>    |          |
+			// |                    |          |
 			// |                    |
 			// |                    |
-			// |                    |__________________
 			//     
 			var newGeoL = new PolylineGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,-2), new Point(0,0), new Point(1,0) }});
 			rule.LeftHandShape.ConformsWithGeometry(newGeoL, out var newLabeling);
-		
-			Assert.AreEqual(0, rule.AssignAngle(
+
+			var tolerance = 0.00001;
+			var result = rule.AssignAngle(
 				newLabeling,
 				oldLabeling1.GetLabelByPoint(new Point(0, -1)),
-				oldLabeling1.GetLabelByPoint(new Point(1, -1))));
+				oldLabeling1.GetLabelByPoint(new Point(1, -1)));
+			Assert.IsTrue(Math.Abs(4.712385 - result) < tolerance);
 		}
 
 		[Test]
