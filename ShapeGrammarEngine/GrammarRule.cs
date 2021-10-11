@@ -238,8 +238,31 @@ namespace ShapeGrammarEngine
 			return assignedPoint;
 		}
 
+		/// <summary>
+		/// Assign the angle between any two points in right hand shape based on application records. 
+		/// The two points do not have to form a connection
+		/// </summary>
+		/// <param name="newGeometryLabeling"> Labeling for the geometry currently being modified. May contain labels from both left hand and right hand shape </param>
+		/// <param name="labelForExistingPoint"> The label for the point from which the angle is calculated </param>
+		/// <param name="labelForPointToAssign"> The label for the point towards which the angle is calculated </param>
+		/// <returns></returns>
 		internal double AssignAngle(LabelingDictionary newGeometryLabeling, int labelForExistingPoint, int labelForPointToAssign)
 		{
+			var allLabelsInShapes = this.LeftHandShape.GetAllLabels();
+			allLabelsInShapes.UnionWith(this.RightHandShape.GetAllLabels());
+			if (!newGeometryLabeling.GetAllLabels().IsSubsetOf(allLabelsInShapes))
+			{
+				throw new ArgumentException("newGeometryLabeling contains labels not in this rule");
+			}
+			if (! this.RightHandShape.GetAllLabels().Contains(labelForExistingPoint))
+			{
+				throw new ArgumentException("labelForExistingPoint not in right hand shape");
+			}
+			if (!this.RightHandShape.GetAllLabels().Contains(labelForPointToAssign))
+			{
+				throw new ArgumentException("labelForPointToAssign not in right hand shape");
+			}
+
 			// Step1: make a list of scores for each connection 
 			var connections = new List<Connection>(this.LeftHandShape.DefiningConnections);
 			var scoreForEachConnection = new List<double>();
