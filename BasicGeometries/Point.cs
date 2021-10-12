@@ -19,7 +19,7 @@ namespace BasicGeometries
 		/// <summary>
 		/// Assume there is a vector from this point towards the input point, 
 		/// calculate the angle from the (1, 0) vector to this vector, counter-clockwise. 
-		/// This value is always non-negative and smaller than 2pi
+		/// This value is always between -Pi and Pi
 		/// </summary>
 		/// <param name="point"> the point towards which the angle is measured. Cannot be identical to this </param>
 		public double AngleTowardsPoint(Point point)
@@ -29,10 +29,6 @@ namespace BasicGeometries
 				throw new ArgumentException("the other point cannot be the same as this point");
 			}
 			var result = Math.Atan2(point.coordinateY - this.coordinateY, point.coordinateX - this.coordinateX);
-			if (result < 0)
-			{
-				result += Math.PI * 2;
-			}
 			return result;
 		}
 

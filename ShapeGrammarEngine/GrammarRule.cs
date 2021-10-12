@@ -246,7 +246,7 @@ namespace ShapeGrammarEngine
 		/// <param name="newGeometryLabeling"> Labeling for the geometry currently being modified. May contain labels from both left hand and right hand shape </param>
 		/// <param name="labelForExistingPoint"> The label for the point from which the angle is calculated </param>
 		/// <param name="labelForPointToAssign"> The label for the point towards which the angle is calculated </param>
-		/// <returns> The angle assigned is between 0 and 2pi </returns>
+		/// <returns> The angle assigned is between -Pi and Pi </returns>
 		internal double AssignAngle(LabelingDictionary newGeometryLabeling, int labelForExistingPoint, int labelForPointToAssign)
 		{
 			var allLabelsInShapes = this.LeftHandShape.GetAllLabels();
@@ -302,18 +302,18 @@ namespace ShapeGrammarEngine
 			var referenceAndAssignedValueSummaryForChosenConnectionForEachRecord = referenceAndAssignedValueSummaryForEachConnectionForEachRecord[chosenConnectionIndex];
 
 			var assignedAngle = GrammarRule.AssignValueBasedOnPastOccurancesByDifference(referenceAngle, referenceAndAssignedValueSummaryForChosenConnectionForEachRecord);
-			while (assignedAngle > Math.PI * 2)
+			while (assignedAngle > Math.PI)
 			{
 				assignedAngle -= Math.PI * 2;
 			}
-			while (assignedAngle < 0)
+			while (assignedAngle < -1 * Math.PI)
 			{
 				assignedAngle += Math.PI * 2;
 			}
 			return assignedAngle;
 		}
 
-
+ 
 		internal double AssignLength(LabelingDictionary leftHandGeometryLabeling, int labelForExistingPoint, int labelForPointToAssign)
 		{
 			return -1; // stub

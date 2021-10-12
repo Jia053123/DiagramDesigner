@@ -353,13 +353,108 @@ namespace ShapeGrammarEngine.UnitTests
 				newLabeling,
 				oldLabeling1.GetLabelByPoint(new Point(0, -1)),
 				oldLabeling1.GetLabelByPoint(new Point(1, -1)));
-			Assert.IsTrue(Math.Abs(4.712385 - result) < tolerance);
+			Assert.IsTrue(Math.Abs(-0.5*Math.PI - result) < tolerance);
 		}
 
 		[Test]
-		public void TestAssignAngle_MultipleExamples_HandleDifferentProportionsAndOrders_NonOrthogonal()
+		public void TestAssignAngle_HandleDifferentProportionsAndOrders_VaryingAssignedAngle()
 		{
-			Assert.Fail();
+			//  _________            __________
+			// |                    |          
+			// |              =>    |          
+			// |                    |
+			//                       \
+			//                         \
+			var geo1L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) }});
+			var geo1R = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,-1), new Point(0,0)},
+				new List<Point>{new Point(0.5,-1.5), new Point(0,-1) } });
+			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out var oldLabeling1);
+
+			//  ______________            _______________
+			// |                         |          
+			// |                   =>    |          
+			// |                         |_________
+			//   
+			var geo2L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(2,0), new Point(0,0)},
+				new List<Point>{new Point(0,-2), new Point(0,0) }});
+			var geo2R = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(2,0), new Point(0,0)},
+				new List<Point>{new Point(0,0), new Point(0,-2)},
+				new List<Point>{new Point(1,-2), new Point(0,-2) } });
+			rule.LearnFromExample(geo2L, geo2R, out var oldLabeling2);
+
+			//  _________            _________
+			//           |         /|         |         
+			//           |        / |         |         
+			//           |       /  |         |         
+			//           |                    |
+			//           |                    |
+			//     
+			var newGeoL = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(2,-2), new Point(2,0), new Point(0,0) }});
+			rule.LeftHandShape.ConformsWithGeometry(newGeoL, out var newLabeling);
+
+			var result1 = rule.AssignAngle(
+				newLabeling,
+				oldLabeling2.GetLabelByPoint(new Point(0, -2)),
+				oldLabeling2.GetLabelByPoint(new Point(1, -2)));
+			Assert.IsTrue(Math.PI * -0.75 < result1);
+			Assert.IsTrue(Math.PI * -0.5 > result1);
+		}
+
+		[Test]
+		public void TestAssignAngle_HandleDifferentProportionsAndOrders_ChooseTheBestReference()
+		{
+			//  _________            __________
+			// |                    |          
+			// |              =>    |          
+			// |                    |__________
+			//     
+			var geo1L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) }});
+			var geo1R = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,-1), new Point(0,0)},
+				new List<Point>{new Point(1,-1), new Point(0,-1) } });
+			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out var oldLabeling1);
+
+			//            
+			// |\                        |\
+			// |  \                =>    |  \         
+			// |                         |
+			// |                         |_________
+			//
+			var geo2L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(1,-1), new Point(0,0)},
+				new List<Point>{new Point(0,-2), new Point(0,0) }});
+			var geo2R = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(1,-1), new Point(0,0)},
+				new List<Point>{new Point(0,0), new Point(0,-2)},
+				new List<Point>{new Point(2,-2), new Point(0,-2) } });
+			rule.LearnFromExample(geo2L, geo2R, out var oldLabeling2);
+
+			// \                    \
+			//  \                    \         
+			//   \              =>    \            |
+			//    \                    \           |
+			//     \_________           \__________|
+			//
+			var newGeoL = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(-2,-2), new Point(0,0), new Point(1,0) }});
+			rule.LeftHandShape.ConformsWithGeometry(newGeoL, out var newLabeling);
+
+			var tolerance = 0.00001;
+			var result = rule.AssignAngle(
+				newLabeling,
+				oldLabeling1.GetLabelByPoint(new Point(0, -1)),
+				oldLabeling1.GetLabelByPoint(new Point(1, -1)));
+			Assert.IsTrue(Math.Abs(0.5 * Math.PI - result) < tolerance);
 		}
 
 		[Test]

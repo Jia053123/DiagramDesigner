@@ -59,7 +59,7 @@ namespace DiagramDesignerEngine.UnitTests
 			Assert.IsTrue(AreClose(0, p0.AngleTowardsPoint(p1), tolerance));
 			Assert.IsTrue(AreClose(Math.PI, p1.AngleTowardsPoint(p0), tolerance));
 			Assert.IsTrue(AreClose(Math.PI * 0.5, p0.AngleTowardsPoint(p2), tolerance));
-			Assert.IsTrue(AreClose(Math.PI * 1.5, p2.AngleTowardsPoint(p0), tolerance));
+			Assert.IsTrue(AreClose(Math.PI * -0.5, p2.AngleTowardsPoint(p0), tolerance));
 		}
 
 		[Test]
