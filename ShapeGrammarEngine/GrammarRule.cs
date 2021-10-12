@@ -353,11 +353,13 @@ namespace ShapeGrammarEngine
 					Point pastExistingPoint = record.Labeling.GetPointByLabel(labelForExistingPoint);
 					Point pastAssignedPoint = record.Labeling.GetPointByLabel(labelForPointToAssign);
 					double pastAssignedLength = Point.DistanceBetweenPoints(pastExistingPoint, pastAssignedPoint);
+					Debug.Assert(pastAssignedLength > 0);
 
 					// get length of potential reference connection
 					var pointFrom = record.Labeling.GetPointByLabel(connection.LabelOfFirstNode);
 					var pointTowards = record.Labeling.GetPointByLabel(connection.LabelOfSecondNode);
 					var refLength = Point.DistanceBetweenPoints(pointFrom, pointTowards);
+					Debug.Assert(refLength > 0);
 
 					referenceAndAssignedValueSummaryForEachConnectionForEachRecord[i].Add((refLength, pastAssignedLength));
 				}
@@ -370,6 +372,7 @@ namespace ShapeGrammarEngine
 			var referencePointFrom = newGeometryLabeling.GetPointByLabel(chosenConnection.LabelOfFirstNode);
 			var referencePointTo = newGeometryLabeling.GetPointByLabel(chosenConnection.LabelOfSecondNode);
 			var referenceLength = Point.DistanceBetweenPoints(referencePointFrom, referencePointTo);
+			Debug.Assert(referenceLength > 0);
 			var referenceAndAssignedValueSummaryForChosenConnectionForEachRecord = referenceAndAssignedValueSummaryForEachConnectionForEachRecord[chosenConnectionIndex];
 
 			var assignedLength = GrammarRule.AssignValueBasedOnPastOccurancesByRatio(referenceLength, referenceAndAssignedValueSummaryForChosenConnectionForEachRecord);

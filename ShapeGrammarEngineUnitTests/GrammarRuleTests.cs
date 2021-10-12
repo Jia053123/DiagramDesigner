@@ -140,7 +140,7 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
-		public void TestAssignAngle__LabelsInNewGeometryLabelingNotInLeftOrRightHandShape_Throws()
+		public void TestAssignAngleAndAssignLength__LabelsInNewGeometryLabelingNotInLeftOrRightHandShape_Throws()
 		{
 			//  _________            __________
 			// |                    |          
@@ -169,10 +169,14 @@ namespace ShapeGrammarEngine.UnitTests
 				newLabeling, 
 				oldLabeling.GetLabelByPoint(new Point(0, -1)),
 				oldLabeling.GetLabelByPoint(new Point(1, -1))));
+			Assert.Throws<ArgumentException>(() => rule.AssignLength(
+				newLabeling,
+				oldLabeling.GetLabelByPoint(new Point(0, -1)),
+				oldLabeling.GetLabelByPoint(new Point(1, -1))));
 		}
 
 		[Test]
-		public void TestAssignAngle__LabelForExistingPointNotInGeometry_Throws()
+		public void TestAssignAngleAndAssignLength__LabelForExistingPointNotInGeometry_Throws()
 		{
 			//  _________            __________
 			// |                    |          
@@ -196,17 +200,21 @@ namespace ShapeGrammarEngine.UnitTests
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
 			rule.LeftHandShape.ConformsWithGeometry(newGeoL, out var newLabeling);
-			var labelsList = newLabeling.GetAllLabels().ToList();
+			var labelsList = oldLabeling.GetAllLabels().ToList();
 			labelsList.Sort();
 			var labelNotInNewLabeling = labelsList.Last() + 1;
 			Assert.Throws<ArgumentException>(() => rule.AssignAngle(
 				newLabeling, 
 				labelNotInNewLabeling, 
 				oldLabeling.GetLabelByPoint(new Point(1, -1))));
+			Assert.Throws<ArgumentException>(() => rule.AssignLength(
+				newLabeling,
+				labelNotInNewLabeling,
+				oldLabeling.GetLabelByPoint(new Point(1, -1))));
 		}
 
 		[Test]
-		public void TestAssignAngle__LabelForPointToAssignNotInGeometry_Throws()
+		public void TestAssignAngleAndLength__LabelForPointToAssignNotInGeometry_Throws()
 		{
 			//  _________            __________
 			// |                    |          
@@ -237,6 +245,10 @@ namespace ShapeGrammarEngine.UnitTests
 				oldLabeling, 
 				oldLabeling.GetLabelByPoint(new Point(0, -1)), 
 				labelNotInOldLabeling));
+			Assert.Throws<ArgumentException>(() => rule.AssignLength(
+			oldLabeling,
+			oldLabeling.GetLabelByPoint(new Point(0, -1)),
+			labelNotInOldLabeling));
 		}
 
 		[Test]
