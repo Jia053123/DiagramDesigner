@@ -461,7 +461,7 @@ namespace ShapeGrammarEngine.UnitTests
 			//     \_________           \__________|
 			//
 			var newGeoL = new PolylineGeometry(new List<List<Point>> {
-				new List<Point>{new Point(-2,-2), new Point(0,0), new Point(1,0) }});
+				new List<Point>{new Point(-2,2), new Point(0,0), new Point(1,0) }});
 			rule.LeftHandShape.ConformsWithGeometry(newGeoL, out var newLabeling);
 
 			var tolerance = 0.00001;
@@ -576,36 +576,37 @@ namespace ShapeGrammarEngine.UnitTests
 				new List<Point>{new Point(1,-1), new Point(0,-1) } });
 			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out var oldLabeling1);
 
-			//  ______________            _______________
+			//  ________                  ________
 			// |                         |          
 			// |                   =>    |          
-			// |                         |_________
-			//   
+			// |                         |
+			// |                         |
+			// |                         |_______________  
+			//
 			var geo2L = new PolylineGeometry(new List<List<Point>> {
-				new List<Point>{new Point(2,0), new Point(0,0)},
+				new List<Point>{new Point(1,0), new Point(0,0)},
 				new List<Point>{new Point(0,-2), new Point(0,0) }});
 			var geo2R = new PolylineGeometry(new List<List<Point>> {
-				new List<Point>{new Point(2,0), new Point(0,0)},
+				new List<Point>{new Point(1,0), new Point(0,0)},
 				new List<Point>{new Point(0,0), new Point(0,-2)},
-				new List<Point>{new Point(1,-2), new Point(0,-2) } });
+				new List<Point>{new Point(2,-2), new Point(0,-2) } });
 			rule.LearnFromExample(geo2L, geo2R, out var oldLabeling2);
 
 			// \                    \
-			//  \                    \         
+			//  \                    \             |
 			//   \              =>    \            |
 			//    \                    \           |
 			//     \_________           \__________|
 			//
 			var newGeoL = new PolylineGeometry(new List<List<Point>> {
-				new List<Point>{new Point(-2,-2), new Point(0,0), new Point(1,0) }});
+				new List<Point>{new Point(-2,2), new Point(0,0), new Point(1.5,0) }});
 			rule.LeftHandShape.ConformsWithGeometry(newGeoL, out var newLabeling);
 
-			var tolerance = 0.00001;
-			var result = rule.AssignAngle(
+			var result = rule.AssignLength(
 				newLabeling,
 				oldLabeling1.GetLabelByPoint(new Point(0, -1)),
 				oldLabeling1.GetLabelByPoint(new Point(1, -1)));
-			Assert.IsTrue(Math.Abs(0.5 * Math.PI - result) < tolerance);
+			Assert.AreEqual(1.5, result); ;
 		}
 
 		[Test]
