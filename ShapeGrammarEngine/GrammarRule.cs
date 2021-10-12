@@ -315,7 +315,14 @@ namespace ShapeGrammarEngine
 			return assignedAngle;
 		}
 
- 
+		/// <summary>
+		/// Assign the length between any two points in right hand shape based on application records. 
+		/// The two points do not have to form a connection
+		/// </summary>
+		/// <param name="newGeometryLabeling"> Labeling for the geometry currently being modified. May contain labels from both left hand and right hand shape </param>
+		/// <param name="labelForExistingPoint"> The label for the point from which the angle is calculated </param>
+		/// <param name="labelForPointToAssign"> The label for the point towards which the angle is calculated </param>
+		/// <returns> The assigned length is always positive </returns>
 		internal double AssignLength(LabelingDictionary newGeometryLabeling, int labelForExistingPoint, int labelForPointToAssign)
 		{
 			var allLabelsInShapes = this.LeftHandShape.GetAllLabels();
@@ -376,6 +383,7 @@ namespace ShapeGrammarEngine
 			var referenceAndAssignedValueSummaryForChosenConnectionForEachRecord = referenceAndAssignedValueSummaryForEachConnectionForEachRecord[chosenConnectionIndex];
 
 			var assignedLength = GrammarRule.AssignValueBasedOnPastOccurancesByRatio(referenceLength, referenceAndAssignedValueSummaryForChosenConnectionForEachRecord);
+			Debug.Assert(assignedLength > 0);
 			return assignedLength;
 		}
 
