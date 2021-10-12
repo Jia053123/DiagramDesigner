@@ -504,6 +504,39 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
+		public void TestAssignLength_HandleDifferentProportions()
+		{
+			//  _________            __________
+			// |                    |          
+			// |              =>    |          
+			// |                    |__________
+			//     
+			var geo1L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) }});
+			var geo1R = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1)},
+				new List<Point>{new Point(0,-1), new Point(1,-1) } });
+			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out var oldLabeling);
+
+			//  ______________            _______________
+			// |                         |          
+			// |                   =>    |          
+			// |                         |_______________
+			//    
+			var newGeoL = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(2,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) }});
+			rule.LeftHandShape.ConformsWithGeometry(newGeoL, out var newLabeling);
+
+			Assert.AreEqual(2, rule.AssignLength(
+				newLabeling,
+				oldLabeling.GetLabelByPoint(new Point(0, -1)),
+				oldLabeling.GetLabelByPoint(new Point(1, -1))));
+		}
+
+		[Test]
 		public void TestCalculateScoreForOneConnectionByDifference_NoDifference_ReturnZero()
 		{
 			var pastData1 = new List<(double, double)> { (1, 1), (3, 3), (5, 5) };
