@@ -280,10 +280,12 @@ namespace ShapeGrammarEngine
 				referenceAndAssignedValueSummaryForEachConnectionForEachRecord.Add(new List<(double, double)>());
 				foreach (RuleApplicationRecord record in this.ApplicationRecords)
 				{
+					// get angle of assigned connection in this record
 					Point pastExistingPoint = record.Labeling.GetPointByLabel(labelForExistingPoint);
 					Point pastAssignedPoint = record.Labeling.GetPointByLabel(labelForPointToAssign);
 					double pastAssignedAngle = pastExistingPoint.AngleTowardsPoint(pastAssignedPoint);
 
+					// get angle of potential reference connection
 					var pointFrom = record.Labeling.GetPointByLabel(connection.LabelOfFirstNode);
 					var pointTowards = record.Labeling.GetPointByLabel(connection.LabelOfSecondNode);
 					var refAngle = pointFrom.AngleTowardsPoint(pointTowards);
@@ -314,9 +316,64 @@ namespace ShapeGrammarEngine
 		}
 
  
-		internal double AssignLength(LabelingDictionary leftHandGeometryLabeling, int labelForExistingPoint, int labelForPointToAssign)
+		internal double AssignLength(LabelingDictionary newGeometryLabeling, int labelForExistingPoint, int labelForPointToAssign)
 		{
-			return -1; // stub
+			var allLabelsInShapes = this.LeftHandShape.GetAllLabels();
+			allLabelsInShapes.UnionWith(this.RightHandShape.GetAllLabels());
+			if (!newGeometryLabeling.GetAllLabels().IsSubsetOf(allLabelsInShapes))
+			{
+				throw new ArgumentException("newGeometryLabeling contains labels not in this rule");
+			}
+			if (!this.RightHandShape.GetAllLabels().Contains(labelForExistingPoint))
+			{
+				throw new ArgumentException("labelForExistingPoint not in right hand shape");
+			}
+			if (!this.RightHandShape.GetAllLabels().Contains(labelForPointToAssign))
+			{
+				throw new ArgumentException("labelForPointToAssign not in right hand shape");
+			}
+
+			// Step1: make a list of scores for each connection 
+			var connections = new List<Connection>(this.LeftHandShape.DefiningConnections);
+			var scoreForEachConnection = new List<double>();
+			foreach (Connection _ in connections)
+			{
+				scoreForEachConnection.Add(0);
+			}
+
+			// Step2: go through application history to assign a score for each connection
+			var referenceAndAssignedValueSummaryForEachConnectionForEachRecord = new List<List<(double referenceValue, double assignedValue)>>();
+			for (int i = 0; i < connections.Count; i++)
+			{
+				var connection = connections[i];
+				referenceAndAssignedValueSummaryForEachConnectionForEachRecord.Add(new List<(double, double)>());
+				foreach (RuleApplicationRecord record in this.ApplicationRecords)
+				{
+					// get length of assigned connection in this record
+					Point pastExistingPoint = record.Labeling.GetPointByLabel(labelForExistingPoint);
+					Point pastAssignedPoint = record.Labeling.GetPointByLabel(labelForPointToAssign);
+					double pastAssignedLength = Point.DistanceBetweenPoints(pastExistingPoint, pastAssignedPoint);
+
+					// get length of potential reference connection
+					var pointFrom = record.Labeling.GetPointByLabel(connection.LabelOfFirstNode);
+					var pointTowards = record.Labeling.GetPointByLabel(connection.LabelOfSecondNode);
+					var refLength = Point.DistanceBetweenPoints(pointFrom, pointTowards);
+
+					referenceAndAssignedValueSummaryForEachConnectionForEachRecord[i].Add((refLength, pastAssignedLength));
+				}
+				scoreForEachConnection[i] = GrammarRule.CalculateScoreForOneConnectionByRatio(referenceAndAssignedValueSummaryForEachConnectionForEachRecord[i]);
+			}
+
+			// Step3: use the connection with the highest score as reference to assign this angle
+			var chosenConnectionIndex = scoreForEachConnection.IndexOf(scoreForEachConnection.Max());
+			var chosenConnection = connections[chosenConnectionIndex];
+			var referencePointFrom = newGeometryLabeling.GetPointByLabel(chosenConnection.LabelOfFirstNode);
+			var referencePointTo = newGeometryLabeling.GetPointByLabel(chosenConnection.LabelOfSecondNode);
+			var referenceLength = Point.DistanceBetweenPoints(referencePointFrom, referencePointTo);
+			var referenceAndAssignedValueSummaryForChosenConnectionForEachRecord = referenceAndAssignedValueSummaryForEachConnectionForEachRecord[chosenConnectionIndex];
+
+			var assignedLength = GrammarRule.AssignValueBasedOnPastOccurancesByRatio(referenceLength, referenceAndAssignedValueSummaryForChosenConnectionForEachRecord);
+			return assignedLength;
 		}
 
 

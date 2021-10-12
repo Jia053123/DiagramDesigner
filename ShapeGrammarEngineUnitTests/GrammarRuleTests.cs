@@ -458,9 +458,37 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
-		public void TestAssignLegnth()
+		public void TestAssignLegnth_RepeatAssignment()
 		{
-			Assert.Fail();
+			//  _________            __________
+			// |                    |          
+			// |              =>    |          
+			// |                    |__________
+			//     
+			var geo1L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) }});
+			var geo1R = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1)},
+				new List<Point>{new Point(0,-1), new Point(1,-1) } });
+			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out var labeling);
+
+			//  _________            __________
+			// |                    |          
+			// |              =>    |          
+			// |                    |__________
+			//    
+			var newGeoL = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) }});
+			rule.LeftHandShape.ConformsWithGeometry(newGeoL, out var newLabeling);
+
+			Assert.AreEqual(1, rule.AssignLength(
+				newLabeling,
+				labeling.GetLabelByPoint(new Point(0, -1)),
+				labeling.GetLabelByPoint(new Point(1, -1))
+				));
 		}
 
 		[Test]
