@@ -82,6 +82,12 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
+		public void TestConformWithRule()
+		{
+			Assert.Fail();
+		}
+
+		[Test]
 		public void TestLearnFromExample_NullInput_ThrowNullException()
 		{
 			var shape1 = Shape.CreateEmptyShape();
@@ -149,6 +155,9 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestApplyToGeometry_EmptyRuleAndInput_EmptyOutput()
 		{
+			//
+			//           =>
+			//
 			var geo1L = PolylineGeometry.CreateEmptyPolylineGeometry();
 			var geo1R = PolylineGeometry.CreateEmptyPolylineGeometry();
 			var emptyRule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out var labeling);
@@ -158,24 +167,110 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
-		public void TestApplyToGeometry_ValidInput_OutputConfromsWithRule()
+		public void TestApplyToGeometry_TwoExistingEndPointsWithDeletion_OutputConfromsWithRule()
+		{
+			//  _________             __________
+			// |         |           |          
+			// |         |     =>    |          
+			// |         |           |__________
+			//     
+			var geo1L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) },
+				new List<Point>{new Point(1,0), new Point(1,-1) }});
+			var geo1R = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1)},
+				new List<Point>{new Point(0,-1), new Point(1,-1) } });
+			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out var labeling);
+			var polyGeo1 = new PolylineGeometry(new List<List<Point>> { new List<Point> {
+				new Point(0, 0),
+				new Point(1, 1),
+				new Point(2, 0),
+				new Point(1, -1)} });
+			var result = rule.ApplyToGeometry(polyGeo1);
+			Assert.IsTrue(rule.ConformWithRule(polyGeo1, result, out _));
+		}
+
+		[Test]
+		public void TestApplyToGeometry_OneExistingEndPointWithDeletion_OutputConfromsWithRule()
 		{
 			//  _________            __________
-			// |                    |          
-			// |              =>    |          
-			// |                    |__________
+			// |                              
+			// |              =>              
+			// |                     __________
 			//     
 			var geo1L = new PolylineGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
 			var geo1R = new PolylineGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
-				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(0,-1), new Point(1,-1) } });
 			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out var labeling);
 			var polyGeo1 = new PolylineGeometry(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(1, 1), new Point(0, 2) } });
 			var result = rule.ApplyToGeometry(polyGeo1);
-			Assert.IsTrue(rule.RightHandShape.ConformsWithGeometry(result, out _));
+			Assert.IsTrue(rule.ConformWithRule(polyGeo1, result, out _));
+		}
+
+		[Test]
+		public void TestApplyToGeometry_NoExistingEndPointWithDeletion_OutputConfromsWithRule()
+		{
+			//  _________            _________     _________
+			// |        /           |             |        /     
+			// |    /        =>     |             |    /         
+			// |/                   |             |/          
+			//     
+			var geo1L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) },
+				new List<Point>{new Point(1,0), new Point(0, -1)}});
+			var geo1R = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1)},
+				new List<Point>{new Point(5,0), new Point(5,-1), new Point(6, 0), new Point(5, 0) }});
+			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out var labeling);
+			var polyGeo1 = new PolylineGeometry(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(1, 1), new Point(0, 2), new Point(0, 0) } });
+			var result = rule.ApplyToGeometry(polyGeo1);
+			Assert.IsTrue(rule.ConformWithRule(polyGeo1, result, out _));
+		}
+
+		[Test]
+		public void TestApplyToGeometry_MultipleRecords_OutputConfromsWithRule()
+		{
+			//  _________            _________     _________
+			// |        /           |             |        /     
+			// |    /        =>     |             |    /         
+			// |/                   |             |/          
+			//     
+			var geo1L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) },
+				new List<Point>{new Point(1,0), new Point(0, -1)}});
+			var geo1R = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1)},
+				new List<Point>{new Point(5,0), new Point(5,-1), new Point(6, 0), new Point(5, 0) }});
+			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out var labeling);
+			//  _____                _____     _____
+			// |    /               |         |    /     
+			// |  /        =>       |         |  /         
+			// |/                   |         |/          
+			//     
+			var geo2L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(0.5,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) },
+				new List<Point>{new Point(0.5,0), new Point(0, -1)}});
+			var geo2R = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(0.5,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1)},
+				new List<Point>{new Point(5,0), new Point(5,-1) }, 
+				new List<Point>{new Point(5.5, 0),new Point(5,-1) }, 
+				new List<Point>{new Point(5, 0), new Point(5.5, 0) }});
+			rule.LearnFromExample(geo2L, geo2R, out _);
+
+			var polyGeo1 = new PolylineGeometry(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(1, 1), new Point(0, 2), new Point(0, 0) } });
+			var result = rule.ApplyToGeometry(polyGeo1);
+			Assert.IsTrue(rule.ConformWithRule(polyGeo1, result, out _));
 		}
 
 		[Test]

@@ -73,7 +73,7 @@ namespace ShapeGrammarEngine
 		/// <param name="labeling"> if the input geometries are consistent with the rule, 
 		/// how their line segments map onto connections of the shapes in the rule; otherwise output null </param>
 		/// <returns> whether the input geometries are consistent with the rule </returns>
-		private bool ConformWithRule(PolylineGeometry geometryBefore, PolylineGeometry geometryAfter, out LabelingDictionary labeling)
+		public bool ConformWithRule(PolylineGeometry geometryBefore, PolylineGeometry geometryAfter, out LabelingDictionary labeling)
 		{
 			if (!this.LeftHandShape.ConformsWithGeometry(geometryBefore, out _))
 			{
@@ -203,8 +203,8 @@ namespace ShapeGrammarEngine
 				for (int i = 0; i < connectionsToAddQueue.Count; i++)
 				{
 					var connectionToAdd = connectionsToAddQueue.Dequeue();
-					if (this.LeftHandShape.GetAllLabels().Contains(connectionToAdd.LabelOfFirstNode) &&
-						this.LeftHandShape.GetAllLabels().Contains(connectionToAdd.LabelOfSecondNode))
+					if (labelingForGeometryToModify.GetAllLabels().Contains(connectionToAdd.LabelOfFirstNode) &&
+						labelingForGeometryToModify.GetAllLabels().Contains(connectionToAdd.LabelOfSecondNode))
 					{
 						// both endpoints already exist: simply connect the existing points
 						Point endpoint1 = labelingForGeometryToModify.GetPointByLabel(connectionToAdd.LabelOfFirstNode);
@@ -212,8 +212,8 @@ namespace ShapeGrammarEngine
 
 						geometryToModify.AddSegmentByPoints(endpoint1, endpoint2);
 					}
-					else if (this.LeftHandShape.GetAllLabels().Contains(connectionToAdd.LabelOfFirstNode) &&
-						!this.LeftHandShape.GetAllLabels().Contains(connectionToAdd.LabelOfSecondNode))
+					else if (labelingForGeometryToModify.GetAllLabels().Contains(connectionToAdd.LabelOfFirstNode) &&
+						!labelingForGeometryToModify.GetAllLabels().Contains(connectionToAdd.LabelOfSecondNode))
 					{
 						// only endpoint of the first label exists
 						var labelForExistingPoint = connectionToAdd.LabelOfFirstNode;
@@ -226,8 +226,8 @@ namespace ShapeGrammarEngine
 						var s = labelingForGeometryToModify.Add(assignedPoint, labelForPointToAssign);
 						Debug.Assert(s);
 					}
-					else if (!this.LeftHandShape.GetAllLabels().Contains(connectionToAdd.LabelOfFirstNode) &&
-						this.LeftHandShape.GetAllLabels().Contains(connectionToAdd.LabelOfSecondNode))
+					else if (!labelingForGeometryToModify.GetAllLabels().Contains(connectionToAdd.LabelOfFirstNode) &&
+						labelingForGeometryToModify.GetAllLabels().Contains(connectionToAdd.LabelOfSecondNode))
 					{
 						// only endpoint of the second label exists
 						var labelForExistingPoint = connectionToAdd.LabelOfSecondNode;
@@ -258,7 +258,7 @@ namespace ShapeGrammarEngine
 					var labelForAExistingPoint = labelingForGeometryToModify.GetAllLabels().First(); // just pick a random existing point
 					var labelForThePointOfFirstNode = connectionToAdd.LabelOfFirstNode;
 
-					Point existingPoint = labelingForGeometryToModify.GetPointByLabel(labelForAExistingPoint);
+					//Point existingPoint = labelingForGeometryToModify.GetPointByLabel(labelForAExistingPoint);
 					Point assignedPointOfFirstNode = this.AssignNewPointByLearning(labelingForGeometryToModify, labelForAExistingPoint, labelForThePointOfFirstNode);
 
 					// Step2: Add the assignedPointOfFirstNode and its label into the labelForExistingPoint in advance
