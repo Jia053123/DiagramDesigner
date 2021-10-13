@@ -148,6 +148,11 @@ namespace ShapeGrammarEngine
 		/// <returns> the geometry after the rule is applied. It will confrom with RightHandShape </returns>
 		public PolylineGeometry ApplyToGeometry(PolylineGeometry polyGeo)
 		{
+			if (this.ApplicationRecords.Count == 0)
+			{
+				throw new RuleApplicationFailureException("Cannot apply without history to learn from");
+			}
+
 			// Step1: check for conformity and label the input geometry
 			LabelingDictionary labeling;
 			var doesConform = this.LeftHandShape.ConformsWithGeometry(polyGeo, out labeling);
@@ -158,7 +163,7 @@ namespace ShapeGrammarEngine
 
 			var resultPolylines = new PolylineGeometry(polyGeo.PolylinesCopy);
 
-			// Step2: add the connections to be added. If intersection happens, retry
+			// Step2: add the connections to be added.
 			this.AddConnections(this.ConnectionsToBeAdded(), ref resultPolylines, ref labeling);
 
 			// Step3: remove the connections to be removed
@@ -169,6 +174,8 @@ namespace ShapeGrammarEngine
 
 				resultPolylines.EraseSegmentByPoints(endPoint1, endPoint2);
 			}
+
+			// TODO: check for intersections and overlaps
 
 			return resultPolylines;
 		}
@@ -535,5 +542,10 @@ namespace ShapeGrammarEngine
 			double ratioToUse = (double)(GrammarRule.RandomGenerator.NextDouble() * (maxAssignedOverReferenceRatio - minAssignedOverReferenceRatio) + minAssignedOverReferenceRatio);
 			return ratioToUse * existingReferenceValue;
 		}
+	}
+	class RuleApplicationFailureException : Exception
+	{
+		public RuleApplicationFailureException() { }
+		public RuleApplicationFailureException(string message) : base(message) { }
 	}
 }

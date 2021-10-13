@@ -129,7 +129,7 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
-		public void TestApplyToGeometry_ValidInput_OutputConfromsWithRule_1()
+		public void TestApplyToGeometry_ValidInput_OutputConfromsWithRule()
 		{
 			var shape1 = new Shape(new HashSet<Connection> { new Connection(1, 2) });
 			var shape2 = new Shape(new HashSet<Connection> { new Connection(1, 2), new Connection(2, 3) });
