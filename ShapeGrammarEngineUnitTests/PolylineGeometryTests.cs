@@ -18,6 +18,19 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
+		public void TestGetAllPoints()
+		{
+			var geo = new PolylineGeometry(new List<List<Point>> {
+				new List<Point> { new Point(0, -1), new Point(0, 1), new Point(1, 0), new Point(0, -1) } });
+
+			var allPoints = geo.GetAllPoints();
+			Assert.AreEqual(3, allPoints.Count);
+			Assert.IsTrue(allPoints.Contains(new Point(0, -1)));
+			Assert.IsTrue(allPoints.Contains(new Point(0, 1)));
+			Assert.IsTrue(allPoints.Contains(new Point(1, 0)));
+		}
+
+		[Test]
 		public void TestDoesIntersectOrOverlapWithItself_Intersect()
 		{
 			Assert.Throws<ArgumentException>(() => new PolylineGeometry(new List<List<Point>> { 
@@ -56,18 +69,6 @@ namespace ShapeGrammarEngine.UnitTests
 			Assert.AreEqual(2, geo.PolylinesCopy.Count);
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo.PolylinesCopy[0], new List<Point> { new Point(0, 0), new Point(0, 1) }));
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo.PolylinesCopy[1], new List<Point> { new Point(0, 0), new Point(1, 1) }));
-		}
-
-		[Test]
-		public void TestAddSegmentByPoints_ConnectsToEndsOfExistingPolylines_AddToEndOfExistingPolyline()
-		{
-			
-		}
-
-		[Test]
-		public void TestAddSegmentByPoints_ConnectEndsOfTwoExistingPolylines_MergeIntoOneLongPolyline()
-		{
-
 		}
 
 		[Test]

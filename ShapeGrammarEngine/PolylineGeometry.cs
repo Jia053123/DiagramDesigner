@@ -37,8 +37,22 @@ namespace ShapeGrammarEngine
 			return this.polylines.Count == 0;
 		}
 
+		public HashSet<Point> GetAllPoints()
+		{
+			var allPoints = new HashSet<Point>();
+			foreach (List<Point> polyline in this.polylines)
+			{
+				foreach (Point point in polyline)
+				{
+					allPoints.Add(point);
+				}
+			}
+			return allPoints;
+		}
+
 		/// <summary>
 		/// Remove any polyline with less than 2 points and thereby doesn't form a line
+		/// Currently does not merge connected polylines
 		/// </summary>
 		private void CleanUpPolylines()
 		{

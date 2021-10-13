@@ -158,7 +158,22 @@ namespace ShapeGrammarEngine
 
 			var resultPolylines = new PolylineGeometry(polyGeo.PolylinesCopy);
 
-			// Step2: remove the connections to be removed
+			// Step2: add the connections to be added. If intersection happens, retry
+			//var connectionsToAdd = new Queue<Connection>(this.ConnectionsToBeAdded());
+			//bool progressMade;
+			//while (connectionsToAdd.Count > 0)
+			//{
+				//int beforeCount = connectionsToAdd.Count;
+				this.AddConnections(this.ConnectionsToBeAdded(), ref resultPolylines, ref labeling);
+			//progressMade = beforeCount < connectionsToAdd.Count;
+			//if (!progressMade)
+			//{
+			//	// TODO: define one connection using a hypothetical connection, allowing intersection. This one will be marked to be removed
+			//	throw new NotImplementedException();
+			//}
+			//}
+
+			// Step3: remove the connections to be removed
 			foreach (Connection c in this.ConnectionsToBeRemoved())
 			{
 				Point endPoint1 = labeling.GetPointByLabel(c.LabelOfFirstNode);
@@ -166,21 +181,6 @@ namespace ShapeGrammarEngine
 
 				resultPolylines.EraseSegmentByPoints(endPoint1, endPoint2);
 			}
-
-			// Step3: add the connections to be added. If intersection happens, retry
-			//var connectionsToAdd = new Queue<Connection>(this.ConnectionsToBeAdded());
-			//bool progressMade;
-			//while (connectionsToAdd.Count > 0)
-			//{
-				//int beforeCount = connectionsToAdd.Count;
-				this.AddConnections(this.ConnectionsToBeAdded(), ref resultPolylines, ref labeling);
-				//progressMade = beforeCount < connectionsToAdd.Count;
-				//if (!progressMade)
-				//{
-				//	// TODO: define one connection using a hypothetical connection, allowing intersection. This one will be marked to be removed
-				//	throw new NotImplementedException();
-				//}
-			//}
 
 			return resultPolylines;
 		}
@@ -206,27 +206,36 @@ namespace ShapeGrammarEngine
 						// both endpoints already exist: simply connect the existing points
 						Point endpoint1 = labelingForGeometryToModify.GetPointByLabel(connectionToAdd.LabelOfFirstNode);
 						Point endpoint2 = labelingForGeometryToModify.GetPointByLabel(connectionToAdd.LabelOfSecondNode);
+
 						geometryToModify.AddSegmentByPoints(endpoint1, endpoint2);
 					}
 					else if (this.LeftHandShape.GetAllLabels().Contains(connectionToAdd.LabelOfFirstNode) &&
 						!this.LeftHandShape.GetAllLabels().Contains(connectionToAdd.LabelOfSecondNode))
 					{
-						// only one endpoint exists
+						// only endpoint of the first label exists
 						var labelForExistingPoint = connectionToAdd.LabelOfFirstNode;
 						var labelForPointToAssign = connectionToAdd.LabelOfSecondNode;
+
 						Point existingPoint = labelingForGeometryToModify.GetPointByLabel(labelForExistingPoint);
-						var assignedPoint = this.AssignSecondPointForConnection(labelingForGeometryToModify, labelForExistingPoint, labelForPointToAssign);
+						var assignedPoint = this.AssignNewPointByLearning(labelingForGeometryToModify, labelForExistingPoint, labelForPointToAssign);
+
 						geometryToModify.AddSegmentByPoints(existingPoint, assignedPoint);
+						var s = labelingForGeometryToModify.Add(assignedPoint, labelForPointToAssign);
+						Debug.Assert(s);
 					}
 					else if (!this.LeftHandShape.GetAllLabels().Contains(connectionToAdd.LabelOfFirstNode) &&
 						this.LeftHandShape.GetAllLabels().Contains(connectionToAdd.LabelOfSecondNode))
 					{
-						// only one endpoint exists
+						// only endpoint of the second label exists
 						var labelForExistingPoint = connectionToAdd.LabelOfSecondNode;
 						var labelForPointToAssign = connectionToAdd.LabelOfFirstNode;
+
 						Point existingPoint = labelingForGeometryToModify.GetPointByLabel(labelForExistingPoint);
-						var assignedPoint = this.AssignSecondPointForConnection(labelingForGeometryToModify, labelForExistingPoint, labelForPointToAssign);
+						var assignedPoint = this.AssignNewPointByLearning(labelingForGeometryToModify, labelForExistingPoint, labelForPointToAssign);
+
 						geometryToModify.AddSegmentByPoints(existingPoint, assignedPoint);
+						var s = labelingForGeometryToModify.Add(assignedPoint, labelForPointToAssign);
+						Debug.Assert(s);
 					}
 					else
 					{
@@ -234,19 +243,25 @@ namespace ShapeGrammarEngine
 						connectionsToAddQueue.Enqueue(connectionToAdd);
 					}
 				}
+
 				var progressMade = beforeCount < connectionsToAdd.Count;
 				if (!progressMade)
 				{
 					// every remaining connections to add have no existing endpoint
 					var connectionToAdd = connectionsToAddQueue.Dequeue();
-					//var labelForEndPoint1 = 
-					//var labelForEndPoint2 = connectionToAdd.LabelOfFirstNode;
 
+					// Step1: Assign the first node of the connection as if there is a connection between it and one existing point
+					Debug.Assert(labelingForGeometryToModify.Count > 0);
+					var labelForAExistingPoint = labelingForGeometryToModify.GetAllLabels().First(); // just pick a random existing point
+					var labelForThePointOfFirstNode = connectionToAdd.LabelOfFirstNode;
+
+					Point existingPoint = labelingForGeometryToModify.GetPointByLabel(labelForAExistingPoint);
+					Point assignedPoint = this.AssignNewPointByLearning(labelingForGeometryToModify, labelForAExistingPoint, labelForThePointOfFirstNode);
 				}
 			}
 		}
 
-		private Point AssignSecondPointForConnection(LabelingDictionary NewGeometryLabeling, int labelForExistingPoint, int labelForPointToAssign)
+		private Point AssignNewPointByLearning(LabelingDictionary NewGeometryLabeling, int labelForExistingPoint, int labelForPointToAssign)
 		{
 			var existingPoint = NewGeometryLabeling.GetPointByLabel(labelForExistingPoint);
 			var assignedAngle = this.AssignAngle(NewGeometryLabeling, labelForExistingPoint, labelForPointToAssign);
