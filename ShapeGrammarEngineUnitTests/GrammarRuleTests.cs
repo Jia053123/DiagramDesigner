@@ -82,9 +82,149 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
-		public void TestConformWithRule()
+		public void TestConformWithRule_ReturnTrue()
 		{
-			Assert.Fail();
+			//  _________            _________     _________
+			// |        /           |             |        /     
+			// |    /        =>     |             |    /         
+			// |/                   |             |/          
+			//     
+			var geo1L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) },
+				new List<Point>{new Point(1,0), new Point(0, -1)}});
+			var geo1R = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1)},
+				new List<Point>{new Point(5,0), new Point(5,-1), new Point(6, 0), new Point(5, 0) }});
+			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out _);
+			//  _____                _____     _____
+			// |    /               |         |    /     
+			// |  /        =>       |         |  /         
+			// |/                   |         |/          
+			//     
+			var geo2L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(0.5,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) },
+				new List<Point>{new Point(0.5,0), new Point(0, -1)}});
+			var geo2R = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(0.5,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1)},
+				new List<Point>{new Point(5,0), new Point(5,-1) },
+				new List<Point>{new Point(5.5, 0),new Point(5,-1) },
+				new List<Point>{new Point(5, 0), new Point(5.5, 0) }});
+			Assert.IsTrue(rule.ConformWithRule(geo2L, geo2R, out var labeling));
+			var resultL = rule.LeftHandShape.SolveLabeling(geo2L, labeling);
+			var resultR = rule.RightHandShape.SolveLabeling(geo2R, labeling);
+			Assert.IsTrue(resultL.GetAllLabels().SetEquals(labeling.GetAllLabels()));
+			Assert.IsTrue(resultR.GetAllLabels().SetEquals(labeling.GetAllLabels()));
+		}
+
+		[Test]
+		public void TestConformWithRule_RightHandShapeDoesNotConform_ReturnFalse()
+		{
+			//  _________            _________     _________
+			// |        /           |             |        /     
+			// |    /        =>     |             |    /         
+			// |/                   |             |/          
+			//     
+			var geo1L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) },
+				new List<Point>{new Point(1,0), new Point(0, -1)}});
+			var geo1R = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1)},
+				new List<Point>{new Point(5,0), new Point(5,-1), new Point(6, 0), new Point(5, 0) }});
+			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out _);
+			//  _____                _____ _____
+			// |    /               |     |    /     
+			// |  /        =>       |     |  /         
+			// |/                   |     |/          
+			//     
+			var geo2L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(0.5,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) },
+				new List<Point>{new Point(0.5,0), new Point(0, -1)}});
+			var geo2R = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(0.5,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1)},
+				new List<Point>{new Point(0.5,0), new Point(0.5,-1) },
+				new List<Point>{new Point(1, 0),new Point(0.5,-1) },
+				new List<Point>{new Point(0.5, 0), new Point(1, 0) }});
+			Assert.IsFalse(rule.ConformWithRule(geo2L, geo2R, out var labeling));
+			Assert.IsNull(labeling);
+		}
+
+		[Test]
+		public void TestConformWithRule_LeftHandShapeDoesNotConform_ReturnFalse()
+		{
+			//  _________            _________     _________
+			// |        /           |             |        /     
+			// |    /        =>     |             |    /         
+			// |/                   |             |/          
+			//     
+			var geo1L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) },
+				new List<Point>{new Point(1,0), new Point(0, -1)}});
+			var geo1R = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1)},
+				new List<Point>{new Point(5,0), new Point(5,-1), new Point(6, 0), new Point(5, 0) }});
+			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out _);
+			//  _____                _____     _____
+			// |                    |         |    /     
+			// |           =>       |         |  /         
+			// |                    |         |/          
+			//     
+			var geo2L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(0.5,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) }});
+			var geo2R = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(0.5,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1)},
+				new List<Point>{new Point(5,0), new Point(5,-1) },
+				new List<Point>{new Point(5.5, 0),new Point(5,-1) },
+				new List<Point>{new Point(5, 0), new Point(5.5, 0) }});
+			Assert.IsFalse(rule.ConformWithRule(geo2L, geo2R, out var labeling));
+			Assert.IsNull(labeling);
+		}
+
+		[Test]
+		public void TestConformWithRule_BothGeometryMatchBothShapesButDoNotConform_ReturnFalse()
+		{
+			//  _________            _________     _________
+			// |        /           |             |        /     
+			// |    /        =>     |             |    /         
+			// |/                   |             |/          
+			//     
+			var geo1L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) },
+				new List<Point>{new Point(1,0), new Point(0, -1)}});
+			var geo1R = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(1,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1)},
+				new List<Point>{new Point(5,0), new Point(5,-1), new Point(6, 0), new Point(5, 0) }});
+			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out _);
+			//  _____                _____     _____
+			// |                    |         |    /     
+			// |           =>       |         |  /         
+			// |                    |         |/          
+			//                      |
+			//                      |
+			var geo2L = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(0.5,0)},
+				new List<Point>{new Point(0,0), new Point(0,-1) }});
+			var geo2R = new PolylineGeometry(new List<List<Point>> {
+				new List<Point>{new Point(0,0), new Point(0.5,0)},
+				new List<Point>{new Point(0,0), new Point(0,-10)},
+				new List<Point>{new Point(5,0), new Point(5,-1) },
+				new List<Point>{new Point(5.5, 0),new Point(5,-1) },
+				new List<Point>{new Point(5, 0), new Point(5.5, 0) }});
+			Assert.IsFalse(rule.ConformWithRule(geo2L, geo2R, out var labeling));
+			Assert.IsNull(labeling);
 		}
 
 		[Test]
