@@ -164,7 +164,10 @@ namespace ShapeGrammarEngine
 			var resultPolylines = new PolylineGeometry(polyGeo.PolylinesCopy);
 
 			// Step2: add the connections to be added.
-			this.AddConnections(this.ConnectionsToBeAdded(), ref resultPolylines, ref labeling);
+			if (this.ConnectionsToBeAdded().Count > 0)
+			{
+				this.AddConnections(this.ConnectionsToBeAdded(), ref resultPolylines, ref labeling);
+			}
 
 			// Step3: remove the connections to be removed
 			foreach (Connection c in this.ConnectionsToBeRemoved())
@@ -175,7 +178,7 @@ namespace ShapeGrammarEngine
 				resultPolylines.EraseSegmentByPoints(endPoint1, endPoint2);
 			}
 
-			// TODO: check for intersections and overlaps
+			// TODO: check for intersections and overlaps?
 
 			return resultPolylines;
 		}
@@ -192,11 +195,11 @@ namespace ShapeGrammarEngine
 			{
 				throw new ArgumentException("labelingForGeometryToModify does not cover every point in geometryToModify");
 			}
-
 			var connectionsToAddQueue = new Queue<Connection>(connectionsToAdd);
-			while (connectionsToAdd.Count > 0)
+
+			while (connectionsToAddQueue.Count > 0)
 			{
-				int beforeCount = connectionsToAdd.Count;
+				int beforeQueueCount = connectionsToAddQueue.Count;
 				for (int i = 0; i < connectionsToAddQueue.Count; i++)
 				{
 					var connectionToAdd = connectionsToAddQueue.Dequeue();
@@ -244,7 +247,7 @@ namespace ShapeGrammarEngine
 					}
 				}
 
-				var progressMade = beforeCount < connectionsToAdd.Count;
+				var progressMade = beforeQueueCount > connectionsToAddQueue.Count;
 				if (!progressMade)
 				{
 					// every remaining connections to add have no existing endpoint
