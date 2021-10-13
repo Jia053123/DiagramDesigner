@@ -197,7 +197,6 @@ namespace ShapeGrammarEngine
 					this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfSecondNode))
 				{
 					// both endpoints already exist: simply connect the existing points
-					
 					Point endpoint1 = labelingForNewGeometry.GetPointByLabel(newConnection.LabelOfFirstNode);
 					Point endpoint2 = labelingForNewGeometry.GetPointByLabel(newConnection.LabelOfSecondNode);
 					geometryToModify.AddSegmentByPoints(endpoint1, endpoint2);
@@ -244,10 +243,10 @@ namespace ShapeGrammarEngine
 		/// The two points do not have to form a connection
 		/// </summary>
 		/// <param name="newGeometryLabeling"> Labeling for the geometry currently being modified. May contain labels from both left hand and right hand shape </param>
-		/// <param name="labelForExistingPoint"> The label for the point from which the angle is calculated </param>
-		/// <param name="labelForPointToAssign"> The label for the point towards which the angle is calculated </param>
+		/// <param name="labelForPointFrom"> The label for the point from which the angle is calculated </param>
+		/// <param name="labelForPointTowards"> The label for the point towards which the angle is calculated </param>
 		/// <returns> The angle assigned is between -Pi and Pi </returns>
-		internal double AssignAngle(LabelingDictionary newGeometryLabeling, int labelForExistingPoint, int labelForPointToAssign)
+		internal double AssignAngle(LabelingDictionary newGeometryLabeling, int labelForPointFrom, int labelForPointTowards)
 		{
 			var allLabelsInShapes = this.LeftHandShape.GetAllLabels();
 			allLabelsInShapes.UnionWith(this.RightHandShape.GetAllLabels());
@@ -255,11 +254,11 @@ namespace ShapeGrammarEngine
 			{
 				throw new ArgumentException("newGeometryLabeling contains labels not in this rule");
 			}
-			if (! this.RightHandShape.GetAllLabels().Contains(labelForExistingPoint))
+			if (! this.RightHandShape.GetAllLabels().Contains(labelForPointFrom))
 			{
 				throw new ArgumentException("labelForExistingPoint not in right hand shape");
 			}
-			if (!this.RightHandShape.GetAllLabels().Contains(labelForPointToAssign))
+			if (!this.RightHandShape.GetAllLabels().Contains(labelForPointTowards))
 			{
 				throw new ArgumentException("labelForPointToAssign not in right hand shape");
 			}
@@ -281,8 +280,8 @@ namespace ShapeGrammarEngine
 				foreach (RuleApplicationRecord record in this.ApplicationRecords)
 				{
 					// get angle of assigned connection in this record
-					Point pastExistingPoint = record.Labeling.GetPointByLabel(labelForExistingPoint);
-					Point pastAssignedPoint = record.Labeling.GetPointByLabel(labelForPointToAssign);
+					Point pastExistingPoint = record.Labeling.GetPointByLabel(labelForPointFrom);
+					Point pastAssignedPoint = record.Labeling.GetPointByLabel(labelForPointTowards);
 					double pastAssignedAngle = pastExistingPoint.AngleTowardsPoint(pastAssignedPoint);
 
 					// get angle of potential reference connection
@@ -320,10 +319,10 @@ namespace ShapeGrammarEngine
 		/// The two points do not have to form a connection
 		/// </summary>
 		/// <param name="newGeometryLabeling"> Labeling for the geometry currently being modified. May contain labels from both left hand and right hand shape </param>
-		/// <param name="labelForExistingPoint"> The label for the point from which the angle is calculated </param>
-		/// <param name="labelForPointToAssign"> The label for the point towards which the angle is calculated </param>
+		/// <param name="labelForPoint1"> The label for the point from which the angle is calculated </param>
+		/// <param name="labelForPoint2"> The label for the point towards which the angle is calculated </param>
 		/// <returns> The assigned length is always positive </returns>
-		internal double AssignLength(LabelingDictionary newGeometryLabeling, int labelForExistingPoint, int labelForPointToAssign)
+		internal double AssignLength(LabelingDictionary newGeometryLabeling, int labelForPoint1, int labelForPoint2)
 		{
 			var allLabelsInShapes = this.LeftHandShape.GetAllLabels();
 			allLabelsInShapes.UnionWith(this.RightHandShape.GetAllLabels());
@@ -331,11 +330,11 @@ namespace ShapeGrammarEngine
 			{
 				throw new ArgumentException("newGeometryLabeling contains labels not in this rule");
 			}
-			if (!this.RightHandShape.GetAllLabels().Contains(labelForExistingPoint))
+			if (!this.RightHandShape.GetAllLabels().Contains(labelForPoint1))
 			{
 				throw new ArgumentException("labelForExistingPoint not in right hand shape");
 			}
-			if (!this.RightHandShape.GetAllLabels().Contains(labelForPointToAssign))
+			if (!this.RightHandShape.GetAllLabels().Contains(labelForPoint2))
 			{
 				throw new ArgumentException("labelForPointToAssign not in right hand shape");
 			}
@@ -357,8 +356,8 @@ namespace ShapeGrammarEngine
 				foreach (RuleApplicationRecord record in this.ApplicationRecords)
 				{
 					// get length of assigned connection in this record
-					Point pastExistingPoint = record.Labeling.GetPointByLabel(labelForExistingPoint);
-					Point pastAssignedPoint = record.Labeling.GetPointByLabel(labelForPointToAssign);
+					Point pastExistingPoint = record.Labeling.GetPointByLabel(labelForPoint1);
+					Point pastAssignedPoint = record.Labeling.GetPointByLabel(labelForPoint2);
 					double pastAssignedLength = Point.DistanceBetweenPoints(pastExistingPoint, pastAssignedPoint);
 					Debug.Assert(pastAssignedLength > 0);
 
