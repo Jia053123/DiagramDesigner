@@ -70,6 +70,46 @@ namespace ShapeGrammarEngine
 			}
 		}
 
+		public bool Remove(Point point)
+		{
+			if (this.allPoints.Contains(point))
+			{
+				int label;
+				this.dictionary.TryGetValue(point, out label);
+
+				this.dictionary.Remove(point);
+				this.reversedDictionary.Remove(label);
+				this.allPoints.Remove(point);
+				this.allLabels.Remove(label);
+
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		public bool Remove(int label)
+		{
+			if (this.allLabels.Contains(label))
+			{
+				Point point;
+				this.reversedDictionary.TryGetValue(label, out point);
+
+				this.dictionary.Remove(point);
+				this.reversedDictionary.Remove(label);
+				this.allPoints.Remove(point);
+				this.allLabels.Remove(label);
+
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
 		public Point GetPointByLabel(int label)
 		{
 			var s = this.reversedDictionary.TryGetValue(label, out var p);

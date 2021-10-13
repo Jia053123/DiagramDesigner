@@ -27,7 +27,7 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
-		public void TestAddAndGet_NormalCases()
+		public void TestAddAndGet()
 		{
 			var labeling = new LabelingDictionary();
 			var s1 = labeling.Add(new Point(0, 0), 2);
@@ -44,6 +44,48 @@ namespace ShapeGrammarEngine.UnitTests
 			Assert.AreEqual(new Point(0, 1), labeling.GetPointByLabel(4));
 			Assert.Throws<ArgumentException>(() => labeling.GetLabelByPoint(new Point(1, 0)));
 			Assert.Throws<ArgumentException>(() => labeling.GetPointByLabel(1));
+		}
+
+		[Test]
+		public void TestRemoveByPoint()
+		{
+			var labeling = new LabelingDictionary();
+			labeling.Add(new Point(0, 0), 2);
+			labeling.Add(new Point(1, 1), 5);
+			labeling.Add(new Point(2, 2), 10);
+
+			var s1 = labeling.Remove(new Point(1, 1));
+			Assert.IsTrue(s1);
+			Assert.IsFalse(labeling.GetAllPoints().Contains(new Point(1, 1)));
+			Assert.IsFalse(labeling.GetAllLabels().Contains(5));
+			Assert.IsTrue(labeling.DoesContainPair(new Point(0, 0), 2));
+			Assert.IsTrue(labeling.DoesContainPair(new Point(2, 2), 10));
+
+			var s2 = labeling.Remove(new Point(100, 100));
+			Assert.IsFalse(s2);
+			Assert.IsTrue(labeling.DoesContainPair(new Point(0, 0), 2));
+			Assert.IsTrue(labeling.DoesContainPair(new Point(2, 2), 10));
+		}
+
+		[Test]
+		public void TestRemoveByLabel()
+		{
+			var labeling = new LabelingDictionary();
+			labeling.Add(new Point(0, 0), 2);
+			labeling.Add(new Point(1, 1), 5);
+			labeling.Add(new Point(2, 2), 10);
+
+			var s1 = labeling.Remove(5);
+			Assert.IsTrue(s1);
+			Assert.IsFalse(labeling.GetAllPoints().Contains(new Point(1, 1)));
+			Assert.IsFalse(labeling.GetAllLabels().Contains(5));
+			Assert.IsTrue(labeling.DoesContainPair(new Point(0, 0), 2));
+			Assert.IsTrue(labeling.DoesContainPair(new Point(2, 2), 10));
+
+			var s2 = labeling.Remove(100);
+			Assert.IsFalse(s2);
+			Assert.IsTrue(labeling.DoesContainPair(new Point(0, 0), 2));
+			Assert.IsTrue(labeling.DoesContainPair(new Point(2, 2), 10));
 		}
 
 		[Test]

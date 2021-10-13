@@ -168,23 +168,22 @@ namespace ShapeGrammarEngine
 			}
 
 			// Step3: add the connections to be added. If intersection happens, retry
-			var connectionsToAdd = new Queue<Connection>(this.ConnectionsToBeAdded());
-			bool progressMade;
-			while (connectionsToAdd.Count > 0)
-			{
-				int beforeCount = connectionsToAdd.Count;
-				this.TryAddingConnections(ref connectionsToAdd, ref resultPolylines, ref labeling);
-				progressMade = beforeCount < connectionsToAdd.Count;
-				if (!progressMade)
-				{
-					// TODO: define one connection using a hypothetical connection, allowing intersection. This one will be marked to be removed
-					throw new NotImplementedException();
-				}
-			}
+			//var connectionsToAdd = new Queue<Connection>(this.ConnectionsToBeAdded());
+			//bool progressMade;
+			//while (connectionsToAdd.Count > 0)
+			//{
+				//int beforeCount = connectionsToAdd.Count;
+				this.AddConnections(this.ConnectionsToBeAdded(), ref resultPolylines, ref labeling);
+				//progressMade = beforeCount < connectionsToAdd.Count;
+				//if (!progressMade)
+				//{
+				//	// TODO: define one connection using a hypothetical connection, allowing intersection. This one will be marked to be removed
+				//	throw new NotImplementedException();
+				//}
+			//}
 
 			return resultPolylines;
 		}
-
 
 		/// <summary>
 		/// Add connections if there are at least one end point already in geometry
@@ -192,42 +191,57 @@ namespace ShapeGrammarEngine
 		/// <param name="connectionsToAdd"> The connections to try adding. Any unadded connection would remain after this returns </param>
 		/// <param name="geometryToModify"> The geometry that's being modified.  </param>
 		/// <param name="labelingForGeometryToModify"></param>
-		private void TryAddingConnections( ref Queue<Connection> connectionsToAdd, ref PolylineGeometry geometryToModify, ref LabelingDictionary labelingForGeometryToModify)
+		private void AddConnections(HashSet<Connection> connectionsToAdd, ref PolylineGeometry geometryToModify, ref LabelingDictionary labelingForGeometryToModify)
 		{
-			for (int i = 0; i < connectionsToAdd.Count; i++)
+			var connectionsToAddQueue = new Queue<Connection>(connectionsToAdd);
+			while (connectionsToAdd.Count > 0)
 			{
-				var newConnection = connectionsToAdd.Dequeue();
-				if (this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfFirstNode) &&
-					this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfSecondNode))
+				int beforeCount = connectionsToAdd.Count;
+				for (int i = 0; i < connectionsToAddQueue.Count; i++)
 				{
-					// both endpoints already exist: simply connect the existing points
-					Point endpoint1 = labelingForGeometryToModify.GetPointByLabel(newConnection.LabelOfFirstNode);
-					Point endpoint2 = labelingForGeometryToModify.GetPointByLabel(newConnection.LabelOfSecondNode);
-					geometryToModify.AddSegmentByPoints(endpoint1, endpoint2);
+					var connectionToAdd = connectionsToAddQueue.Dequeue();
+					if (this.LeftHandShape.GetAllLabels().Contains(connectionToAdd.LabelOfFirstNode) &&
+						this.LeftHandShape.GetAllLabels().Contains(connectionToAdd.LabelOfSecondNode))
+					{
+						// both endpoints already exist: simply connect the existing points
+						Point endpoint1 = labelingForGeometryToModify.GetPointByLabel(connectionToAdd.LabelOfFirstNode);
+						Point endpoint2 = labelingForGeometryToModify.GetPointByLabel(connectionToAdd.LabelOfSecondNode);
+						geometryToModify.AddSegmentByPoints(endpoint1, endpoint2);
+					}
+					else if (this.LeftHandShape.GetAllLabels().Contains(connectionToAdd.LabelOfFirstNode) &&
+						!this.LeftHandShape.GetAllLabels().Contains(connectionToAdd.LabelOfSecondNode))
+					{
+						// only one endpoint exists
+						var labelForExistingPoint = connectionToAdd.LabelOfFirstNode;
+						var labelForPointToAssign = connectionToAdd.LabelOfSecondNode;
+						Point existingPoint = labelingForGeometryToModify.GetPointByLabel(labelForExistingPoint);
+						var assignedPoint = this.AssignSecondPointForConnection(labelingForGeometryToModify, labelForExistingPoint, labelForPointToAssign);
+						geometryToModify.AddSegmentByPoints(existingPoint, assignedPoint);
+					}
+					else if (!this.LeftHandShape.GetAllLabels().Contains(connectionToAdd.LabelOfFirstNode) &&
+						this.LeftHandShape.GetAllLabels().Contains(connectionToAdd.LabelOfSecondNode))
+					{
+						// only one endpoint exists
+						var labelForExistingPoint = connectionToAdd.LabelOfSecondNode;
+						var labelForPointToAssign = connectionToAdd.LabelOfFirstNode;
+						Point existingPoint = labelingForGeometryToModify.GetPointByLabel(labelForExistingPoint);
+						var assignedPoint = this.AssignSecondPointForConnection(labelingForGeometryToModify, labelForExistingPoint, labelForPointToAssign);
+						geometryToModify.AddSegmentByPoints(existingPoint, assignedPoint);
+					}
+					else
+					{
+						// neither endpoints exist yet: leave it for later
+						connectionsToAddQueue.Enqueue(connectionToAdd);
+					}
 				}
-				else if (this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfFirstNode) && 
-					!this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfSecondNode))
+				var progressMade = beforeCount < connectionsToAdd.Count;
+				if (!progressMade)
 				{
-					var labelForExistingPoint = newConnection.LabelOfFirstNode;
-					var labelForPointToAssign = newConnection.LabelOfSecondNode;
-					Point existingPoint = labelingForGeometryToModify.GetPointByLabel(labelForExistingPoint);
-					var assignedPoint = this.AssignSecondPointForConnection(labelingForGeometryToModify, labelForExistingPoint, labelForPointToAssign);
-					geometryToModify.AddSegmentByPoints(existingPoint, assignedPoint);
-				}
-				else if (!this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfFirstNode) && 
-					this.LeftHandShape.GetAllLabels().Contains(newConnection.LabelOfSecondNode))
-				{
-					var labelForExistingPoint = newConnection.LabelOfSecondNode;
-					var labelForPointToAssign = newConnection.LabelOfFirstNode;
+					// every remaining connections to add have no existing endpoint
+					var connectionToAdd = connectionsToAddQueue.Dequeue();
+					//var labelForEndPoint1 = 
+					//var labelForEndPoint2 = connectionToAdd.LabelOfFirstNode;
 
-					Point existingPoint = labelingForGeometryToModify.GetPointByLabel(labelForExistingPoint);
-					var assignedPoint = this.AssignSecondPointForConnection(labelingForGeometryToModify, labelForExistingPoint, labelForPointToAssign);
-					geometryToModify.AddSegmentByPoints(existingPoint, assignedPoint);
-				}
-				else
-				{
-					// neither endpoints exist yet: leave it for later
-					connectionsToAdd.Enqueue(newConnection);
 				}
 			}
 		}
