@@ -159,19 +159,7 @@ namespace ShapeGrammarEngine
 			var resultPolylines = new PolylineGeometry(polyGeo.PolylinesCopy);
 
 			// Step2: add the connections to be added. If intersection happens, retry
-			//var connectionsToAdd = new Queue<Connection>(this.ConnectionsToBeAdded());
-			//bool progressMade;
-			//while (connectionsToAdd.Count > 0)
-			//{
-				//int beforeCount = connectionsToAdd.Count;
-				this.AddConnections(this.ConnectionsToBeAdded(), ref resultPolylines, ref labeling);
-			//progressMade = beforeCount < connectionsToAdd.Count;
-			//if (!progressMade)
-			//{
-			//	// TODO: define one connection using a hypothetical connection, allowing intersection. This one will be marked to be removed
-			//	throw new NotImplementedException();
-			//}
-			//}
+			this.AddConnections(this.ConnectionsToBeAdded(), ref resultPolylines, ref labeling);
 
 			// Step3: remove the connections to be removed
 			foreach (Connection c in this.ConnectionsToBeRemoved())
@@ -193,6 +181,11 @@ namespace ShapeGrammarEngine
 		/// <param name="labelingForGeometryToModify"></param>
 		private void AddConnections(HashSet<Connection> connectionsToAdd, ref PolylineGeometry geometryToModify, ref LabelingDictionary labelingForGeometryToModify)
 		{
+			if (!geometryToModify.GetAllPoints().IsSubsetOf(labelingForGeometryToModify.GetAllPoints()))
+			{
+				throw new ArgumentException("labelingForGeometryToModify does not cover every point in geometryToModify");
+			}
+
 			var connectionsToAddQueue = new Queue<Connection>(connectionsToAdd);
 			while (connectionsToAdd.Count > 0)
 			{
@@ -256,7 +249,19 @@ namespace ShapeGrammarEngine
 					var labelForThePointOfFirstNode = connectionToAdd.LabelOfFirstNode;
 
 					Point existingPoint = labelingForGeometryToModify.GetPointByLabel(labelForAExistingPoint);
-					Point assignedPoint = this.AssignNewPointByLearning(labelingForGeometryToModify, labelForAExistingPoint, labelForThePointOfFirstNode);
+					Point assignedPointOfFirstNode = this.AssignNewPointByLearning(labelingForGeometryToModify, labelForAExistingPoint, labelForThePointOfFirstNode);
+
+					// Step2: Add the assignedPointOfFirstNode and its label into the labelForExistingPoint in advance
+					var s1 = labelingForGeometryToModify.Add(assignedPointOfFirstNode, labelForThePointOfFirstNode);
+					Debug.Assert(s1);
+
+					// Step3: Assign the second node of the connection given the assigned first node
+					var labelForThePointOfSecondNode = connectionToAdd.LabelOfSecondNode;
+					Point assignedPointOfSecondNode = this.AssignNewPointByLearning(labelingForGeometryToModify, labelForThePointOfFirstNode, labelForThePointOfSecondNode);
+
+					geometryToModify.AddSegmentByPoints(assignedPointOfFirstNode, assignedPointOfSecondNode);
+					var s2 = labelingForGeometryToModify.Add(assignedPointOfSecondNode, labelForThePointOfSecondNode);
+					Debug.Assert(s2);
 				}
 			}
 		}
