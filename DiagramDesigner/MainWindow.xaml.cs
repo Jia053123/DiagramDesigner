@@ -55,8 +55,8 @@ namespace DiagramDesigner
                 case "State":
                     this.MatchStateToModelState();
                     break;
-                case "IsOrthogonalityToggleEnabled":
-                    this.OrthogonalityCheckBox.IsEnabled = this.MainViewModel.IsOrthogonalityToggleEnabled;
+                case "DoesAcceptChangeInOrthogonalityOption":
+                    this.OrthogonalityCheckBox.IsEnabled = this.MainViewModel.DoesAcceptChangeInOrthogonalityOption;
                     break;
             }
         }

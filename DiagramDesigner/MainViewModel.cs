@@ -37,7 +37,7 @@ namespace DiagramDesigner
         {
             private set 
             {
-                this.IsOrthogonalityToggleEnabled = value != MainViewModelState.ViewingState;
+                this.DoesAcceptChangeInOrthogonalityOption = value != MainViewModelState.ViewingState;
                 SetProperty(ref _state, value); 
             }
             get { return this._state; }
@@ -45,11 +45,11 @@ namespace DiagramDesigner
 
         public bool IsDrawingOrthogonally { get; private set; } = true;
 
-        private bool _isOrthogonalityToggleEnabled = true;
-        public bool IsOrthogonalityToggleEnabled
+        private bool _doesAcceptChangeInOrthogonalityOption = true;
+        public bool DoesAcceptChangeInOrthogonalityOption
 		{
-            private set { SetProperty(ref _isOrthogonalityToggleEnabled, value); }
-            get { return this._isOrthogonalityToggleEnabled; }
+            private set { SetProperty(ref _doesAcceptChangeInOrthogonalityOption, value); }
+            get { return this._doesAcceptChangeInOrthogonalityOption; }
         }
 
         public ICommand StartDrawingCommand { set; get; }
@@ -209,8 +209,11 @@ namespace DiagramDesigner
 
         private void ExecuteToggleOrthogonalDrawing(object obj)
 		{
-            bool isOrthogonal = (bool)obj;
-            this.IsDrawingOrthogonally = isOrthogonal;
+            if (this.DoesAcceptChangeInOrthogonalityOption)
+			{
+                bool isOrthogonal = (bool)obj;
+                this.IsDrawingOrthogonally = isOrthogonal;
+            }
 		}
 
         public void HandleMouseMovedEvent(object sender, EventArgs e)
