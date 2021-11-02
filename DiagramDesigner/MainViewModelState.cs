@@ -4,6 +4,7 @@
 	{
 		ViewingState,
 		ContextPickingState,
-		EditingState
+		NormalEditingState,
+		RuleCreationEditingState
 	}
 }

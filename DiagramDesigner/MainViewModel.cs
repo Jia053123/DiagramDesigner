@@ -43,7 +43,7 @@ namespace DiagramDesigner
             get { return this._state; }
         }
 
-        public bool IsDrawingOrthogonally { get; private set; } = true;
+        public bool IsDrawingOrthogonally { get; private set; } = false; 
 
         private bool _doesAcceptChangeInOrthogonalityOption = true;
         public bool DoesAcceptChangeInOrthogonalityOption
@@ -153,7 +153,7 @@ namespace DiagramDesigner
         private void ExecuteStartDrawing(object obj)
 		{
             this.Model.CreateNewWallEntity();
-            this.State = MainViewModelState.EditingState;
+            this.State = MainViewModelState.NormalEditingState;
         }
 
         private void ExecuteEndDrawing(object obj)
@@ -175,7 +175,7 @@ namespace DiagramDesigner
 
 
 
-            this.State = MainViewModelState.EditingState;
+            this.State = MainViewModelState.RuleCreationEditingState;
 		}
 
         private void ExecuteDoneAddingRule(object obj)
@@ -221,7 +221,8 @@ namespace DiagramDesigner
             var mea = (MouseEventArgs)e;
             switch (this.State)
             {
-                case MainViewModelState.EditingState:
+                case MainViewModelState.NormalEditingState:
+                case MainViewModelState.RuleCreationEditingState: 
 					if (this.NewEdgePreviewData != null)
 					{
 						this.NewEdgePreviewData.EndPoint = new WinPoint(mea.LocationX, mea.LocationY);
@@ -238,7 +239,8 @@ namespace DiagramDesigner
             var mea = (MouseEventArgs)e;
             switch (this.State)
             {
-                case MainViewModelState.EditingState:
+                case MainViewModelState.NormalEditingState:
+                case MainViewModelState.RuleCreationEditingState:
                     this.MouseLeftClickedInEditingState(mea);
 					break;
                 case MainViewModelState.ContextPickingState:

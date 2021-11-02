@@ -67,18 +67,32 @@ namespace DiagramDesigner
             {
                 case MainViewModelState.ViewingState:
                     this.PrimaryDiagramCanvas.Cursor = Cursors.Arrow;
+                    this.StartDrawingButton.IsEnabled = true;
+                    this.DoneDrawingButton.IsEnabled = false;
                     this.AddNewRuleButton.IsEnabled = true;
+                    this.DoneAddingRuleButton.IsEnabled = false;
+                    this.DonePickingContextButton.IsEnabled = false;
+                    break;
+                case MainViewModelState.NormalEditingState:
+                    this.PrimaryDiagramCanvas.Cursor = Cursors.Cross;
+                    this.StartDrawingButton.IsEnabled = false;
+                    this.DoneDrawingButton.IsEnabled = true;
+                    this.AddNewRuleButton.IsEnabled = false;
                     this.DoneAddingRuleButton.IsEnabled = false;
                     this.DonePickingContextButton.IsEnabled = false;
                     break;
                 case MainViewModelState.ContextPickingState:
                     this.PrimaryDiagramCanvas.Cursor = Cursors.Hand;
+                    this.StartDrawingButton.IsEnabled = false;
+                    this.DoneDrawingButton.IsEnabled = false;
                     this.AddNewRuleButton.IsEnabled = false;
                     this.DoneAddingRuleButton.IsEnabled = false;
                     this.DonePickingContextButton.IsEnabled = true;
                     break;
-                case MainViewModelState.EditingState:
+                case MainViewModelState.RuleCreationEditingState:
                     this.PrimaryDiagramCanvas.Cursor = Cursors.Cross;
+                    this.StartDrawingButton.IsEnabled = false;
+                    this.DoneDrawingButton.IsEnabled = false;
                     this.AddNewRuleButton.IsEnabled = false;
                     this.DoneAddingRuleButton.IsEnabled = true;
                     this.DonePickingContextButton.IsEnabled = false;
