@@ -52,6 +52,8 @@ namespace DiagramDesigner
             get { return this._isOrthogonalityToggleEnabled; }
         }
 
+        public ICommand StartDrawingCommand { set; get; }
+        public ICommand EndDrawingCommand { set; get; }
         public ICommand AddNewRuleCommand { set; get; }
         public ICommand DonePickingContextCommand { set; get; }
         public ICommand DoneAddingRuleCommand { set; get; }
@@ -66,6 +68,8 @@ namespace DiagramDesigner
 
         public MainViewModel()
         {
+            this.StartDrawingCommand = new DelegateCommand(ExecuteStartDrawing);
+            this.EndDrawingCommand = new DelegateCommand(ExecuteEndDrawing);
             this.AddNewRuleCommand = new DelegateCommand(ExecuteAddNewRule);
             this.DonePickingContextCommand = new DelegateCommand(ExecuteDonePickingContext);
             this.DoneAddingRuleCommand = new DelegateCommand(ExecuteDoneAddingRule);
@@ -139,6 +143,25 @@ namespace DiagramDesigner
             }
 		}
 
+        private void CleanUpTempDataForDrawing()
+		{
+            this.NewEdgePreviewData = null;
+            this.LastAddedPoint = null;
+            this.HandelGraphicsModified(this, null);
+        }
+
+        private void ExecuteStartDrawing(object obj)
+		{
+            this.Model.CreateNewWallEntity();
+            this.State = MainViewModelState.EditingState;
+        }
+
+        private void ExecuteEndDrawing(object obj)
+		{
+            this.State = MainViewModelState.ViewingState;
+            this.CleanUpTempDataForDrawing();
+        }
+
         private void ExecuteAddNewRule(object obj)
         {
             this.Model.CreateNewWallEntity();
@@ -158,9 +181,7 @@ namespace DiagramDesigner
         private void ExecuteDoneAddingRule(object obj)
         {
             this.State = MainViewModelState.ViewingState;
-            this.NewEdgePreviewData = null;
-            this.LastAddedPoint = null;
-            this.HandelGraphicsModified(this, null);
+            this.CleanUpTempDataForDrawing();
         }
 
         private void ExecuteClearGeometry(object obj)
