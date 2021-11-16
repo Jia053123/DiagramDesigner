@@ -9,6 +9,7 @@ using System.Data;
 using DiagramDesignerModel;
 using System.Diagnostics;
 using BasicGeometries;
+using ShapeGrammarEngine;
 
 namespace DiagramDesigner
 {
@@ -20,7 +21,8 @@ namespace DiagramDesigner
         private DDModel Model = new DDModel();
         public double DisplayUnitOverRealUnit { get; set; } = 5;
         public DataTable ProgramRequirementsDataTable => this.Model.ProgramRequirements;
-        public DataTable CurrentRulesTable => this.Model.CurrentRules;
+        public DataTable GrammarRulesDataTable => this.Model.CurrentRules;
+        public DataTable LayersDataTable { get; } = new LayersDataTable(); // TODO: should this be stored here? 
         public ProgramsSummaryTable CurrentProgramsDataTable { get;} = new ProgramsSummaryTable(); // for the pie chart
         public List<List<WinPoint>> WallsToRender { get; private set; }
         public List<Tuple<int, int, int>> WallsToHighlight { get; private set; } = new List<Tuple<int, int, int>>();
@@ -52,6 +54,7 @@ namespace DiagramDesigner
             get { return this._doesAcceptChangeInOrthogonalityOption; }
         }
 
+        public ICommand AddNewLayerCommand { set; get; }
         public ICommand StartDrawingCommand { set; get; }
         public ICommand EndDrawingCommand { set; get; }
         public ICommand AddNewRuleCommand { set; get; }
@@ -68,6 +71,7 @@ namespace DiagramDesigner
 
         public MainViewModel()
         {
+            this.AddNewLayerCommand = new DelegateCommand(ExecuteAddNewLayer);
             this.StartDrawingCommand = new DelegateCommand(ExecuteStartDrawing);
             this.EndDrawingCommand = new DelegateCommand(ExecuteEndDrawing);
             this.AddNewRuleCommand = new DelegateCommand(ExecuteAddNewRule);
@@ -150,6 +154,18 @@ namespace DiagramDesigner
             this.HandelGraphicsModified(this, null);
         }
 
+        private void ExecuteAddNewLayer(object obj)
+		{
+            try
+            {
+                this.LayersDataTable.Rows.Add(this.LayersDataTable.NewRow());
+            }
+            catch (System.Data.ConstraintException ex)
+            {
+                Logger.Error(ex, "Layers Table Constraint Failed");
+            }
+        }
+
         private void ExecuteStartDrawing(object obj)
 		{
             this.Model.CreateNewWallEntity();
@@ -180,6 +196,18 @@ namespace DiagramDesigner
 
         private void ExecuteDoneAddingRule(object obj)
         {
+            // create the rule
+            // TODO: stub
+            try
+            {
+                this.GrammarRulesDataTable.Rows.Add(this.GrammarRulesDataTable.NewRow());
+            }
+            catch (System.Data.ConstraintException ex)
+            {
+                Logger.Error(ex, "Grammar Table Constraint Failed");
+            }
+
+
             this.State = MainViewModelState.ViewingState;
             this.CleanUpTempDataForDrawing();
         }

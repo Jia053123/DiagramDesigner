@@ -23,6 +23,12 @@ namespace DiagramDesigner
             this.PrimaryDiagramCanvas.MouseMovedEventHandler += this.MainViewModel.HandleMouseMovedEvent;
             this.PrimaryDiagramCanvas.MouseLeftClickedEventHandler += this.MainViewModel.HandleMouseLeftClickedEvent;
 
+            this.CurrentLayersTable.IsReadOnly = false;
+            this.CurrentLayersTable.DataContext = this.MainViewModel.LayersDataTable;
+            
+            this.CurrentRulesTable.IsReadOnly = false;
+            this.CurrentRulesTable.DataContext = this.MainViewModel.GrammarRulesDataTable;
+
             this.ProgramRequirementsTable.IsReadOnly = false; // unlock table
             this.ProgramRequirementsTable.DataContext = this.MainViewModel.ProgramRequirementsDataTable;
             this.MainViewModel.ProgramRequirementsDataTable.ColumnChanged += this.OnProgramRequirementsTableChanged;
@@ -30,8 +36,6 @@ namespace DiagramDesigner
             this.MainViewModel.ProgramRequirementsDataTable.TableNewRow += this.OnProgramRequirementsTableChanged;
             this.MainViewModel.ProgramRequirementsDataTable.RowDeleted += this.OnProgramRequirementsTableChanged;
             this.MainViewModel.ProgramRequirementsDataTable.TableCleared += this.OnProgramRequirementsTableChanged;
-
-            this.CurrentRulesTable.DataContext = this.MainViewModel.CurrentRulesTable;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

@@ -10,8 +10,8 @@
         <StackPanel Orientation="Vertical" Width="300" DockPanel.Dock="Left" Background="LightGray">
             <TextBlock Name="ShapeGrammarLabel" Text="Shape Definitions" FontSize="15" FontStyle="Italic" HorizontalAlignment="Center" Margin="10,10,10,10"></TextBlock>
 
-            <DataGrid x:Name="CurrentLayersTable" Margin="10,10,10,10"></DataGrid>
-            <Button Content="Add New Layer" Width="100" HorizontalAlignment="Center" Margin="10,10,10,10"/>
+            <DataGrid x:Name="CurrentLayersTable"  ItemsSource="{Binding}"  IsReadOnly="False" Margin="10,10,10,10"></DataGrid>
+            <Button Content="Add New Layer" Width="100" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding AddNewLayerCommand}"/>
 
             <Button x:Name="StartDrawingButton" Content="Start Drawing" Width="120" HorizontalAlignment="Center" Margin="10,10,10,1" Command="{Binding StartDrawingCommand}"/>
             <Button x:Name="DoneDrawingButton" Content="Done Drawing" IsEnabled="False" Width="120" HorizontalAlignment="Center" Margin="10,1,10,1"  Command="{Binding EndDrawingCommand}"/>
