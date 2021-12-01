@@ -2,3 +2,17 @@
 Screen Recording (alpha): https://vimeo.com/591414378 
 
 A Windows application that intends to make computational design more like sketching than math. The core feature is to run layout optimization algorithms on shape grammars to produce architecture program diagrams that both follow the aesthetic rules and satisfy the program requirements. Most importantly, the shape grammars are to be machine-learned from the sketched examples provided by the designer. 
+
+## Algorithm for Room Finding
+First, the lines are broken down so that no two lines intersect either in X shape or T shape. The only from of contact between two lines is end-to-end. In this state, any line without both endpoints being connected to some other lines are removed because they can never be a part of a room. 
+
+Second, we need to find the boundary of the whole geometry. Start with the upper right point, which is guaranteed to be part of the boundary, then traversal the geometry by always turning the largest corners when the path diverges. In this way, we are guaranteed to return to the starting point, and the path from the boundary. 
+
+Third, iterate through all lines not on boundary to figure out which ones are inside the boundary and which ones are outside. The ones inside, along with the boundary, are made into a new Fragment object. The rest will go again from the first step and repeat until there is no line left. 
+
+Once we have a Fragment, a traversal algorithms similar to classic depth-first graph traversal is used to find a path from one point on the boundary to another. This path is guaranteed to split the Fragment into two, making two smaller Fragment objects. If no such path can be found, this is a room. The area of the room can be easily calculated as its boundary is a known polyline shape. 
+
+## Shape Definition
+
+
+## Approaches for Right Hand Shape Generation
