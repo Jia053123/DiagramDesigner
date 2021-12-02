@@ -20,4 +20,11 @@ There are two parts of a rule definition. The first part consists of the definit
 The second part is the history of the applications of this rule. Each record would contain the exact coordination of each point and which point correspoind to which node. This data is used to compliment the extreme liberal nature of the graph definition of the shapes so that they can be generated following the user's expectations. 
 
 ## Approaches for Right Hand Shape Generation
-This is a big topic, so at the moment I will only describe my current solution: 
+A key operation is to generate the RHS given the geometry for the LHS. This is a big topic, so at the moment I will only describe my current solution. 
+
+An important topic in architecture is proportion, so it is assumed that the designer often want to keep many lines in the shape in constant proportion to each other. Therefore, when a new line is to be generated with one known endpoint, we go through each application record and find the line in the LHS that is of the most consistant proportion in length to the line to be generated, then then generate the new line by applying the same proportion on the line with found on the current LHS. Angle is treated similarly except difference is used instead of proportion. 
+
+If both endpoints are unknown, we assume an imaginary line between one of the points to an existing point and define this imaginary line by the same process as above before defining the new line. 
+
+## Relation to Designers
+A good computational tool should not play the designer. It must know when to stop. That's why I want the designers to know the rules they are defining and make the optimization process, if not the exact mechanisms, easy to understand. I want the system to be transparent so that the designers are in total control of the process and understand its limitations. 
