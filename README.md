@@ -3,6 +3,11 @@ Screen Recording (alpha): https://vimeo.com/591414378
 
 A Windows application that intends to make computational design more like sketching than math. The core feature is to run layout optimization algorithms on shape grammars to produce architecture program diagrams that both follow the aesthetic rules and satisfy the program requirements. Most importantly, the shape grammars are to be machine-learned from the sketched examples provided by the designer. 
 
+## Software Architecture
+This application follows the MVVM pattern. The view, MainWindow.xaml, is implemented with WPF. The view model, MainViewModel.cs, stores data necessary to display the view, such as the lines in the diagram represented by coordinates on screen. The model, DDModel.cs, stores the collection of walls and other entities in real-world units that represents the current description of the diagram. It also stores program information and shape grammar definitions. 
+
+Currently, DiagramDesignerEngine.csproj contains the algorithm for finding rooms from the diagrams, and ShapeGrammarEngine.csproj contains classes related to shape grammar. 
+
 ## Algorithm for Room Finding
 First, the lines are broken down so that no two lines intersect either in X shape or T shape. The only from of contact between two lines is end-to-end. In this state, any line without both endpoints being connected to some other lines are removed because they can never be a part of a room. 
 
@@ -17,12 +22,12 @@ Each shape is defined as a graph. A geometry is of a shape if and only if there 
 
 There are two parts of a rule definition. The first part consists of the definition of the LHS (left hand shape) and the definition of the RHS (right hand shape). Each node in each shape is labeled in order to express which nodes remains the same from LHS to RHS and which nodes have to be removed or generated. This part of the definition is used to check whether a user-provided rule application sample is valid. 
 
-The second part is the history of the applications of this rule. Each record would contain the exact coordination of each point and which point correspoind to which node. This data is used to compliment the extreme liberal nature of the graph definition of the shapes so that they can be generated following the user's expectations. 
+The second part is the history of the applications of this rule. Each record would contain the exact coordination of each point and which point correspond to which node. This data is used to compliment the extreme liberal nature of the graph definition of the shapes so that they can be generated following the user's expectations. 
 
 ## Approaches for Right Hand Shape Generation
 A key operation is to generate the RHS given the geometry for the LHS. This is a big topic, so at the moment I will only describe my current solution. 
 
-An important topic in architecture is proportion, so it is assumed that the designer often want to keep many lines in the shape in constant proportion to each other. Therefore, when a new line is to be generated with one known endpoint, we go through each application record and find the line in the LHS that is of the most consistant proportion in length to the line to be generated, then then generate the new line by applying the same proportion on the line with found on the current LHS. Angle is treated similarly except difference is used instead of proportion. 
+An important topic in architecture is proportion, so it is assumed that the designer often want to keep many lines in the shape in constant proportion to each other. Therefore, when a new line is to be generated with one known endpoint, we go through each application record and find the line in the LHS that is of the most consistent proportion in length to the line to be generated, then then generate the new line by applying the same proportion on the line with found on the current LHS. Angle is treated similarly except difference is used instead of proportion. 
 
 If both endpoints are unknown, we assume an imaginary line between one of the points to an existing point and define this imaginary line by the same process as above before defining the new line. 
 
