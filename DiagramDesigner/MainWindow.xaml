@@ -8,7 +8,7 @@
         Title="Diagram Designer" Height="720" Width="1280" Loaded="Window_Loaded">
     <DockPanel>
         <StackPanel Orientation="Vertical" Width="300" DockPanel.Dock="Left" Background="LightGray">
-            <TextBlock Name="ShapeGrammarLabel" Text="Shape Definitions" FontSize="15" FontStyle="Italic" HorizontalAlignment="Center" Margin="10,10,10,10"></TextBlock>
+            <TextBlock Name="ShapeGrammarLabel" Text="Shape Grammar Definitions" FontSize="15" FontStyle="Italic" HorizontalAlignment="Center" Margin="10,10,10,10"></TextBlock>
 
             <DataGrid x:Name="CurrentLayersTable"  ItemsSource="{Binding}"  IsReadOnly="False" Margin="10,10,10,10"></DataGrid>
             <Button Content="Add New Layer" Width="100" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding AddNewLayerCommand}"/>

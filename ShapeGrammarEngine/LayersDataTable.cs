@@ -20,9 +20,9 @@ namespace ShapeGrammarEngine
 			var isOrthoColumn = new DataColumn();
 			isOrthoColumn.DataType = System.Type.GetType("System.Boolean");
 			isOrthoColumn.ColumnName = "IsVisible";
-			isOrthoColumn.ReadOnly = true;
+			isOrthoColumn.ReadOnly = false;
 			isOrthoColumn.Unique = false;
-			isOrthoColumn.DefaultValue = false;
+			isOrthoColumn.DefaultValue = true;
 			this.Columns.Add(isOrthoColumn);
 		}
 	}
