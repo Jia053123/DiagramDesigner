@@ -19,6 +19,10 @@ namespace DiagramDesigner
         public event EventHandler MouseMovedEventHandler;
         public event EventHandler MouseLeftClickedEventHandler;
 
+        private readonly Pen previewLinePen = new Pen(Brushes.Gray, 1);
+        private readonly Pen contextPen = new Pen(Brushes.Blue, 2);
+        private readonly Pen normalPen = new Pen(Brushes.Black, 2);
+
         private readonly Pen ScaleBarPen = new Pen(Brushes.Black, 1);
         private readonly double ScaleBarHeight = 5;
         private readonly double ScaleBarPadding = 10;
@@ -45,7 +49,6 @@ namespace DiagramDesigner
                 // draw walls
                 for (int i = 0; i < wallsToRender.Count; i++)
                 {
-                    //this.DrawPolyline(dc, wallsToRender[i], new Pen(Brushes.Black, 2));
                     var points = wallsToRender[i];
                     for (int j = 0; j < points.Count - 1; j++)
                     {
@@ -55,11 +58,11 @@ namespace DiagramDesigner
                         Pen pen;
                         if (segmentsToHighlight.Contains(new Tuple<int, int, int>(i, j, j+1)))
 						{
-                            pen = new Pen(Brushes.Red, 2);
+                            pen = this.contextPen;
 						}
                         else
 						{
-                            pen = new Pen(Brushes.Black, 2);
+                            pen = this.normalPen;
                         }
 
                         dc.DrawLine(pen, startPoint, endPoint);
@@ -90,7 +93,7 @@ namespace DiagramDesigner
                 }
 
                 // draw the preview line
-                dc.DrawLine(new Pen(Brushes.Blue, 1), newEdgePreview.startPoint, newEdgePreview.endPoint);
+                dc.DrawLine(this.previewLinePen, newEdgePreview.startPoint, newEdgePreview.endPoint);
             }
         }
 
