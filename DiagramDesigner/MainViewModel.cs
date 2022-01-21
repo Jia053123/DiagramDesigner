@@ -42,8 +42,6 @@ namespace DiagramDesigner
         public (WinPoint startPoint, WinPoint endPoint) NewEdgePreview => NewEdgePreviewData is null ? NewEdgePreviewDefault : (NewEdgePreviewData.StartPoint, NewEdgePreviewData.EndPoint);
         private DirectedLine NewEdgePreviewData { get; set; } = null;
 
-        private WinPoint? LastAddedPointInEditingState = null;
-
         private MainViewModelState _state = MainViewModelState.ViewingState;
         public MainViewModelState State
         {
@@ -55,9 +53,9 @@ namespace DiagramDesigner
             get { return this._state; }
         }
 
-        private DraftingManager ConstrainsApplier;
+        private DraftingController draftingController;
 
-        public bool IsDrawingOrthogonally => this.ConstrainsApplier.IsDrawingOrthogonally;
+        public bool IsDrawingOrthogonally => this.draftingController.IsDrawingOrthogonally;
 
         private bool _doesAcceptChangeInOrthogonalityOption = true;
         public bool DoesAcceptChangeInOrthogonalityOption
@@ -96,10 +94,11 @@ namespace DiagramDesigner
 
             this.Model.ModelChanged += this.HandelGraphicsModified;
             this.Model.ModelChanged += this.HandelProgramsModified;
-            this.RebuildGraphicsDataFromModel();
 
-            this.ConstrainsApplier = new DraftingManager(this.WallsToRender);
-            this.ConstrainsApplier.IsDrawingOrthogonally = false;
+            this.draftingController = new DraftingController(this.WallsToRender);
+            this.draftingController.IsDrawingOrthogonally = false;
+
+            this.RebuildGraphicsDataFromModel();
 
             Logger.Debug("MainViewModel initialized");
         }
@@ -116,6 +115,7 @@ namespace DiagramDesigner
                     this.WallsToRender.Last().Add(MathUtilities.ConvertRealScaledPointToWindowsPointOnScreen(p, this.DisplayUnitOverRealUnit));
 				}
 			}
+            this.draftingController.UpdateGeometries(this.WallsToRender);
 
             // Programs
             this.ProgramsToRender = new List<ProgramToRender>();
@@ -165,9 +165,10 @@ namespace DiagramDesigner
         private void CleanUpTempDataForDrawing()
 		{
             this.NewEdgePreviewData = null;
-            this.LastAddedPointInEditingState = null;
             this.WallsToHighlightAsContext.Clear();
             this.WallsToHighlightAsAdditions.Clear();
+            this.draftingController.ClearLastAddedPoint();
+
             this.HandelGraphicsModified(this, null);
         }
 
@@ -257,7 +258,7 @@ namespace DiagramDesigner
             if (this.DoesAcceptChangeInOrthogonalityOption)
 			{
                 bool isOrthogonal = (bool)obj;
-                this.ConstrainsApplier.IsDrawingOrthogonally = isOrthogonal;
+                this.draftingController.IsDrawingOrthogonally = isOrthogonal;
             }
 		}
 
@@ -303,33 +304,12 @@ namespace DiagramDesigner
             if (this.WallsToRender != null)
             {
                 var newPoint = new WinPoint(mea.LocationX, mea.LocationY);
-
-                // handle orthogonal restrictions
-                if (this.IsDrawingOrthogonally)
-                {
-                    if (!(this.LastAddedPointInEditingState is null))
-                    {
-                        newPoint = MathUtilities.PointOrthogonal((WinPoint)this.LastAddedPointInEditingState, newPoint);
-                    }
-                }
-
-                // snap to point or line nearby
-                var pointCloseBy = this.FindPointCloseBy(newPoint);
-                var pointOnLineCloseBy = this.FindPointOnLine(newPoint);
-                if (!(pointCloseBy is null))
-                {
-                    // prioritize pointCloseBy
-                    newPoint = (WinPoint)pointCloseBy;
-                }
-                else if (!(pointOnLineCloseBy is null))
-                {
-                    newPoint = (WinPoint)pointOnLineCloseBy;
-                }
+                newPoint = this.draftingController.ApplyAllRestrictions(newPoint);
 
                 this.Model.AddPointToWallEntityAtIndex(MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count - 1);
                 this.WallsToHighlightAsAdditions.Add(new Tuple<int, int, int>(this.WallsToRender.Count - 1, this.WallsToRender.Last().Count - 2, this.WallsToRender.Last().Count - 1));
 
-                this.LastAddedPointInEditingState = newPoint;
+                this.draftingController.LastAddedPointInEditingState = newPoint;
                 if (this.NewEdgePreviewData is null)
                 {
                     this.NewEdgePreviewData = new DirectedLine(newPoint, newPoint);
@@ -346,31 +326,11 @@ namespace DiagramDesigner
             if (this.WallsToRender != null)
             {
                 var newPoint = new WinPoint(mea.LocationX, mea.LocationY);
-
-                // handle orthogonal restrictions
-                if (this.IsDrawingOrthogonally)
-                {
-                    if (!(this.LastAddedPointInEditingState is null))
-                    {
-                        newPoint = MathUtilities.PointOrthogonal((WinPoint)this.LastAddedPointInEditingState, newPoint);
-                    }
-                }
-
-                // snap to point or line nearby
-                var pointCloseBy = this.FindPointCloseBy(newPoint);
-                var pointOnLineCloseBy = this.FindPointOnLine(newPoint);
-                if (!(pointCloseBy is null))
-                {
-                    // prioritize pointCloseBy
-                    newPoint = (WinPoint)pointCloseBy;
-                }
-                else if (!(pointOnLineCloseBy is null))
-                {
-                    newPoint = (WinPoint)pointOnLineCloseBy;
-                }
+                newPoint = this.draftingController.ApplyAllRestrictions(newPoint);
 
                 this.Model.AddPointToWallEntityAtIndex(MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count - 1);
-                this.LastAddedPointInEditingState = newPoint;
+                this.draftingController.LastAddedPointInEditingState = newPoint;
+
                 if (this.NewEdgePreviewData is null)
                 {
                     this.NewEdgePreviewData = new DirectedLine(newPoint, newPoint);
@@ -426,54 +386,6 @@ namespace DiagramDesigner
             }
             return null;
         }
-
-		/// <summary>
-		/// Find a Windows Point close by measured by pixel. 
-		/// This is intended for the UI feature that snap new points to existing points close by.
-		/// </summary>
-		/// <param name="wPoint"> The new point </param>
-		/// <returns> A point in WallEntity on screen in close proximity, or null if no existing point qualifies </returns>
-		private WinPoint? FindPointCloseBy(WinPoint wPoint)
-        {
-            const double maxDistance = 5;
-            for (int i = 0; i < this.WallsToRender.Count; i++)
-            {
-                for (int j = 0; j < this.WallsToRender[i].Count; j++)
-				{
-                    var p = this.WallsToRender[i][j];
-                    if (MathUtilities.DistanceBetweenWinPoints(wPoint, p) <= maxDistance)
-					{
-                        return p;
-					}
-				}
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Find a Windows Point on a line close by measured by pixel. 
-        /// This is intended for the UI feature that snap new points to existing lines close by. 
-        /// </summary>
-        /// <param name="wPoint"> The new point </param>
-        /// <returns> A point on a line segment on screen in close proximity, or null if no line qualifies </returns>
-        private WinPoint? FindPointOnLine(WinPoint wPoint)
-		{
-            const double maxDistance = 5;
-            for (int i = 0; i < this.WallsToRender.Count; i++)
-            {
-                for (int j = 0; j < this.WallsToRender[i].Count-1; j++)
-                {
-                    var endPoint1 = this.WallsToRender[i][j];
-                    var endPoint2 = this.WallsToRender[i][j+1];
-                    var result = MathUtilities.DistanceFromWinPointToLine(wPoint, endPoint1, endPoint2);
-                    if (!(result is null) && result.Item1 <= maxDistance)
-                    {
-                        return result.Item2;
-                    }
-                }
-            }
-            return null; 
-		}
 
         private void HandelGraphicsModified(object sender, EventArgs e)
         {
