@@ -56,7 +56,9 @@ namespace DiagramDesigner
             get { return this._state; }
         }
 
-        public bool IsDrawingOrthogonally { get; private set; } = false; 
+        private DraftingConstrainsApplier ConstrainsApplier;
+
+        public bool IsDrawingOrthogonally => this.ConstrainsApplier.IsDrawingOrthogonally;
 
         private bool _doesAcceptChangeInOrthogonalityOption = true;
         public bool DoesAcceptChangeInOrthogonalityOption
@@ -96,6 +98,9 @@ namespace DiagramDesigner
             this.Model.ModelChanged += this.HandelGraphicsModified;
             this.Model.ModelChanged += this.HandelProgramsModified;
             this.RebuildGraphicsDataFromModel();
+
+            this.ConstrainsApplier = new DraftingConstrainsApplier(this.WallsToRender);
+            this.ConstrainsApplier.IsDrawingOrthogonally = false;
 
             Logger.Debug("MainViewModel initialized");
         }
@@ -254,7 +259,7 @@ namespace DiagramDesigner
             if (this.DoesAcceptChangeInOrthogonalityOption)
 			{
                 bool isOrthogonal = (bool)obj;
-                this.IsDrawingOrthogonally = isOrthogonal;
+                this.ConstrainsApplier.IsDrawingOrthogonally = isOrthogonal;
             }
 		}
 

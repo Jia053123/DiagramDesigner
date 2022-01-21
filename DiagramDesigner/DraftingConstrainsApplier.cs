@@ -10,13 +10,12 @@ namespace DiagramDesigner
 	/// </summary>
 	class DraftingConstrainsApplier
 	{
-		public bool IsDrawingOrthogonally;
+		public bool IsDrawingOrthogonally = false;
 		private List<List<WinPoint>> CurrentGeometries;
 
-		public DraftingConstrainsApplier(List<List<WinPoint>> currentGeometries, bool drawOrthogonally)
+		public DraftingConstrainsApplier(List<List<WinPoint>> currentGeometries)
 		{
 			this.CurrentGeometries = currentGeometries;
-			this.IsDrawingOrthogonally = drawOrthogonally;
 		}
 	}
 }
