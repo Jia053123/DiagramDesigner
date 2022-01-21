@@ -42,8 +42,7 @@ namespace DiagramDesigner
         public (WinPoint startPoint, WinPoint endPoint) NewEdgePreview => NewEdgePreviewData is null ? NewEdgePreviewDefault : (NewEdgePreviewData.StartPoint, NewEdgePreviewData.EndPoint);
         private DirectedLine NewEdgePreviewData { get; set; } = null;
 
-        private WinPoint? LastAddedPointInNormalEditingState = null;
-        private WinPoint? LastAddedPointInRuleCreationEditingState = null;
+        private WinPoint? LastAddedPointInEditingState = null;
 
         private MainViewModelState _state = MainViewModelState.ViewingState;
         public MainViewModelState State
@@ -56,7 +55,7 @@ namespace DiagramDesigner
             get { return this._state; }
         }
 
-        private DraftingConstrainsApplier ConstrainsApplier;
+        private DraftingManager ConstrainsApplier;
 
         public bool IsDrawingOrthogonally => this.ConstrainsApplier.IsDrawingOrthogonally;
 
@@ -99,7 +98,7 @@ namespace DiagramDesigner
             this.Model.ModelChanged += this.HandelProgramsModified;
             this.RebuildGraphicsDataFromModel();
 
-            this.ConstrainsApplier = new DraftingConstrainsApplier(this.WallsToRender);
+            this.ConstrainsApplier = new DraftingManager(this.WallsToRender);
             this.ConstrainsApplier.IsDrawingOrthogonally = false;
 
             Logger.Debug("MainViewModel initialized");
@@ -166,8 +165,7 @@ namespace DiagramDesigner
         private void CleanUpTempDataForDrawing()
 		{
             this.NewEdgePreviewData = null;
-            this.LastAddedPointInRuleCreationEditingState = null;
-            this.LastAddedPointInNormalEditingState = null;
+            this.LastAddedPointInEditingState = null;
             this.WallsToHighlightAsContext.Clear();
             this.WallsToHighlightAsAdditions.Clear();
             this.HandelGraphicsModified(this, null);
@@ -309,9 +307,9 @@ namespace DiagramDesigner
                 // handle orthogonal restrictions
                 if (this.IsDrawingOrthogonally)
                 {
-                    if (!(this.LastAddedPointInRuleCreationEditingState is null))
+                    if (!(this.LastAddedPointInEditingState is null))
                     {
-                        newPoint = MathUtilities.PointOrthogonal((WinPoint)this.LastAddedPointInRuleCreationEditingState, newPoint);
+                        newPoint = MathUtilities.PointOrthogonal((WinPoint)this.LastAddedPointInEditingState, newPoint);
                     }
                 }
 
@@ -331,7 +329,7 @@ namespace DiagramDesigner
                 this.Model.AddPointToWallEntityAtIndex(MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count - 1);
                 this.WallsToHighlightAsAdditions.Add(new Tuple<int, int, int>(this.WallsToRender.Count - 1, this.WallsToRender.Last().Count - 2, this.WallsToRender.Last().Count - 1));
 
-                this.LastAddedPointInRuleCreationEditingState = newPoint;
+                this.LastAddedPointInEditingState = newPoint;
                 if (this.NewEdgePreviewData is null)
                 {
                     this.NewEdgePreviewData = new DirectedLine(newPoint, newPoint);
@@ -352,9 +350,9 @@ namespace DiagramDesigner
                 // handle orthogonal restrictions
                 if (this.IsDrawingOrthogonally)
                 {
-                    if (!(this.LastAddedPointInNormalEditingState is null))
+                    if (!(this.LastAddedPointInEditingState is null))
                     {
-                        newPoint = MathUtilities.PointOrthogonal((WinPoint)this.LastAddedPointInNormalEditingState, newPoint);
+                        newPoint = MathUtilities.PointOrthogonal((WinPoint)this.LastAddedPointInEditingState, newPoint);
                     }
                 }
 
@@ -372,7 +370,7 @@ namespace DiagramDesigner
                 }
 
                 this.Model.AddPointToWallEntityAtIndex(MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count - 1);
-                this.LastAddedPointInNormalEditingState = newPoint;
+                this.LastAddedPointInEditingState = newPoint;
                 if (this.NewEdgePreviewData is null)
                 {
                     this.NewEdgePreviewData = new DirectedLine(newPoint, newPoint);
