@@ -21,6 +21,7 @@ namespace DiagramDesigner
 
         private readonly Pen previewLinePen = new Pen(Brushes.Gray, 1);
         private readonly Pen contextPen = new Pen(Brushes.Blue, 2);
+        private readonly Pen additionPen = new Pen(Brushes.Red, 2);
         private readonly Pen normalPen = new Pen(Brushes.Black, 2);
 
         private readonly Pen ScaleBarPen = new Pen(Brushes.Black, 1);
@@ -38,7 +39,8 @@ namespace DiagramDesigner
         }
 
 		public void RenderVisual(List<List<WinPoint>> wallsToRender, 
-            List<Tuple<int, int, int>> segmentsToHighlight,
+            List<Tuple<int, int, int>> segmentsToHighlightAsContext,
+            List<Tuple<int, int, int>> segmentsToHighlightAsAddition,
             (WinPoint startPoint, WinPoint endPoint) newEdgePreview, 
             List<ProgramToRender> programsToRender, double scaleBarUnitLength)
         {
@@ -56,9 +58,13 @@ namespace DiagramDesigner
                         var endPoint = new WinPoint((int)points[j + 1].X, (int)points[j + 1].Y);
 
                         Pen pen;
-                        if (segmentsToHighlight.Contains(new Tuple<int, int, int>(i, j, j+1)))
+                        if (segmentsToHighlightAsContext.Contains(new Tuple<int, int, int>(i, j, j+1)))
 						{
                             pen = this.contextPen;
+						}
+                        else if (segmentsToHighlightAsAddition.Contains(new Tuple<int, int, int>(i, j, j + 1)))
+						{
+                            pen = this.additionPen;
 						}
                         else
 						{

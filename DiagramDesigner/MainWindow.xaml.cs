@@ -113,6 +113,7 @@ namespace DiagramDesigner
         {
             PrimaryDiagramCanvas.RenderVisual(this.MainViewModel.WallsToRender,
                 this.MainViewModel.WallsToHighlightAsContext, 
+                this.MainViewModel.WallsToHighlightAsAdditions,
                 this.MainViewModel.NewEdgePreview, 
                 this.MainViewModel.ProgramsToRender, 
                 this.MainViewModel.DisplayUnitOverRealUnit);
