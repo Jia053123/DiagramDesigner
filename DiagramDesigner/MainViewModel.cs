@@ -52,9 +52,9 @@ namespace DiagramDesigner
             get { return this._state; }
         }
 
-        private DraftingController draftingController;
+        private DraftingAssistor draftingAssistor;
 
-        public bool IsDrawingOrthogonally => this.draftingController.DoesDrawOrthogonally;
+        public bool IsDrawingOrthogonally => this.draftingAssistor.DoesDrawOrthogonally;
 
         private bool _doesAcceptChangeInOrthogonalityOption = true;
         public bool DoesAcceptChangeInOrthogonalityOption
@@ -94,8 +94,8 @@ namespace DiagramDesigner
             this.Model.ModelChanged += this.HandelGraphicsModified;
             this.Model.ModelChanged += this.HandelProgramsModified;
 
-            this.draftingController = new DraftingController(this.WallsToRender);
-            this.draftingController.DoesDrawOrthogonally = false;
+            this.draftingAssistor = new DraftingAssistor();
+            this.draftingAssistor.DoesDrawOrthogonally = false;
 
             this.RebuildGraphicsDataFromModel();
 
@@ -137,8 +137,6 @@ namespace DiagramDesigner
 
                 ProgramsToRender.Add(new ProgramToRender(perimeter, innerPerimeters, ep.Name, ep.Area));
 			}
-
-            this.draftingController.UpdateGeometries(this.WallsToRender);
 		}
 
         private void RebuildProgramsTableFromModel()
@@ -167,7 +165,7 @@ namespace DiagramDesigner
             this.NewEdgePreviewData = null;
             this.WallsToHighlightAsContext.Clear();
             this.WallsToHighlightAsAdditions.Clear();
-            this.draftingController.DoneDrawing();
+            this.draftingAssistor.ClearLastAddedPoint();
 
             this.HandelGraphicsModified(this, null);
         }
@@ -257,7 +255,7 @@ namespace DiagramDesigner
             if (this.DoesAcceptChangeInOrthogonalityOption)
 			{
                 bool isOrthogonal = (bool)obj;
-                this.draftingController.DoesDrawOrthogonally = isOrthogonal;
+                this.draftingAssistor.DoesDrawOrthogonally = isOrthogonal;
             }
 		}
 
@@ -303,11 +301,11 @@ namespace DiagramDesigner
             if (this.WallsToRender != null)
             {
                 var newPoint = new WinPoint(mea.LocationX, mea.LocationY);
-                newPoint = this.draftingController.ApplyAllRestrictions(newPoint);
+                newPoint = this.draftingAssistor.ApplyAllRestrictions(newPoint, this.WallsToRender);
 
                 this.Model.AddPointToWallEntityAtIndex(MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count - 1);
                 this.WallsToHighlightAsAdditions.Add(new Tuple<int, int, int>(this.WallsToRender.Count - 1, this.WallsToRender.Last().Count - 2, this.WallsToRender.Last().Count - 1));
-                this.draftingController.UpdateLastAddedPoint(newPoint);
+                this.draftingAssistor.UpdateLastAddedPoint(newPoint);
 
                 if (this.NewEdgePreviewData is null)
                 {
@@ -325,10 +323,10 @@ namespace DiagramDesigner
             if (this.WallsToRender != null)
             {
                 var newPoint = new WinPoint(mea.LocationX, mea.LocationY);
-                newPoint = this.draftingController.ApplyAllRestrictions(newPoint);
+                newPoint = this.draftingAssistor.ApplyAllRestrictions(newPoint, this.WallsToRender);
 
                 this.Model.AddPointToWallEntityAtIndex(MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count - 1);
-                this.draftingController.UpdateLastAddedPoint(newPoint);
+                this.draftingAssistor.UpdateLastAddedPoint(newPoint);
 
                 if (this.NewEdgePreviewData is null)
                 {
@@ -343,7 +341,7 @@ namespace DiagramDesigner
 
         private void MouseLeftClickedInContextPickingState(MouseEventArgs mea)
 		{
-            var result = this.draftingController.FindLineClicked(new WinPoint(mea.LocationX, mea.LocationY));
+            var result = this.draftingAssistor.FindLineClicked(new WinPoint(mea.LocationX, mea.LocationY), this.WallsToRender);
             if (!(result is null)) 
             {
                 if (!this.WallsToHighlightAsContext.Contains(result))
