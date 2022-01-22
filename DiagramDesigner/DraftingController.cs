@@ -7,7 +7,7 @@ using WinPoint = System.Windows.Point;
 namespace DiagramDesigner
 {
 	/// <summary>
-	/// Manage and apply the drafting constrains such as snapping and aligning. 
+	/// Moderate the drafting and selecting operations to take into consideration constrains such as snapping and aligning. 
 	/// </summary>
 	class DraftingController
 	{
@@ -52,7 +52,7 @@ namespace DiagramDesigner
 			return snappedP;
 		}
 
-		private WinPoint ApplyOrthogonalRestrictions(WinPoint newP)
+		internal WinPoint ApplyOrthogonalRestrictions(WinPoint newP)
 		{
 			if (this.DoesDrawOrthogonally)
 			{
@@ -64,7 +64,7 @@ namespace DiagramDesigner
 			return newP;
 		}
 
-		private WinPoint SnapToPointOrLineNearby(WinPoint newP)
+		internal WinPoint SnapToPointOrLineNearby(WinPoint newP)
 		{
 			// snap to point or line nearby
 			var pointCloseBy = this.FindPointCloseBy(newP);
