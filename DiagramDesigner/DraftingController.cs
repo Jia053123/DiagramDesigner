@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using WinPoint = System.Windows.Point;
 
@@ -11,8 +12,9 @@ namespace DiagramDesigner
 	class DraftingController
 	{
 		private List<List<WinPoint>> CurrentGeometries;
+		private WinPoint? LastAddedPointInEditingState = null;
+
 		internal bool IsDrawingOrthogonally = false;
-		internal WinPoint? LastAddedPointInEditingState = null;
 
 		internal DraftingController(List<List<WinPoint>> currentGeometries)
 		{
@@ -22,6 +24,11 @@ namespace DiagramDesigner
 		internal void UpdateGeometries(List<List<WinPoint>> newGeometries)
 		{
 			this.CurrentGeometries = newGeometries;
+		}
+
+		internal void UpdateLastAddedPoint(WinPoint newP)
+		{
+			this.LastAddedPointInEditingState = newP;
 		}
 
 		internal void ClearLastAddedPoint()
@@ -66,6 +73,34 @@ namespace DiagramDesigner
 			{
 				return newP;
 			}
+		}
+
+
+		/// <summary>
+		/// Find the line segment on screen clicked
+		/// </summary>
+		/// <param name="clickLocation"> location of the click </param>
+		/// <returns> a tuple containing the index of the geometry, 
+		/// the two consecutive indexes in ascending order of the points representing the line on the geometry, 
+		/// or null if no line is clicked </returns>
+		internal Tuple<int, int, int> FindLineClicked(WinPoint clickLocation)
+		{
+			const double tolerance = 2;
+			for (int i = 0; i < this.CurrentGeometries.Count; i++)
+			{
+				for (int j = 0; j < this.CurrentGeometries[i].Count - 1; j++)
+				{
+					var endPoint1 = this.CurrentGeometries[i][j];
+					var endPoint2 = this.CurrentGeometries[i][j + 1];
+					var result = MathUtilities.DistanceFromWinPointToLine(clickLocation, endPoint1, endPoint2);
+					if (!(result is null) && result.Item1 <= tolerance)
+					{
+						Debug.Assert(j + 1 < this.CurrentGeometries[i].Count);
+						return new Tuple<int, int, int>(i, j, j + 1);
+					}
+				}
+			}
+			return null;
 		}
 
 		/// <summary>

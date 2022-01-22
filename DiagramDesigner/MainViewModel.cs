@@ -309,7 +309,7 @@ namespace DiagramDesigner
                 this.Model.AddPointToWallEntityAtIndex(MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count - 1);
                 this.WallsToHighlightAsAdditions.Add(new Tuple<int, int, int>(this.WallsToRender.Count - 1, this.WallsToRender.Last().Count - 2, this.WallsToRender.Last().Count - 1));
 
-                this.draftingController.LastAddedPointInEditingState = newPoint;
+                this.draftingController.UpdateLastAddedPoint(newPoint);
                 if (this.NewEdgePreviewData is null)
                 {
                     this.NewEdgePreviewData = new DirectedLine(newPoint, newPoint);
@@ -329,7 +329,7 @@ namespace DiagramDesigner
                 newPoint = this.draftingController.ApplyAllRestrictions(newPoint);
 
                 this.Model.AddPointToWallEntityAtIndex(MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count - 1);
-                this.draftingController.LastAddedPointInEditingState = newPoint;
+                this.draftingController.UpdateLastAddedPoint(newPoint);
 
                 if (this.NewEdgePreviewData is null)
                 {
@@ -344,7 +344,7 @@ namespace DiagramDesigner
 
         private void MouseLeftClickedInContextPickingState(MouseEventArgs mea)
 		{
-            var result = this.FindLineClicked(new WinPoint(mea.LocationX, mea.LocationY));
+            var result = this.draftingController.FindLineClicked(new WinPoint(mea.LocationX, mea.LocationY));
             if (!(result is null)) 
             {
                 if (!this.WallsToHighlightAsContext.Contains(result))
@@ -359,33 +359,6 @@ namespace DiagramDesigner
                 this.HandelGraphicsModified(this, null);
             } 
 		}
-
-        /// <summary>
-        /// Find the line segment on screen clicked
-        /// </summary>
-        /// <param name="clickLocation"> location of the click </param>
-        /// <returns> a tuple containing the index of the geometry, 
-        /// the two consecutive indexes in ascending order of the points representing the line on the geometry, 
-        /// or null if no line is clicked </returns>
-        private Tuple<int, int, int> FindLineClicked(WinPoint clickLocation)
-		{
-            const double tolerance = 2;
-            for (int i = 0; i < this.WallsToRender.Count; i++)
-            {
-                for (int j = 0; j < this.WallsToRender[i].Count - 1; j++)
-                {
-                    var endPoint1 = this.WallsToRender[i][j];
-                    var endPoint2 = this.WallsToRender[i][j + 1];
-                    var result = MathUtilities.DistanceFromWinPointToLine(clickLocation, endPoint1, endPoint2);
-                    if (!(result is null) && result.Item1 <= tolerance)
-                    {
-                        Debug.Assert(j + 1 < this.WallsToRender[i].Count);
-                        return new Tuple<int, int, int>(i, j, j + 1);
-                    }
-                }
-            }
-            return null;
-        }
 
         private void HandelGraphicsModified(object sender, EventArgs e)
         {
