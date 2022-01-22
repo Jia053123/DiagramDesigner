@@ -14,7 +14,7 @@ namespace DiagramDesigner
 		private List<List<WinPoint>> CurrentGeometries;
 		private WinPoint? LastAddedPointInEditingState = null;
 
-		internal bool IsDrawingOrthogonally = false;
+		internal bool DoesDrawOrthogonally = false;
 
 		internal DraftingController(List<List<WinPoint>> currentGeometries)
 		{
@@ -34,8 +34,11 @@ namespace DiagramDesigner
 		{
 			this.LastAddedPointInEditingState = newP;
 		}
-
-		internal void ClearLastAddedPoint()
+	
+		/// <summary>
+		/// To be called whenever a polyline drawing is complete
+		/// </summary>
+		internal void DoneDrawing()
 		{
             this.LastAddedPointInEditingState = null;
 		}
@@ -51,7 +54,7 @@ namespace DiagramDesigner
 
 		private WinPoint ApplyOrthogonalRestrictions(WinPoint newP)
 		{
-			if (this.IsDrawingOrthogonally)
+			if (this.DoesDrawOrthogonally)
 			{
 				if (!(this.LastAddedPointInEditingState is null))
 				{

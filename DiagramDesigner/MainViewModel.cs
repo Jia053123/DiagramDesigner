@@ -25,7 +25,6 @@ namespace DiagramDesigner
         public DataTable LayersDataTable { get; } = new LayersDataTable(); // TODO: should this be stored here? 
         public ProgramsSummaryTable CurrentProgramsDataTable { get;} = new ProgramsSummaryTable(); // for the pie chart
         public List<List<WinPoint>> WallsToRender { get; private set; } = new List<List<WinPoint>>();
-
         /// <summary>
         /// Walls to be highlighted as the context. The three integers represent the index of the geometry from WallsToRender, and
         /// the two consecutive indexes in ascending order of the points representing the line on the geometry
@@ -55,7 +54,7 @@ namespace DiagramDesigner
 
         private DraftingController draftingController;
 
-        public bool IsDrawingOrthogonally => this.draftingController.IsDrawingOrthogonally;
+        public bool IsDrawingOrthogonally => this.draftingController.DoesDrawOrthogonally;
 
         private bool _doesAcceptChangeInOrthogonalityOption = true;
         public bool DoesAcceptChangeInOrthogonalityOption
@@ -96,7 +95,7 @@ namespace DiagramDesigner
             this.Model.ModelChanged += this.HandelProgramsModified;
 
             this.draftingController = new DraftingController(this.WallsToRender);
-            this.draftingController.IsDrawingOrthogonally = false;
+            this.draftingController.DoesDrawOrthogonally = false;
 
             this.RebuildGraphicsDataFromModel();
 
@@ -115,7 +114,6 @@ namespace DiagramDesigner
                     this.WallsToRender.Last().Add(MathUtilities.ConvertRealScaledPointToWindowsPointOnScreen(p, this.DisplayUnitOverRealUnit));
 				}
 			}
-            this.draftingController.UpdateGeometries(this.WallsToRender);
 
             // Programs
             this.ProgramsToRender = new List<ProgramToRender>();
@@ -139,6 +137,8 @@ namespace DiagramDesigner
 
                 ProgramsToRender.Add(new ProgramToRender(perimeter, innerPerimeters, ep.Name, ep.Area));
 			}
+
+            this.draftingController.UpdateGeometries(this.WallsToRender);
 		}
 
         private void RebuildProgramsTableFromModel()
@@ -167,7 +167,7 @@ namespace DiagramDesigner
             this.NewEdgePreviewData = null;
             this.WallsToHighlightAsContext.Clear();
             this.WallsToHighlightAsAdditions.Clear();
-            this.draftingController.ClearLastAddedPoint();
+            this.draftingController.DoneDrawing();
 
             this.HandelGraphicsModified(this, null);
         }
@@ -257,7 +257,7 @@ namespace DiagramDesigner
             if (this.DoesAcceptChangeInOrthogonalityOption)
 			{
                 bool isOrthogonal = (bool)obj;
-                this.draftingController.IsDrawingOrthogonally = isOrthogonal;
+                this.draftingController.DoesDrawOrthogonally = isOrthogonal;
             }
 		}
 
