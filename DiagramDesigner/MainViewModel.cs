@@ -24,7 +24,7 @@ namespace DiagramDesigner
         public DataTable GrammarRulesDataTable => this.Model.CurrentRules;
         public DataTable LayersDataTable { get; } = new LayersDataTable(); // TODO: should this be stored here? 
         public ProgramsSummaryTable CurrentProgramsDataTable { get;} = new ProgramsSummaryTable(); // for the pie chart
-        public List<List<WinPoint>> WallsToRender { get; private set; }
+        public List<List<WinPoint>> WallsToRender { get; private set; } = new List<List<WinPoint>>();
 
         /// <summary>
         /// Walls to be highlighted as the context. The three integers represent the index of the geometry from WallsToRender, and
@@ -225,7 +225,6 @@ namespace DiagramDesigner
                 Logger.Error(ex, "Grammar Table Constraint Failed");
             }
 
-
             this.State = MainViewModelState.ViewingState;
             this.CleanUpTempDataForDrawing();
         }
@@ -308,8 +307,8 @@ namespace DiagramDesigner
 
                 this.Model.AddPointToWallEntityAtIndex(MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count - 1);
                 this.WallsToHighlightAsAdditions.Add(new Tuple<int, int, int>(this.WallsToRender.Count - 1, this.WallsToRender.Last().Count - 2, this.WallsToRender.Last().Count - 1));
-
                 this.draftingController.UpdateLastAddedPoint(newPoint);
+
                 if (this.NewEdgePreviewData is null)
                 {
                     this.NewEdgePreviewData = new DirectedLine(newPoint, newPoint);

@@ -18,6 +18,10 @@ namespace DiagramDesigner
 
 		internal DraftingController(List<List<WinPoint>> currentGeometries)
 		{
+			if (currentGeometries is null)
+			{
+				throw new ArgumentNullException("currentGeometries cannot be null");
+			}
 			this.CurrentGeometries = currentGeometries;
 		}
 
@@ -38,8 +42,10 @@ namespace DiagramDesigner
 
 		internal WinPoint ApplyAllRestrictions(WinPoint newP)
 		{
+			// first apply ortho if enabled, then snap to close elements
 			WinPoint orthoP = this.ApplyOrthogonalRestrictions(newP);
 			WinPoint snappedP = this.SnapToPointOrLineNearby(orthoP);
+
 			return snappedP;
 		}
 
@@ -74,7 +80,6 @@ namespace DiagramDesigner
 				return newP;
 			}
 		}
-
 
 		/// <summary>
 		/// Find the line segment on screen clicked
