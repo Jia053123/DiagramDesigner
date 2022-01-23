@@ -30,6 +30,8 @@ namespace DiagramDesignerModel
 
         public void AddPointToWallEntityAtIndex(Point point, int index)
 		{
+            // TODO: check for overlapping lines and throw exception when found
+
             if (index >= this.WallEntities.Count)
 			{
                 return;
@@ -39,10 +41,21 @@ namespace DiagramDesignerModel
             this.OnModelChanged();
 		}
 
-        public void CreateRule(Shape leftHandShape, Shape rightHandShape)
+        public void CreateNewRuleFromExample(PolylineGeometry leftHandGeometry, PolylineGeometry rightHandGeometry)
 		{
+            // TODO
 
-		}
+
+
+            try
+            {
+                this.CurrentRules.Rows.Add(this.CurrentRules.NewRow());
+            }
+            catch (System.Data.ConstraintException ex)
+            {
+                Logger.Error(ex, "Grammar Table Constraint Failed");
+            }
+        }
 
         public void RemoveAllWallsAndPrograms()
 		{

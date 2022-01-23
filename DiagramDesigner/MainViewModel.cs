@@ -24,7 +24,12 @@ namespace DiagramDesigner
         public DataTable GrammarRulesDataTable => this.Model.CurrentRules;
         public DataTable LayersDataTable { get; } = new LayersDataTable(); // TODO: should this be stored here? 
         public ProgramsSummaryTable CurrentProgramsDataTable { get;} = new ProgramsSummaryTable(); // for the pie chart
+
+        /// <summary>
+        /// Walls to be displayed by the view. They are guaranteed to match the WallEntities property in Model, with each sub list corresponding to each WallEntity
+        /// </summary>
         public List<List<WinPoint>> WallsToRender { get; private set; } = new List<List<WinPoint>>();
+
         /// <summary>
         /// Walls to be highlighted as the context. The three integers represent the index of the geometry from WallsToRender, and
         /// the two consecutive indexes in ascending order of the points representing the line on the geometry
@@ -35,6 +40,7 @@ namespace DiagramDesigner
         /// the two consecutive indexes in ascending order of the points representing the line on the geometry
         /// </summary>
         public List<Tuple<int, int, int>> WallsToHighlightAsAdditions { get; private set; } = new List<Tuple<int, int, int>>();
+
         public List<ProgramToRender> ProgramsToRender { get; private set; }
 
         private readonly (WinPoint startPoint, WinPoint endPoint) NewEdgePreviewDefault = (new WinPoint(0, 0), new WinPoint(0, 0));
@@ -202,26 +208,37 @@ namespace DiagramDesigner
 
         private void ExecuteDonePickingContext(object obj)
 		{
-            // convert selection to connections of points in wall entities
-            
-
-
-
             this.State = MainViewModelState.RuleCreationEditingState;
 		}
 
         private void ExecuteDoneAddingRule(object obj)
         {
-            // create the rule
-            // TODO: stub
-            try
+            // create left hand geometry
+            var leftHandPoints = new List<List<Point>>();
+            foreach (Tuple<int, int, int> t in this.WallsToHighlightAsContext)
+			{
+                var wp1 = this.WallsToRender[t.Item1][t.Item2];
+                var p1 = MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(wp1, this.DisplayUnitOverRealUnit);
+                var wp2 = this.WallsToRender[t.Item1][t.Item3];
+                var p2 = MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(wp2, this.DisplayUnitOverRealUnit);
+                leftHandPoints.Add(new List<Point> { p1, p2 });
+			}
+            PolylineGeometry leftHandGeometry = new PolylineGeometry(leftHandPoints);
+
+            // create right hand geometry
+            var rightHandPoints = new List<List<Point>>(leftHandPoints); // currently assume no point is erased from the left hand geometry though this will not be the case
+            foreach (Tuple<int, int, int> t in this.WallsToHighlightAsAdditions)
             {
-                this.GrammarRulesDataTable.Rows.Add(this.GrammarRulesDataTable.NewRow());
+                var wp1 = this.WallsToRender[t.Item1][t.Item2];
+                var p1 = MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(wp1, this.DisplayUnitOverRealUnit);
+                var wp2 = this.WallsToRender[t.Item1][t.Item3];
+                var p2 = MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(wp2, this.DisplayUnitOverRealUnit);
+                rightHandPoints.Add(new List<Point> { p1, p2 });
             }
-            catch (System.Data.ConstraintException ex)
-            {
-                Logger.Error(ex, "Grammar Table Constraint Failed");
-            }
+            PolylineGeometry rightHandGeometry = new PolylineGeometry(rightHandPoints);
+
+            // create new rule
+            this.Model.CreateNewRuleFromExample(leftHandGeometry, rightHandGeometry);
 
             this.State = MainViewModelState.ViewingState;
             this.CleanUpTempDataForDrawing();
@@ -304,7 +321,13 @@ namespace DiagramDesigner
                 newPoint = this.draftingAssistor.ApplyAllRestrictions(newPoint, this.WallsToRender);
 
                 this.Model.AddPointToWallEntityAtIndex(MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count - 1);
-                this.WallsToHighlightAsAdditions.Add(new Tuple<int, int, int>(this.WallsToRender.Count - 1, this.WallsToRender.Last().Count - 2, this.WallsToRender.Last().Count - 1));
+                var wallIndex = this.WallsToRender.Count - 1;
+                var pointIndex1 = this.WallsToRender.Last().Count - 2;
+                var pointIndex2 = this.WallsToRender.Last().Count - 1;
+                if (pointIndex1 >= 0 && pointIndex2 >= 0)
+				{
+                    this.WallsToHighlightAsAdditions.Add(new Tuple<int, int, int>(wallIndex, pointIndex1, pointIndex2));
+                }
                 this.draftingAssistor.UpdateLastAddedPoint(newPoint);
 
                 if (this.NewEdgePreviewData is null)
