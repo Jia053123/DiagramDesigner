@@ -53,7 +53,7 @@ namespace ShapeGrammarEngine
 		/// <param name="geometryBefore"> the group of polylines before the rule is applied </param>
 		/// <param name="geometryAfter"> the group of polylines after the rule is applied </param>
 		/// <param name="labeling"> outputs the labeling used in this creation </param>
-		public static GrammarRule CreateGrammarRuleFromOneExample(PolylineGeometry geometryBefore, PolylineGeometry geometryAfter, out LabelingDictionary labeling)
+		public static GrammarRule CreateGrammarRuleFromOneExample(PolylinesGeometry geometryBefore, PolylinesGeometry geometryAfter, out LabelingDictionary labeling)
 		{
 			LabelingDictionary lhsLabeling, sharedLabeling;
 			var lhs = Shape.CreateShapeFromPolylines(geometryBefore, null, out lhsLabeling);
@@ -73,7 +73,7 @@ namespace ShapeGrammarEngine
 		/// <param name="labeling"> if the input geometries are consistent with the rule, 
 		/// how their line segments map onto connections of the shapes in the rule; otherwise output null </param>
 		/// <returns> whether the input geometries are consistent with the rule </returns>
-		public bool ConformWithRule(PolylineGeometry geometryBefore, PolylineGeometry geometryAfter, out LabelingDictionary labeling)
+		public bool ConformWithRule(PolylinesGeometry geometryBefore, PolylinesGeometry geometryAfter, out LabelingDictionary labeling)
 		{
 			if (!this.LeftHandShape.ConformsWithGeometry(geometryBefore, out _))
 			{
@@ -109,7 +109,7 @@ namespace ShapeGrammarEngine
 		/// </summary>
 		/// <param name="geometryBefore"> The geometry in the example before the rule is applied </param>
 		/// <param name="geometryAfter"> The geometry in the example after the rule is applied </param>
-		public void LearnFromExample(PolylineGeometry geometryBefore, PolylineGeometry geometryAfter, out LabelingDictionary labeling)
+		public void LearnFromExample(PolylinesGeometry geometryBefore, PolylinesGeometry geometryAfter, out LabelingDictionary labeling)
 		{
 			if (!this.LeftHandShape.ConformsWithGeometry(geometryBefore, out _))
 			{
@@ -150,7 +150,7 @@ namespace ShapeGrammarEngine
 		/// </summary>
 		/// <param name="polyGeo"> the geometry on which the rule will be applied. It must confrom with LeftHandShape </param>
 		/// <returns> the geometry after the rule is applied. It will confrom with RightHandShape </returns>
-		public PolylineGeometry ApplyToGeometry(PolylineGeometry polyGeo)
+		public PolylinesGeometry ApplyToGeometry(PolylinesGeometry polyGeo)
 		{
 			if (this.ApplicationRecords.Count == 0)
 			{
@@ -165,7 +165,7 @@ namespace ShapeGrammarEngine
 				throw new ArgumentException("polylines does not conform with ShapeBefore");
 			}
 
-			var resultPolylines = new PolylineGeometry(polyGeo.PolylinesCopy);
+			var resultPolylines = new PolylinesGeometry(polyGeo.PolylinesCopy);
 
 			// Step2: add the connections to be added.
 			if (this.ConnectionsToBeAdded().Count > 0)
@@ -193,7 +193,7 @@ namespace ShapeGrammarEngine
 		/// <param name="connectionsToAdd"> The connections to try adding. Any unadded connection would remain after this returns </param>
 		/// <param name="geometryToModify"> The geometry that's being modified.  </param>
 		/// <param name="labelingForGeometryToModify"></param>
-		private void AddConnections(HashSet<Connection> connectionsToAdd, ref PolylineGeometry geometryToModify, ref LabelingDictionary labelingForGeometryToModify)
+		private void AddConnections(HashSet<Connection> connectionsToAdd, ref PolylinesGeometry geometryToModify, ref LabelingDictionary labelingForGeometryToModify)
 		{
 			if (!geometryToModify.GetAllPoints().IsSubsetOf(labelingForGeometryToModify.GetAllPoints()))
 			{

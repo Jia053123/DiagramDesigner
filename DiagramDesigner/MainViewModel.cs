@@ -223,7 +223,7 @@ namespace DiagramDesigner
                 var p2 = MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(wp2, this.DisplayUnitOverRealUnit);
                 leftHandPoints.Add(new List<Point> { p1, p2 });
 			}
-            PolylineGeometry leftHandGeometry = new PolylineGeometry(leftHandPoints);
+            PolylinesGeometry leftHandGeometry = new PolylinesGeometry(leftHandPoints);
 
             // create right hand geometry
             var rightHandPoints = new List<List<Point>>(leftHandPoints); // currently assume no point is erased from the left hand geometry though this will not be the case
@@ -235,7 +235,7 @@ namespace DiagramDesigner
                 var p2 = MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(wp2, this.DisplayUnitOverRealUnit);
                 rightHandPoints.Add(new List<Point> { p1, p2 });
             }
-            PolylineGeometry rightHandGeometry = new PolylineGeometry(rightHandPoints);
+            PolylinesGeometry rightHandGeometry = new PolylinesGeometry(rightHandPoints);
 
             // create new rule
             this.Model.CreateNewRuleFromExample(leftHandGeometry, rightHandGeometry);

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace ShapeGrammarEngine
 {
-	public class PolylineGeometry
+	public class PolylinesGeometry
 	{
 		private List<List<Point>> polylines = new List<List<Point>>();
 		/// <summary>
@@ -14,7 +14,7 @@ namespace ShapeGrammarEngine
 		/// </summary>
 		public List<List<Point>> PolylinesCopy { get { return new List<List<Point>>(this.polylines); } }
 
-		public PolylineGeometry(List<List<Point>> polylines)
+		public PolylinesGeometry(List<List<Point>> polylines)
 		{
 			if (polylines is null)
 			{
@@ -28,8 +28,8 @@ namespace ShapeGrammarEngine
 			}
 		}
 
-		public static PolylineGeometry CreateEmptyPolylineGeometry() {
-			return new PolylineGeometry(new List<List<Point>>());
+		public static PolylinesGeometry CreateEmptyPolylineGeometry() {
+			return new PolylinesGeometry(new List<List<Point>>());
 		}
 
 		public bool IsEmpty()
@@ -222,7 +222,7 @@ namespace ShapeGrammarEngine
 			return connections;
 		}
 
-		public bool IsGeometryIdenticalWith(PolylineGeometry pg)
+		public bool IsGeometryIdenticalWith(PolylinesGeometry pg)
 		{
 			return false;
 		}

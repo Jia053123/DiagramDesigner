@@ -77,19 +77,19 @@ namespace ShapeGrammarEngineUnitTests
 
 			Assert.Throws<ArgumentNullException>(() => Shape.CreateShapeFromPolylines(null, null, out _));
 
-			var pls1 = new PolylineGeometry(new List<List<Point>>());
+			var pls1 = new PolylinesGeometry(new List<List<Point>>());
 			Assert.DoesNotThrow(() => Shape.CreateShapeFromPolylines(pls1, null, out _));
 			var shape1 = Shape.CreateShapeFromPolylines(pls1, null, out newLabeling);
 			Assert.AreEqual(0, shape1.DefiningConnections.Count);
 			Assert.AreEqual(0, newLabeling.Count);
 
-			var pls2 = new PolylineGeometry(new List<List<Point>> { new List<Point>() });
+			var pls2 = new PolylinesGeometry(new List<List<Point>> { new List<Point>() });
 			Assert.DoesNotThrow(() => Shape.CreateShapeFromPolylines(pls2, null, out _));
 			var shape2 = Shape.CreateShapeFromPolylines(pls2, null, out newLabeling);
 			Assert.AreEqual(0, shape2.DefiningConnections.Count);
 			Assert.AreEqual(0, newLabeling.Count);
 
-			var pls3 = new PolylineGeometry(new List<List<Point>> { new List<Point> { new Point(0, 1) } });
+			var pls3 = new PolylinesGeometry(new List<List<Point>> { new List<Point> { new Point(0, 1) } });
 			Assert.DoesNotThrow(() => Shape.CreateShapeFromPolylines(pls3, null, out _));
 			var shape3 = Shape.CreateShapeFromPolylines(pls3, null, out newLabeling);
 			Assert.AreEqual(0, shape3.DefiningConnections.Count);
@@ -101,7 +101,7 @@ namespace ShapeGrammarEngineUnitTests
 		{
 			LabelingDictionary newLabeling;
 
-			var result1 = Shape.CreateShapeFromPolylines(new PolylineGeometry(new List<List<Point>> { 
+			var result1 = Shape.CreateShapeFromPolylines(new PolylinesGeometry(new List<List<Point>> { 
 				new List<Point> { new Point(0, 0), new Point(0, 1) } }), null, out newLabeling);
 			Assert.AreEqual(1, result1.DefiningConnections.Count);
 			Assert.IsTrue(result1.DefiningConnections.Contains(new Connection(0, 1)));
@@ -116,7 +116,7 @@ namespace ShapeGrammarEngineUnitTests
 		{
 			LabelingDictionary newLabeling;
 
-			var result2 = Shape.CreateShapeFromPolylines(new PolylineGeometry(new List<List<Point>> {
+			var result2 = Shape.CreateShapeFromPolylines(new PolylinesGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0), new Point(0, 1), new Point(0, 3) } }), null, out newLabeling);
 			Assert.AreEqual(2, result2.DefiningConnections.Count);
 			Assert.IsTrue(result2.DefiningConnections.Contains(new Connection(0, 1)));
@@ -133,7 +133,7 @@ namespace ShapeGrammarEngineUnitTests
 		{
 			LabelingDictionary newLabeling;
 
-			var result3 = Shape.CreateShapeFromPolylines(new PolylineGeometry(new List<List<Point>> {
+			var result3 = Shape.CreateShapeFromPolylines(new PolylinesGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0), new Point(1, 1), new Point(1, 0), new Point(0, 0) } }), null, out newLabeling);
 			Assert.AreEqual(3, result3.DefiningConnections.Count);
 			Assert.IsTrue(result3.DefiningConnections.Contains(new Connection(0, 1)));
@@ -155,18 +155,18 @@ namespace ShapeGrammarEngineUnitTests
 			labeling.Add(new Point(0, 3), 130);
 			labeling.Add(new Point(0, 10), 140);
 
-			var result1 = Shape.CreateShapeFromPolylines(new PolylineGeometry(new List<List<Point>> {
+			var result1 = Shape.CreateShapeFromPolylines(new PolylinesGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0), new Point(0, 1) } }), labeling, out _);
 			Assert.AreEqual(1, result1.DefiningConnections.Count);
 			Assert.IsTrue(result1.DefiningConnections.Contains(new Connection(100, 110)));
 
-			var result2 = Shape.CreateShapeFromPolylines(new PolylineGeometry(new List<List<Point>> {
+			var result2 = Shape.CreateShapeFromPolylines(new PolylinesGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0), new Point(0, 1), new Point(0, 3) } }), labeling, out _);
 			Assert.AreEqual(2, result2.DefiningConnections.Count);
 			Assert.IsTrue(result2.DefiningConnections.Contains(new Connection(100, 110)));
 			Assert.IsTrue(result2.DefiningConnections.Contains(new Connection(110, 130)));
 
-			var result3 = Shape.CreateShapeFromPolylines(new PolylineGeometry(new List<List<Point>> {
+			var result3 = Shape.CreateShapeFromPolylines(new PolylinesGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0), new Point(1, 1), new Point(1, 0), new Point(0, 0) } }), labeling, out _);
 			Assert.AreEqual(3, result3.DefiningConnections.Count);
 			Assert.IsTrue(result3.DefiningConnections.Contains(new Connection(100, 141)));
@@ -177,7 +177,7 @@ namespace ShapeGrammarEngineUnitTests
 		[Test]
 		public void TestCreateShapeFromPolylines_MultiplePolylinesWithoutPredefinedLabeling()
 		{
-			var result1 = Shape.CreateShapeFromPolylines(new PolylineGeometry(new List<List<Point>> {
+			var result1 = Shape.CreateShapeFromPolylines(new PolylinesGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0), new Point(0, 1) },
 				new List<Point> { new Point(0, 0), new Point(1, 0), new Point(0, 1) }}), null, out _);
 			Assert.AreEqual(3, result1.DefiningConnections.Count);
@@ -195,7 +195,7 @@ namespace ShapeGrammarEngineUnitTests
 			labeling.Add(new Point(0, 3), 130);
 			labeling.Add(new Point(0, 10), 140);
 
-			var result1 = Shape.CreateShapeFromPolylines(new PolylineGeometry(new List<List<Point>> {
+			var result1 = Shape.CreateShapeFromPolylines(new PolylinesGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0), new Point(0, 1) },
 				new List<Point> { new Point(0, 0), new Point(1, 0), new Point(0, 1) }}), null, out _);
 			Assert.AreEqual(3, result1.DefiningConnections.Count);
@@ -207,16 +207,16 @@ namespace ShapeGrammarEngineUnitTests
 		[Test]
 		public void TestCreateShapeFromPolylines_InputGeometryIntersectsWithItself_ThrowArgumentException()
 		{
-			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new PolylineGeometry( new List<List<Point>> { 
+			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new PolylinesGeometry( new List<List<Point>> { 
 				new List<Point> { new Point(0, -1), new Point(0, 1), new Point(1, 0), new Point(-1, 0) } }), null, out _));
-			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new PolylineGeometry( new List<List<Point>> { 
+			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new PolylinesGeometry( new List<List<Point>> { 
 				new List<Point> { new Point(1, 0), new Point(1, 2) }, new List<Point> { new Point(0, 1), new Point(2, 1) } }), null, out _));
 		}
 
 		[Test]
 		public void TestCreateShapeFromPolylines_InputGeometryOverlapWithItself_ThrowArgumentException()
 		{
-			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new PolylineGeometry( new List<List<Point>> { 
+			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new PolylinesGeometry( new List<List<Point>> { 
 				new List<Point> { new Point(0, -1), new Point(0, 1), new Point(0, 0), new Point(0, 0.5) } }), null, out _));
 		}
 
@@ -227,22 +227,22 @@ namespace ShapeGrammarEngineUnitTests
 			Assert.Throws<ArgumentNullException>(() => emptyShape.ConformsWithGeometry(null, out _));
 
 			LabelingDictionary output;
-			Assert.IsTrue(emptyShape.ConformsWithGeometry(new PolylineGeometry(new List<List<Point>>()), out output));
+			Assert.IsTrue(emptyShape.ConformsWithGeometry(new PolylinesGeometry(new List<List<Point>>()), out output));
 			Assert.AreEqual(0, output.Count);
 
-			Assert.IsTrue(emptyShape.ConformsWithGeometry(new PolylineGeometry(new List<List<Point>> { new List<Point>() }), out output));
+			Assert.IsTrue(emptyShape.ConformsWithGeometry(new PolylinesGeometry(new List<List<Point>> { new List<Point>() }), out output));
 			Assert.AreEqual(0, output.Count);
 
-			Assert.IsTrue(emptyShape.ConformsWithGeometry(new PolylineGeometry(new List<List<Point>> { new List<Point> { new Point(1, 1) } }), out output));
+			Assert.IsTrue(emptyShape.ConformsWithGeometry(new PolylinesGeometry(new List<List<Point>> { new List<Point> { new Point(1, 1) } }), out output));
 			Assert.AreEqual(0, output.Count);
 
-			Assert.IsFalse(emptyShape.ConformsWithGeometry(new PolylineGeometry(new List<List<Point>> { new List<Point> { new Point(1, 1), new Point(1, 2) }}), out output));
+			Assert.IsFalse(emptyShape.ConformsWithGeometry(new PolylinesGeometry(new List<List<Point>> { new List<Point> { new Point(1, 1), new Point(1, 2) }}), out output));
 			Assert.IsNull(output);
 
 			var shape2 = new Shape(new HashSet<Connection> { new Connection(0, 1) });
 			Assert.Throws<ArgumentNullException>(() => shape2.ConformsWithGeometry(null, out _));
-			Assert.DoesNotThrow(() => shape2.ConformsWithGeometry(new PolylineGeometry(new List<List<Point>>()), out _));
-			Assert.DoesNotThrow(() => shape2.ConformsWithGeometry(new PolylineGeometry(new List<List<Point>> { new List<Point>() }), out _));
+			Assert.DoesNotThrow(() => shape2.ConformsWithGeometry(new PolylinesGeometry(new List<List<Point>>()), out _));
+			Assert.DoesNotThrow(() => shape2.ConformsWithGeometry(new PolylinesGeometry(new List<List<Point>> { new List<Point>() }), out _));
 		}
 
 		[Test]
@@ -251,19 +251,19 @@ namespace ShapeGrammarEngineUnitTests
 			LabelingDictionary output;
 
 			var shape0 = new Shape(new HashSet<Connection> { new Connection(0, 1) });
-			var geometry0 = new PolylineGeometry(new List<List<Point>> { new List<Point> { new Point(-5, 2.1) } });
+			var geometry0 = new PolylinesGeometry(new List<List<Point>> { new List<Point> { new Point(-5, 2.1) } });
 			Assert.IsFalse(shape0.ConformsWithGeometry(geometry0, out output));
 			Assert.IsNull(output);
 
 			var shape1 = new Shape(new HashSet<Connection> { new Connection(0, 1) });
-			var geometry1 = new PolylineGeometry(new List<List<Point>> { new List<Point> { new Point(-5, 2.1), new Point(20, 20) } });
+			var geometry1 = new PolylinesGeometry(new List<List<Point>> { new List<Point> { new Point(-5, 2.1), new Point(20, 20) } });
 			Assert.IsTrue(shape1.ConformsWithGeometry(geometry1, out output));
 			Assert.AreEqual(2, output.Count);
 			Assert.IsTrue(output.GetAllPoints().Contains(new Point(-5, 2.1)));
 			Assert.IsTrue(output.GetAllPoints().Contains(new Point(20, 20)));
 
 			var shape2 = new Shape(new HashSet<Connection> { new Connection(0, 1), new Connection(1, 3), new Connection(3, 0) });
-			var geometry2 = new PolylineGeometry(new List<List<Point>> { 
+			var geometry2 = new PolylinesGeometry(new List<List<Point>> { 
 				new List<Point> { new Point(-5, 2.1), new Point(20, 20), new Point(5, 10), new Point(-5, 2.1) } });
 			Assert.IsTrue(shape2.ConformsWithGeometry(geometry2, out output));
 			Assert.AreEqual(3, output.Count);
@@ -271,12 +271,12 @@ namespace ShapeGrammarEngineUnitTests
 			Assert.IsTrue(output.GetAllPoints().Contains(new Point(20, 20)));
 			Assert.IsTrue(output.GetAllPoints().Contains(new Point(5, 10)));
 
-			var geometry3 = new PolylineGeometry(new List<List<Point>> { 
+			var geometry3 = new PolylinesGeometry(new List<List<Point>> { 
 				new List<Point> { new Point(-5, 2.1), new Point(20, 20), new Point(10, 5), new Point(2, -5), new Point(-5, 2.1) } });
 			Assert.IsFalse(shape2.ConformsWithGeometry(geometry3, out output));
 			Assert.IsNull(output);
 
-			var geometry4 = new PolylineGeometry(new List<List<Point>> { 
+			var geometry4 = new PolylinesGeometry(new List<List<Point>> { 
 				new List<Point> { new Point(-5, 2.1), new Point(20, 20), new Point(10, 5), new Point(2, 5) } });
 			Assert.IsFalse(shape2.ConformsWithGeometry(geometry4, out output));
 			Assert.IsNull(output);
@@ -288,7 +288,7 @@ namespace ShapeGrammarEngineUnitTests
 			LabelingDictionary output;
 
 			var shape1 = new Shape(new HashSet<Connection> { new Connection(0, 4), new Connection(4, 2), new Connection(2, 0) });
-			var geometry1 = new PolylineGeometry(new List<List<Point>> { 
+			var geometry1 = new PolylinesGeometry(new List<List<Point>> { 
 				new List<Point> { new Point(-5, 2.1), new Point(20, 20) }, 
 				new List<Point> { new Point(5, 10), new Point(20, 20) }, 
 				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) } });
@@ -298,7 +298,7 @@ namespace ShapeGrammarEngineUnitTests
 			Assert.IsTrue(output.GetAllPoints().Contains(new Point(20, 20)));
 			Assert.IsTrue(output.GetAllPoints().Contains(new Point(5, 10)));
 
-			var geometry2 = new PolylineGeometry(new List<List<Point>> {
+			var geometry2 = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
 				new List<Point> { new Point(5, 10), new Point(19, 20) },
 				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) } });
@@ -310,7 +310,7 @@ namespace ShapeGrammarEngineUnitTests
 		public void TestSolveLabeling_EmptyShape_OutputEmptyLabeling()
 		{
 			var shape0 = Shape.CreateEmptyShape();
-			var geometry0 = PolylineGeometry.CreateEmptyPolylineGeometry();
+			var geometry0 = PolylinesGeometry.CreateEmptyPolylineGeometry();
 			var result0 = shape0.SolveLabeling(geometry0, null);
 			Assert.AreEqual(0, result0.Count);
 		}
@@ -324,7 +324,7 @@ namespace ShapeGrammarEngineUnitTests
 				new Connection(4, 2),
 				new Connection(2, 0)
 			});
-			var geometry1 = new PolylineGeometry(new List<List<Point>>
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
 			{
 				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
 				new List<Point> { new Point(5, 10), new Point(20, 20) },
@@ -353,7 +353,7 @@ namespace ShapeGrammarEngineUnitTests
 				new Connection(4, 2),
 				new Connection(2, 0)
 			});
-			var geometry1 = new PolylineGeometry(new List<List<Point>>
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
 			{
 				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
 				new List<Point> { new Point(5, 10), new Point(20, 20) },
@@ -382,7 +382,7 @@ namespace ShapeGrammarEngineUnitTests
 				new Connection(4, 2), 
 				new Connection(2, 0) 
 			});
-			var geometry1 = new PolylineGeometry(new List<List<Point>>
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
 			{
 				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
 				new List<Point> { new Point(5, 10), new Point(20, 20) },
@@ -412,7 +412,7 @@ namespace ShapeGrammarEngineUnitTests
 				new Connection(2, 5),
 				new Connection(5, 0)
 			});
-			var geometry1 = new PolylineGeometry(new List<List<Point>>
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
 			{
 				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
 				new List<Point> { new Point(5, 10), new Point(20, 20) },
@@ -437,7 +437,7 @@ namespace ShapeGrammarEngineUnitTests
 				new Connection(4, 2),
 				new Connection(2, 0)
 			});
-			var geometry1 = new PolylineGeometry(new List<List<Point>>
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
 			{
 				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
 				new List<Point> { new Point(5, 10), new Point(20, 20) },
@@ -460,7 +460,7 @@ namespace ShapeGrammarEngineUnitTests
 				new Connection(4, 2),
 				new Connection(2, 0)
 			});
-			var geometry1 = new PolylineGeometry(new List<List<Point>>
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
 			{
 				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
 				new List<Point> { new Point(5, 10), new Point(20, 20) },

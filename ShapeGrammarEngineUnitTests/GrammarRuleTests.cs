@@ -12,9 +12,9 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestCreateGrammarRuleFromOneExample_OnePolyline_1()
 		{
-			var polyGeo1 = new PolylineGeometry(new List<List<Point>> {
+			var polyGeo1 = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0), new Point(0, 1) } });
-			var polyGeo2 = new PolylineGeometry(new List<List<Point>> {
+			var polyGeo2 = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0),  new Point(0, 2), new Point(0, 3) } });
 
 			LabelingDictionary labeling;
@@ -47,10 +47,10 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestCreateGrammarRuleFromOneExample_MultiplePolylines_1()
 		{
-			var polyGeo1 = new PolylineGeometry(new List<List<Point>> {
+			var polyGeo1 = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0), new Point(1, 1) },
 				new List<Point> { new Point(0, 0), new Point(0, 2) } });
-			var polyGeo2 = new PolylineGeometry(new List<List<Point>> {
+			var polyGeo2 = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, 0),  new Point(0, 2), new Point(0, 3) } });
 
 			LabelingDictionary labeling;
@@ -89,11 +89,11 @@ namespace ShapeGrammarEngine.UnitTests
 			// |    /        =>     |             |    /         
 			// |/                   |             |/          
 			//     
-			var geo1L = new PolylineGeometry(new List<List<Point>> {
+			var geo1L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) },
 				new List<Point>{new Point(1,0), new Point(0, -1)}});
-			var geo1R = new PolylineGeometry(new List<List<Point>> {
+			var geo1R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(5,0), new Point(5,-1), new Point(6, 0), new Point(5, 0) }});
@@ -103,11 +103,11 @@ namespace ShapeGrammarEngine.UnitTests
 			// |  /        =>       |         |  /         
 			// |/                   |         |/          
 			//     
-			var geo2L = new PolylineGeometry(new List<List<Point>> {
+			var geo2L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(0.5,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) },
 				new List<Point>{new Point(0.5,0), new Point(0, -1)}});
-			var geo2R = new PolylineGeometry(new List<List<Point>> {
+			var geo2R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(0.5,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(5,0), new Point(5,-1) },
@@ -128,11 +128,11 @@ namespace ShapeGrammarEngine.UnitTests
 			// |    /        =>     |             |    /         
 			// |/                   |             |/          
 			//     
-			var geo1L = new PolylineGeometry(new List<List<Point>> {
+			var geo1L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) },
 				new List<Point>{new Point(1,0), new Point(0, -1)}});
-			var geo1R = new PolylineGeometry(new List<List<Point>> {
+			var geo1R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(5,0), new Point(5,-1), new Point(6, 0), new Point(5, 0) }});
@@ -142,11 +142,11 @@ namespace ShapeGrammarEngine.UnitTests
 			// |  /        =>       |     |  /         
 			// |/                   |     |/          
 			//     
-			var geo2L = new PolylineGeometry(new List<List<Point>> {
+			var geo2L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(0.5,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) },
 				new List<Point>{new Point(0.5,0), new Point(0, -1)}});
-			var geo2R = new PolylineGeometry(new List<List<Point>> {
+			var geo2R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(0.5,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(0.5,0), new Point(0.5,-1) },
@@ -164,11 +164,11 @@ namespace ShapeGrammarEngine.UnitTests
 			// |    /        =>     |             |    /         
 			// |/                   |             |/          
 			//     
-			var geo1L = new PolylineGeometry(new List<List<Point>> {
+			var geo1L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) },
 				new List<Point>{new Point(1,0), new Point(0, -1)}});
-			var geo1R = new PolylineGeometry(new List<List<Point>> {
+			var geo1R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(5,0), new Point(5,-1), new Point(6, 0), new Point(5, 0) }});
@@ -178,10 +178,10 @@ namespace ShapeGrammarEngine.UnitTests
 			// |           =>       |         |  /         
 			// |                    |         |/          
 			//     
-			var geo2L = new PolylineGeometry(new List<List<Point>> {
+			var geo2L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(0.5,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
-			var geo2R = new PolylineGeometry(new List<List<Point>> {
+			var geo2R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(0.5,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(5,0), new Point(5,-1) },
@@ -199,11 +199,11 @@ namespace ShapeGrammarEngine.UnitTests
 			// |    /        =>     |             |    /         
 			// |/                   |             |/          
 			//     
-			var geo1L = new PolylineGeometry(new List<List<Point>> {
+			var geo1L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) },
 				new List<Point>{new Point(1,0), new Point(0, -1)}});
-			var geo1R = new PolylineGeometry(new List<List<Point>> {
+			var geo1R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(5,0), new Point(5,-1), new Point(6, 0), new Point(5, 0) }});
@@ -214,10 +214,10 @@ namespace ShapeGrammarEngine.UnitTests
 			// |                    |         |/          
 			//                      |
 			//                      |
-			var geo2L = new PolylineGeometry(new List<List<Point>> {
+			var geo2L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(0.5,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
-			var geo2R = new PolylineGeometry(new List<List<Point>> {
+			var geo2R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(0.5,0)},
 				new List<Point>{new Point(0,0), new Point(0,-10)},
 				new List<Point>{new Point(5,0), new Point(5,-1) },
@@ -233,7 +233,7 @@ namespace ShapeGrammarEngine.UnitTests
 			var shape1 = Shape.CreateEmptyShape();
 			var shape2 = Shape.CreateEmptyShape();
 			var emptyRule = new GrammarRule(shape1, shape2);
-			var emptyPolylineGeo = PolylineGeometry.CreateEmptyPolylineGeometry();
+			var emptyPolylineGeo = PolylinesGeometry.CreateEmptyPolylineGeometry();
 
 			Assert.Throws<ArgumentNullException>(() => emptyRule.LearnFromExample(null, null, out _));
 			Assert.Throws<ArgumentNullException>(() => emptyRule.LearnFromExample(emptyPolylineGeo, null, out _));
@@ -248,7 +248,7 @@ namespace ShapeGrammarEngine.UnitTests
 			var shape1 = new Shape(new HashSet<Connection> { new Connection(1, 2) });
 			var shape2 = new Shape(new HashSet<Connection> { new Connection(1, 2), new Connection(2, 3) });
 			var rule1 = new GrammarRule(shape1, shape2);
-			var polyGeo1 = new PolylineGeometry(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(0, 1) } });
+			var polyGeo1 = new PolylinesGeometry(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(0, 1) } });
 			Assert.Throws<RuleApplicationFailureException>(() => rule1.ApplyToGeometry(polyGeo1));
 		}
 
@@ -260,10 +260,10 @@ namespace ShapeGrammarEngine.UnitTests
 			// |              =>    |          
 			// |                    |__________
 			//     
-			var geo1L = new PolylineGeometry(new List<List<Point>> {
+			var geo1L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
-			var geo1R = new PolylineGeometry(new List<List<Point>> {
+			var geo1R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(0,-1), new Point(1,-1) } });
@@ -280,15 +280,15 @@ namespace ShapeGrammarEngine.UnitTests
 			// |              =>    |          
 			// |                    |__________
 			//     
-			var geo1L = new PolylineGeometry(new List<List<Point>> {
+			var geo1L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
-			var geo1R = new PolylineGeometry(new List<List<Point>> {
+			var geo1R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(0,-1), new Point(1,-1) } });
 			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out var labeling);
-			var polyGeo1 = new PolylineGeometry(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(0, 1), new Point(0, 2), new Point(0,3) } });
+			var polyGeo1 = new PolylinesGeometry(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(0, 1), new Point(0, 2), new Point(0,3) } });
 			Assert.Throws<ArgumentException>(() => rule.ApplyToGeometry(polyGeo1));
 		}
 
@@ -298,10 +298,10 @@ namespace ShapeGrammarEngine.UnitTests
 			//
 			//           =>
 			//
-			var geo1L = PolylineGeometry.CreateEmptyPolylineGeometry();
-			var geo1R = PolylineGeometry.CreateEmptyPolylineGeometry();
+			var geo1L = PolylinesGeometry.CreateEmptyPolylineGeometry();
+			var geo1R = PolylinesGeometry.CreateEmptyPolylineGeometry();
 			var emptyRule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out var labeling);
-			var emptyPolylineGeo = PolylineGeometry.CreateEmptyPolylineGeometry();
+			var emptyPolylineGeo = PolylinesGeometry.CreateEmptyPolylineGeometry();
 			var result = emptyRule.ApplyToGeometry(emptyPolylineGeo);
 			Assert.IsTrue(result.IsEmpty());
 		}
@@ -314,16 +314,16 @@ namespace ShapeGrammarEngine.UnitTests
 			// |         |     =>    |          
 			// |         |           |__________
 			//     
-			var geo1L = new PolylineGeometry(new List<List<Point>> {
+			var geo1L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) },
 				new List<Point>{new Point(1,0), new Point(1,-1) }});
-			var geo1R = new PolylineGeometry(new List<List<Point>> {
+			var geo1R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(0,-1), new Point(1,-1) } });
 			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out var labeling);
-			var polyGeo1 = new PolylineGeometry(new List<List<Point>> { new List<Point> {
+			var polyGeo1 = new PolylinesGeometry(new List<List<Point>> { new List<Point> {
 				new Point(0, 0),
 				new Point(1, 1),
 				new Point(2, 0),
@@ -340,14 +340,14 @@ namespace ShapeGrammarEngine.UnitTests
 			// |              =>              
 			// |                     __________
 			//     
-			var geo1L = new PolylineGeometry(new List<List<Point>> {
+			var geo1L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
-			var geo1R = new PolylineGeometry(new List<List<Point>> {
+			var geo1R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,-1), new Point(1,-1) } });
 			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out var labeling);
-			var polyGeo1 = new PolylineGeometry(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(1, 1), new Point(0, 2) } });
+			var polyGeo1 = new PolylinesGeometry(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(1, 1), new Point(0, 2) } });
 			var result = rule.ApplyToGeometry(polyGeo1);
 			Assert.IsTrue(rule.ConformWithRule(polyGeo1, result, out _));
 		}
@@ -360,16 +360,16 @@ namespace ShapeGrammarEngine.UnitTests
 			// |    /        =>     |             |    /         
 			// |/                   |             |/          
 			//     
-			var geo1L = new PolylineGeometry(new List<List<Point>> {
+			var geo1L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) },
 				new List<Point>{new Point(1,0), new Point(0, -1)}});
-			var geo1R = new PolylineGeometry(new List<List<Point>> {
+			var geo1R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(5,0), new Point(5,-1), new Point(6, 0), new Point(5, 0) }});
 			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out var labeling);
-			var polyGeo1 = new PolylineGeometry(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(1, 1), new Point(0, 2), new Point(0, 0) } });
+			var polyGeo1 = new PolylinesGeometry(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(1, 1), new Point(0, 2), new Point(0, 0) } });
 			var result = rule.ApplyToGeometry(polyGeo1);
 			Assert.IsTrue(rule.ConformWithRule(polyGeo1, result, out _));
 		}
@@ -382,11 +382,11 @@ namespace ShapeGrammarEngine.UnitTests
 			// |    /        =>     |             |    /         
 			// |/                   |             |/          
 			//     
-			var geo1L = new PolylineGeometry(new List<List<Point>> {
+			var geo1L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) },
 				new List<Point>{new Point(1,0), new Point(0, -1)}});
-			var geo1R = new PolylineGeometry(new List<List<Point>> {
+			var geo1R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(5,0), new Point(5,-1), new Point(6, 0), new Point(5, 0) }});
@@ -396,11 +396,11 @@ namespace ShapeGrammarEngine.UnitTests
 			// |  /        =>       |         |  /         
 			// |/                   |         |/          
 			//     
-			var geo2L = new PolylineGeometry(new List<List<Point>> {
+			var geo2L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(0.5,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) },
 				new List<Point>{new Point(0.5,0), new Point(0, -1)}});
-			var geo2R = new PolylineGeometry(new List<List<Point>> {
+			var geo2R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(0.5,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(5,0), new Point(5,-1) }, 
@@ -408,7 +408,7 @@ namespace ShapeGrammarEngine.UnitTests
 				new List<Point>{new Point(5, 0), new Point(5.5, 0) }});
 			rule.LearnFromExample(geo2L, geo2R, out _);
 
-			var polyGeo1 = new PolylineGeometry(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(1, 1), new Point(0, 2), new Point(0, 0) } });
+			var polyGeo1 = new PolylinesGeometry(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(1, 1), new Point(0, 2), new Point(0, 0) } });
 			var result = rule.ApplyToGeometry(polyGeo1);
 			Assert.IsTrue(rule.ConformWithRule(polyGeo1, result, out _));
 		}
@@ -421,10 +421,10 @@ namespace ShapeGrammarEngine.UnitTests
 			// |              =>    |          
 			// |                    |__________
 			//     
-			var geo1L = new PolylineGeometry(new List<List<Point>> {
+			var geo1L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
-			var geo1R = new PolylineGeometry(new List<List<Point>> {
+			var geo1R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(0,-1), new Point(1,-1) } });
@@ -434,7 +434,7 @@ namespace ShapeGrammarEngine.UnitTests
 			// |              =>    |          
 			// |                    |__________
 			//    
-			var newGeoL = new PolylineGeometry(new List<List<Point>> {
+			var newGeoL = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
 			rule.LeftHandShape.ConformsWithGeometry(newGeoL, out var newLabeling);
@@ -457,10 +457,10 @@ namespace ShapeGrammarEngine.UnitTests
 			// |              =>    |          
 			// |                    |__________
 			//     
-			var geo1L = new PolylineGeometry(new List<List<Point>> {
+			var geo1L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
-			var geo1R = new PolylineGeometry(new List<List<Point>> {
+			var geo1R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(0,-1), new Point(1,-1) } });
@@ -470,7 +470,7 @@ namespace ShapeGrammarEngine.UnitTests
 			// |              =>    |          
 			// |                    |__________
 			//    
-			var newGeoL = new PolylineGeometry(new List<List<Point>> {
+			var newGeoL = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
 			rule.LeftHandShape.ConformsWithGeometry(newGeoL, out var newLabeling);
@@ -495,10 +495,10 @@ namespace ShapeGrammarEngine.UnitTests
 			// |              =>    |          
 			// |                    |__________
 			//     
-			var geo1L = new PolylineGeometry(new List<List<Point>> {
+			var geo1L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
-			var geo1R = new PolylineGeometry(new List<List<Point>> {
+			var geo1R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(0,-1), new Point(1,-1) } });
@@ -508,7 +508,7 @@ namespace ShapeGrammarEngine.UnitTests
 			// |              =>    |          
 			// |                    |__________
 			//    
-			var newGeoL = new PolylineGeometry(new List<List<Point>> {
+			var newGeoL = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
 			rule.LeftHandShape.ConformsWithGeometry(newGeoL, out var newLabeling);
@@ -533,10 +533,10 @@ namespace ShapeGrammarEngine.UnitTests
 			// |              =>    |          
 			// |                    |__________
 			//     
-			var geo1L = new PolylineGeometry(new List<List<Point>> {
+			var geo1L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
-			var geo1R = new PolylineGeometry(new List<List<Point>> {
+			var geo1R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(0,-1), new Point(1,-1) } });
@@ -547,7 +547,7 @@ namespace ShapeGrammarEngine.UnitTests
 			// |              =>    |          
 			// |                    |__________
 			//    
-			var newGeoL = new PolylineGeometry(new List<List<Point>> {
+			var newGeoL = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
 			rule.LeftHandShape.ConformsWithGeometry(newGeoL, out var newLabeling);
@@ -567,10 +567,10 @@ namespace ShapeGrammarEngine.UnitTests
 			// |              =>    |          
 			// |                    |__________
 			//     
-			var geo1L = new PolylineGeometry(new List<List<Point>> {
+			var geo1L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
-			var geo1R = new PolylineGeometry(new List<List<Point>> {
+			var geo1R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(0,-1), new Point(1,-1) } });
@@ -581,7 +581,7 @@ namespace ShapeGrammarEngine.UnitTests
 			// |                   =>    |          
 			// |                         |_______________
 			//    
-			var newGeoL = new PolylineGeometry(new List<List<Point>> {
+			var newGeoL = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(2,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
 			rule.LeftHandShape.ConformsWithGeometry(newGeoL, out var newLabeling);
@@ -600,10 +600,10 @@ namespace ShapeGrammarEngine.UnitTests
 			// |              =>    |          
 			// |                    |__________
 			//     
-			var geo1L = new PolylineGeometry(new List<List<Point>> {
+			var geo1L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
-			var geo1R = new PolylineGeometry(new List<List<Point>> {
+			var geo1R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,-1), new Point(0,0)},
 				new List<Point>{new Point(1,-1), new Point(0,-1) } });
@@ -614,10 +614,10 @@ namespace ShapeGrammarEngine.UnitTests
 			// |                   =>    |          
 			// |                         |_________
 			//   
-			var geo2L = new PolylineGeometry(new List<List<Point>> {
+			var geo2L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(2,0), new Point(0,0)},
 				new List<Point>{new Point(0,-1), new Point(0,0) }});
-			var geo2R = new PolylineGeometry(new List<List<Point>> {
+			var geo2R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(2,0), new Point(0,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(1,-1), new Point(0,-1) } });
@@ -630,7 +630,7 @@ namespace ShapeGrammarEngine.UnitTests
 			// |                    |
 			// |                    |
 			//     
-			var newGeoL = new PolylineGeometry(new List<List<Point>> {
+			var newGeoL = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,-2), new Point(0,0), new Point(1,0) }});
 			rule.LeftHandShape.ConformsWithGeometry(newGeoL, out var newLabeling);
 
@@ -651,10 +651,10 @@ namespace ShapeGrammarEngine.UnitTests
 			// |                    |
 			//                       \
 			//                         \
-			var geo1L = new PolylineGeometry(new List<List<Point>> {
+			var geo1L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
-			var geo1R = new PolylineGeometry(new List<List<Point>> {
+			var geo1R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,-1), new Point(0,0)},
 				new List<Point>{new Point(0.5,-1.5), new Point(0,-1) } });
@@ -665,10 +665,10 @@ namespace ShapeGrammarEngine.UnitTests
 			// |                   =>    |          
 			// |                         |_________
 			//   
-			var geo2L = new PolylineGeometry(new List<List<Point>> {
+			var geo2L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(2,0), new Point(0,0)},
 				new List<Point>{new Point(0,-1), new Point(0,0) }});
-			var geo2R = new PolylineGeometry(new List<List<Point>> {
+			var geo2R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(2,0), new Point(0,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(1,-1), new Point(0,-1) } });
@@ -681,7 +681,7 @@ namespace ShapeGrammarEngine.UnitTests
 			//           |                    |
 			//           |                    |
 			//     
-			var newGeoL = new PolylineGeometry(new List<List<Point>> {
+			var newGeoL = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(2,-2), new Point(2,0), new Point(0,0) }});
 			rule.LeftHandShape.ConformsWithGeometry(newGeoL, out var newLabeling);
 
@@ -704,10 +704,10 @@ namespace ShapeGrammarEngine.UnitTests
 			// |              =>    |          
 			// |                    |__________
 			//     
-			var geo1L = new PolylineGeometry(new List<List<Point>> {
+			var geo1L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
-			var geo1R = new PolylineGeometry(new List<List<Point>> {
+			var geo1R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,-1), new Point(0,0)},
 				new List<Point>{new Point(1,-1), new Point(0,-1) } });
@@ -719,10 +719,10 @@ namespace ShapeGrammarEngine.UnitTests
 			// |                         |
 			// |                         |_________
 			//
-			var geo2L = new PolylineGeometry(new List<List<Point>> {
+			var geo2L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(1,-1), new Point(0,0)},
 				new List<Point>{new Point(0,-2), new Point(0,0) }});
-			var geo2R = new PolylineGeometry(new List<List<Point>> {
+			var geo2R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(1,-1), new Point(0,0)},
 				new List<Point>{new Point(0,0), new Point(0,-2)},
 				new List<Point>{new Point(2,-2), new Point(0,-2) } });
@@ -734,7 +734,7 @@ namespace ShapeGrammarEngine.UnitTests
 			//    \                    \           |
 			//     \_________           \__________|
 			//
-			var newGeoL = new PolylineGeometry(new List<List<Point>> {
+			var newGeoL = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(-2,2), new Point(0,0), new Point(1,0) }});
 			rule.LeftHandShape.ConformsWithGeometry(newGeoL, out var newLabeling);
 
@@ -754,10 +754,10 @@ namespace ShapeGrammarEngine.UnitTests
 			// |              =>    |          
 			// |                    |__________
 			//     
-			var geo1L = new PolylineGeometry(new List<List<Point>> {
+			var geo1L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
-			var geo1R = new PolylineGeometry(new List<List<Point>> {
+			var geo1R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(0,-1), new Point(1,-1) } });
@@ -768,7 +768,7 @@ namespace ShapeGrammarEngine.UnitTests
 			// |              =>    |          
 			// |                    |__________
 			//    
-			var newGeoL = new PolylineGeometry(new List<List<Point>> {
+			var newGeoL = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
 			rule.LeftHandShape.ConformsWithGeometry(newGeoL, out var newLabeling);
@@ -788,10 +788,10 @@ namespace ShapeGrammarEngine.UnitTests
 			// |              =>    |          
 			// |                    |__________
 			//     
-			var geo1L = new PolylineGeometry(new List<List<Point>> {
+			var geo1L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
-			var geo1R = new PolylineGeometry(new List<List<Point>> {
+			var geo1R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,-1), new Point(0,0)},
 				new List<Point>{new Point(1,-1), new Point(0,-1) } });
@@ -802,10 +802,10 @@ namespace ShapeGrammarEngine.UnitTests
 			// |                =>    |          
 			// |                      |_____
 			//   
-			var geo2L = new PolylineGeometry(new List<List<Point>> {
+			var geo2L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(1,0), new Point(0,0)},
 				new List<Point>{new Point(0,-1), new Point(0,0) }});
-			var geo2R = new PolylineGeometry(new List<List<Point>> {
+			var geo2R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(1,0), new Point(0,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1)},
 				new List<Point>{new Point(0.5,-1), new Point(0,-1) } });
@@ -818,7 +818,7 @@ namespace ShapeGrammarEngine.UnitTests
 			//           |          |         |
 			//           |                    |
 			//     
-			var newGeoL = new PolylineGeometry(new List<List<Point>> {
+			var newGeoL = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(2,-2), new Point(2,0), new Point(0,0) }});
 			rule.LeftHandShape.ConformsWithGeometry(newGeoL, out var newLabeling);
 
@@ -841,10 +841,10 @@ namespace ShapeGrammarEngine.UnitTests
 			// |              =>    |          
 			// |                    |__________
 			//     
-			var geo1L = new PolylineGeometry(new List<List<Point>> {
+			var geo1L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,0), new Point(0,-1) }});
-			var geo1R = new PolylineGeometry(new List<List<Point>> {
+			var geo1R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(1,0)},
 				new List<Point>{new Point(0,-1), new Point(0,0)},
 				new List<Point>{new Point(1,-1), new Point(0,-1) } });
@@ -857,10 +857,10 @@ namespace ShapeGrammarEngine.UnitTests
 			// |                         |
 			// |                         |_______________  
 			//
-			var geo2L = new PolylineGeometry(new List<List<Point>> {
+			var geo2L = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(1,0), new Point(0,0)},
 				new List<Point>{new Point(0,-2), new Point(0,0) }});
-			var geo2R = new PolylineGeometry(new List<List<Point>> {
+			var geo2R = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(1,0), new Point(0,0)},
 				new List<Point>{new Point(0,0), new Point(0,-2)},
 				new List<Point>{new Point(2,-2), new Point(0,-2) } });
@@ -872,7 +872,7 @@ namespace ShapeGrammarEngine.UnitTests
 			//    \                    \           |
 			//     \_________           \__________|
 			//
-			var newGeoL = new PolylineGeometry(new List<List<Point>> {
+			var newGeoL = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(-2,2), new Point(0,0), new Point(1.5,0) }});
 			rule.LeftHandShape.ConformsWithGeometry(newGeoL, out var newLabeling);
 

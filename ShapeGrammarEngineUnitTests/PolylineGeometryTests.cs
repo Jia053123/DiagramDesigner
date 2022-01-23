@@ -11,7 +11,7 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestCreateEmptyPolylineGeometry()
 		{
-			var emptyGeo = PolylineGeometry.CreateEmptyPolylineGeometry();
+			var emptyGeo = PolylinesGeometry.CreateEmptyPolylineGeometry();
 			var emptyShape = Shape.CreateEmptyShape();
 			Assert.AreEqual(0, emptyGeo.PolylinesCopy.Count);
 			Assert.IsTrue(emptyShape.ConformsWithGeometry(emptyGeo, out _));
@@ -20,7 +20,7 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestGetAllPoints()
 		{
-			var geo = new PolylineGeometry(new List<List<Point>> {
+			var geo = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point> { new Point(0, -1), new Point(0, 1), new Point(1, 0), new Point(0, -1) } });
 
 			var allPoints = geo.GetAllPoints();
@@ -33,12 +33,12 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestDoesIntersectOrOverlapWithItself_Intersect()
 		{
-			Assert.Throws<ArgumentException>(() => new PolylineGeometry(new List<List<Point>> { 
+			Assert.Throws<ArgumentException>(() => new PolylinesGeometry(new List<List<Point>> { 
 				new List<Point> { new Point(0, -1), new Point(0, 1), new Point(1, 0), new Point(-1, 0) } }));
-			Assert.Throws<ArgumentException>(() => new PolylineGeometry(new List<List<Point>> { 
+			Assert.Throws<ArgumentException>(() => new PolylinesGeometry(new List<List<Point>> { 
 				new List<Point> { new Point(1, 0), new Point(1, 2) }, 
 				new List<Point> { new Point(0, 1), new Point(2, 1) } }));
-			Assert.Throws<ArgumentException>(() => new PolylineGeometry(new List<List<Point>>{
+			Assert.Throws<ArgumentException>(() => new PolylinesGeometry(new List<List<Point>>{
 				new List<Point> { new Point(0,0), new Point(1,1) },
 				new List<Point> { new Point(0,0), new Point(1,1) } }));
 		}
@@ -46,21 +46,21 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestDoesIntersectOrOverlapWithItself_Overlap()
 		{
-			Assert.Throws<ArgumentException>(() => new PolylineGeometry(new List<List<Point>> { 
+			Assert.Throws<ArgumentException>(() => new PolylinesGeometry(new List<List<Point>> { 
 				new List<Point> { new Point(0, -1), new Point(0, 1), new Point(0, 0), new Point(0, 0.5) } }));
 		}
 
 		[Test]
 		public void TestAddSegmentByPoints_IndenticalEndPoints_ThrowException()
 		{
-			var geo = PolylineGeometry.CreateEmptyPolylineGeometry();
+			var geo = PolylinesGeometry.CreateEmptyPolylineGeometry();
 			Assert.Throws<ArgumentException>(() => geo.AddSegmentByPoints(new Point(0, 0), new Point(0, 0)));
 		}
 
 		[Test]
 		public void TestAddSegmentByPoints_DoesNotConnectToEndsOfExistingPolylines_AddNewPolyline()
 		{
-			var geo = PolylineGeometry.CreateEmptyPolylineGeometry();
+			var geo = PolylinesGeometry.CreateEmptyPolylineGeometry();
 			geo.AddSegmentByPoints(new Point(0, 0), new Point(0, 1));
 			Assert.AreEqual(1, geo.PolylinesCopy.Count);
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo.PolylinesCopy[0], new List<Point> { new Point(0, 0), new Point(0, 1) }));
@@ -74,7 +74,7 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestEraseSegmentByPoints_IdenticalEndPoints_ThrowException()
 		{
-			var geo = new PolylineGeometry(new List<List<Point>> {
+			var geo = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point>{new Point(0,0), new Point(0,1)}});
 			Assert.Throws<ArgumentException>(() => geo.EraseSegmentByPoints(new Point(0, 0), new Point(0, 0)));
 		}
@@ -82,7 +82,7 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestEraseSegmentByPoints_NotASegment()
 		{
-			var geo4 = new PolylineGeometry(new List<List<Point>>{
+			var geo4 = new PolylinesGeometry(new List<List<Point>>{
 				new List<Point> { new Point(0,0), new Point(0,1), new Point(0,2) },
 				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) },
 				new List<Point> { new Point(0,0), new Point(1,0), new Point(2,0) }});
@@ -102,7 +102,7 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestEraseSegmentByPoints_InTheMiddle()
 		{
-			var geo4 = new PolylineGeometry(new List<List<Point>>{
+			var geo4 = new PolylinesGeometry(new List<List<Point>>{
 				new List<Point> { new Point(0,0), new Point(0,1), new Point(0,2) },
 				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) },
 				new List<Point> { new Point(0,0), new Point(1,0), new Point(2,0) }});
@@ -118,7 +118,7 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestEraseSegmentByPoints_AtTheBeginning()
 		{
-			var geo4 = new PolylineGeometry(new List<List<Point>>{
+			var geo4 = new PolylinesGeometry(new List<List<Point>>{
 				new List<Point> { new Point(0,0), new Point(0,1), new Point(0,2) },
 				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) } });
 			var s = geo4.EraseSegmentByPoints(new Point(1, 1), new Point(0, 0));
@@ -131,7 +131,7 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestEraseSegmentByPoints_AtTheEnd()
 		{
-			var geo4 = new PolylineGeometry(new List<List<Point>>{
+			var geo4 = new PolylinesGeometry(new List<List<Point>>{
 				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) },
 				new List<Point> { new Point(0,0), new Point(1,0), new Point(2,0) }});
 			var s = geo4.EraseSegmentByPoints(new Point(3, 3), new Point(2, 2));
@@ -144,10 +144,10 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestEraseSegmentByIndexes_EdgeCases()
 		{
-			var geo0 = new PolylineGeometry(new List<List<Point>>());
+			var geo0 = new PolylinesGeometry(new List<List<Point>>());
 			Assert.Throws<ArgumentOutOfRangeException>(() => geo0.EraseSegmentByIndexes(0, 0));
 
-			var geo1 = new PolylineGeometry(new List<List<Point>>{
+			var geo1 = new PolylinesGeometry(new List<List<Point>>{
 				new List<Point> { new Point(0,0), new Point(0,1) } });
 			Assert.Throws<ArgumentOutOfRangeException>(() => geo1.EraseSegmentByIndexes(0, 2));
 			Assert.Throws<ArgumentOutOfRangeException>(() => geo1.EraseSegmentByIndexes(0, 1));
@@ -158,14 +158,14 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestEraseSegmentByIndexes_SegmentAtTheBeginning_RemoveTheFirstPoint()
 		{
-			var geo1 = new PolylineGeometry(new List<List<Point>>{
+			var geo1 = new PolylinesGeometry(new List<List<Point>>{
 				new List<Point> {new Point(0,0), new Point(1,0)},
 				new List<Point> { new Point(0,0), new Point(0,1) } });
 			Assert.DoesNotThrow(() => geo1.EraseSegmentByIndexes(1, 0));
 			Assert.AreEqual(1, geo1.PolylinesCopy.Count);
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(geo1.PolylinesCopy[0], new List<Point> { new Point(0, 0), new Point(1, 0)}));
 
-			var geo2 = new PolylineGeometry(new List<List<Point>>{
+			var geo2 = new PolylinesGeometry(new List<List<Point>>{
 				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) } });
 			Assert.DoesNotThrow(() => geo2.EraseSegmentByIndexes(0, 0));
 			Assert.AreEqual(1, geo2.PolylinesCopy.Count);
@@ -175,7 +175,7 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestEraseSegmentByIndexes_SegmentAtTheEnd_RemoveTheLastPoint()
 		{
-			var geo3 = new PolylineGeometry(new List<List<Point>>{
+			var geo3 = new PolylinesGeometry(new List<List<Point>>{
 				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) } });
 			Assert.DoesNotThrow(() => geo3.EraseSegmentByIndexes(0, 2));
 			Assert.AreEqual(1, geo3.PolylinesCopy.Count);
@@ -185,7 +185,7 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestEraseSegmentByIndexes_SegmentInTheMiddle_BreaksUp()
 		{
-			var geo4 = new PolylineGeometry(new List<List<Point>>{
+			var geo4 = new PolylinesGeometry(new List<List<Point>>{
 				new List<Point> { new Point(0,0), new Point(0,1), new Point(0,2) },
 				new List<Point> { new Point(0,0), new Point(1,1), new Point(2,2), new Point(3,3) },
 				new List<Point> { new Point(0,0), new Point(1,0), new Point(2,0) }});
@@ -200,7 +200,7 @@ namespace ShapeGrammarEngine.UnitTests
 		[Test]
 		public void TestConvertToConnections()
 		{
-			var geometry1 = new PolylineGeometry(new List<List<Point>> {
+			var geometry1 = new PolylinesGeometry(new List<List<Point>> {
 				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
 				new List<Point> { new Point(5, 10), new Point(20, 20) },
 				new List<Point>{ new Point(5, 10), new Point(-5, 2.1), new Point(-6, -6) } });

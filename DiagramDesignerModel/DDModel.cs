@@ -41,7 +41,7 @@ namespace DiagramDesignerModel
             this.OnModelChanged();
 		}
 
-        public void CreateNewRuleFromExample(PolylineGeometry leftHandGeometry, PolylineGeometry rightHandGeometry)
+        public void CreateNewRuleFromExample(PolylinesGeometry leftHandGeometry, PolylinesGeometry rightHandGeometry)
 		{
             // TODO
 

@@ -49,7 +49,7 @@ namespace ShapeGrammarEngine
 		/// <param name="polylines"> the input geometry.</param>
 		/// <param name="preDefinedLabeling"> the pre-defined labels for specific points; if null, assume it is empty </param>
 		/// <returns> The output shape. </returns>
-		public static Shape CreateShapeFromPolylines(PolylineGeometry polylineGeometry, LabelingDictionary preDefinedLabeling, out LabelingDictionary newShapeLabeling)
+		public static Shape CreateShapeFromPolylines(PolylinesGeometry polylineGeometry, LabelingDictionary preDefinedLabeling, out LabelingDictionary newShapeLabeling)
 		{
 			if (polylineGeometry is null)
 			{
@@ -105,7 +105,7 @@ namespace ShapeGrammarEngine
 		/// <param name="labeling"> if the input is of this shape, output how each point in the polylines is labeled 
 		/// (not guaranteed to be the only solution); otherwise output null </param>
 		/// <returns> whether the intput is of this shape </returns>
-		public bool ConformsWithGeometry(PolylineGeometry polylineGeometry, out LabelingDictionary labeling)
+		public bool ConformsWithGeometry(PolylinesGeometry polylineGeometry, out LabelingDictionary labeling)
 		{
 			try
 			{
@@ -124,7 +124,7 @@ namespace ShapeGrammarEngine
 		/// </summary>
 		/// <returns> union of the solution with the input partial solution </returns>
 		/// <exception cref="ShapeMatchFailureException"> throws when the input geometry is not of this shape </exception>
-		public LabelingDictionary SolveLabeling(PolylineGeometry polylineGeometry, LabelingDictionary partialLabelingSolution)
+		public LabelingDictionary SolveLabeling(PolylinesGeometry polylineGeometry, LabelingDictionary partialLabelingSolution)
 		{
 			if (polylineGeometry is null)
 			{

@@ -4,7 +4,7 @@ namespace DiagramDesignerModel
 {
 	public class BoundaryEntity : Entity
     {
-        public override PolylineEntityGeometry Geometry { get; protected set; }
+        public override EntityPolylineGeometry Geometry { get; protected set; }
 
         public double CalculateEnclosedArea()
         {

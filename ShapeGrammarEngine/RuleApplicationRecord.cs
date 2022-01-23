@@ -7,11 +7,11 @@ namespace ShapeGrammarEngine
 {
 	internal readonly struct RuleApplicationRecord
 	{
-		public readonly PolylineGeometry GeometryBefore;
-		public readonly PolylineGeometry GeometryAfter;
+		public readonly PolylinesGeometry GeometryBefore;
+		public readonly PolylinesGeometry GeometryAfter;
 		public readonly LabelingDictionary Labeling;
 
-		public RuleApplicationRecord(PolylineGeometry geoBefore, PolylineGeometry geoAfter, LabelingDictionary labeling)
+		public RuleApplicationRecord(PolylinesGeometry geoBefore, PolylinesGeometry geoAfter, LabelingDictionary labeling)
 		{
 			if ((geoBefore is null) || (geoAfter is null) || (labeling is null))
 			{
