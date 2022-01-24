@@ -15,37 +15,12 @@ namespace ShapeGrammarEngine
             nameColumn.DefaultValue = "Unnamed";
             this.Columns.Add(nameColumn);
 
-			var isOrthoColumn = new DataColumn();
-			isOrthoColumn.DataType = System.Type.GetType("System.Boolean");
-			isOrthoColumn.ColumnName = "IsOrtho";
-			isOrthoColumn.ReadOnly = true;
-			isOrthoColumn.Unique = false;
-			isOrthoColumn.DefaultValue = false;
-			this.Columns.Add(isOrthoColumn);
-
-			var countColumn = new DataColumn();
-            countColumn.DataType = System.Type.GetType("System.Int32");
-            countColumn.ColumnName = "Count";
-            countColumn.ReadOnly = false;
-            countColumn.Unique = false;
-            countColumn.DefaultValue = 1;
-            this.Columns.Add(countColumn);
-
-			var leftHandShapeColumn = new DataColumn();
-			leftHandShapeColumn.DataType = System.Type.GetType("ShapeGrammarEngine.Shape");
-			leftHandShapeColumn.ColumnName = "LeftHandShape";
-			leftHandShapeColumn.ReadOnly = true;
-			leftHandShapeColumn.Unique = false;
-			leftHandShapeColumn.DefaultValue = new Shape(new HashSet<Connection>());
-			this.Columns.Add(leftHandShapeColumn);
-
-			var rightHandShapeColumn = new DataColumn();
-			rightHandShapeColumn.DataType = System.Type.GetType("ShapeGrammarEngine.Shape");
-			rightHandShapeColumn.ColumnName = "RightHandShape";
-			rightHandShapeColumn.ReadOnly = true;
-			rightHandShapeColumn.Unique = false;
-			rightHandShapeColumn.DefaultValue = new Shape(new HashSet<Connection>());
-			this.Columns.Add(rightHandShapeColumn);
-		}
-    }
+            var idColumn = new DataColumn();
+            idColumn.DataType = System.Type.GetType("System.Guid");
+            idColumn.ColumnName = "ID";
+            nameColumn.ReadOnly = true;
+            nameColumn.Unique = true;
+            this.Columns.Add(idColumn);
+        }
+	}
 }

@@ -9,7 +9,7 @@ namespace DiagramDesignerModel
 	/// In the context of shape grammar, the collection of entities reflects the current description of the diagram. 
 	/// A change in the collection reflects a change of the description but not necessarily a change of the appearance of the diagram. 
 	/// </summary>
-	public class DDModel
+	public class DiagramDesignerModel
     {
         public ProgramRequirementsTable ProgramRequirements { get; } = new ProgramRequirementsTable();
 
@@ -17,7 +17,8 @@ namespace DiagramDesignerModel
 
         public List<EnclosedProgram> Programs { get; private set; } = new List<EnclosedProgram>();
 
-        public GrammarRulesDataTable CurrentRules { get; } = new GrammarRulesDataTable();
+        public GrammarRulesDataTable CurrentRulesInfo { get; } = new GrammarRulesDataTable();
+
 
         public event EventHandler ModelChanged;
 
@@ -44,12 +45,12 @@ namespace DiagramDesignerModel
         public void CreateNewRuleFromExample(PolylinesGeometry leftHandGeometry, PolylinesGeometry rightHandGeometry)
 		{
             // TODO
-
+            GrammarRule newRule = GrammarRule.CreateGrammarRuleFromOneExample(leftHandGeometry, rightHandGeometry, out _);
 
 
             try
             {
-                this.CurrentRules.Rows.Add(this.CurrentRules.NewRow());
+                this.CurrentRulesInfo.Rows.Add(this.CurrentRulesInfo.NewRow());
             }
             catch (System.Data.ConstraintException ex)
             {

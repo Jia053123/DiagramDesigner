@@ -26,7 +26,7 @@ namespace DiagramDesigner
             this.CurrentLayersTable.IsReadOnly = false;
             this.CurrentLayersTable.DataContext = this.MainViewModel.LayersDataTable;
             
-            this.CurrentRulesTable.IsReadOnly = false;
+            this.CurrentRulesTable.IsReadOnly = true;
             this.CurrentRulesTable.DataContext = this.MainViewModel.GrammarRulesDataTable;
 
             this.ProgramRequirementsTable.IsReadOnly = false; // unlock table

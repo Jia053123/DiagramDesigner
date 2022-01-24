@@ -18,10 +18,10 @@ namespace DiagramDesigner
 	/// </summary>
 	class MainViewModel : INotifyPropertyChanged
     {
-        private DDModel Model = new DDModel();
+        private DiagramDesignerModel.DiagramDesignerModel Model = new DiagramDesignerModel.DiagramDesignerModel();
         public double DisplayUnitOverRealUnit { get; set; } = 5;
         public DataTable ProgramRequirementsDataTable => this.Model.ProgramRequirements;
-        public DataTable GrammarRulesDataTable => this.Model.CurrentRules;
+        public DataTable GrammarRulesDataTable => this.Model.CurrentRulesInfo;
         public DataTable LayersDataTable { get; } = new LayersDataTable(); // TODO: should this be stored here? 
         public ProgramsSummaryTable CurrentProgramsDataTable { get;} = new ProgramsSummaryTable(); // for the pie chart
 

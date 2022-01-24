@@ -7,8 +7,13 @@ using System.Linq;
 
 namespace ShapeGrammarEngine
 {
-	class GrammarRule
+	public class GrammarRule
 	{
+		/// <summary>
+		/// The ID that's unique for each GrammarRule object created
+		/// </summary>
+		public readonly Guid id;
+
 		/// <summary>
 		/// The shape before the rule is applied. It shares labels with RightHandShape
 		/// </summary>
@@ -45,6 +50,7 @@ namespace ShapeGrammarEngine
 		{
 			this.LeftHandShape = leftHandShape;
 			this.RightHandShape = rightHandShape;
+			this.id = Guid.NewGuid();
 		}
 
 		/// <summary>
