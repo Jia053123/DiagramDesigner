@@ -6,11 +6,11 @@ using System.Text;
 
 namespace DiagramDesignerModel
 {
-	class RulesStore
+	class GrammarRulesStore
 	{
 		internal GrammarRulesDataTable CurrentRulesInfo { get; } = new GrammarRulesDataTable();
 
-		private List<GrammarRule> GrammarRules = new List<GrammarRule>();
+		private HashSet<GrammarRule> GrammarRules = new HashSet<GrammarRule>();
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetLogger("Default");
 

@@ -19,7 +19,7 @@ namespace DiagramDesignerModel
 
         public GrammarRulesDataTable CurrentRulesInfo => this.rulesStore.CurrentRulesInfo;
 
-        private RulesStore rulesStore = new RulesStore();
+        private GrammarRulesStore rulesStore = new GrammarRulesStore();
 
         public event EventHandler ModelChanged;
 

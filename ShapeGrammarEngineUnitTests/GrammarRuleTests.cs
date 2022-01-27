@@ -10,6 +10,19 @@ namespace ShapeGrammarEngine.UnitTests
 	class GrammarRuleTests
 	{
 		[Test]
+		public void TestHashCode_HashCodeTiedOnlyToGUID()
+		{
+			GrammarRule r1 = new GrammarRule(Shape.CreateEmptyShape(), Shape.CreateEmptyShape());
+			GrammarRule r2 = new GrammarRule(Shape.CreateEmptyShape(), Shape.CreateEmptyShape());
+
+			Assert.AreNotEqual(r1.GetHashCode(), r2.GetHashCode());
+
+			var r1Code = r1.GetHashCode();
+			r1.LearnFromExample(PolylinesGeometry.CreateEmptyPolylineGeometry(), PolylinesGeometry.CreateEmptyPolylineGeometry(), out _);
+			Assert.AreEqual(r1Code, r1.GetHashCode());
+		}
+
+		[Test]
 		public void TestEquality()
 		{
 			GrammarRule r1 = new GrammarRule(Shape.CreateEmptyShape(), Shape.CreateEmptyShape());
@@ -20,7 +33,6 @@ namespace ShapeGrammarEngine.UnitTests
 			Assert.IsTrue(r1 != r2);
 			Assert.AreEqual(r1, r1);
 		}
-
 
 		[Test]
 		public void TestGenerateGUID_GenerateUniqueIdWhenCreatingNewObject()
