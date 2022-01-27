@@ -19,6 +19,7 @@ namespace DiagramDesignerModel
 
         public GrammarRulesDataTable CurrentRulesInfo { get; } = new GrammarRulesDataTable();
 
+        private List<GrammarRule> GrammarRules = new List<GrammarRule>();
 
         public event EventHandler ModelChanged;
 
@@ -44,13 +45,15 @@ namespace DiagramDesignerModel
 
         public void CreateNewRuleFromExample(PolylinesGeometry leftHandGeometry, PolylinesGeometry rightHandGeometry)
 		{
-            // TODO
             GrammarRule newRule = GrammarRule.CreateGrammarRuleFromOneExample(leftHandGeometry, rightHandGeometry, out _);
-
-
+            this.GrammarRules.Add(newRule);
+            
             try
             {
-                this.CurrentRulesInfo.Rows.Add(this.CurrentRulesInfo.NewRow());
+                var newRow = this.CurrentRulesInfo.NewRow();
+                newRow["Name"] = newRule.id.ToString();
+                newRow["ID"] = newRule.id;
+                this.CurrentRulesInfo.Rows.Add(newRow);
             }
             catch (System.Data.ConstraintException ex)
             {
