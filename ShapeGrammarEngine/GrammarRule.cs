@@ -556,6 +556,8 @@ namespace ShapeGrammarEngine
 			return ratioToUse * existingReferenceValue;
 		}
 
+		public override bool Equals(object obj) => this.Equals(obj as GrammarRule);
+
 		public bool Equals(GrammarRule other)
 		{
 			return this.id == other.id;
