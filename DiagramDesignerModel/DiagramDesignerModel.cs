@@ -17,9 +17,9 @@ namespace DiagramDesignerModel
 
         public List<EnclosedProgram> Programs { get; private set; } = new List<EnclosedProgram>();
 
-        public GrammarRulesDataTable CurrentRulesInfo { get; } = new GrammarRulesDataTable();
+        public GrammarRulesDataTable CurrentRulesInfo => this.rulesStore.CurrentRulesInfo;
 
-        private List<GrammarRule> GrammarRules = new List<GrammarRule>();
+        private RulesStore rulesStore = new RulesStore();
 
         public event EventHandler ModelChanged;
 
@@ -45,23 +45,10 @@ namespace DiagramDesignerModel
 
         public void CreateNewRuleFromExample(PolylinesGeometry leftHandGeometry, PolylinesGeometry rightHandGeometry)
 		{
-            GrammarRule newRule = GrammarRule.CreateGrammarRuleFromOneExample(leftHandGeometry, rightHandGeometry, out _);
-            this.GrammarRules.Add(newRule);
-            
-            try
-            {
-                var newRow = this.CurrentRulesInfo.NewRow();
-                newRow["Name"] = newRule.id.ToString();
-                newRow["ID"] = newRule.id;
-                this.CurrentRulesInfo.Rows.Add(newRow);
-            }
-            catch (System.Data.ConstraintException ex)
-            {
-                Logger.Error(ex, "Grammar Table Constraint Failed");
-            }
-        }
+            this.rulesStore.CreateNewRuleFromExample(leftHandGeometry, rightHandGeometry);
+		}
 
-        public void RemoveAllWallsAndPrograms()
+		public void RemoveAllWallsAndPrograms()
 		{
             this.WallEntities.Clear();
             this.Programs.Clear();
