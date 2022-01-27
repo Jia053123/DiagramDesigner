@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace ShapeGrammarEngine
 {
-	public class GrammarRule
+	public class GrammarRule : IEquatable<GrammarRule>
 	{
 		/// <summary>
 		/// The ID that's unique for each GrammarRule object created
@@ -555,6 +555,28 @@ namespace ShapeGrammarEngine
 			double ratioToUse = (double)(GrammarRule.RandomGenerator.NextDouble() * (maxAssignedOverReferenceRatio - minAssignedOverReferenceRatio) + minAssignedOverReferenceRatio);
 			return ratioToUse * existingReferenceValue;
 		}
+
+		public bool Equals(GrammarRule other)
+		{
+			return this.id == other.id;
+		}
+
+		public static bool operator ==(GrammarRule lhs, GrammarRule rhs)
+		{
+			if (lhs is null)
+			{
+				if (rhs is null)
+				{
+					return true;
+				}
+				return false;
+			}
+			return lhs.Equals(rhs);
+		}
+
+		public static bool operator !=(GrammarRule lhs, GrammarRule rhs) => !(lhs == rhs);
+
+		public override int GetHashCode() => this.id.GetHashCode();
 	}
 	class RuleApplicationFailureException : Exception
 	{

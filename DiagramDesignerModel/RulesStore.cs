@@ -1,6 +1,7 @@
 ﻿using ShapeGrammarEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace DiagramDesignerModel
@@ -30,5 +31,7 @@ namespace DiagramDesignerModel
                 Logger.Error(ex, "Grammar Table Constraint Failed");
             }
         }
+
+        private GrammarRule GetRuleById(Guid guid) => this.GrammarRules.Where(i => i.id == guid).FirstOrDefault();
     }
 }
