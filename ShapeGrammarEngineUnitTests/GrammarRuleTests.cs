@@ -10,6 +10,26 @@ namespace ShapeGrammarEngine.UnitTests
 	class GrammarRuleTests
 	{
 		[Test]
+		public void TestGenerateGUID_GenerateUniqueIdWhenCreatingNewObject()
+		{
+			GrammarRule r1 = new GrammarRule(Shape.CreateEmptyShape(), Shape.CreateEmptyShape());
+			GrammarRule r2 = new GrammarRule(Shape.CreateEmptyShape(), Shape.CreateEmptyShape());
+
+			Assert.AreNotEqual(r1.id, r2.id);
+		}
+
+		[Test]
+		public void TestMaintainGUID_IdStaysTheSameAsLearningHappens()
+		{
+			GrammarRule r1 = new GrammarRule(Shape.CreateEmptyShape(), Shape.CreateEmptyShape());
+			var id = r1.id;
+			r1.LearnFromExample(PolylinesGeometry.CreateEmptyPolylineGeometry(), PolylinesGeometry.CreateEmptyPolylineGeometry(), out _);
+
+			Assert.AreEqual(id, r1.id);
+		}
+
+
+		[Test]
 		public void TestCreateGrammarRuleFromOneExample_OnePolyline_1()
 		{
 			var polyGeo1 = new PolylinesGeometry(new List<List<Point>> {
