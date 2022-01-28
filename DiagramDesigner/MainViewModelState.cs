@@ -3,8 +3,10 @@
 	public enum MainViewModelState
 	{
 		ViewingState,
-		ContextPickingState,
 		NormalEditingState,
-		RuleCreationEditingState
+		RuleCreationContextPickingState,
+		RuleCreationEditingState,
+		RuleRepetitionContextPickingState, 
+		RuleRepetitionEditingState
 	}
 }

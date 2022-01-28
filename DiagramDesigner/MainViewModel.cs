@@ -203,7 +203,7 @@ namespace DiagramDesigner
         private void ExecuteAddNewRule(object obj)
         {
             this.Model.CreateNewWallEntity();
-            this.State = MainViewModelState.ContextPickingState;
+            this.State = MainViewModelState.RuleCreationContextPickingState;
         }
 
         private void ExecuteDonePickingContext(object obj)
@@ -305,11 +305,11 @@ namespace DiagramDesigner
                 case MainViewModelState.RuleCreationEditingState:
                     this.MouseLeftClickedInRuleCreationEditingState(mea);
 					break;
-                case MainViewModelState.ContextPickingState:
+                case MainViewModelState.RuleCreationContextPickingState:
                     this.MouseLeftClickedInContextPickingState(mea);
                     break;
-                default:
-                    break;
+				default:
+					break;
             }
         }
 

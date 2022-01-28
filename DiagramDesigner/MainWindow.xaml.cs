@@ -85,7 +85,7 @@ namespace DiagramDesigner
                     this.DoneAddingRuleButton.IsEnabled = false;
                     this.DonePickingContextButton.IsEnabled = false;
                     break;
-                case MainViewModelState.ContextPickingState:
+                case MainViewModelState.RuleCreationContextPickingState:
                     this.PrimaryDiagramCanvas.Cursor = Cursors.Hand;
                     this.StartDrawingButton.IsEnabled = false;
                     this.DoneDrawingButton.IsEnabled = false;
