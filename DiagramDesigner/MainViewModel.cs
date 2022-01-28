@@ -75,6 +75,9 @@ namespace DiagramDesigner
         public ICommand CreateNewRuleCommand { set; get; }
         public ICommand DonePickingContextForRuleCreationCommand { set; get; }
         public ICommand DoneCreatingRuleCommand { set; get; }
+        public ICommand RepeatSelectedRuleCommand { set; get; }
+        public ICommand DonePickingContextForRuleRepetitionCommand { set; get; }
+        public ICommand DoneRepeatingRuleCommand { set; get; }
         public ICommand ClearGeometryCommand { set; get; }
         public ICommand ResolveProgramsCommand { get; set; }
         public ICommand AddNewProgramRequirementCommand { set; get; }
@@ -87,11 +90,18 @@ namespace DiagramDesigner
         public MainViewModel()
         {
             this.AddNewLayerCommand = new DelegateCommand(ExecuteAddNewLayer);
+
             this.StartDrawingCommand = new DelegateCommand(ExecuteStartDrawing);
             this.EndDrawingCommand = new DelegateCommand(ExecuteEndDrawing);
-            this.CreateNewRuleCommand = new DelegateCommand(ExecuteAddNewRule);
-            this.DonePickingContextForRuleCreationCommand = new DelegateCommand(ExecuteDonePickingContext);
+
+            this.CreateNewRuleCommand = new DelegateCommand(ExecuteCreateNewRule);
+            this.DonePickingContextForRuleCreationCommand = new DelegateCommand(ExecuteDonePickingContextForRuleCreation);
             this.DoneCreatingRuleCommand = new DelegateCommand(ExecuteDoneAddingRule);
+
+            this.RepeatSelectedRuleCommand = new DelegateCommand(ExecuteRepeatSelectedRule);
+            this.DonePickingContextForRuleRepetitionCommand = new DelegateCommand(ExecuteDonePickingContextForRuleRepetition);
+            this.DoneRepeatingRuleCommand = new DelegateCommand(ExecuteDoneRepeatingRule);
+
             this.ClearGeometryCommand = new DelegateCommand(ExecuteClearGeometry);
             this.ResolveProgramsCommand = new DelegateCommand(ExecuteResolvePrograms);
             this.AddNewProgramRequirementCommand = new DelegateCommand(ExecuteAddNewRowToRequirementsTable);
@@ -200,13 +210,13 @@ namespace DiagramDesigner
             this.CleanUpTempDataForDrawing();
         }
 
-        private void ExecuteAddNewRule(object obj)
+        private void ExecuteCreateNewRule(object obj)
         {
             this.Model.CreateNewWallEntity();
             this.State = MainViewModelState.RuleCreationContextPickingState;
         }
 
-        private void ExecuteDonePickingContext(object obj)
+        private void ExecuteDonePickingContextForRuleCreation(object obj)
 		{
             this.State = MainViewModelState.RuleCreationEditingState;
 		}
@@ -243,6 +253,21 @@ namespace DiagramDesigner
             this.State = MainViewModelState.ViewingState;
             this.CleanUpTempDataForDrawing();
         }
+
+        private void ExecuteRepeatSelectedRule(object obj)
+		{
+
+		}
+
+        private void ExecuteDonePickingContextForRuleRepetition(object obj)
+		{
+
+		}
+
+        private void ExecuteDoneRepeatingRule(object obj)
+		{
+
+		}
 
         private void ExecuteClearGeometry(object obj)
 		{
