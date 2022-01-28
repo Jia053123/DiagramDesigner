@@ -75,7 +75,7 @@ namespace DiagramDesigner
                     this.DoneDrawingButton.IsEnabled = false;
                     this.AddNewRuleButton.IsEnabled = true;
                     this.DoneAddingRuleButton.IsEnabled = false;
-                    this.DonePickingContextButton.IsEnabled = false;
+                    this.DonePickingContextForCreatingRuleButton.IsEnabled = false;
                     break;
                 case MainViewModelState.NormalEditingState:
                     this.PrimaryDiagramCanvas.Cursor = Cursors.Cross;
@@ -83,7 +83,7 @@ namespace DiagramDesigner
                     this.DoneDrawingButton.IsEnabled = true;
                     this.AddNewRuleButton.IsEnabled = false;
                     this.DoneAddingRuleButton.IsEnabled = false;
-                    this.DonePickingContextButton.IsEnabled = false;
+                    this.DonePickingContextForCreatingRuleButton.IsEnabled = false;
                     break;
                 case MainViewModelState.RuleCreationContextPickingState:
                     this.PrimaryDiagramCanvas.Cursor = Cursors.Hand;
@@ -91,7 +91,7 @@ namespace DiagramDesigner
                     this.DoneDrawingButton.IsEnabled = false;
                     this.AddNewRuleButton.IsEnabled = false;
                     this.DoneAddingRuleButton.IsEnabled = false;
-                    this.DonePickingContextButton.IsEnabled = true;
+                    this.DonePickingContextForCreatingRuleButton.IsEnabled = true;
                     break;
                 case MainViewModelState.RuleCreationEditingState:
                     this.PrimaryDiagramCanvas.Cursor = Cursors.Cross;
@@ -99,7 +99,7 @@ namespace DiagramDesigner
                     this.DoneDrawingButton.IsEnabled = false;
                     this.AddNewRuleButton.IsEnabled = false;
                     this.DoneAddingRuleButton.IsEnabled = true;
-                    this.DonePickingContextButton.IsEnabled = false;
+                    this.DonePickingContextForCreatingRuleButton.IsEnabled = false;
                     break;
             }
         }
