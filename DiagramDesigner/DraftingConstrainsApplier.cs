@@ -9,7 +9,7 @@ namespace DiagramDesigner
 	/// <summary>
 	/// Assist the selecting and drafting operations to take into consideration proximity and constrains such as snapping and aligning. 
 	/// </summary>
-	class DraftingAssistor
+	class DraftingConstrainsApplier
 	{
 		internal bool DoesDrawOrthogonally = false;
 		private WinPoint? LastAddedPointInEditingState = null;

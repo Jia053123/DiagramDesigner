@@ -58,7 +58,7 @@ namespace DiagramDesigner
             get { return this._state; }
         }
 
-        private DraftingAssistor draftingAssistor;
+        private DraftingConstrainsApplier draftingAssistor;
 
         public bool IsDrawingOrthogonally => this.draftingAssistor.DoesDrawOrthogonally;
 
@@ -110,7 +110,7 @@ namespace DiagramDesigner
             this.Model.ModelChanged += this.HandelGraphicsModified;
             this.Model.ModelChanged += this.HandelProgramsModified;
 
-            this.draftingAssistor = new DraftingAssistor();
+            this.draftingAssistor = new DraftingConstrainsApplier();
             this.draftingAssistor.DoesDrawOrthogonally = false;
 
             this.RebuildGraphicsDataFromModel();
