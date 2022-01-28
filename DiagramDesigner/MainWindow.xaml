@@ -13,16 +13,16 @@
             <DataGrid x:Name="CurrentLayersTable"  ItemsSource="{Binding}"  IsReadOnly="False" Margin="10,10,10,10"></DataGrid>
             <Button Content="Add New Layer" Width="100" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding AddNewLayerCommand}"/>
 
-            <Button x:Name="StartDrawingButton" Content="Start Drawing" Width="120" HorizontalAlignment="Center" Margin="10,10,10,1" Command="{Binding StartDrawingCommand}"/>
-            <Button x:Name="DoneDrawingButton" Content="Done Drawing" IsEnabled="False" Width="120" HorizontalAlignment="Center" Margin="10,1,10,1"  Command="{Binding EndDrawingCommand}"/>
+            <Button x:Name="StartDrawingButton" Content="Start Drawing" Width="130" HorizontalAlignment="Center" Margin="10,10,10,1" Command="{Binding StartDrawingCommand}"/>
+            <Button x:Name="DoneDrawingButton" Content="Done Drawing" IsEnabled="False" Width="130" HorizontalAlignment="Center" Margin="10,1,10,1"  Command="{Binding EndDrawingCommand}"/>
 
             <DataGrid x:Name="CurrentRulesTable" ItemsSource="{Binding}" AutoGenerateColumns="True" AutoGeneratingColumn="HandelCurrentRulesTableColumnGenerated" IsReadOnly="False" Margin="10,20,10,1" SelectionMode="Single" SelectionUnit="FullRow"></DataGrid>
-            <Button x:Name="AddNewRuleButton" Content="Add New Rule" Width="120" HorizontalAlignment="Center" Margin="10,10,10,1" Command="{Binding AddNewRuleCommand}"/>
-            <Button x:Name="DonePickingContextForCreatingRuleButton" Content="Done Picking Context" Width="120" Height="20" Margin="10,1,10,1" IsEnabled="False" Command="{Binding DonePickingContextCommand}"></Button>
-            <Button x:Name="DoneAddingRuleButton" Content="Done Adding Rule" IsEnabled="False" Width="120" HorizontalAlignment="Center" Margin="10,1,10,1" Command="{Binding DoneAddingRuleCommand}"/>
+            <Button x:Name="AddNewRuleButton" Content="Add New Rule" Width="130" HorizontalAlignment="Center" Margin="10,10,10,1" Command="{Binding AddNewRuleCommand}"/>
+            <Button x:Name="DonePickingContextForCreatingRuleButton" Content="Done Picking Context" Width="130" Height="20" Margin="10,1,10,1" IsEnabled="False" Command="{Binding DonePickingContextCommand}"></Button>
+            <Button x:Name="DoneAddingRuleButton" Content="Done Adding Rule" IsEnabled="False" Width="130" HorizontalAlignment="Center" Margin="10,1,10,1" Command="{Binding DoneAddingRuleCommand}"/>
 
             <Button x:Name="RepeatSelectedRuleButton" Content="Repeat Selected Rule" Width="130" HorizontalAlignment="Center" Margin="10,10,10,1" Command="{Binding StartDrawingCommand}"/>
-            <Button x:Name="DonePickingContextForRepeatingRuleButton" Content="Done Picking Context" Width="120" Height="20" Margin="10,1,10,1" IsEnabled="False" Command="{Binding DonePickingContextCommand}"></Button>
+            <Button x:Name="DonePickingContextForRepeatingRuleButton" Content="Done Picking Context" Width="130" Height="20" Margin="10,1,10,1" IsEnabled="False" Command="{Binding DonePickingContextCommand}"></Button>
             <Button x:Name="DoneRepeatingRuleButton" Content="Done Repeating Rule" Width="130" HorizontalAlignment="Center" Margin="10,1,10,10" Command="{Binding EndDrawingCommand}"/>
             
             <Button Content="Clear All" Width="100" HorizontalAlignment="Center" Margin="10,10,10,10" Command="{Binding ClearGeometryCommand}"/>
