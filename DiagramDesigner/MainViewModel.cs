@@ -58,10 +58,10 @@ namespace DiagramDesigner
             get { return this._state; }
         }
 
-        private DraftingConstrainsApplier draftingAssistor;
+        private DraftingConstrainsApplier draftingConstrainsApplier;
         private RuleGeometriesGenerator ruleGeometriesGenerator;
 
-        public bool IsDrawingOrthogonally => this.draftingAssistor.DoesDrawOrthogonally;
+        public bool IsDrawingOrthogonally => this.draftingConstrainsApplier.DoesDrawOrthogonally;
 
         private bool _doesAcceptChangeInOrthogonalityOption = true;
         public bool DoesAcceptChangeInOrthogonalityOption
@@ -111,8 +111,8 @@ namespace DiagramDesigner
             this.Model.ModelChanged += this.HandelGraphicsModified;
             this.Model.ModelChanged += this.HandelProgramsModified;
 
-            this.draftingAssistor = new DraftingConstrainsApplier();
-            this.draftingAssistor.DoesDrawOrthogonally = false;
+            this.draftingConstrainsApplier = new DraftingConstrainsApplier();
+            this.draftingConstrainsApplier.DoesDrawOrthogonally = false;
 
             this.ruleGeometriesGenerator = new RuleGeometriesGenerator(this.DisplayUnitOverRealUnit);
 
@@ -184,7 +184,7 @@ namespace DiagramDesigner
             this.NewEdgePreviewData = null;
             this.WallsToHighlightAsContext.Clear();
             this.WallsToHighlightAsAdditions.Clear();
-            this.draftingAssistor.ClearLastAddedPoint();
+            this.draftingConstrainsApplier.ClearLastAddedPoint();
 
             this.HandelGraphicsModified(this, null);
         }
@@ -276,7 +276,7 @@ namespace DiagramDesigner
             if (this.DoesAcceptChangeInOrthogonalityOption)
 			{
                 bool isOrthogonal = (bool)obj;
-                this.draftingAssistor.DoesDrawOrthogonally = isOrthogonal;
+                this.draftingConstrainsApplier.DoesDrawOrthogonally = isOrthogonal;
             }
 		}
 
@@ -322,7 +322,7 @@ namespace DiagramDesigner
             if (this.WallsToRender != null)
             {
                 var newPoint = new WinPoint(mea.LocationX, mea.LocationY);
-                newPoint = this.draftingAssistor.ApplyAllRestrictions(newPoint, this.WallsToRender);
+                newPoint = this.draftingConstrainsApplier.ApplyAllRestrictions(newPoint, this.WallsToRender);
 
                 this.Model.AddPointToWallEntityAtIndex(MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count - 1);
                 var wallIndex = this.WallsToRender.Count - 1;
@@ -332,7 +332,7 @@ namespace DiagramDesigner
 				{
                     this.WallsToHighlightAsAdditions.Add(new Tuple<int, int, int>(wallIndex, pointIndex1, pointIndex2));
                 }
-                this.draftingAssistor.UpdateLastAddedPoint(newPoint);
+                this.draftingConstrainsApplier.UpdateLastAddedPoint(newPoint);
 
                 if (this.NewEdgePreviewData is null)
                 {
@@ -350,10 +350,10 @@ namespace DiagramDesigner
             if (this.WallsToRender != null)
             {
                 var newPoint = new WinPoint(mea.LocationX, mea.LocationY);
-                newPoint = this.draftingAssistor.ApplyAllRestrictions(newPoint, this.WallsToRender);
+                newPoint = this.draftingConstrainsApplier.ApplyAllRestrictions(newPoint, this.WallsToRender);
 
                 this.Model.AddPointToWallEntityAtIndex(MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count - 1);
-                this.draftingAssistor.UpdateLastAddedPoint(newPoint);
+                this.draftingConstrainsApplier.UpdateLastAddedPoint(newPoint);
 
                 if (this.NewEdgePreviewData is null)
                 {
@@ -368,7 +368,7 @@ namespace DiagramDesigner
 
         private void MouseLeftClickedInContextPickingState(MouseEventArgs mea)
 		{
-            var result = this.draftingAssistor.FindLineClicked(new WinPoint(mea.LocationX, mea.LocationY), this.WallsToRender);
+            var result = this.draftingConstrainsApplier.FindLineClicked(new WinPoint(mea.LocationX, mea.LocationY), this.WallsToRender);
             if (!(result is null)) 
             {
                 if (!this.WallsToHighlightAsContext.Contains(result))
