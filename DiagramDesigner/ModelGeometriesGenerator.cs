@@ -8,13 +8,13 @@ using WinPoint = System.Windows.Point;
 namespace DiagramDesigner
 {
 	/// <summary>
-	/// Generates left-hand and right-hand geometries based on highlighted walls
+	/// Handle conversions between display geometries and Model geometries
 	/// </summary>
-	class RuleGeometriesGenerator
+	class ModelGeometriesGenerator
 	{
 		private double displayUnitOverRealUnit;
 
-		internal RuleGeometriesGenerator(double displayUnitOverRealUnit)
+		internal ModelGeometriesGenerator(double displayUnitOverRealUnit)
 		{
 			this.displayUnitOverRealUnit = displayUnitOverRealUnit;
 		}
@@ -24,7 +24,16 @@ namespace DiagramDesigner
             this.displayUnitOverRealUnit = newValue;
 		}
 
-		internal Tuple<PolylinesGeometry, PolylinesGeometry> GenerateGeometriesFromContextAndAdditions(List<List<WinPoint>> allGeometries, List<Tuple<int, int, int>> contextGeometries, List<Tuple<int, int, int>> additionGeometries)
+        /// <summary>
+        /// Generate geometries for rule creation from highlighted context and addition geometries on screen
+        /// </summary>
+        /// <param name="allGeometries"> all geometries on screen </param>
+        /// <param name="contextGeometries"> the geometries highlighted as context from all geometries on screen; 
+        /// each Tuple specifies the index of the geometry within allGeometries, and the two ascending consecutive indexes indicating the line segment within the geometry </param>
+        /// <param name="additionGeometries"> the geometries highlighted as addition from all geometries on screen;
+        /// each Tuple specifies the index of the geometry within allGeometries, and the two ascending consecutive indexes indicating the line segment within the geometry </param>
+        /// <returns> a Tuple containing the geometry for the left hand side of the rule and the one for the right hand side </returns>
+        internal Tuple<PolylinesGeometry, PolylinesGeometry> GenerateGeometriesFromContextAndAdditions(List<List<WinPoint>> allGeometries, List<Tuple<int, int, int>> contextGeometries, List<Tuple<int, int, int>> additionGeometries)
 		{
             // create left hand geometry
             var leftHandPoints = new List<List<Point>>();
