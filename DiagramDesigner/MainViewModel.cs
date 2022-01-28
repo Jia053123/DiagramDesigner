@@ -59,6 +59,7 @@ namespace DiagramDesigner
         }
 
         private DraftingConstrainsApplier draftingAssistor;
+        private RuleGeometriesGenerator ruleGeometriesGenerator;
 
         public bool IsDrawingOrthogonally => this.draftingAssistor.DoesDrawOrthogonally;
 
@@ -112,6 +113,8 @@ namespace DiagramDesigner
 
             this.draftingAssistor = new DraftingConstrainsApplier();
             this.draftingAssistor.DoesDrawOrthogonally = false;
+
+            this.ruleGeometriesGenerator = new RuleGeometriesGenerator(this.DisplayUnitOverRealUnit);
 
             this.RebuildGraphicsDataFromModel();
 
@@ -223,32 +226,8 @@ namespace DiagramDesigner
 
         private void ExecuteDoneAddingRule(object obj)
         {
-            // create left hand geometry
-            var leftHandPoints = new List<List<Point>>();
-            foreach (Tuple<int, int, int> t in this.WallsToHighlightAsContext)
-			{
-                var wp1 = this.WallsToRender[t.Item1][t.Item2];
-                var p1 = MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(wp1, this.DisplayUnitOverRealUnit);
-                var wp2 = this.WallsToRender[t.Item1][t.Item3];
-                var p2 = MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(wp2, this.DisplayUnitOverRealUnit);
-                leftHandPoints.Add(new List<Point> { p1, p2 });
-			}
-            PolylinesGeometry leftHandGeometry = new PolylinesGeometry(leftHandPoints);
-
-            // create right hand geometry
-            var rightHandPoints = new List<List<Point>>(leftHandPoints); // currently assume no point is erased from the left hand geometry though this will not be the case
-            foreach (Tuple<int, int, int> t in this.WallsToHighlightAsAdditions)
-            {
-                var wp1 = this.WallsToRender[t.Item1][t.Item2];
-                var p1 = MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(wp1, this.DisplayUnitOverRealUnit);
-                var wp2 = this.WallsToRender[t.Item1][t.Item3];
-                var p2 = MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(wp2, this.DisplayUnitOverRealUnit);
-                rightHandPoints.Add(new List<Point> { p1, p2 });
-            }
-            PolylinesGeometry rightHandGeometry = new PolylinesGeometry(rightHandPoints);
-
-            // create new rule
-            this.Model.CreateNewRuleFromExample(leftHandGeometry, rightHandGeometry);
+            var geo = this.ruleGeometriesGenerator.GenerateGeometriesFromContextAndAdditions(this.WallsToRender, this.WallsToHighlightAsContext, this.WallsToHighlightAsAdditions);
+            this.Model.CreateNewRuleFromExample(geo.Item1, geo.Item2);
 
             this.State = MainViewModelState.ViewingState;
             this.CleanUpTempDataForDrawing();
