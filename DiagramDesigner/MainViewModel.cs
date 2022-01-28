@@ -72,9 +72,9 @@ namespace DiagramDesigner
         public ICommand AddNewLayerCommand { set; get; }
         public ICommand StartDrawingCommand { set; get; }
         public ICommand EndDrawingCommand { set; get; }
-        public ICommand AddNewRuleCommand { set; get; }
-        public ICommand DonePickingContextCommand { set; get; }
-        public ICommand DoneAddingRuleCommand { set; get; }
+        public ICommand CreateNewRuleCommand { set; get; }
+        public ICommand DonePickingContextForRuleCreationCommand { set; get; }
+        public ICommand DoneCreatingRuleCommand { set; get; }
         public ICommand ClearGeometryCommand { set; get; }
         public ICommand ResolveProgramsCommand { get; set; }
         public ICommand AddNewProgramRequirementCommand { set; get; }
@@ -89,9 +89,9 @@ namespace DiagramDesigner
             this.AddNewLayerCommand = new DelegateCommand(ExecuteAddNewLayer);
             this.StartDrawingCommand = new DelegateCommand(ExecuteStartDrawing);
             this.EndDrawingCommand = new DelegateCommand(ExecuteEndDrawing);
-            this.AddNewRuleCommand = new DelegateCommand(ExecuteAddNewRule);
-            this.DonePickingContextCommand = new DelegateCommand(ExecuteDonePickingContext);
-            this.DoneAddingRuleCommand = new DelegateCommand(ExecuteDoneAddingRule);
+            this.CreateNewRuleCommand = new DelegateCommand(ExecuteAddNewRule);
+            this.DonePickingContextForRuleCreationCommand = new DelegateCommand(ExecuteDonePickingContext);
+            this.DoneCreatingRuleCommand = new DelegateCommand(ExecuteDoneAddingRule);
             this.ClearGeometryCommand = new DelegateCommand(ExecuteClearGeometry);
             this.ResolveProgramsCommand = new DelegateCommand(ExecuteResolvePrograms);
             this.AddNewProgramRequirementCommand = new DelegateCommand(ExecuteAddNewRowToRequirementsTable);

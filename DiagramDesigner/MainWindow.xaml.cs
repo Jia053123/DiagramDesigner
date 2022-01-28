@@ -73,33 +73,33 @@ namespace DiagramDesigner
                     this.PrimaryDiagramCanvas.Cursor = Cursors.Arrow;
                     this.StartDrawingButton.IsEnabled = true;
                     this.DoneDrawingButton.IsEnabled = false;
-                    this.AddNewRuleButton.IsEnabled = true;
-                    this.DoneAddingRuleButton.IsEnabled = false;
-                    this.DonePickingContextForCreatingRuleButton.IsEnabled = false;
+                    this.CreateNewRuleButton.IsEnabled = true;
+                    this.DoneCreatingRuleButton.IsEnabled = false;
+                    this.DonePickingContextForRuleCreationButton.IsEnabled = false;
                     break;
                 case MainViewModelState.NormalEditingState:
                     this.PrimaryDiagramCanvas.Cursor = Cursors.Cross;
                     this.StartDrawingButton.IsEnabled = false;
                     this.DoneDrawingButton.IsEnabled = true;
-                    this.AddNewRuleButton.IsEnabled = false;
-                    this.DoneAddingRuleButton.IsEnabled = false;
-                    this.DonePickingContextForCreatingRuleButton.IsEnabled = false;
+                    this.CreateNewRuleButton.IsEnabled = false;
+                    this.DoneCreatingRuleButton.IsEnabled = false;
+                    this.DonePickingContextForRuleCreationButton.IsEnabled = false;
                     break;
                 case MainViewModelState.RuleCreationContextPickingState:
                     this.PrimaryDiagramCanvas.Cursor = Cursors.Hand;
                     this.StartDrawingButton.IsEnabled = false;
                     this.DoneDrawingButton.IsEnabled = false;
-                    this.AddNewRuleButton.IsEnabled = false;
-                    this.DoneAddingRuleButton.IsEnabled = false;
-                    this.DonePickingContextForCreatingRuleButton.IsEnabled = true;
+                    this.CreateNewRuleButton.IsEnabled = false;
+                    this.DoneCreatingRuleButton.IsEnabled = false;
+                    this.DonePickingContextForRuleCreationButton.IsEnabled = true;
                     break;
                 case MainViewModelState.RuleCreationEditingState:
                     this.PrimaryDiagramCanvas.Cursor = Cursors.Cross;
                     this.StartDrawingButton.IsEnabled = false;
                     this.DoneDrawingButton.IsEnabled = false;
-                    this.AddNewRuleButton.IsEnabled = false;
-                    this.DoneAddingRuleButton.IsEnabled = true;
-                    this.DonePickingContextForCreatingRuleButton.IsEnabled = false;
+                    this.CreateNewRuleButton.IsEnabled = false;
+                    this.DoneCreatingRuleButton.IsEnabled = true;
+                    this.DonePickingContextForRuleCreationButton.IsEnabled = false;
                     break;
             }
         }
