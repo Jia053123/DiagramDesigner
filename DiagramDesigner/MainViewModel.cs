@@ -10,6 +10,7 @@ using DiagramDesignerModel;
 using System.Diagnostics;
 using BasicGeometries;
 using ShapeGrammarEngine;
+using System.Windows.Controls;
 
 namespace DiagramDesigner
 {
@@ -43,6 +44,7 @@ namespace DiagramDesigner
 
         public List<ProgramToRender> ProgramsToRender { get; private set; }
 
+
         private readonly (WinPoint startPoint, WinPoint endPoint) NewEdgePreviewDefault = (new WinPoint(0, 0), new WinPoint(0, 0));
         public (WinPoint startPoint, WinPoint endPoint) NewEdgePreview => NewEdgePreviewData is null ? NewEdgePreviewDefault : (NewEdgePreviewData.StartPoint, NewEdgePreviewData.EndPoint);
         private DirectedLine NewEdgePreviewData { get; set; } = null;
@@ -57,6 +59,8 @@ namespace DiagramDesigner
             }
             get { return this._state; }
         }
+
+        private Guid? currentlySelectedRule = null;
 
         private DraftingConstrainsApplier draftingConstrainsApplier;
         private ModelGeometriesGenerator ruleGeometriesGenerator;
@@ -76,7 +80,6 @@ namespace DiagramDesigner
         public ICommand CreateNewRuleCommand { set; get; }
         public ICommand DonePickingContextForRuleCreationCommand { set; get; }
         public ICommand DoneCreatingRuleCommand { set; get; }
-        //public ICommand HandleRuleSelectionChangedCommand { set; get; }
         public ICommand RepeatSelectedRuleCommand { set; get; }
         public ICommand DonePickingContextForRuleRepetitionCommand { set; get; }
         public ICommand DoneRepeatingRuleCommand { set; get; }
@@ -319,11 +322,15 @@ namespace DiagramDesigner
             }
         }
 
-        public void HandleRuleSelectedCellsChangedEvent(object obj, EventArgs e)
+        public void HandleRuleSelectedCellsChangedEvent(object obj, SelectedCellsChangedEventArgs e)
         {
-
-            Debug.WriteLine("rules table selection changed");
+            IList<DataGridCellInfo> selectedcells = e.AddedCells;
+			DataRowView drv = (DataRowView)selectedcells.First().Item; // only care about the first selected cell (the UI is not supposed to allow multiple selection) 
+			DataRow cr = drv.Row;
+			this.currentlySelectedRule = (Guid) cr["ID"];
+            Debug.WriteLine("currently selected rule id#: " + this.currentlySelectedRule.ToString());
         }
+    
 
         private void MouseLeftClickedInRuleCreationEditingState(MouseEventArgs mea)
 		{

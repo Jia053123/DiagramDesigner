@@ -17,13 +17,7 @@
             <Button x:Name="StartDrawingButton" Content="Start Drawing" Width="130" HorizontalAlignment="Center" Margin="10,10,10,1" Command="{Binding StartDrawingCommand}"/>
             <Button x:Name="DoneDrawingButton" Content="Done Drawing" IsEnabled="False" Width="130" HorizontalAlignment="Center" Margin="10,1,10,1"  Command="{Binding EndDrawingCommand}"/>
 
-            <DataGrid x:Name="CurrentRulesTable" ItemsSource="{Binding}" AutoGenerateColumns="True" AutoGeneratingColumn="HandelCurrentRulesTableColumnGenerated" IsReadOnly="True" Margin="10,20,10,1" SelectionMode="Single" SelectionUnit="FullRow">
-                <!--<i:Interaction.Triggers>
-                    <i:EventTrigger EventName ="SelectionChanged" SourceObject="{Binding ElementName=CurrentRulesTable}">
-                        <i:InvokeCommandAction Command="{Binding HandleRuleSelectionChangedCommand}" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>-->
-            </DataGrid>
+            <DataGrid x:Name="CurrentRulesTable" ItemsSource="{Binding}" AutoGenerateColumns="True" AutoGeneratingColumn="HandelCurrentRulesTableColumnGenerated" IsReadOnly="True" Margin="10,20,10,1" SelectionMode="Single" SelectionUnit="FullRow"></DataGrid>
             <Button x:Name="CreateNewRuleButton" Content="Create New Rule" Width="130" HorizontalAlignment="Center" Margin="10,10,10,1" Command="{Binding CreateNewRuleCommand}"/>
             <Button x:Name="DonePickingContextForRuleCreationButton" Content="Done Picking Context" Width="130" Height="20" Margin="10,1,10,1" IsEnabled="False" Command="{Binding DonePickingContextForRuleCreationCommand}"></Button>
             <Button x:Name="DoneCreatingRuleButton" Content="Done Creating Rule" IsEnabled="False" Width="130" HorizontalAlignment="Center" Margin="10,1,10,1" Command="{Binding DoneCreatingRuleCommand}"/>
