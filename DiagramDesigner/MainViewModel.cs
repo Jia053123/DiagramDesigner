@@ -238,7 +238,7 @@ namespace DiagramDesigner
 
 		}
 
-        private void ExecuteDonePickingContextForRuleRepetition(object obj)
+		private void ExecuteDonePickingContextForRuleRepetition(object obj)
 		{
 
 		}
