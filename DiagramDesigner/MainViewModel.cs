@@ -59,7 +59,15 @@ namespace DiagramDesigner
             get { return this._state; }
         }
 
-        private Guid? currentlySelectedRule = null;
+        private Guid? _currentlySelectedRule = null;
+        public Guid? CurrentlySelectedRule
+		{
+            private set
+			{
+                SetProperty(ref _currentlySelectedRule, value);
+			}
+            get { return this._currentlySelectedRule; }
+		}
 
         private DraftingConstrainsApplier draftingConstrainsApplier;
         private ModelGeometriesGenerator ruleGeometriesGenerator;
@@ -329,13 +337,13 @@ namespace DiagramDesigner
 
                 DataRowView drv = (DataRowView)selectedcells.First().Item; // only care about the first selected cell (the UI is not supposed to allow multiple selection) 
                 DataRow cr = drv.Row;
-                this.currentlySelectedRule = (Guid)cr["ID"];
-                Debug.WriteLine("select rule id#: " + this.currentlySelectedRule.ToString());
+                this.CurrentlySelectedRule = (Guid)cr["ID"];
+                Debug.WriteLine("select rule id#: " + this.CurrentlySelectedRule.ToString());
             }
             else
 			{
                 // no row is being selected
-                this.currentlySelectedRule = null;
+                this.CurrentlySelectedRule = null;
                 Debug.WriteLine("deselect rule");
 			}
         }
