@@ -10,6 +10,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="GrammarRulesDataTable.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Update="ProgramRequirementsTable.cs" />
   </ItemGroup>
 

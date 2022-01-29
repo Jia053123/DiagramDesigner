@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 
-namespace ShapeGrammarEngine
+namespace DiagramDesignerModel
 {
 	public class GrammarRulesDataTable : DataTable
     {
