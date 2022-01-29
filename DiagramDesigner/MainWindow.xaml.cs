@@ -134,10 +134,7 @@ namespace DiagramDesigner
             string headername = e.Column.Header.ToString();
             switch (headername)
 			{
-                case "LeftHandShape":
-                    e.Cancel = true;
-                    break;
-                case "RightHandShape":
+                case "ID":
                     e.Cancel = true;
                     break;
 				default:
