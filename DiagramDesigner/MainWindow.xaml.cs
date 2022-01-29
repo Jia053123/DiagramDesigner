@@ -60,6 +60,9 @@ namespace DiagramDesigner
                 case "DoesAcceptChangeInOrthogonalityOption":
                     this.OrthogonalityCheckBox.IsEnabled = this.MainViewModel.DoesAcceptChangeInOrthogonalityOption;
                     break;
+                case "CurrentlySelectedRule":
+                    this.RepeatSelectedRuleButton.IsEnabled = this.MainViewModel.CurrentlySelectedRule != null;
+                    break;
             }
         }
 
@@ -69,35 +72,58 @@ namespace DiagramDesigner
             {
                 case MainViewModelState.ViewingState:
                     this.PrimaryDiagramCanvas.Cursor = Cursors.Arrow;
+                    
                     this.StartDrawingButton.IsEnabled = true;
                     this.DoneDrawingButton.IsEnabled = false;
+                    
                     this.CreateNewRuleButton.IsEnabled = true;
                     this.DoneCreatingRuleButton.IsEnabled = false;
                     this.DonePickingContextForRuleCreationButton.IsEnabled = false;
+
+                    this.RepeatSelectedRuleButton.IsEnabled = this.MainViewModel.CurrentlySelectedRule != null;
+
                     break;
+
                 case MainViewModelState.NormalEditingState:
                     this.PrimaryDiagramCanvas.Cursor = Cursors.Cross;
+
                     this.StartDrawingButton.IsEnabled = false;
                     this.DoneDrawingButton.IsEnabled = true;
+                    
                     this.CreateNewRuleButton.IsEnabled = false;
                     this.DoneCreatingRuleButton.IsEnabled = false;
                     this.DonePickingContextForRuleCreationButton.IsEnabled = false;
+
+                    this.RepeatSelectedRuleButton.IsEnabled = false;
+
                     break;
+
                 case MainViewModelState.RuleCreationContextPickingState:
                     this.PrimaryDiagramCanvas.Cursor = Cursors.Hand;
+
                     this.StartDrawingButton.IsEnabled = false;
                     this.DoneDrawingButton.IsEnabled = false;
+
                     this.CreateNewRuleButton.IsEnabled = false;
                     this.DoneCreatingRuleButton.IsEnabled = false;
                     this.DonePickingContextForRuleCreationButton.IsEnabled = true;
+
+                    this.RepeatSelectedRuleButton.IsEnabled = false;
+
                     break;
+
                 case MainViewModelState.RuleCreationEditingState:
                     this.PrimaryDiagramCanvas.Cursor = Cursors.Cross;
+
                     this.StartDrawingButton.IsEnabled = false;
                     this.DoneDrawingButton.IsEnabled = false;
+
                     this.CreateNewRuleButton.IsEnabled = false;
                     this.DoneCreatingRuleButton.IsEnabled = true;
                     this.DonePickingContextForRuleCreationButton.IsEnabled = false;
+
+                    this.RepeatSelectedRuleButton.IsEnabled = false;
+
                     break;
             }
         }
