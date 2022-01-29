@@ -23,13 +23,11 @@ namespace DiagramDesigner
             this.PrimaryDiagramCanvas.MouseMovedEventHandler += this.MainViewModel.HandleMouseMovedEvent;
             this.PrimaryDiagramCanvas.MouseLeftClickedEventHandler += this.MainViewModel.HandleMouseLeftClickedEvent;
 
-            this.CurrentLayersTable.IsReadOnly = false;
             this.CurrentLayersTable.DataContext = this.MainViewModel.LayersDataTable;
-            
-            this.CurrentRulesTable.IsReadOnly = true;
-            this.CurrentRulesTable.DataContext = this.MainViewModel.GrammarRulesDataTable;
 
-            this.ProgramRequirementsTable.IsReadOnly = false; // unlock table
+            this.CurrentRulesTable.DataContext = this.MainViewModel.GrammarRulesDataTable;
+            this.CurrentRulesTable.SelectedCellsChanged += this.MainViewModel.HandleRuleSelectedCellsChangedEvent;
+
             this.ProgramRequirementsTable.DataContext = this.MainViewModel.ProgramRequirementsDataTable;
             this.MainViewModel.ProgramRequirementsDataTable.ColumnChanged += this.OnProgramRequirementsTableChanged;
             this.MainViewModel.ProgramRequirementsDataTable.RowChanged += this.OnProgramRequirementsTableChanged;

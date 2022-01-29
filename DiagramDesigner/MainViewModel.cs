@@ -76,6 +76,7 @@ namespace DiagramDesigner
         public ICommand CreateNewRuleCommand { set; get; }
         public ICommand DonePickingContextForRuleCreationCommand { set; get; }
         public ICommand DoneCreatingRuleCommand { set; get; }
+        //public ICommand HandleRuleSelectionChangedCommand { set; get; }
         public ICommand RepeatSelectedRuleCommand { set; get; }
         public ICommand DonePickingContextForRuleRepetitionCommand { set; get; }
         public ICommand DoneRepeatingRuleCommand { set; get; }
@@ -99,6 +100,7 @@ namespace DiagramDesigner
             this.DonePickingContextForRuleCreationCommand = new DelegateCommand(ExecuteDonePickingContextForRuleCreation);
             this.DoneCreatingRuleCommand = new DelegateCommand(ExecuteDoneAddingRule);
 
+            //this.HandleRuleSelectionChangedCommand = new DelegateCommand(ExecuteHandleRuleSelectionChangedCommand);
             this.RepeatSelectedRuleCommand = new DelegateCommand(ExecuteRepeatSelectedRule);
             this.DonePickingContextForRuleRepetitionCommand = new DelegateCommand(ExecuteDonePickingContextForRuleRepetition);
             this.DoneRepeatingRuleCommand = new DelegateCommand(ExecuteDoneRepeatingRule);
@@ -235,7 +237,7 @@ namespace DiagramDesigner
 
         private void ExecuteRepeatSelectedRule(object obj)
 		{
-
+            
 		}
 
 		private void ExecuteDonePickingContextForRuleRepetition(object obj)
@@ -315,6 +317,12 @@ namespace DiagramDesigner
 				default:
 					break;
             }
+        }
+
+        public void HandleRuleSelectedCellsChangedEvent(object obj, EventArgs e)
+        {
+
+            Debug.WriteLine("rules table selection changed");
         }
 
         private void MouseLeftClickedInRuleCreationEditingState(MouseEventArgs mea)
