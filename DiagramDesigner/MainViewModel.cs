@@ -44,7 +44,6 @@ namespace DiagramDesigner
 
         public List<ProgramToRender> ProgramsToRender { get; private set; }
 
-
         private readonly (WinPoint startPoint, WinPoint endPoint) NewEdgePreviewDefault = (new WinPoint(0, 0), new WinPoint(0, 0));
         public (WinPoint startPoint, WinPoint endPoint) NewEdgePreview => NewEdgePreviewData is null ? NewEdgePreviewDefault : (NewEdgePreviewData.StartPoint, NewEdgePreviewData.EndPoint);
         private DirectedLine NewEdgePreviewData { get; set; } = null;
@@ -103,7 +102,6 @@ namespace DiagramDesigner
             this.DonePickingContextForRuleCreationCommand = new DelegateCommand(ExecuteDonePickingContextForRuleCreation);
             this.DoneCreatingRuleCommand = new DelegateCommand(ExecuteDoneAddingRule);
 
-            //this.HandleRuleSelectionChangedCommand = new DelegateCommand(ExecuteHandleRuleSelectionChangedCommand);
             this.RepeatSelectedRuleCommand = new DelegateCommand(ExecuteRepeatSelectedRule);
             this.DonePickingContextForRuleRepetitionCommand = new DelegateCommand(ExecuteDonePickingContextForRuleRepetition);
             this.DoneRepeatingRuleCommand = new DelegateCommand(ExecuteDoneRepeatingRule);
@@ -325,10 +323,21 @@ namespace DiagramDesigner
         public void HandleRuleSelectedCellsChangedEvent(object obj, SelectedCellsChangedEventArgs e)
         {
             IList<DataGridCellInfo> selectedcells = e.AddedCells;
-			DataRowView drv = (DataRowView)selectedcells.First().Item; // only care about the first selected cell (the UI is not supposed to allow multiple selection) 
-			DataRow cr = drv.Row;
-			this.currentlySelectedRule = (Guid) cr["ID"];
-            Debug.WriteLine("currently selected rule id#: " + this.currentlySelectedRule.ToString());
+            if (selectedcells.Count > 0)
+			{
+                // a new row is selected
+
+                DataRowView drv = (DataRowView)selectedcells.First().Item; // only care about the first selected cell (the UI is not supposed to allow multiple selection) 
+                DataRow cr = drv.Row;
+                this.currentlySelectedRule = (Guid)cr["ID"];
+                Debug.WriteLine("select rule id#: " + this.currentlySelectedRule.ToString());
+            }
+            else
+			{
+                // no row is being selected
+                this.currentlySelectedRule = null;
+                Debug.WriteLine("deselect rule");
+			}
         }
     
 
