@@ -77,10 +77,12 @@ namespace DiagramDesigner
                     this.DoneDrawingButton.IsEnabled = false;
                     
                     this.CreateNewRuleButton.IsEnabled = true;
-                    this.DoneCreatingRuleButton.IsEnabled = false;
                     this.DonePickingContextForRuleCreationButton.IsEnabled = false;
+                    this.DoneCreatingRuleButton.IsEnabled = false;
 
                     this.RepeatSelectedRuleButton.IsEnabled = this.MainViewModel.CurrentlySelectedRule != null;
+                    this.DonePickingContextForRuleRepetitionButton.IsEnabled = false;
+                    this.DoneRepeatingRuleButton.IsEnabled = false;
 
                     break;
 
@@ -91,10 +93,12 @@ namespace DiagramDesigner
                     this.DoneDrawingButton.IsEnabled = true;
                     
                     this.CreateNewRuleButton.IsEnabled = false;
-                    this.DoneCreatingRuleButton.IsEnabled = false;
                     this.DonePickingContextForRuleCreationButton.IsEnabled = false;
+                    this.DoneCreatingRuleButton.IsEnabled = false;
 
                     this.RepeatSelectedRuleButton.IsEnabled = false;
+                    this.DonePickingContextForRuleRepetitionButton.IsEnabled = false;
+                    this.DoneRepeatingRuleButton.IsEnabled = false;
 
                     break;
 
@@ -105,10 +109,12 @@ namespace DiagramDesigner
                     this.DoneDrawingButton.IsEnabled = false;
 
                     this.CreateNewRuleButton.IsEnabled = false;
-                    this.DoneCreatingRuleButton.IsEnabled = false;
                     this.DonePickingContextForRuleCreationButton.IsEnabled = true;
+                    this.DoneCreatingRuleButton.IsEnabled = false;
 
                     this.RepeatSelectedRuleButton.IsEnabled = false;
+                    this.DonePickingContextForRuleRepetitionButton.IsEnabled = false;
+                    this.DoneRepeatingRuleButton.IsEnabled = false;
 
                     break;
 
@@ -119,10 +125,44 @@ namespace DiagramDesigner
                     this.DoneDrawingButton.IsEnabled = false;
 
                     this.CreateNewRuleButton.IsEnabled = false;
-                    this.DoneCreatingRuleButton.IsEnabled = true;
                     this.DonePickingContextForRuleCreationButton.IsEnabled = false;
+                    this.DoneCreatingRuleButton.IsEnabled = true;
 
                     this.RepeatSelectedRuleButton.IsEnabled = false;
+                    this.DonePickingContextForRuleRepetitionButton.IsEnabled = false;
+                    this.DoneRepeatingRuleButton.IsEnabled = false;
+
+                    break;
+
+                case MainViewModelState.RuleRepetitionContextPickingState:
+                    this.PrimaryDiagramCanvas.Cursor = Cursors.Hand;
+
+                    this.StartDrawingButton.IsEnabled = false;
+                    this.DoneDrawingButton.IsEnabled = false;
+
+                    this.CreateNewRuleButton.IsEnabled = false;
+                    this.DonePickingContextForRuleCreationButton.IsEnabled = false;
+                    this.DoneCreatingRuleButton.IsEnabled = false;
+
+                    this.RepeatSelectedRuleButton.IsEnabled = false;
+                    this.DonePickingContextForRuleRepetitionButton.IsEnabled = true;
+                    this.DoneRepeatingRuleButton.IsEnabled = false;
+
+                    break;
+
+                case MainViewModelState.RuleRepetitionEditingState:
+                    this.PrimaryDiagramCanvas.Cursor = Cursors.Cross;
+
+                    this.StartDrawingButton.IsEnabled = false;
+                    this.DoneDrawingButton.IsEnabled = false;
+
+                    this.CreateNewRuleButton.IsEnabled = false;
+                    this.DonePickingContextForRuleCreationButton.IsEnabled = false;
+                    this.DoneCreatingRuleButton.IsEnabled = false;
+
+                    this.RepeatSelectedRuleButton.IsEnabled = false;
+                    this.DonePickingContextForRuleRepetitionButton.IsEnabled = false;
+                    this.DoneRepeatingRuleButton.IsEnabled = true;
 
                     break;
             }
