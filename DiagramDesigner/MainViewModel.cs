@@ -19,18 +19,18 @@ namespace DiagramDesigner
 	/// </summary>
 	class MainViewModel : INotifyPropertyChanged
     {
-        private DiagramDesignerModel.DiagramDesignerModel Model = new DiagramDesignerModel.DiagramDesignerModel();
         public double DisplayUnitOverRealUnit { get; set; } = 5;
+
+		private DiagramDesignerModel.DiagramDesignerModel Model = new DiagramDesignerModel.DiagramDesignerModel();
         public DataTable ProgramRequirementsDataTable => this.Model.ProgramRequirements;
         public DataTable GrammarRulesDataTable => this.Model.CurrentRulesInfo;
-        public DataTable LayersDataTable { get; } = new LayersDataTable(); // TODO: should this be stored here? 
+        public DataTable LayersDataTable { get; } = new LayersDataTable();
         public ProgramsSummaryTable CurrentProgramsDataTable { get;} = new ProgramsSummaryTable(); // for the pie chart
 
         /// <summary>
         /// Walls to be displayed by the view. They are guaranteed to match the WallEntities property in Model, with each sub list corresponding to each WallEntity
         /// </summary>
         public List<List<WinPoint>> WallsToRender { get; private set; } = new List<List<WinPoint>>();
-
         /// <summary>
         /// Walls to be highlighted as the context. The three integers represent the index of the geometry from WallsToRender, and
         /// the two consecutive indexes in ascending order of the points representing the line on the geometry
