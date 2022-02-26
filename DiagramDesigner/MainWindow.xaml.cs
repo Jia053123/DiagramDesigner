@@ -56,7 +56,7 @@ namespace DiagramDesigner
                     this.UpdateCurrentProgramsCharts();
                     break;
                 case "State":
-                    this.MatchStateToModelState();
+                    this.MatchInterfaceStateToModelState();
                     break;
                 case "DoesAcceptChangeInOrthogonalityOption":
                     this.OrthogonalityCheckBox.IsEnabled = this.MainViewModel.DoesAcceptChangeInOrthogonalityOption;
@@ -67,7 +67,7 @@ namespace DiagramDesigner
             }
         }
 
-        private void MatchStateToModelState()
+        private void MatchInterfaceStateToModelState()
 		{
             switch (this.MainViewModel.State)
             {

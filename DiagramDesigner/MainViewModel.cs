@@ -298,7 +298,8 @@ namespace DiagramDesigner
             switch (this.State)
             {
                 case MainViewModelState.NormalEditingState:
-                case MainViewModelState.RuleCreationEditingState: 
+                case MainViewModelState.RuleCreationEditingState:
+                case MainViewModelState.RuleRepetitionEditingState:
 					if (this.NewEdgePreviewData != null)
 					{
 						this.NewEdgePreviewData.EndPoint = new WinPoint(mea.LocationX, mea.LocationY);
@@ -322,9 +323,12 @@ namespace DiagramDesigner
                     this.MouseLeftClickedInRuleCreationEditingState(mea);
 					break;
                 case MainViewModelState.RuleCreationContextPickingState:
-                    this.MouseLeftClickedInContextPickingState(mea);
+                    this.MouseLeftClickedInRuleCreationContextPickingState(mea);
                     break;
-				default:
+                case MainViewModelState.RuleRepetitionContextPickingState:
+                    this.MouseLeftClickedInRuleRepetitionContextPickingState(mea);
+                    break;
+                default:
 					break;
             }
         }
@@ -399,25 +403,35 @@ namespace DiagramDesigner
             }
         }
 
+        private void MouseLeftClickedInRuleCreationContextPickingState(MouseEventArgs mea)
+		{
+            this.MouseLeftClickedInContextPickingState(mea);
+		}
+
+		private void MouseLeftClickedInRuleRepetitionContextPickingState(MouseEventArgs mea)
+		{
+            this.MouseLeftClickedInContextPickingState(mea);
+        }
+
         private void MouseLeftClickedInContextPickingState(MouseEventArgs mea)
 		{
             var result = this.draftingConstrainsApplier.FindLineClicked(new WinPoint(mea.LocationX, mea.LocationY), this.WallsToRender);
-            if (!(result is null)) 
+            if (!(result is null))
             {
                 if (!this.WallsToHighlightAsContext.Contains(result))
-				{
+                {
                     this.WallsToHighlightAsContext.Add(result);
                 }
                 else
-				{
+                {
                     var s = this.WallsToHighlightAsContext.Remove(result);
                     Debug.Assert(s);
-				}
+                }
                 this.HandelGraphicsModified(this, null);
-            } 
-		}
+            }
+        }
 
-        private void HandelGraphicsModified(object sender, EventArgs e)
+		private void HandelGraphicsModified(object sender, EventArgs e)
         {
             if (sender == this.Model)
 			{
