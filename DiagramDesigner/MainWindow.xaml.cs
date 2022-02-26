@@ -29,6 +29,7 @@ namespace DiagramDesigner
             this.CurrentRulesTable.SelectedCellsChanged += this.MainViewModel.HandleRuleSelectedCellsChangedEvent;
 
             this.ProgramRequirementsTable.DataContext = this.MainViewModel.ProgramRequirementsDataTable;
+
             this.MainViewModel.ProgramRequirementsDataTable.ColumnChanged += this.OnProgramRequirementsTableChanged;
             this.MainViewModel.ProgramRequirementsDataTable.RowChanged += this.OnProgramRequirementsTableChanged;
             this.MainViewModel.ProgramRequirementsDataTable.TableNewRow += this.OnProgramRequirementsTableChanged;

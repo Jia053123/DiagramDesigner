@@ -246,17 +246,18 @@ namespace DiagramDesigner
 
         private void ExecuteRepeatSelectedRule(object obj)
 		{
-            
+            this.Model.CreateNewWallEntity();
+            this.State = MainViewModelState.RuleRepetitionContextPickingState;
 		}
 
 		private void ExecuteDonePickingContextForRuleRepetition(object obj)
 		{
-
+            // TODO
 		}
 
         private void ExecuteDoneRepeatingRule(object obj)
 		{
-
+            // TODO
 		}
 
         private void ExecuteClearGeometry(object obj)
