@@ -252,7 +252,7 @@ namespace DiagramDesigner
 
 		private void ExecuteDonePickingContextForRuleRepetition(object obj)
 		{
-            // TODO
+            this.State = MainViewModelState.RuleRepetitionEditingState;
 		}
 
         private void ExecuteDoneRepeatingRule(object obj)
@@ -328,6 +328,9 @@ namespace DiagramDesigner
                 case MainViewModelState.RuleRepetitionContextPickingState:
                     this.MouseLeftClickedInRuleRepetitionContextPickingState(mea);
                     break;
+                case MainViewModelState.RuleRepetitionEditingState:
+                    this.MouseLeftClickedInRuleRepetitionEditingState(mea);
+                    break;
                 default:
 					break;
             }
@@ -352,9 +355,35 @@ namespace DiagramDesigner
                 Debug.WriteLine("deselect rule");
 			}
         }
-    
+        private void MouseLeftClickedInNormalEditingState(MouseEventArgs mea)
+        {
+			_ = this.AddNewPointFromMouseLeftClick(mea);
+		}
 
-        private void MouseLeftClickedInRuleCreationEditingState(MouseEventArgs mea)
+		private void MouseLeftClickedInRuleCreationEditingState(MouseEventArgs mea)
+		{
+			var success = this.AddNewPointFromMouseLeftClick(mea);
+			if (success)
+			{
+				this.HighlightLastAddition();
+			}
+		}
+
+		private void MouseLeftClickedInRuleRepetitionEditingState(MouseEventArgs mea)
+		{
+			var success = this.AddNewPointFromMouseLeftClick(mea);
+			if (success)
+			{
+				this.HighlightLastAddition();
+			}
+		}
+
+        /// <summary>
+        /// Handle adding a new point from a left mouse click
+        /// </summary>
+        /// <param name="mea"> the mouse event of a left click </param>
+        /// <returns> Whether the addition succeeded </returns>
+        private bool AddNewPointFromMouseLeftClick(MouseEventArgs mea)
 		{
             if (this.WallsToRender != null)
             {
@@ -362,13 +391,6 @@ namespace DiagramDesigner
                 newPoint = this.draftingConstrainsApplier.ApplyAllRestrictions(newPoint, this.WallsToRender);
 
                 this.Model.AddPointToWallEntityAtIndex(MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count - 1);
-                var wallIndex = this.WallsToRender.Count - 1;
-                var pointIndex1 = this.WallsToRender.Last().Count - 2;
-                var pointIndex2 = this.WallsToRender.Last().Count - 1;
-                if (pointIndex1 >= 0 && pointIndex2 >= 0)
-				{
-                    this.WallsToHighlightAsAdditions.Add(new Tuple<int, int, int>(wallIndex, pointIndex1, pointIndex2));
-                }
                 this.draftingConstrainsApplier.UpdateLastAddedPoint(newPoint);
 
                 if (this.NewEdgePreviewData is null)
@@ -379,27 +401,23 @@ namespace DiagramDesigner
                 {
                     this.NewEdgePreviewData.StartPoint = newPoint;
                 }
-            }
+
+                return true;
+            } 
+            else
+			{
+                return false;
+			}
         }
 
-        private void MouseLeftClickedInNormalEditingState(MouseEventArgs mea)
+        private void HighlightLastAddition()
 		{
-            if (this.WallsToRender != null)
+            var wallIndex = this.WallsToRender.Count - 1;
+            var pointIndex1 = this.WallsToRender.Last().Count - 2;
+            var pointIndex2 = this.WallsToRender.Last().Count - 1;
+            if (pointIndex1 >= 0 && pointIndex2 >= 0)
             {
-                var newPoint = new WinPoint(mea.LocationX, mea.LocationY);
-                newPoint = this.draftingConstrainsApplier.ApplyAllRestrictions(newPoint, this.WallsToRender);
-
-                this.Model.AddPointToWallEntityAtIndex(MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count - 1);
-                this.draftingConstrainsApplier.UpdateLastAddedPoint(newPoint);
-
-                if (this.NewEdgePreviewData is null)
-                {
-                    this.NewEdgePreviewData = new DirectedLine(newPoint, newPoint);
-                }
-                else
-                {
-                    this.NewEdgePreviewData.StartPoint = newPoint;
-                }
+                this.WallsToHighlightAsAdditions.Add(new Tuple<int, int, int>(wallIndex, pointIndex1, pointIndex2));
             }
         }
 
