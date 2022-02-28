@@ -79,7 +79,7 @@ namespace ShapeGrammarEngine
 		/// <param name="labeling"> if the input geometries are consistent with the rule, 
 		/// how their line segments map onto connections of the shapes in the rule; otherwise output null </param>
 		/// <returns> whether the input geometries are consistent with the rule </returns>
-		public bool ConformWithRule(PolylinesGeometry geometryBefore, PolylinesGeometry geometryAfter, out LabelingDictionary labeling)
+		public bool DoesConformWithRule(PolylinesGeometry geometryBefore, PolylinesGeometry geometryAfter, out LabelingDictionary labeling)
 		{
 			if (!this.LeftHandShape.ConformsWithGeometry(geometryBefore, out _))
 			{
@@ -127,7 +127,7 @@ namespace ShapeGrammarEngine
 			}
 
 			LabelingDictionary l;
-			var s = this.ConformWithRule(geometryBefore, geometryAfter, out l);
+			var s = this.DoesConformWithRule(geometryBefore, geometryAfter, out l);
 			if (!s)
 			{
 				throw new ArgumentException("geometries does not conform with this rule");

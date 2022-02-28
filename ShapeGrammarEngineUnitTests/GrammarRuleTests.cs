@@ -157,7 +157,7 @@ namespace ShapeGrammarEngine.UnitTests
 				new List<Point>{new Point(5,0), new Point(5,-1) },
 				new List<Point>{new Point(5.5, 0),new Point(5,-1) },
 				new List<Point>{new Point(5, 0), new Point(5.5, 0) }});
-			Assert.IsTrue(rule.ConformWithRule(geo2L, geo2R, out var labeling));
+			Assert.IsTrue(rule.DoesConformWithRule(geo2L, geo2R, out var labeling));
 			var resultL = rule.LeftHandShape.SolveLabeling(geo2L, labeling);
 			var resultR = rule.RightHandShape.SolveLabeling(geo2R, labeling);
 			Assert.IsTrue(resultL.GetAllLabels().SetEquals(labeling.GetAllLabels()));
@@ -196,7 +196,7 @@ namespace ShapeGrammarEngine.UnitTests
 				new List<Point>{new Point(0.5,0), new Point(0.5,-1) },
 				new List<Point>{new Point(1, 0),new Point(0.5,-1) },
 				new List<Point>{new Point(0.5, 0), new Point(1, 0) }});
-			Assert.IsFalse(rule.ConformWithRule(geo2L, geo2R, out var labeling));
+			Assert.IsFalse(rule.DoesConformWithRule(geo2L, geo2R, out var labeling));
 			Assert.IsNull(labeling);
 		}
 
@@ -231,7 +231,7 @@ namespace ShapeGrammarEngine.UnitTests
 				new List<Point>{new Point(5,0), new Point(5,-1) },
 				new List<Point>{new Point(5.5, 0),new Point(5,-1) },
 				new List<Point>{new Point(5, 0), new Point(5.5, 0) }});
-			Assert.IsFalse(rule.ConformWithRule(geo2L, geo2R, out var labeling));
+			Assert.IsFalse(rule.DoesConformWithRule(geo2L, geo2R, out var labeling));
 			Assert.IsNull(labeling);
 		}
 
@@ -267,7 +267,7 @@ namespace ShapeGrammarEngine.UnitTests
 				new List<Point>{new Point(5,0), new Point(5,-1) },
 				new List<Point>{new Point(5.5, 0),new Point(5,-1) },
 				new List<Point>{new Point(5, 0), new Point(5.5, 0) }});
-			Assert.IsFalse(rule.ConformWithRule(geo2L, geo2R, out var labeling));
+			Assert.IsFalse(rule.DoesConformWithRule(geo2L, geo2R, out var labeling));
 			Assert.IsNull(labeling);
 		}
 
@@ -373,7 +373,7 @@ namespace ShapeGrammarEngine.UnitTests
 				new Point(2, 0),
 				new Point(1, -1)} });
 			var result = rule.ApplyToGeometry(polyGeo1);
-			Assert.IsTrue(rule.ConformWithRule(polyGeo1, result, out _));
+			Assert.IsTrue(rule.DoesConformWithRule(polyGeo1, result, out _));
 		}
 
 		[Test]
@@ -393,7 +393,7 @@ namespace ShapeGrammarEngine.UnitTests
 			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out var labeling);
 			var polyGeo1 = new PolylinesGeometry(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(1, 1), new Point(0, 2) } });
 			var result = rule.ApplyToGeometry(polyGeo1);
-			Assert.IsTrue(rule.ConformWithRule(polyGeo1, result, out _));
+			Assert.IsTrue(rule.DoesConformWithRule(polyGeo1, result, out _));
 		}
 
 		[Test]
@@ -415,7 +415,7 @@ namespace ShapeGrammarEngine.UnitTests
 			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out var labeling);
 			var polyGeo1 = new PolylinesGeometry(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(1, 1), new Point(0, 2), new Point(0, 0) } });
 			var result = rule.ApplyToGeometry(polyGeo1);
-			Assert.IsTrue(rule.ConformWithRule(polyGeo1, result, out _));
+			Assert.IsTrue(rule.DoesConformWithRule(polyGeo1, result, out _));
 		}
 
 		[Test]
@@ -454,7 +454,7 @@ namespace ShapeGrammarEngine.UnitTests
 
 			var polyGeo1 = new PolylinesGeometry(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(1, 1), new Point(0, 2), new Point(0, 0) } });
 			var result = rule.ApplyToGeometry(polyGeo1);
-			Assert.IsTrue(rule.ConformWithRule(polyGeo1, result, out _));
+			Assert.IsTrue(rule.DoesConformWithRule(polyGeo1, result, out _));
 		}
 
 		[Test]

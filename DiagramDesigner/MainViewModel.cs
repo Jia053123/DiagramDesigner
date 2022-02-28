@@ -257,7 +257,7 @@ namespace DiagramDesigner
 
         private void ExecuteDoneRepeatingRule(object obj)
 		{
-            // TODO
+            // 
 		}
 
         private void ExecuteClearGeometry(object obj)
