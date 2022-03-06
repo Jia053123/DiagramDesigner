@@ -34,8 +34,10 @@ namespace DiagramDesignerModel
             }
         }
 
+        /// <summary>
+        /// return the corresponding GrammarRule object given its id. If id is not found, return null
+        /// </summary>
         internal GrammarRule GetRuleById(Guid guid) => this.GrammarRules.Where(i => i.id == guid).SingleOrDefault();
-        // TODO: handle cases when ID is wrong
 
         /// <summary>
         /// Call this method whenever a rule is updated to regenerate its info
@@ -43,7 +45,11 @@ namespace DiagramDesignerModel
         internal void RuleUpdated(Guid ruleId)
 		{
             var updatedRule = this.GetRuleById(ruleId);
-            var rowToUpdate = this.CurrentRulesInfoDataTable.AsEnumerable().SingleOrDefault(row => row.Field<Guid>("ID") == ruleId); // TODO: handle cases when row is not found
+            var rowToUpdate = this.CurrentRulesInfoDataTable.AsEnumerable().SingleOrDefault(row => row.Field<Guid>("ID") == ruleId); 
+            if (rowToUpdate is null)
+			{
+                throw new ArgumentException("invalid id");
+			}
             this.UpdateRow(updatedRule, rowToUpdate);
 		}
 
