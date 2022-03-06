@@ -48,7 +48,13 @@ namespace DiagramDesignerModel
             this.rulesStore.CreateNewRuleFromExample(leftHandGeometry, rightHandGeometry);
 		}
 
-		public void RemoveAllWallsAndPrograms()
+        public void LearnFromExampleForRule(PolylinesGeometry leftHandGeometry, PolylinesGeometry rightHandGeometry, Guid ruleId)
+		{
+            // TODO: retrieve the rule selected
+            // TODO: confirm the rule is applied correctly and learn from the new sample
+        }
+
+        public void RemoveAllWallsAndPrograms()
 		{
             this.WallEntities.Clear();
             this.Programs.Clear();

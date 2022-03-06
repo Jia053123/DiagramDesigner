@@ -257,7 +257,23 @@ namespace DiagramDesigner
 
         private void ExecuteDoneRepeatingRule(object obj)
 		{
-            // 
+            if (this.CurrentlySelectedRule == null)
+			{
+                throw new NoRuleSelectedException();
+			}
+
+            var geo = this.ruleGeometriesGenerator.GenerateGeometriesFromContextAndAdditions(this.WallsToRender, this.WallsToHighlightAsContext, this.WallsToHighlightAsAdditions);
+            try
+			{
+                this.Model.LearnFromExampleForRule(geo.Item1, geo.Item2, (Guid)this.CurrentlySelectedRule);
+            }
+            catch
+			{
+                // TODO: handle exceptions when shape parsing fails, etc. 
+			}
+
+            this.State = MainViewModelState.ViewingState;
+            this.CleanUpTempDataForDrawing();
 		}
 
         private void ExecuteClearGeometry(object obj)
@@ -486,4 +502,10 @@ namespace DiagramDesigner
             }
         }
 	}
+
+    class NoRuleSelectedException : Exception
+    {
+        public NoRuleSelectedException() { }
+        public NoRuleSelectedException(string message) : base(message) { }
+    }
 }
