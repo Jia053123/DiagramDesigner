@@ -18,9 +18,17 @@ namespace DiagramDesignerModel
             var idColumn = new DataColumn();
             idColumn.DataType = System.Type.GetType("System.Guid");
             idColumn.ColumnName = "ID";
-            nameColumn.ReadOnly = true;
-            nameColumn.Unique = true;
+            idColumn.ReadOnly = true;
+            idColumn.Unique = true;
             this.Columns.Add(idColumn);
+
+            var sampleCountColumn = new DataColumn();
+            sampleCountColumn.DataType = System.Type.GetType("System.Int32");
+            sampleCountColumn.ColumnName = "Sample Count";
+            sampleCountColumn.ReadOnly = true;
+            sampleCountColumn.Unique = false;
+            sampleCountColumn.DefaultValue = 0;
+            this.Columns.Add(sampleCountColumn);
         }
 	}
 }
