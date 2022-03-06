@@ -115,22 +115,24 @@ namespace ShapeGrammarEngine
 		/// </summary>
 		/// <param name="geometryBefore"> The geometry in the example before the rule is applied </param>
 		/// <param name="geometryAfter"> The geometry in the example after the rule is applied </param>
+		/// <exception cref="ShapeGrammarEngine.GeometryParsingFailureException"> 
+		/// Thrown when geometryBefore and geometryAfter cannot be parsed using the rule </exception>
 		public void LearnFromExample(PolylinesGeometry geometryBefore, PolylinesGeometry geometryAfter, out LabelingDictionary labeling)
 		{
 			if (!this.LeftHandShape.ConformsWithGeometry(geometryBefore, out _))
 			{
-				throw new ArgumentException("geometryBefore does not conform with ShapeBefore");
+				throw new GeometryParsingFailureException("geometryBefore does not conform with ShapeBefore");
 			}
 			if (!this.RightHandShape.ConformsWithGeometry(geometryAfter, out _))
 			{
-				throw new ArgumentException("geometryAfter does not conform with ShapeAfter");
+				throw new GeometryParsingFailureException("geometryAfter does not conform with ShapeAfter");
 			}
 
 			LabelingDictionary l;
 			var s = this.DoesConformWithRule(geometryBefore, geometryAfter, out l);
 			if (!s)
 			{
-				throw new ArgumentException("geometries does not conform with this rule");
+				throw new GeometryParsingFailureException("geometries does not conform with this rule");
 			}
 
 			this.ApplicationRecords.Add(new RuleApplicationRecord(geometryBefore, geometryAfter, l));
@@ -168,7 +170,7 @@ namespace ShapeGrammarEngine
 			var doesConform = this.LeftHandShape.ConformsWithGeometry(polyGeo, out labeling);
 			if (! doesConform)
 			{
-				throw new ArgumentException("polylines does not conform with ShapeBefore");
+				throw new GeometryParsingFailureException("polylines does not conform with ShapeBefore");
 			}
 
 			var resultPolylines = new PolylinesGeometry(polyGeo.PolylinesCopy);
@@ -580,7 +582,20 @@ namespace ShapeGrammarEngine
 
 		public override int GetHashCode() => this.id.GetHashCode();
 	}
-	class RuleApplicationFailureException : Exception
+
+	/// <summary>
+	/// Thrown when unable to parse a geometry using a shape or left hand and right hand geometries using a rule
+	/// </summary>
+	public class GeometryParsingFailureException : Exception
+	{
+		public GeometryParsingFailureException() { }
+		public GeometryParsingFailureException(string message) : base(message) { }
+	}
+
+	/// <summary>
+	/// Thrown when encountering problem applying rules to left hand shape
+	/// </summary>
+	public class RuleApplicationFailureException : Exception
 	{
 		public RuleApplicationFailureException() { }
 		public RuleApplicationFailureException(string message) : base(message) { }

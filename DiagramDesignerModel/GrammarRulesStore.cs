@@ -8,7 +8,7 @@ namespace DiagramDesignerModel
 {
 	class GrammarRulesStore
 	{
-		internal GrammarRulesDataTable CurrentRulesInfo { get; } = new GrammarRulesDataTable();
+		internal GrammarRulesDataTable CurrentRulesInfoDataTable { get; } = new GrammarRulesDataTable();
 
 		private HashSet<GrammarRule> GrammarRules = new HashSet<GrammarRule>();
 
@@ -21,10 +21,10 @@ namespace DiagramDesignerModel
 
             try
             {
-                var newRow = this.CurrentRulesInfo.NewRow();
+                var newRow = this.CurrentRulesInfoDataTable.NewRow();
                 newRow["Name"] = newRule.id.ToString();
                 newRow["ID"] = newRule.id;
-                this.CurrentRulesInfo.Rows.Add(newRow);
+                this.CurrentRulesInfoDataTable.Rows.Add(newRow);
             }
             catch (System.Data.ConstraintException ex)
             {
@@ -32,6 +32,14 @@ namespace DiagramDesignerModel
             }
         }
 
-        private GrammarRule GetRuleById(Guid guid) => this.GrammarRules.Where(i => i.id == guid).FirstOrDefault();
+        internal GrammarRule GetRuleById(Guid guid) => this.GrammarRules.Where(i => i.id == guid).FirstOrDefault();
+
+        /// <summary>
+        /// Call this method whenever a rule is updated to regenerate its info
+        /// </summary>
+        internal void RuleUpdated(Guid ruleId)
+		{
+            // stub
+		}
     }
 }

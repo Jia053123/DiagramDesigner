@@ -17,7 +17,7 @@ namespace DiagramDesignerModel
 
         public List<EnclosedProgram> Programs { get; private set; } = new List<EnclosedProgram>();
 
-        public GrammarRulesDataTable CurrentRulesInfo => this.rulesStore.CurrentRulesInfo;
+        public GrammarRulesDataTable CurrentRulesInfo => this.rulesStore.CurrentRulesInfoDataTable;
 
         private GrammarRulesStore rulesStore = new GrammarRulesStore();
 
@@ -50,8 +50,16 @@ namespace DiagramDesignerModel
 
         public void LearnFromExampleForRule(PolylinesGeometry leftHandGeometry, PolylinesGeometry rightHandGeometry, Guid ruleId)
 		{
-            // TODO: retrieve the rule selected
-            // TODO: confirm the rule is applied correctly and learn from the new sample
+            var rule = this.rulesStore.GetRuleById(ruleId);
+            try
+			{
+                rule.LearnFromExample(leftHandGeometry, rightHandGeometry, out _);
+			}
+            catch (GeometryParsingFailureException)
+			{
+                throw new ArgumentException("the geometires do not match the rule");
+			}
+            this.rulesStore.RuleUpdated(ruleId);
         }
 
         public void RemoveAllWallsAndPrograms()

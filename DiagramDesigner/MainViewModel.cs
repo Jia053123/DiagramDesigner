@@ -271,7 +271,7 @@ namespace DiagramDesigner
 			{
                 // TODO: handle exceptions when shape parsing fails, etc. 
 			}
-
+            
             this.State = MainViewModelState.ViewingState;
             this.CleanUpTempDataForDrawing();
 		}
