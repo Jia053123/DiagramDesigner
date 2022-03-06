@@ -269,7 +269,7 @@ namespace DiagramDesigner
             }
             catch
 			{
-                // TODO: handle exceptions when shape parsing fails, etc. 
+                
 			}
             
             this.State = MainViewModelState.ViewingState;
