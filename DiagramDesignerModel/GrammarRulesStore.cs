@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data;
 using System.Text;
 
 namespace DiagramDesignerModel
@@ -24,6 +25,7 @@ namespace DiagramDesignerModel
                 var newRow = this.CurrentRulesInfoDataTable.NewRow();
                 newRow["Name"] = newRule.id.ToString();
                 newRow["ID"] = newRule.id;
+                newRow["Sample Count"] = newRule.SampleCount;
                 this.CurrentRulesInfoDataTable.Rows.Add(newRow);
             }
             catch (System.Data.ConstraintException ex)
@@ -32,14 +34,23 @@ namespace DiagramDesignerModel
             }
         }
 
-        internal GrammarRule GetRuleById(Guid guid) => this.GrammarRules.Where(i => i.id == guid).FirstOrDefault();
+        internal GrammarRule GetRuleById(Guid guid) => this.GrammarRules.Where(i => i.id == guid).SingleOrDefault();
+        // TODO: handle cases when ID is wrong
 
         /// <summary>
         /// Call this method whenever a rule is updated to regenerate its info
         /// </summary>
         internal void RuleUpdated(Guid ruleId)
 		{
-            // stub
+            var updatedRule = this.GetRuleById(ruleId);
+            var rowToUpdate = this.CurrentRulesInfoDataTable.AsEnumerable().SingleOrDefault(row => row.Field<Guid>("ID") == ruleId); // TODO: handle cases when row is not found
+            this.UpdateRow(updatedRule, rowToUpdate);
+		}
+
+        private void UpdateRow(GrammarRule updatedRule, DataRow currentRulesInfoDataTableRowToUpdate)
+		{
+            currentRulesInfoDataTableRowToUpdate["Name"] = updatedRule.id.ToString();
+            currentRulesInfoDataTableRowToUpdate["Sample Count"] = updatedRule.SampleCount;
 		}
     }
 }

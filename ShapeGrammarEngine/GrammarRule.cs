@@ -40,6 +40,7 @@ namespace ShapeGrammarEngine
 		private static Random RandomGenerator = new Random(Environment.TickCount);
 
 		internal List<RuleApplicationRecord> ApplicationRecords = new List<RuleApplicationRecord>();
+		public int SampleCount => this.ApplicationRecords.Count;
 
 		/// <summary>
 		/// Create a shape grammar rule given its both sides
