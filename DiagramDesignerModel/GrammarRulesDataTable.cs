@@ -12,7 +12,7 @@ namespace DiagramDesignerModel
             nameColumn.ColumnName = "Name";
             nameColumn.ReadOnly = false;
             nameColumn.Unique = true;
-            nameColumn.DefaultValue = "Unnamed";
+            nameColumn.DefaultValue = "Name Unknown";
             this.Columns.Add(nameColumn);
 
             var idColumn = new DataColumn();

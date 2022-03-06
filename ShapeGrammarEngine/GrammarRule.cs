@@ -15,6 +15,11 @@ namespace ShapeGrammarEngine
 		public readonly Guid id;
 
 		/// <summary>
+		/// The displayed name of this rule
+		/// </summary>
+		public String name = "Unnamed Rule";
+
+		/// <summary>
 		/// The shape before the rule is applied. It shares labels with RightHandShape
 		/// </summary>
 		public Shape LeftHandShape { get; private set; }

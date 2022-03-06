@@ -358,11 +358,21 @@ namespace DiagramDesigner
             if (selectedcells.Count > 0)
 			{
                 // a new row is selected
-
-                DataRowView drv = (DataRowView)selectedcells.First().Item; // only care about the first selected cell (the UI is not supposed to allow multiple selection) 
-                DataRow cr = drv.Row;
-                this.CurrentlySelectedRule = (Guid)cr["ID"];
-                Debug.WriteLine("select rule id#: " + this.CurrentlySelectedRule.ToString());
+                DataRowView? drv = null;
+                foreach (DataGridCellInfo info in selectedcells) 
+                {
+                    drv = info.Item as DataRowView;
+                    if (drv != null)
+					{
+                        break;
+					}
+                }
+                if (drv != null)
+				{
+                    DataRow cr = drv.Row;
+                    this.CurrentlySelectedRule = (Guid)cr["ID"];
+                    Debug.WriteLine("select rule id#: " + this.CurrentlySelectedRule.ToString());
+                }
             }
             else
 			{

@@ -23,7 +23,7 @@ namespace DiagramDesignerModel
             try
             {
                 var newRow = this.CurrentRulesInfoDataTable.NewRow();
-                newRow["Name"] = newRule.id.ToString();
+                newRow["Name"] = newRule.name;
                 newRow["ID"] = newRule.id;
                 newRow["Sample Count"] = newRule.SampleCount;
                 this.CurrentRulesInfoDataTable.Rows.Add(newRow);
@@ -55,7 +55,7 @@ namespace DiagramDesignerModel
 
         private void UpdateRow(GrammarRule updatedRule, DataRow currentRulesInfoDataTableRowToUpdate)
 		{
-            currentRulesInfoDataTableRowToUpdate["Name"] = updatedRule.id.ToString();
+            currentRulesInfoDataTableRowToUpdate["Name"] = updatedRule.name;
             currentRulesInfoDataTableRowToUpdate["Sample Count"] = updatedRule.SampleCount;
 		}
     }
