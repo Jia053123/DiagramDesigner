@@ -240,9 +240,16 @@ namespace DiagramDesigner
         private void ExecuteDoneAddingRule(object obj)
         {
             var geo = this.ruleGeometriesGenerator.GenerateGeometriesFromContextAndAdditions(this.WallsToRender, this.WallsToHighlightAsContext, this.WallsToHighlightAsAdditions);
-            this.Model.CreateNewRuleFromExample(geo.Item1, geo.Item2);
+			try
+			{
+				this.Model.CreateNewRuleFromExample(geo.Item1, geo.Item2);
+			}
+            catch
+			{
+                MessageBox.Show("Rule Creation Failed", "Failed to create rule", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
 
-            this.State = MainViewModelState.ViewingState;
+			this.State = MainViewModelState.ViewingState;
             this.CleanUpTempDataForDrawing();
         }
 
