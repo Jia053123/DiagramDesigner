@@ -36,27 +36,16 @@ namespace DiagramDesigner
         internal Tuple<PolylinesGeometry, PolylinesGeometry> GenerateGeometriesFromContextAndAdditions(List<List<WinPoint>> allGeometries, List<Tuple<int, int, int>> contextGeometries, List<Tuple<int, int, int>> additionGeometries)
 		{
             // create left hand geometry
-            var leftHandPoints = new List<List<Point>>();
-            foreach (Tuple<int, int, int> t in contextGeometries)
-            {
-                var wp1 = allGeometries[t.Item1][t.Item2];
-                var p1 = MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(wp1, this.displayUnitOverRealUnit);
-                var wp2 = allGeometries[t.Item1][t.Item3];
-                var p2 = MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(wp2, this.displayUnitOverRealUnit);
-                leftHandPoints.Add(new List<Point> { p1, p2 });
-            }
+            var leftHandPoints = this.ConvertGeometriesOnScreenToPolylinesInPoints(allGeometries, contextGeometries); 
             PolylinesGeometry leftHandGeometry = new PolylinesGeometry(leftHandPoints);
 
-            // create right hand geometry
-            var rightHandPoints = new List<List<Point>>(leftHandPoints); // currently assume no point is erased from the left hand geometry though this will not be the case
-            foreach (Tuple<int, int, int> t in additionGeometries)
-            {
-                var wp1 = allGeometries[t.Item1][t.Item2];
-                var p1 = MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(wp1, this.displayUnitOverRealUnit);
-                var wp2 = allGeometries[t.Item1][t.Item3];
-                var p2 = MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(wp2, this.displayUnitOverRealUnit);
-                rightHandPoints.Add(new List<Point> { p1, p2 });
-            }
+            // create right hand geometry. Currently assume no point is erased from the left hand geometry so the right hand points = left hand points + added points, though this will not be the case once erasure comes into play
+            var rightHandPoints = new List<List<Point>>();
+            foreach (List<Point> ps in leftHandPoints)
+			{
+                rightHandPoints.Add(new List<Point>(ps));
+			}
+            rightHandPoints.AddRange(this.ConvertGeometriesOnScreenToPolylinesInPoints(allGeometries, additionGeometries));
             PolylinesGeometry rightHandGeometry = new PolylinesGeometry(rightHandPoints);
 
             return new Tuple<PolylinesGeometry, PolylinesGeometry>(leftHandGeometry, rightHandGeometry);
@@ -66,21 +55,27 @@ namespace DiagramDesigner
         /// Generate PolylinesGeometry given the geometry on screen
         /// </summary>
         /// <param name="allGeometries"> all geometries on screen </param>
-        /// <param name="geometryIndexes"> the geometry used for generation
+        /// <param name="contextGeometries"> the geometry used for generation
         ///  each Tuple specifies the index of the geometry within allGeometries, and the two ascending consecutive indexes indicating the line segment within the geometry </param>
         /// <returns> the PolylinesGeometry generated </returns>
-        internal PolylinesGeometry MakePolylinesGeometry(List<List<WinPoint>> allGeometries, List<Tuple<int, int, int>> geometryIndexes)
+        internal PolylinesGeometry GenerateLeftHandGeometryFromContext(List<List<WinPoint>> allGeometries, List<Tuple<int, int, int>> contextGeometries)
 		{
-            var points = new List<List<Point>>();
-            foreach (Tuple<int, int, int> t in geometryIndexes)
+            var leftHandPoints = this.ConvertGeometriesOnScreenToPolylinesInPoints(allGeometries, contextGeometries);
+			return new PolylinesGeometry(leftHandPoints);
+		}
+
+		private List<List<Point>> ConvertGeometriesOnScreenToPolylinesInPoints(List<List<WinPoint>> allGeometriesOnScreen, List<Tuple<int, int, int>> polylinesIndexes)
+		{
+            var polylinesInPoints = new List<List<Point>>();
+            foreach (Tuple<int, int, int> t in polylinesIndexes)
             {
-                var wp1 = allGeometries[t.Item1][t.Item2];
+                var wp1 = allGeometriesOnScreen[t.Item1][t.Item2];
                 var p1 = MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(wp1, this.displayUnitOverRealUnit);
-                var wp2 = allGeometries[t.Item1][t.Item3];
+                var wp2 = allGeometriesOnScreen[t.Item1][t.Item3];
                 var p2 = MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(wp2, this.displayUnitOverRealUnit);
-                points.Add(new List<Point> { p1, p2 });
+                polylinesInPoints.Add(new List<Point> { p1, p2 });
             }
-            return new PolylinesGeometry(points);
+            return polylinesInPoints;
         }
-	}
+    }
 }
