@@ -26,7 +26,7 @@ namespace DiagramDesigner
             this.CurrentLayersTable.DataContext = this.MainViewModel.LayersDataTable;
 
             this.CurrentRulesTable.DataContext = this.MainViewModel.GrammarRulesDataTable;
-            this.CurrentRulesTable.SelectedCellsChanged += this.MainViewModel.HandleRuleSelectedCellsChangedEvent;
+            this.CurrentRulesTable.SelectedCellsChanged += this.MainViewModel.HandleSelectedCellsChangedEvent;
 
             this.ProgramRequirementsTable.DataContext = this.MainViewModel.ProgramRequirementsDataTable;
 

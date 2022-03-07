@@ -379,7 +379,7 @@ namespace DiagramDesigner
             }
         }
 
-        public void HandleRuleSelectedCellsChangedEvent(object obj, SelectedCellsChangedEventArgs e)
+        public void HandleSelectedCellsChangedEvent(object obj, SelectedCellsChangedEventArgs e)
         {
             IList<DataGridCellInfo> selectedcells = e.AddedCells;
             if (selectedcells.Count > 0)
