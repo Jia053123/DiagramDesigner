@@ -25,7 +25,7 @@ namespace DiagramDesignerModel
             var sampleCountColumn = new DataColumn();
             sampleCountColumn.DataType = System.Type.GetType("System.Int32");
             sampleCountColumn.ColumnName = "Sample Count";
-            sampleCountColumn.ReadOnly = true;
+            sampleCountColumn.ReadOnly = false;
             sampleCountColumn.Unique = false;
             sampleCountColumn.DefaultValue = 0;
             this.Columns.Add(sampleCountColumn);

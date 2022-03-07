@@ -202,6 +202,9 @@ namespace DiagramDesigner
                 case "ID":
                     e.Cancel = true;
                     break;
+                case "Sample Count":
+                    e.Column.IsReadOnly = true; // make this column uneditable from the UI
+                    break;
 				default:
 					break;
 			}

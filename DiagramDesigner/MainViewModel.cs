@@ -276,7 +276,7 @@ namespace DiagramDesigner
 			{
                 this.Model.LearnFromExampleForRule(geo.Item1, geo.Item2, (Guid)this.CurrentlySelectedRule);
             }
-            catch
+            catch 
 			{
                 MessageBox.Show("Repeat Rule Failed","Failed to learn from the example", MessageBoxButton.OK, MessageBoxImage.Warning);
 			}
