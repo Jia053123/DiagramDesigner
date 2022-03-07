@@ -292,13 +292,14 @@ namespace DiagramDesigner
 
         private void ExecuteApplySelectedRule(object obj)
 		{
-            // TODO
+            this.Model.CreateNewWallEntity();
+            this.State = MainViewModelState.RuleApplicationContextPickingState;
 		}
 
         private void ExecuteDonePickingContextAndApplySelectedRule(object obj)
 		{
-            // TODO
-		}
+           // TODO            
+        }
 
         private void ExecuteClearGeometry(object obj)
 		{

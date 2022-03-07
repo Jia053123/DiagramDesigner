@@ -61,5 +61,26 @@ namespace DiagramDesigner
 
             return new Tuple<PolylinesGeometry, PolylinesGeometry>(leftHandGeometry, rightHandGeometry);
         }
+
+        /// <summary>
+        /// Generate PolylinesGeometry given the geometry on screen
+        /// </summary>
+        /// <param name="allGeometries"> all geometries on screen </param>
+        /// <param name="geometryIndexes"> the geometry used for generation
+        ///  each Tuple specifies the index of the geometry within allGeometries, and the two ascending consecutive indexes indicating the line segment within the geometry </param>
+        /// <returns> the PolylinesGeometry generated </returns>
+        internal PolylinesGeometry MakePolylinesGeometry(List<List<WinPoint>> allGeometries, List<Tuple<int, int, int>> geometryIndexes)
+		{
+            var points = new List<List<Point>>();
+            foreach (Tuple<int, int, int> t in geometryIndexes)
+            {
+                var wp1 = allGeometries[t.Item1][t.Item2];
+                var p1 = MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(wp1, this.displayUnitOverRealUnit);
+                var wp2 = allGeometries[t.Item1][t.Item3];
+                var p2 = MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(wp2, this.displayUnitOverRealUnit);
+                points.Add(new List<Point> { p1, p2 });
+            }
+            return new PolylinesGeometry(points);
+        }
 	}
 }
