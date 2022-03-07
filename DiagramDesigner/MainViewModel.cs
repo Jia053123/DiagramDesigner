@@ -249,9 +249,9 @@ namespace DiagramDesigner
 			{
 				this.Model.CreateNewRuleFromExample(geo.Item1, geo.Item2);
 			}
-            catch
-			{
-                MessageBox.Show("Rule Creation Failed", "Failed to create rule", MessageBoxButton.OK, MessageBoxImage.Warning);
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Rule Creation Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
 			this.State = MainViewModelState.ViewingState;
@@ -281,9 +281,9 @@ namespace DiagramDesigner
 			{
                 this.Model.LearnFromExampleForRule(geo.Item1, geo.Item2, (Guid)this.CurrentlySelectedRule);
             }
-            catch 
+            catch (Exception e)
 			{
-                MessageBox.Show("Repeat Rule Failed","Failed to learn from the example", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(e.Message, "Repeat Rule Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
 			}
             
             this.State = MainViewModelState.ViewingState;
