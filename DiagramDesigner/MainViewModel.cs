@@ -92,6 +92,8 @@ namespace DiagramDesigner
         public ICommand RepeatSelectedRuleCommand { set; get; }
         public ICommand DonePickingContextForRuleRepetitionCommand { set; get; }
         public ICommand DoneRepeatingRuleCommand { set; get; }
+        public ICommand ApplySelectedRuleCommand { set; get; }
+        public ICommand DonePickingContextAndApplyRuleCommand { set; get; }
         public ICommand ClearGeometryCommand { set; get; }
         public ICommand ResolveProgramsCommand { get; set; }
         public ICommand AddNewProgramRequirementCommand { set; get; }
@@ -114,7 +116,10 @@ namespace DiagramDesigner
 
             this.RepeatSelectedRuleCommand = new DelegateCommand(ExecuteRepeatSelectedRule);
             this.DonePickingContextForRuleRepetitionCommand = new DelegateCommand(ExecuteDonePickingContextForRuleRepetition);
-            this.DoneRepeatingRuleCommand = new DelegateCommand(ExecuteDoneRepeatingRule);
+            this.DoneRepeatingRuleCommand = new DelegateCommand(ExecuteDoneRepeatingSelectedRule);
+
+            this.ApplySelectedRuleCommand = new DelegateCommand(ExecuteApplySelectedRule);
+            this.DonePickingContextAndApplyRuleCommand = new DelegateCommand(ExecuteDonePickingContextAndApplySelectedRule);
 
             this.ClearGeometryCommand = new DelegateCommand(ExecuteClearGeometry);
             this.ResolveProgramsCommand = new DelegateCommand(ExecuteResolvePrograms);
@@ -264,7 +269,7 @@ namespace DiagramDesigner
             this.State = MainViewModelState.RuleRepetitionEditingState;
 		}
 
-        private void ExecuteDoneRepeatingRule(object obj)
+        private void ExecuteDoneRepeatingSelectedRule(object obj)
 		{
             if (this.CurrentlySelectedRule == null)
 			{
@@ -283,6 +288,16 @@ namespace DiagramDesigner
             
             this.State = MainViewModelState.ViewingState;
             this.CleanUpTempDataForDrawing();
+		}
+
+        private void ExecuteApplySelectedRule(object obj)
+		{
+            // TODO
+		}
+
+        private void ExecuteDonePickingContextAndApplySelectedRule(object obj)
+		{
+            // TODO
 		}
 
         private void ExecuteClearGeometry(object obj)
