@@ -5,12 +5,14 @@ using System.Windows.Input;
 using System.Runtime.CompilerServices;
 using System.Linq;
 using WinPoint = System.Windows.Point;
+using MyPoint = BasicGeometries.Point;
 using System.Data;
 using DiagramDesignerModel;
 using System.Diagnostics;
 using BasicGeometries;
 using ShapeGrammarEngine;
 using System.Windows.Controls;
+using System.Windows;
 
 namespace DiagramDesigner
 {
@@ -139,7 +141,7 @@ namespace DiagramDesigner
             foreach (WallEntity we in this.Model.WallEntities)
 			{
                 this.WallsToRender.Add(new List<WinPoint>());
-                foreach (Point p in we.Geometry.PathsDefinedByPoints)
+                foreach (MyPoint p in we.Geometry.PathsDefinedByPoints)
 				{
                     this.WallsToRender.Last().Add(MathUtilities.ConvertRealScaledPointToWindowsPointOnScreen(p, this.DisplayUnitOverRealUnit));
 				}
@@ -150,16 +152,16 @@ namespace DiagramDesigner
             foreach (EnclosedProgram ep in this.Model.Programs)
 			{
                 var perimeter = new List<WinPoint>();
-                foreach (Point p in ep.Perimeter)
+                foreach (MyPoint p in ep.Perimeter)
 				{
                     perimeter.Add(MathUtilities.ConvertRealScaledPointToWindowsPointOnScreen(p, DisplayUnitOverRealUnit));
 				}
 
                 var innerPerimeters = new List<List<WinPoint>>();
-                foreach (List<Point> innerPerimeter in ep.InnerPerimeters)
+                foreach (List<MyPoint> innerPerimeter in ep.InnerPerimeters)
 				{
                     innerPerimeters.Add(new List<WinPoint>());
-                    foreach (Point p in innerPerimeter)
+                    foreach (MyPoint p in innerPerimeter)
 					{
                         innerPerimeters.Last().Add(MathUtilities.ConvertRealScaledPointToWindowsPointOnScreen(p, DisplayUnitOverRealUnit));
 					}
@@ -269,7 +271,7 @@ namespace DiagramDesigner
             }
             catch
 			{
-                // TODO: handle exceptions when shape parsing fails, etc. 
+                MessageBox.Show("Repeat Rule Failed","Failed to learn from the example", MessageBoxButton.OK, MessageBoxImage.Warning);
 			}
             
             this.State = MainViewModelState.ViewingState;
