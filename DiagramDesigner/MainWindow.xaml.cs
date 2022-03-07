@@ -85,6 +85,9 @@ namespace DiagramDesigner
                     this.DonePickingContextForRuleRepetitionButton.IsEnabled = false;
                     this.DoneRepeatingRuleButton.IsEnabled = false;
 
+                    this.ApplySelectedRuleButton.IsEnabled = true;
+                    this.DonePickingContextAndApplyRuleButton.IsEnabled = false;
+
                     break;
 
                 case MainViewModelState.NormalEditingState:
@@ -100,6 +103,9 @@ namespace DiagramDesigner
                     this.RepeatSelectedRuleButton.IsEnabled = false;
                     this.DonePickingContextForRuleRepetitionButton.IsEnabled = false;
                     this.DoneRepeatingRuleButton.IsEnabled = false;
+
+                    this.ApplySelectedRuleButton.IsEnabled = false;
+                    this.DonePickingContextAndApplyRuleButton.IsEnabled = false;
 
                     break;
 
@@ -117,6 +123,9 @@ namespace DiagramDesigner
                     this.DonePickingContextForRuleRepetitionButton.IsEnabled = false;
                     this.DoneRepeatingRuleButton.IsEnabled = false;
 
+                    this.ApplySelectedRuleButton.IsEnabled = false;
+                    this.DonePickingContextAndApplyRuleButton.IsEnabled = false;
+
                     break;
 
                 case MainViewModelState.RuleCreationEditingState:
@@ -132,6 +141,9 @@ namespace DiagramDesigner
                     this.RepeatSelectedRuleButton.IsEnabled = false;
                     this.DonePickingContextForRuleRepetitionButton.IsEnabled = false;
                     this.DoneRepeatingRuleButton.IsEnabled = false;
+
+                    this.ApplySelectedRuleButton.IsEnabled = false;
+                    this.DonePickingContextAndApplyRuleButton.IsEnabled = false;
 
                     break;
 
@@ -149,6 +161,9 @@ namespace DiagramDesigner
                     this.DonePickingContextForRuleRepetitionButton.IsEnabled = true;
                     this.DoneRepeatingRuleButton.IsEnabled = false;
 
+                    this.ApplySelectedRuleButton.IsEnabled = false;
+                    this.DonePickingContextAndApplyRuleButton.IsEnabled = false;
+
                     break;
 
                 case MainViewModelState.RuleRepetitionEditingState:
@@ -164,6 +179,28 @@ namespace DiagramDesigner
                     this.RepeatSelectedRuleButton.IsEnabled = false;
                     this.DonePickingContextForRuleRepetitionButton.IsEnabled = false;
                     this.DoneRepeatingRuleButton.IsEnabled = true;
+
+                    this.ApplySelectedRuleButton.IsEnabled = false;
+                    this.DonePickingContextAndApplyRuleButton.IsEnabled = false;
+
+                    break;
+
+                case MainViewModelState.RuleApplicationContextPickingState:
+                    this.PrimaryDiagramCanvas.Cursor = Cursors.Hand;
+
+                    this.StartDrawingButton.IsEnabled = false;
+                    this.DoneDrawingButton.IsEnabled = false;
+
+                    this.CreateNewRuleButton.IsEnabled = false;
+                    this.DonePickingContextForRuleCreationButton.IsEnabled = false;
+                    this.DoneCreatingRuleButton.IsEnabled = false;
+
+                    this.RepeatSelectedRuleButton.IsEnabled = false;
+                    this.DonePickingContextForRuleRepetitionButton.IsEnabled = false;
+                    this.DoneRepeatingRuleButton.IsEnabled = false;
+
+                    this.ApplySelectedRuleButton.IsEnabled = false;
+                    this.DonePickingContextAndApplyRuleButton.IsEnabled = true;
 
                     break;
             }
@@ -200,7 +237,7 @@ namespace DiagramDesigner
             switch (headername)
 			{
                 case "ID":
-                    e.Cancel = true;
+                    e.Cancel = true; // do not display this column
                     break;
                 case "Sample Count":
                     e.Column.IsReadOnly = true; // make this column uneditable from the UI

@@ -7,6 +7,7 @@
 		RuleCreationContextPickingState,
 		RuleCreationEditingState,
 		RuleRepetitionContextPickingState, 
-		RuleRepetitionEditingState
+		RuleRepetitionEditingState, 
+		RuleApplicationContextPickingState
 	}
 }

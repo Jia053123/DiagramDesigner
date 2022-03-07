@@ -356,6 +356,9 @@ namespace DiagramDesigner
                 case MainViewModelState.RuleRepetitionEditingState:
                     this.MouseLeftClickedInRuleRepetitionEditingState(mea);
                     break;
+                case MainViewModelState.RuleApplicationContextPickingState:
+                    this.MouseLeftClickedInRuleApplicationContextPickingState(mea);
+                    break;
                 default:
 					break;
             }
@@ -463,6 +466,11 @@ namespace DiagramDesigner
 
 		private void MouseLeftClickedInRuleRepetitionContextPickingState(MouseEventArgs mea)
 		{
+            this.MouseLeftClickedInContextPickingState(mea);
+        }
+
+        private void MouseLeftClickedInRuleApplicationContextPickingState(MouseEventArgs mea)
+        {
             this.MouseLeftClickedInContextPickingState(mea);
         }
 
