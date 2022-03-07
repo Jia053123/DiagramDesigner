@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Data;
-using System.Text;
 
 namespace DiagramDesignerModel
 {
@@ -23,7 +22,7 @@ namespace DiagramDesignerModel
             try
             {
                 var newRow = this.CurrentRulesInfoDataTable.NewRow();
-                newRow["Name"] = newRule.name;
+                newRow["Name"] = "Unnamed Rule";
                 newRow["ID"] = newRule.id;
                 newRow["Sample Count"] = newRule.SampleCount;
                 this.CurrentRulesInfoDataTable.Rows.Add(newRow);
@@ -55,7 +54,6 @@ namespace DiagramDesignerModel
 
         private void UpdateRow(GrammarRule updatedRule, DataRow currentRulesInfoDataTableRowToUpdate)
 		{
-            currentRulesInfoDataTableRowToUpdate["Name"] = updatedRule.name;
             currentRulesInfoDataTableRowToUpdate["Sample Count"] = updatedRule.SampleCount;
 		}
     }
