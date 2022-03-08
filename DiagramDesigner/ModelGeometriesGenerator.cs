@@ -69,6 +69,10 @@ namespace DiagramDesigner
             var polylinesInPoints = new List<List<Point>>();
             foreach (Tuple<int, int, int> t in polylinesIndexes)
             {
+                if (t.Item3 != t.Item2 + 1)
+				{
+                    throw new ArgumentException("on polyline index {0}, the indexes for the two points forming the line is not consecutive in ascending order");
+				}
                 var wp1 = allGeometriesOnScreen[t.Item1][t.Item2];
                 var p1 = MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(wp1, this.displayUnitOverRealUnit);
                 var wp2 = allGeometriesOnScreen[t.Item1][t.Item3];
