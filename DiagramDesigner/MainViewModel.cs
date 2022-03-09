@@ -328,8 +328,8 @@ namespace DiagramDesigner
 
 
 
-            //this.State = MainViewModelState.ViewingState;
-            //this.CleanUpTempDataForDrawing();
+            this.State = MainViewModelState.ViewingState;
+            this.CleanUpTempDataForDrawing();
 
 
         }
