@@ -317,7 +317,7 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
-		public void TestApplyToGeometry_InputNotConformWithRule_ThrowArgumentException()
+		public void TestApplyToGeometry_InputNotConformWithRule_ThrowGeometryParsingFailureException()
 		{
 			//  _________            __________
 			// |                    |          
@@ -333,7 +333,7 @@ namespace ShapeGrammarEngine.UnitTests
 				new List<Point>{new Point(0,-1), new Point(1,-1) } });
 			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out var labeling);
 			var polyGeo1 = new PolylinesGeometry(new List<List<Point>> { new List<Point> { new Point(0, 0), new Point(0, 1), new Point(0, 2), new Point(0,3) } });
-			Assert.Throws<ArgumentException>(() => rule.ApplyToGeometry(polyGeo1));
+			Assert.Throws<GeometryParsingFailureException>(() => rule.ApplyToGeometry(polyGeo1));
 		}
 
 		[Test]
