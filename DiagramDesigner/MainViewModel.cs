@@ -296,11 +296,11 @@ namespace DiagramDesigner
 		}
 
         private void ExecuteDonePickingContextAndApplySelectedRule(object obj)
-		{ 
-        
-		}
+		{
+    
+        }
 
-		private void ExecuteClearGeometry(object obj)
+        private void ExecuteClearGeometry(object obj)
 		{
             this.ExecuteDoneAddingRule(obj);
             this.Model.RemoveAllWallsAndPrograms();

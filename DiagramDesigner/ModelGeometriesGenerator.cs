@@ -2,6 +2,7 @@
 using ShapeGrammarEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using WinPoint = System.Windows.Point;
 
@@ -81,5 +82,25 @@ namespace DiagramDesigner
             }
             return polylinesInPoints;
         }
+
+        /// <summary>
+        /// Convert line segments represented by Points in real world unit to ones represented by WinPoints in screen unit
+        /// </summary>
+        /// <param name="polylinesInPoints"> line segments in real world unit to convert </param>
+        /// <returns> the result of the conversion with list structures and orders intact </returns>
+        internal List<List<WinPoint>> ConvertPolylinesInPointsToGeometriesOnScreen(List<List<Point>> polylinesInPoints)
+		{
+            var polylinesInWinPoints = new List<List<WinPoint>>();
+            foreach (List<Point> polyline in polylinesInPoints)
+			{
+                polylinesInWinPoints.Add(new List<WinPoint>());
+                foreach(Point p in polyline)
+				{
+                    var wp = MathUtilities.ConvertRealScaledPointToWindowsPointOnScreen(p, this.displayUnitOverRealUnit);
+                    polylinesInWinPoints.Last().Add(wp);
+				}
+			}
+            return polylinesInWinPoints;
+		}
     }
 }
