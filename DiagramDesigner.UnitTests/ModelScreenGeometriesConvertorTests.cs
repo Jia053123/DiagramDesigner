@@ -7,16 +7,16 @@ using MyPoint = BasicGeometries.Point;
 
 namespace DiagramDesigner.UnitTests
 {
-	class ModelGeometriesGeneratorTests
+	class ModelScreenGeometriesConvertorTests
 	{
-		ModelGeometriesGenerator mgg;
+		ModelScreenGeometriesConverter mgg;
 		List<List<WinPoint>> allGeo1;
 
 		[SetUp]
 		public void SetUp()
 		{
 			var displayUnitOverRealUnit = 0.5;
-			mgg = new ModelGeometriesGenerator(displayUnitOverRealUnit);
+			mgg = new ModelScreenGeometriesConverter(displayUnitOverRealUnit);
 
 			allGeo1 = new List<List<WinPoint>>();
 			allGeo1.Add(new List<WinPoint> { new WinPoint(1, 1), new WinPoint(2, 2), new WinPoint(3, 3) });

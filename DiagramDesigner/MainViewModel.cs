@@ -72,7 +72,7 @@ namespace DiagramDesigner
 		}
 
         private DraftingConstrainsApplier draftingConstrainsApplier;
-        private ModelGeometriesGenerator ruleGeometriesGenerator;
+        private ModelScreenGeometriesConverter ruleGeometriesGenerator;
 
         public bool IsDrawingOrthogonally => this.draftingConstrainsApplier.DoesDrawOrthogonally;
 
@@ -132,7 +132,7 @@ namespace DiagramDesigner
             this.draftingConstrainsApplier = new DraftingConstrainsApplier();
             this.draftingConstrainsApplier.DoesDrawOrthogonally = false;
 
-            this.ruleGeometriesGenerator = new ModelGeometriesGenerator(this.DisplayUnitOverRealUnit);
+            this.ruleGeometriesGenerator = new ModelScreenGeometriesConverter(this.DisplayUnitOverRealUnit);
 
             this.RebuildGraphicsDataFromModel();
 

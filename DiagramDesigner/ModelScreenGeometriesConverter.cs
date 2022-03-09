@@ -11,11 +11,11 @@ namespace DiagramDesigner
 	/// <summary>
 	/// Handle conversions between display geometries and Model geometries
 	/// </summary>
-	class ModelGeometriesGenerator
+	class ModelScreenGeometriesConverter
 	{
 		private double displayUnitOverRealUnit;
 
-		internal ModelGeometriesGenerator(double displayUnitOverRealUnit)
+		internal ModelScreenGeometriesConverter(double displayUnitOverRealUnit)
 		{
 			this.displayUnitOverRealUnit = displayUnitOverRealUnit;
 		}
