@@ -62,6 +62,24 @@ namespace DiagramDesignerModel
             this.rulesStore.RuleUpdated(ruleId);
         }
 
+        public PolylinesGeometry ApplyRuleGivenLeftHandGeometry(PolylinesGeometry leftHandGeometry, Guid ruleId)
+		{
+            var rule = this.rulesStore.GetRuleById(ruleId);
+            try
+			{
+                var newGeo = rule.ApplyToGeometry(leftHandGeometry);
+				return newGeo;
+			}
+			catch (GeometryParsingFailureException e)
+            {
+                throw new ArgumentException(e.Message);
+			}
+            catch (RuleApplicationFailureException e)
+			{
+                throw e;
+			}
+        }
+
         public void RemoveAllWallsAndPrograms()
 		{
             this.WallEntities.Clear();

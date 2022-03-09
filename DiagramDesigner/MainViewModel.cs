@@ -260,7 +260,7 @@ namespace DiagramDesigner
 
         private void ExecuteRepeatSelectedRule(object obj)
 		{
-            this.Model.CreateNewWallEntity();
+            this.Model.CreateNewWallEntity(); // TODO: Move to ExecuteDonePickingContext
             this.State = MainViewModelState.RuleRepetitionContextPickingState;
 		}
 
@@ -276,10 +276,10 @@ namespace DiagramDesigner
                 throw new NoRuleSelectedException();
 			}
 
-            var geo = this.ruleGeometriesGenerator.GenerateGeometriesFromContextAndAdditions(this.WallsToRender, this.WallsToHighlightAsContext, this.WallsToHighlightAsAdditions);
+            var geos = this.ruleGeometriesGenerator.GenerateGeometriesFromContextAndAdditions(this.WallsToRender, this.WallsToHighlightAsContext, this.WallsToHighlightAsAdditions);
             try
 			{
-                this.Model.LearnFromExampleForRule(geo.Item1, geo.Item2, (Guid)this.CurrentlySelectedRule);
+                this.Model.LearnFromExampleForRule(geos.Item1, geos.Item2, (Guid)this.CurrentlySelectedRule);
             }
             catch (Exception e)
 			{
@@ -292,13 +292,38 @@ namespace DiagramDesigner
 
         private void ExecuteApplySelectedRule(object obj)
 		{
-            this.Model.CreateNewWallEntity();
             this.State = MainViewModelState.RuleApplicationContextPickingState;
 		}
 
         private void ExecuteDonePickingContextAndApplySelectedRule(object obj)
 		{
-           // TODO            
+            if (this.CurrentlySelectedRule == null)
+            {
+                throw new NoRuleSelectedException();
+            }
+            var geo = this.ruleGeometriesGenerator.GenerateLeftHandGeometryFromContext(this.WallsToRender, this.WallsToHighlightAsContext);
+            try
+			{
+                // Step1: generate new right hand geometry
+                var newGeo = this.Model.ApplyRuleGivenLeftHandGeometry(geo, (Guid)this.CurrentlySelectedRule);
+
+                // Step2: erase selected context segmenets
+                foreach (Tuple<int, int, int> segment in this.WallsToHighlightAsContext)
+				{
+                    this.EraseWallSegment(segment);
+				}
+
+                // Step3: draw the right hand geometry
+				this.Model.CreateNewWallEntity();
+
+
+			}
+			catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Apply Rule Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            this.State = MainViewModelState.ViewingState;
+            this.CleanUpTempDataForDrawing();
         }
 
         private void ExecuteClearGeometry(object obj)
@@ -463,6 +488,16 @@ namespace DiagramDesigner
                 return false;
 			}
         }
+
+        /// <summary>
+        /// Erase a specific wall segment from all walls on screen. After the erasure, WallEntity objects with only a single point will also be removed. 
+        /// </summary>
+        /// <param name="segmentToRemove"> The wall segments to remove;
+        /// each Tuple specifies the index of the geometry within allGeometries, and the two ascending consecutive indexes indicating the line segment within the geometry </param>
+        private void EraseWallSegment(Tuple<int, int, int> segmentToRemove)
+		{
+            // TODO
+		}
 
         private void HighlightLastAddition()
 		{
