@@ -84,12 +84,16 @@ namespace DiagramDesigner
         }
 
         /// <summary>
-        /// Convert line segments represented by Points in real world unit to ones represented by WinPoints in screen unit
+        /// Convert single points and line segments represented by Points in real world unit to ones represented by WinPoints in screen unit
         /// </summary>
         /// <param name="polylinesInPoints"> line segments in real world unit to convert </param>
         /// <returns> the result of the conversion with list structures and orders intact </returns>
         internal List<List<WinPoint>> ConvertPolylinesInPointsToGeometriesOnScreen(List<List<Point>> polylinesInPoints)
 		{
+            if (polylinesInPoints is null)
+			{
+                throw new ArgumentNullException("polylinesInPoints is null");
+			}
             var polylinesInWinPoints = new List<List<WinPoint>>();
             foreach (List<Point> polyline in polylinesInPoints)
 			{

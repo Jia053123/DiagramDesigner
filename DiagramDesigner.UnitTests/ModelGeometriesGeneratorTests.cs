@@ -26,6 +26,30 @@ namespace DiagramDesigner.UnitTests
 		}
 
 		[Test]
+		public void TestConvertPolylinesInPointsToGeometriesOnScreen_NullInput_ThrowArgumentNullException()
+		{
+			Assert.Throws<ArgumentNullException>(() => mgg.ConvertPolylinesInPointsToGeometriesOnScreen(null));
+		}
+
+		[Test]
+		public void TestConvertPolylinesInPointsToGeometriesOnScreen_ValidInputContainingLinesPointsWithEmptyEntries_CorrectlyConvertedOutputInSameOrder()
+		{
+			var pip = new List<List<MyPoint>>();
+			pip.Add(new List<MyPoint> { new MyPoint(2, 2), new MyPoint(4, 4) });
+			pip.Add(new List<MyPoint>());
+			pip.Add(new List<MyPoint> { new MyPoint(6, 4) });
+
+			var piwp = mgg.ConvertPolylinesInPointsToGeometriesOnScreen(pip);
+			Assert.AreEqual(2, piwp[0].Count);
+			Assert.AreEqual(0, piwp[1].Count);
+			Assert.AreEqual(1, piwp[2].Count);
+
+			Assert.AreEqual(new WinPoint(1, 1), piwp[0][0]);
+			Assert.AreEqual(new WinPoint(2, 2), piwp[0][1]);
+			Assert.AreEqual(new WinPoint(3, 2), piwp[2][0]);
+		}
+
+		[Test]
 		public void TestGenerateLeftHandGeometryFromContext_FirstIndexOutOfRange_ThrowArgumentOutOfRangeException()
 		{
 			var contextGeoIndex = new List<Tuple<int, int, int>>();

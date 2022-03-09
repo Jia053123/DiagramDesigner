@@ -297,7 +297,41 @@ namespace DiagramDesigner
 
         private void ExecuteDonePickingContextAndApplySelectedRule(object obj)
 		{
-    
+            //if (this.CurrentlySelectedRule == null)
+            //{
+            //    throw new NoRuleSelectedException();
+            //}
+
+            //// Step1: generate new right hand geometry
+            //var contextGeo = this.ruleGeometriesGenerator.GenerateLeftHandGeometryFromContext(this.WallsToRender, this.WallsToHighlightAsContext);
+            //PolylinesGeometry newGeo;
+            //try
+            //{
+            //    newGeo = this.Model.ApplyRuleGivenLeftHandGeometry(contextGeo, (Guid)this.CurrentlySelectedRule);
+            //}
+            //catch (Exception e)
+            //{
+            //    MessageBox.Show(e.Message, "Apply Rule Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+            //}
+            
+
+            //// Step2: erase selected context segmenets
+            //foreach (Tuple<int, int, int> segment in this.WallsToHighlightAsContext)
+            //{
+            //    this.EraseWallSegment(segment);
+            //}
+
+            //// Step3: draw the right hand geometry
+            //this.Model.CreateNewWallEntity();
+            
+
+
+
+
+            //this.State = MainViewModelState.ViewingState;
+            //this.CleanUpTempDataForDrawing();
+
+
         }
 
         private void ExecuteClearGeometry(object obj)
