@@ -30,9 +30,10 @@ namespace DiagramDesigner
         public ProgramsSummaryTable CurrentProgramsDataTable { get;} = new ProgramsSummaryTable(); // for the pie chart
 
         /// <summary>
-        /// Walls to be displayed by the view. They are guaranteed to match the WallEntities property in Model, with each sub list corresponding to each WallEntity
+        /// Walls to be displayed by the view. They are guaranteed to match the WallEntities property in Model, with each sub list corresponding to each WallEntity in Model
+        /// When trying to add or remove elements, do that by calling Model's methods and WallsToRender will be updated automatically through events
         /// </summary>
-        public List<List<WinPoint>> WallsToRender { get; private set; } = new List<List<WinPoint>>();
+        public List<List<WinPoint>> WallsToRender { get; private set; } = new List<List<WinPoint>>(); // TODO: refactor with ReadOnlyCollection
         /// <summary>
         /// Walls to be highlighted as the context. The three integers represent the index of the geometry from WallsToRender, and
         /// the two consecutive indexes in ascending order of the points representing the line on the geometry
@@ -509,13 +510,17 @@ namespace DiagramDesigner
         }
 
         /// <summary>
-        /// Erase a specific wall segment from all walls on screen. After the erasure, WallEntity objects with only a single point will also be removed. 
+        /// Erase a specific wall segment from all walls on screen and from the Model. 
+        /// If that leaves the containing WallEntity in Model with only a single point, that WallEntity object will also be removed. 
         /// </summary>
         /// <param name="segmentToRemove"> The wall segments to remove;
         /// each Tuple specifies the index of the geometry within allGeometries, and the two ascending consecutive indexes indicating the line segment within the geometry </param>
         private void EraseWallSegment(Tuple<int, int, int> segmentToRemove)
 		{
-            // TODO
+            // Step1: remove specified segment
+            
+
+            // Step2: if the WallEntity has only a single point left, remove the WallEntity
 		}
 
         private void HighlightLastAddition()
