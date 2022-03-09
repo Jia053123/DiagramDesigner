@@ -296,37 +296,11 @@ namespace DiagramDesigner
 		}
 
         private void ExecuteDonePickingContextAndApplySelectedRule(object obj)
-		{
-            if (this.CurrentlySelectedRule == null)
-            {
-                throw new NoRuleSelectedException();
-            }
-            var geo = this.ruleGeometriesGenerator.GenerateLeftHandGeometryFromContext(this.WallsToRender, this.WallsToHighlightAsContext);
-            try
-			{
-                // Step1: generate new right hand geometry
-                var newGeo = this.Model.ApplyRuleGivenLeftHandGeometry(geo, (Guid)this.CurrentlySelectedRule);
+		{ 
+        
+		}
 
-                // Step2: erase selected context segmenets
-                foreach (Tuple<int, int, int> segment in this.WallsToHighlightAsContext)
-				{
-                    this.EraseWallSegment(segment);
-				}
-
-                // Step3: draw the right hand geometry
-				this.Model.CreateNewWallEntity();
-
-
-			}
-			catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "Apply Rule Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-            this.State = MainViewModelState.ViewingState;
-            this.CleanUpTempDataForDrawing();
-        }
-
-        private void ExecuteClearGeometry(object obj)
+		private void ExecuteClearGeometry(object obj)
 		{
             this.ExecuteDoneAddingRule(obj);
             this.Model.RemoveAllWallsAndPrograms();
@@ -464,14 +438,11 @@ namespace DiagramDesigner
         /// <returns> Whether the addition succeeded </returns>
         private bool AddNewPointFromMouseLeftClick(MouseEventArgs mea)
 		{
-            if (this.WallsToRender != null)
-            {
-                var newPoint = new WinPoint(mea.LocationX, mea.LocationY);
-                newPoint = this.draftingConstrainsApplier.ApplyAllRestrictions(newPoint, this.WallsToRender);
-
-                this.Model.AddPointToWallEntityAtIndex(MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count - 1);
-                this.draftingConstrainsApplier.UpdateLastAddedPoint(newPoint);
-
+			var newPoint = new WinPoint(mea.LocationX, mea.LocationY);
+			newPoint = this.draftingConstrainsApplier.ApplyAllRestrictions(newPoint, this.WallsToRender);
+			var success = this.AddNewPoint(newPoint);
+            if (success)
+			{
                 if (this.NewEdgePreviewData is null)
                 {
                     this.NewEdgePreviewData = new DirectedLine(newPoint, newPoint);
@@ -480,9 +451,23 @@ namespace DiagramDesigner
                 {
                     this.NewEdgePreviewData.StartPoint = newPoint;
                 }
+            }
+            return success;
+        }
 
+        /// <summary>
+        /// Add a new point to the last WallEntity
+        /// </summary>
+        /// <param name="newPoint"> the new point to add </param>
+        /// <returns> whether the operation is successful </returns>
+		private bool AddNewPoint(WinPoint newPoint)
+		{
+            if (this.WallsToRender != null)
+            {
+                this.Model.AddPointToWallEntityAtIndex(MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count - 1);
+                this.draftingConstrainsApplier.UpdateLastAddedPoint(newPoint);
                 return true;
-            } 
+            }
             else
 			{
                 return false;
