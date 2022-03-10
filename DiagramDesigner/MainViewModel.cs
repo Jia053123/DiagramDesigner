@@ -316,9 +316,14 @@ namespace DiagramDesigner
                 return;
 			}
 
-
-			// Step2: erase selected context segmenets
-			foreach (Tuple<int, int, int> segment in this.WallsToHighlightAsContext)
+            // Step2: erase selected context segmenets. It is important to sort the segments so that deleting one does not change the subsequent indexes
+            var wallsToHighlightAsContextInDescendingOrder = new List<Tuple<int, int, int>>(this.WallsToHighlightAsContext);
+            wallsToHighlightAsContextInDescendingOrder.Sort(delegate (Tuple<int, int, int> w1, Tuple<int, int, int> w2)
+			{
+				if (w1.Item1 != w2.Item1) { return -1 * (w1.Item1 - w2.Item1); }
+                else { return -1 * (w1.Item2 - w2.Item2); }
+            });
+			foreach (Tuple<int, int, int> segment in wallsToHighlightAsContextInDescendingOrder)
 			{
 				this.EraseWallSegment(segment);
 			}
