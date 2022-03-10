@@ -497,7 +497,7 @@ namespace DiagramDesigner
         /// <returns> whether the operation is successful </returns>
 		private bool AddNewPoint(WinPoint newPoint)
 		{
-            if (this.WallsToRender != null)
+            if (this.WallsToRender != null) // TODO: remove this check and return value
             {
                 this.Model.AddPointToWallEntityAtIndex(MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count - 1);
                 this.draftingConstrainsApplier.UpdateLastAddedPoint(newPoint);
@@ -517,10 +517,7 @@ namespace DiagramDesigner
         /// each Tuple specifies the index of the geometry within allGeometries, and the two ascending consecutive indexes indicating the line segment within the geometry </param>
         private void EraseWallSegment(Tuple<int, int, int> segmentToRemove)
 		{
-            // Step1: remove specified segment
-            
-
-            // Step2: if the WallEntity has only a single point left, remove the WallEntity
+            this.Model.RemoveSegmentFromWallEntityAtIndex(segmentToRemove.Item2, segmentToRemove.Item3, segmentToRemove.Item1);
 		}
 
         private void HighlightLastAddition()
