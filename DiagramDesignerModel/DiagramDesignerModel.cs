@@ -53,10 +53,42 @@ namespace DiagramDesignerModel
         /// <param name="wallEntityIndex"> index of the WallEntity to operate upon </param>
         public void RemoveSegmentFromWallEntityAtIndex(int firstEndPointIndex, int secondEndPointIndex, int wallEntityIndex)
 		{
+            if (firstEndPointIndex != secondEndPointIndex - 1)
+			{
+                throw new ArgumentException("firstEndPointIndex is not 1 less than secondEndPointIndex");
+			}
+            var we = this.WallEntities[wallEntityIndex];
 
-            // Step1: remove segement from entity at index
-            // Step2: if the entity needs to be deleted, delete
-            // Step3: if the entity needs to be split, split
+            if (firstEndPointIndex == 0)
+			{
+                // simply remove the first point
+                we.Geometry.PathsDefinedByPoints.RemoveAt(0);
+                if (we.Geometry.PathsDefinedByPoints.Count < 2)
+				{
+                    this.WallEntities.RemoveAt(wallEntityIndex);
+				}
+			}
+            else if (secondEndPointIndex == we.Geometry.PathsDefinedByPoints.Count - 1)
+			{
+                // simply remove the last point
+                we.Geometry.PathsDefinedByPoints.RemoveAt(we.Geometry.PathsDefinedByPoints.Count - 1);
+                if (we.Geometry.PathsDefinedByPoints.Count < 2)
+                {
+                    this.WallEntities.RemoveAt(wallEntityIndex);
+                }
+            }
+            else
+			{ 
+                // the WallEntity is to be split into two
+                var newWe1 = new WallEntity(we.WallThickness);
+                var newWe2 = new WallEntity(we.WallThickness);
+                newWe1.Geometry.PathsDefinedByPoints = we.Geometry.PathsDefinedByPoints.GetRange(0, firstEndPointIndex + 1);
+                newWe2.Geometry.PathsDefinedByPoints = we.Geometry.PathsDefinedByPoints.GetRange(firstEndPointIndex + 1, secondEndPointIndex - firstEndPointIndex);
+
+                this.WallEntities.RemoveAt(wallEntityIndex);
+                this.WallEntities.Insert(wallEntityIndex, newWe2);
+                this.WallEntities.Insert(wallEntityIndex, newWe1);
+			}
 
             this.OnModelChanged();
 		}
