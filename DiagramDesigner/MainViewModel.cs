@@ -73,7 +73,7 @@ namespace DiagramDesigner
 		}
 
         private DraftingConstrainsApplier draftingConstrainsApplier;
-        private ModelScreenGeometriesConverter ruleGeometriesGenerator;
+        private ModelScreenGeometriesConverter modelScreenGeometriesConverter;
 
         public bool IsDrawingOrthogonally => this.draftingConstrainsApplier.DoesDrawOrthogonally;
 
@@ -133,7 +133,7 @@ namespace DiagramDesigner
             this.draftingConstrainsApplier = new DraftingConstrainsApplier();
             this.draftingConstrainsApplier.DoesDrawOrthogonally = false;
 
-            this.ruleGeometriesGenerator = new ModelScreenGeometriesConverter(this.DisplayUnitOverRealUnit);
+            this.modelScreenGeometriesConverter = new ModelScreenGeometriesConverter(this.DisplayUnitOverRealUnit);
 
             this.RebuildGraphicsDataFromModel();
 
@@ -245,7 +245,7 @@ namespace DiagramDesigner
 
         private void ExecuteDoneAddingRule(object obj)
         {
-            var geo = this.ruleGeometriesGenerator.GenerateGeometriesFromContextAndAdditions(this.WallsToRender, this.WallsToHighlightAsContext, this.WallsToHighlightAsAdditions);
+            var geo = this.modelScreenGeometriesConverter.GenerateGeometriesFromContextAndAdditions(this.WallsToRender, this.WallsToHighlightAsContext, this.WallsToHighlightAsAdditions);
 			try
 			{
 				this.Model.CreateNewRuleFromExample(geo.Item1, geo.Item2);
@@ -277,7 +277,7 @@ namespace DiagramDesigner
                 throw new NoRuleSelectedException();
 			}
 
-            var geos = this.ruleGeometriesGenerator.GenerateGeometriesFromContextAndAdditions(this.WallsToRender, this.WallsToHighlightAsContext, this.WallsToHighlightAsAdditions);
+            var geos = this.modelScreenGeometriesConverter.GenerateGeometriesFromContextAndAdditions(this.WallsToRender, this.WallsToHighlightAsContext, this.WallsToHighlightAsAdditions);
             try
 			{
                 this.Model.LearnFromExampleForRule(geos.Item1, geos.Item2, (Guid)this.CurrentlySelectedRule);
@@ -298,41 +298,45 @@ namespace DiagramDesigner
 
         private void ExecuteDonePickingContextAndApplySelectedRule(object obj)
 		{
-            //if (this.CurrentlySelectedRule == null)
-            //{
-            //    throw new NoRuleSelectedException();
-            //}
+			if (this.CurrentlySelectedRule == null)
+			{
+				throw new NoRuleSelectedException();
+			}
 
-            //// Step1: generate new right hand geometry
-            //var contextGeo = this.ruleGeometriesGenerator.GenerateLeftHandGeometryFromContext(this.WallsToRender, this.WallsToHighlightAsContext);
-            //PolylinesGeometry newGeo;
-            //try
-            //{
-            //    newGeo = this.Model.ApplyRuleGivenLeftHandGeometry(contextGeo, (Guid)this.CurrentlySelectedRule);
-            //}
-            //catch (Exception e)
-            //{
-            //    MessageBox.Show(e.Message, "Apply Rule Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
-            //}
-            
-
-            //// Step2: erase selected context segmenets
-            //foreach (Tuple<int, int, int> segment in this.WallsToHighlightAsContext)
-            //{
-            //    this.EraseWallSegment(segment);
-            //}
-
-            //// Step3: draw the right hand geometry
-            //this.Model.CreateNewWallEntity();
-            
+			// Step1: generate new right hand geometry
+			var contextGeo = this.modelScreenGeometriesConverter.GenerateLeftHandGeometryFromContext(this.WallsToRender, this.WallsToHighlightAsContext);
+			PolylinesGeometry newGeo;
+			try
+			{
+				newGeo = this.Model.ApplyRuleGivenLeftHandGeometry(contextGeo, (Guid)this.CurrentlySelectedRule);
+			}
+			catch (Exception e)
+			{
+				MessageBox.Show(e.Message, "Apply Rule Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+			}
 
 
+			// Step2: erase selected context segmenets
+			foreach (Tuple<int, int, int> segment in this.WallsToHighlightAsContext)
+			{
+				this.EraseWallSegment(segment);
+			}
 
+            // Step3: draw the right hand geometry
+            var polylinesInRealUnit = newGeo.PolylinesCopy;
+            var polylinesInScreenUnit = this.modelScreenGeometriesConverter.ConvertPolylinesInPointsToGeometriesOnScreen(polylinesInRealUnit);
+            foreach (List<WinPoint> polyline in polylinesInScreenUnit)
+			{
+				this.Model.CreateNewWallEntity();
+                foreach (WinPoint p in polyline)
+				{
+                    this.AddNewPoint(p);
+				}
+			}
 
-            this.State = MainViewModelState.ViewingState;
+			this.State = MainViewModelState.ViewingState;
             this.CleanUpTempDataForDrawing();
-
-
         }
 
         private void ExecuteClearGeometry(object obj)
