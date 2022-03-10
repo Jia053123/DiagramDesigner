@@ -35,6 +35,8 @@ namespace DiagramDesigner
             this.MainViewModel.ProgramRequirementsDataTable.TableNewRow += this.OnProgramRequirementsTableChanged;
             this.MainViewModel.ProgramRequirementsDataTable.RowDeleted += this.OnProgramRequirementsTableChanged;
             this.MainViewModel.ProgramRequirementsDataTable.TableCleared += this.OnProgramRequirementsTableChanged;
+
+            this.MatchInterfaceStateToModelState();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -63,6 +65,7 @@ namespace DiagramDesigner
                     break;
                 case "CurrentlySelectedRule":
                     this.RepeatSelectedRuleButton.IsEnabled = this.MainViewModel.CurrentlySelectedRule != null;
+                    this.ApplySelectedRuleButton.IsEnabled = this.MainViewModel.CurrentlySelectedRule != null;
                     break;
             }
         }
@@ -85,7 +88,7 @@ namespace DiagramDesigner
                     this.DonePickingContextForRuleRepetitionButton.IsEnabled = false;
                     this.DoneRepeatingRuleButton.IsEnabled = false;
 
-                    this.ApplySelectedRuleButton.IsEnabled = true;
+                    this.ApplySelectedRuleButton.IsEnabled = this.MainViewModel.CurrentlySelectedRule != null;
                     this.DonePickingContextAndApplyRuleButton.IsEnabled = false;
 
                     break;
