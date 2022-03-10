@@ -13,7 +13,6 @@ using BasicGeometries;
 using ShapeGrammarEngine;
 using System.Windows.Controls;
 using System.Windows;
-using System.Collections.ObjectModel;
 
 namespace DiagramDesigner
 {
@@ -34,7 +33,7 @@ namespace DiagramDesigner
         /// Walls to be displayed by the view. They are guaranteed to match the WallEntities property in Model, with each sub list corresponding to each WallEntity in Model
         /// When trying to add or remove elements, do that by calling Model's methods and WallsToRender will be updated automatically through events
         /// </summary>
-        public ReadOnlyCollection<ReadOnlyCollection<WinPoint>> WallsToRender { get; private set; } = new ReadOnlyCollection<ReadOnlyCollection<WinPoint>>(new List<ReadOnlyCollection<WinPoint>>()); 
+        public List<List<WinPoint>> WallsToRender { get; private set; } = new List<List<WinPoint>>(); // TODO: refactor with ReadOnlyCollection
         /// <summary>
         /// Walls to be highlighted as the context. The three integers represent the index of the geometry from WallsToRender, and
         /// the two consecutive indexes in ascending order of the points representing the line on the geometry
@@ -144,17 +143,15 @@ namespace DiagramDesigner
         private void RebuildGraphicsDataFromModel()
 		{
             // Walls
-            var newWallsToRenderList = new List<ReadOnlyCollection<WinPoint>>();
+            this.WallsToRender = new List<List<WinPoint>>();
             foreach (WallEntity we in this.Model.WallEntities)
 			{
-                var newWallToRenderList = new List<WinPoint>();
+                this.WallsToRender.Add(new List<WinPoint>());
                 foreach (MyPoint p in we.Geometry.PathsDefinedByPoints)
 				{
-                    newWallToRenderList.Add(MathUtilities.ConvertRealScaledPointToWindowsPointOnScreen(p, this.DisplayUnitOverRealUnit));
+                    this.WallsToRender.Last().Add(MathUtilities.ConvertRealScaledPointToWindowsPointOnScreen(p, this.DisplayUnitOverRealUnit));
 				}
-                newWallsToRenderList.Add(new ReadOnlyCollection<WinPoint>(newWallToRenderList));
 			}
-            this.WallsToRender = new ReadOnlyCollection<ReadOnlyCollection<WinPoint>>(newWallsToRenderList);
 
             // Programs
             this.ProgramsToRender = new List<ProgramToRender>();
