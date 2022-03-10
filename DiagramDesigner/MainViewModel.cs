@@ -316,18 +316,9 @@ namespace DiagramDesigner
                 return;
 			}
 
-            // Step2: erase selected context segmenets. It is important to sort the segments so that deleting one does not change the subsequent indexes
-            var wallsToHighlightAsContextInDescendingOrder = new List<Tuple<int, int, int>>(this.WallsToHighlightAsContext);
-            wallsToHighlightAsContextInDescendingOrder.Sort(delegate (Tuple<int, int, int> w1, Tuple<int, int, int> w2)
-			{
-				if (w1.Item1 != w2.Item1) { return -1 * (w1.Item1 - w2.Item1); }
-                else { return -1 * (w1.Item2 - w2.Item2); }
-            });
-			foreach (Tuple<int, int, int> segment in wallsToHighlightAsContextInDescendingOrder)
-			{
-				this.EraseWallSegment(segment);
-			}
-
+            // Step2: erase selected context segmenets
+            this.EraseWallSegments(this.WallsToHighlightAsContext);
+           
             // Step3: draw the right hand geometry
             var polylinesInRealUnit = newGeo.PolylinesCopy;
             var polylinesInScreenUnit = this.modelScreenGeometriesConverter.ConvertPolylinesInPointsToGeometriesOnScreen(polylinesInRealUnit);
@@ -519,14 +510,13 @@ namespace DiagramDesigner
         }
 
         /// <summary>
-        /// Erase a specific wall segment from all walls on screen and from the Model. 
-        /// If that leaves the containing WallEntity in Model with only a single point, that WallEntity object will also be removed. 
+        /// Erase specific wall segments from all walls on screen from the Model. 
         /// </summary>
-        /// <param name="segmentToRemove"> The wall segments to remove;
-        /// each Tuple specifies the index of the geometry within allGeometries, and the two ascending consecutive indexes indicating the line segment within the geometry </param>
-        private void EraseWallSegment(Tuple<int, int, int> segmentToRemove)
+        /// <param name="segmentsToRemove"> The wall segments to remove; each Tuple specifies the index of the geometry within allGeometries, 
+        /// and the two ascending consecutive indexes indicating the line segment within the geometry </param>
+        private void EraseWallSegments(List<Tuple<int, int, int>> segmentsToRemove)
 		{
-            this.Model.DeleteSegmentFromWallEntityAtIndex(segmentToRemove.Item2, segmentToRemove.Item3, segmentToRemove.Item1);
+            this.Model.DeleteSegmentsFromWallEntitiesAtIndexes(segmentsToRemove);
 		}
 
         private void HighlightLastAddition()
