@@ -298,6 +298,8 @@ namespace DiagramDesigner
 
         private void ExecuteDonePickingContextAndApplySelectedRule(object obj)
 		{
+            // TODO: move most of these logics to Model layer
+
 			if (this.CurrentlySelectedRule == null)
 			{
 				throw new NoRuleSelectedException();
