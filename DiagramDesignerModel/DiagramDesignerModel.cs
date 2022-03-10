@@ -36,14 +36,19 @@ namespace DiagramDesignerModel
 
             if (index >= this.WallEntities.Count)
 			{
-                return;
+                return; // TODO: why do I need this check? 
 			}
             this.WallEntities[index].AddPointToGeometry(point);
 
             this.OnModelChanged();
 		}
 
-        public void CreateNewRuleFromExample(PolylinesGeometry leftHandGeometry, PolylinesGeometry rightHandGeometry)
+        public void RemoveSegmentFromWallEntityAtIndex(int firstEndPointIndex, int secondEndPointIndex, int wallEntityIndex)
+		{
+			// TODO
+		}
+
+		public void CreateNewRuleFromExample(PolylinesGeometry leftHandGeometry, PolylinesGeometry rightHandGeometry)
 		{
             this.rulesStore.CreateNewRuleFromExample(leftHandGeometry, rightHandGeometry);
 		}
