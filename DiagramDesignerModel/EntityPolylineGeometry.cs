@@ -19,5 +19,5 @@ namespace DiagramDesignerModel
 			}
             return list;
 		}
-	}
+    }
 }

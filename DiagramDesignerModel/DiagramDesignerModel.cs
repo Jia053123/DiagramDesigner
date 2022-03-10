@@ -43,9 +43,22 @@ namespace DiagramDesignerModel
             this.OnModelChanged();
 		}
 
+        /// <summary>
+        /// Remove a single segment from the specified WallEntity. 
+        /// After the removal, if the WallEntity is no longer continuous, it is deleted and two WallEntities containing the two sides are inserted at the original index;
+        /// After the removal, if the WallEntity contains less than two points, it is deleted. 
+        /// </summary>
+        /// <param name="firstEndPointIndex"> the index of the first end point of the segment to remove; it must be equal to secondEndPointIndex - 1 </param>
+        /// <param name="secondEndPointIndex"> the index of the second end point of the segment to remove; it must be equal to firstEndPointIndex + 1 </param>
+        /// <param name="wallEntityIndex"> index of the WallEntity to operate upon </param>
         public void RemoveSegmentFromWallEntityAtIndex(int firstEndPointIndex, int secondEndPointIndex, int wallEntityIndex)
 		{
-			// TODO
+
+            // Step1: remove segement from entity at index
+            // Step2: if the entity needs to be deleted, delete
+            // Step3: if the entity needs to be split, split
+
+            this.OnModelChanged();
 		}
 
 		public void CreateNewRuleFromExample(PolylinesGeometry leftHandGeometry, PolylinesGeometry rightHandGeometry)
