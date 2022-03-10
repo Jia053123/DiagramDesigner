@@ -216,7 +216,7 @@ namespace DiagramDesigner
 
         public void UpdateDiagramRendering()
         {
-            PrimaryDiagramCanvas.RenderVisual(this.MainViewModel.WallsToRender,
+            PrimaryDiagramCanvas.RenderVisual(this.MainViewModel.WallsToRenderCache,
                 this.MainViewModel.WallsToHighlightAsContext, 
                 this.MainViewModel.WallsToHighlightAsAdditions,
                 this.MainViewModel.NewEdgePreview, 

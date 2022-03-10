@@ -56,8 +56,8 @@ namespace DiagramDesigner
         /// Generate PolylinesGeometry given the geometry on screen
         /// </summary>
         /// <param name="allGeometries"> all geometries on screen </param>
-        /// <param name="contextGeometries"> the geometry used for generation
-        ///  each Tuple specifies the index of the geometry within allGeometries, and the two ascending consecutive indexes indicating the line segment within the geometry </param>
+        /// <param name="contextGeometries"> the geometry used for generation; 
+        ///  Each Tuple specifies the index of the geometry within allGeometries, and the two ascending consecutive indexes indicating the line segment within the geometry </param>
         /// <returns> the PolylinesGeometry generated </returns>
         internal PolylinesGeometry GenerateLeftHandGeometryFromContext(List<List<WinPoint>> allGeometries, List<Tuple<int, int, int>> contextGeometries)
 		{

@@ -44,6 +44,27 @@ namespace DiagramDesignerModel
 		}
 
         /// <summary>
+        /// Delete multiple segments from WallEntities in Model. 
+        /// </summary>
+        /// <param name="segmentsToDelete"> The segments to be deleted; 
+        /// each Tuple represents a single segment with the index of the containing WallEntity within all WallEntities 
+        /// and the two ascending consecutive indexes indicating the line segment within the WallEntity. </param>
+        public void DeleteSegmentsFromWallEntitiesAtIndexes(List<Tuple<int, int, int>> segmentsToDelete)
+		{
+            // sort the segments so that deleting one does not change the subsequent indexes
+            var wallsToHighlightAsContextInDescendingOrder = new List<Tuple<int, int, int>>(segmentsToDelete);
+            wallsToHighlightAsContextInDescendingOrder.Sort(delegate (Tuple<int, int, int> w1, Tuple<int, int, int> w2)
+            {
+                if (w1.Item1 != w2.Item1) { return -1 * (w1.Item1 - w2.Item1); }
+                else { return -1 * (w1.Item2 - w2.Item2); }
+            });
+            foreach (Tuple<int, int, int> segment in wallsToHighlightAsContextInDescendingOrder)
+            {
+                this.DeleteSegmentFromWallEntityAtIndex(segment.Item2, segment.Item3, segment.Item1);
+            }
+        }
+
+        /// <summary>
         /// Remove a single segment from the specified WallEntity. 
         /// After the removal, if the WallEntity is no longer continuous, it is deleted and two WallEntities containing the two sides are inserted at the original index;
         /// After the removal, if the WallEntity contains less than two points, it is deleted. 
@@ -51,7 +72,7 @@ namespace DiagramDesignerModel
         /// <param name="firstEndPointIndex"> the index of the first end point of the segment to remove; it must be equal to secondEndPointIndex - 1 </param>
         /// <param name="secondEndPointIndex"> the index of the second end point of the segment to remove; it must be equal to firstEndPointIndex + 1 </param>
         /// <param name="wallEntityIndex"> index of the WallEntity to operate upon </param>
-        public void RemoveSegmentFromWallEntityAtIndex(int firstEndPointIndex, int secondEndPointIndex, int wallEntityIndex)
+        public void DeleteSegmentFromWallEntityAtIndex(int firstEndPointIndex, int secondEndPointIndex, int wallEntityIndex)
 		{
             if (firstEndPointIndex != secondEndPointIndex - 1)
 			{

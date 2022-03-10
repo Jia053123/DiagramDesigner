@@ -30,10 +30,10 @@ namespace DiagramDesigner
         public ProgramsSummaryTable CurrentProgramsDataTable { get;} = new ProgramsSummaryTable(); // for the pie chart
 
         /// <summary>
-        /// Walls to be displayed by the view. They are guaranteed to match the WallEntities property in Model, with each sub list corresponding to each WallEntity in Model
-        /// When trying to add or remove elements, do that by calling Model's methods and WallsToRender will be updated automatically through events
+        /// Walls to be displayed by the view. They are guaranteed to match the WallEntities property in Model, with each sub list corresponding to each WallEntity in Model.
+        /// When trying to add or remove elements, do that by calling Model's methods and WallsToRender will be updated automatically through events. 
         /// </summary>
-        public List<List<WinPoint>> WallsToRender { get; private set; } = new List<List<WinPoint>>(); // TODO: refactor with ReadOnlyCollection
+        public List<List<WinPoint>> WallsToRenderCache { get; private set; } = new List<List<WinPoint>>(); 
         /// <summary>
         /// Walls to be highlighted as the context. The three integers represent the index of the geometry from WallsToRender, and
         /// the two consecutive indexes in ascending order of the points representing the line on the geometry
@@ -143,13 +143,13 @@ namespace DiagramDesigner
         private void RebuildGraphicsDataFromModel()
 		{
             // Walls
-            this.WallsToRender = new List<List<WinPoint>>();
+            this.WallsToRenderCache = new List<List<WinPoint>>();
             foreach (WallEntity we in this.Model.WallEntities)
 			{
-                this.WallsToRender.Add(new List<WinPoint>());
+                this.WallsToRenderCache.Add(new List<WinPoint>());
                 foreach (MyPoint p in we.Geometry.PathsDefinedByPoints)
 				{
-                    this.WallsToRender.Last().Add(MathUtilities.ConvertRealScaledPointToWindowsPointOnScreen(p, this.DisplayUnitOverRealUnit));
+                    this.WallsToRenderCache.Last().Add(MathUtilities.ConvertRealScaledPointToWindowsPointOnScreen(p, this.DisplayUnitOverRealUnit));
 				}
 			}
 
@@ -245,7 +245,7 @@ namespace DiagramDesigner
 
         private void ExecuteDoneAddingRule(object obj)
         {
-            var geo = this.modelScreenGeometriesConverter.GenerateGeometriesFromContextAndAdditions(this.WallsToRender, this.WallsToHighlightAsContext, this.WallsToHighlightAsAdditions);
+            var geo = this.modelScreenGeometriesConverter.GenerateGeometriesFromContextAndAdditions(this.WallsToRenderCache, this.WallsToHighlightAsContext, this.WallsToHighlightAsAdditions);
 			try
 			{
 				this.Model.CreateNewRuleFromExample(geo.Item1, geo.Item2);
@@ -277,7 +277,7 @@ namespace DiagramDesigner
                 throw new NoRuleSelectedException();
 			}
 
-            var geos = this.modelScreenGeometriesConverter.GenerateGeometriesFromContextAndAdditions(this.WallsToRender, this.WallsToHighlightAsContext, this.WallsToHighlightAsAdditions);
+            var geos = this.modelScreenGeometriesConverter.GenerateGeometriesFromContextAndAdditions(this.WallsToRenderCache, this.WallsToHighlightAsContext, this.WallsToHighlightAsAdditions);
             try
 			{
                 this.Model.LearnFromExampleForRule(geos.Item1, geos.Item2, (Guid)this.CurrentlySelectedRule);
@@ -304,7 +304,7 @@ namespace DiagramDesigner
 			}
 
 			// Step1: generate new right hand geometry
-			var contextGeo = this.modelScreenGeometriesConverter.GenerateLeftHandGeometryFromContext(this.WallsToRender, this.WallsToHighlightAsContext);
+			var contextGeo = this.modelScreenGeometriesConverter.GenerateLeftHandGeometryFromContext(this.WallsToRenderCache, this.WallsToHighlightAsContext);
 			PolylinesGeometry newGeo;
 			try
 			{
@@ -483,7 +483,7 @@ namespace DiagramDesigner
         private bool AddNewPointFromMouseLeftClick(MouseEventArgs mea)
 		{
 			var newPoint = new WinPoint(mea.LocationX, mea.LocationY);
-			newPoint = this.draftingConstrainsApplier.ApplyAllRestrictions(newPoint, this.WallsToRender);
+			newPoint = this.draftingConstrainsApplier.ApplyAllRestrictions(newPoint, this.WallsToRenderCache);
 			var success = this.AddNewPoint(newPoint);
             if (success)
 			{
@@ -506,7 +506,7 @@ namespace DiagramDesigner
         /// <returns> whether the operation is successful </returns>
 		private bool AddNewPoint(WinPoint newPoint)
 		{
-            if (this.WallsToRender != null) // TODO: remove this check and return value
+            if (this.WallsToRenderCache != null) // TODO: remove this check and return value
             {
                 this.Model.AddPointToWallEntityAtIndex(MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count - 1);
                 this.draftingConstrainsApplier.UpdateLastAddedPoint(newPoint);
@@ -526,14 +526,14 @@ namespace DiagramDesigner
         /// each Tuple specifies the index of the geometry within allGeometries, and the two ascending consecutive indexes indicating the line segment within the geometry </param>
         private void EraseWallSegment(Tuple<int, int, int> segmentToRemove)
 		{
-            this.Model.RemoveSegmentFromWallEntityAtIndex(segmentToRemove.Item2, segmentToRemove.Item3, segmentToRemove.Item1);
+            this.Model.DeleteSegmentFromWallEntityAtIndex(segmentToRemove.Item2, segmentToRemove.Item3, segmentToRemove.Item1);
 		}
 
         private void HighlightLastAddition()
 		{
-            var wallIndex = this.WallsToRender.Count - 1;
-            var pointIndex1 = this.WallsToRender.Last().Count - 2;
-            var pointIndex2 = this.WallsToRender.Last().Count - 1;
+            var wallIndex = this.WallsToRenderCache.Count - 1;
+            var pointIndex1 = this.WallsToRenderCache.Last().Count - 2;
+            var pointIndex2 = this.WallsToRenderCache.Last().Count - 1;
             if (pointIndex1 >= 0 && pointIndex2 >= 0)
             {
                 this.WallsToHighlightAsAdditions.Add(new Tuple<int, int, int>(wallIndex, pointIndex1, pointIndex2));
@@ -557,7 +557,7 @@ namespace DiagramDesigner
 
         private void MouseLeftClickedInContextPickingState(MouseEventArgs mea)
 		{
-            var result = this.draftingConstrainsApplier.FindLineClicked(new WinPoint(mea.LocationX, mea.LocationY), this.WallsToRender);
+            var result = this.draftingConstrainsApplier.FindLineClicked(new WinPoint(mea.LocationX, mea.LocationY), this.WallsToRenderCache);
             if (!(result is null))
             {
                 if (!this.WallsToHighlightAsContext.Contains(result))
