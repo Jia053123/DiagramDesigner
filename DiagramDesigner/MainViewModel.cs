@@ -144,7 +144,7 @@ namespace DiagramDesigner
 		{
             // Walls
             this.WallsToRenderCache = new List<List<WinPoint>>();
-            foreach (WallEntity we in this.Model.wallEntities)
+            foreach (WallEntity we in this.Model.WallEntities)
 			{
                 this.WallsToRenderCache.Add(new List<WinPoint>());
                 foreach (MyPoint p in we.Geometry.PathsDefinedByPoints)
@@ -501,7 +501,7 @@ namespace DiagramDesigner
 		{
             if (this.WallsToRenderCache != null) // TODO: remove this check and return value
             {
-                this.Model.AddPointToWallEntityAtIndex(MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.wallEntities.Count - 1);
+                this.Model.AddPointToWallEntityAtIndex(MathUtilities.ConvertWindowsPointOnScreenToRealScalePoint(newPoint, this.DisplayUnitOverRealUnit), this.Model.WallEntities.Count - 1);
                 this.draftingConstrainsApplier.UpdateLastAddedPoint(newPoint);
                 return true;
             }

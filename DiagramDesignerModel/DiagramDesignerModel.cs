@@ -2,6 +2,7 @@
 using ShapeGrammarEngine;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace DiagramDesignerModel
 {
@@ -13,7 +14,8 @@ namespace DiagramDesignerModel
     {
         public ProgramRequirementsTable ProgramRequirements { get; } = new ProgramRequirementsTable();
 
-        public List<WallEntity> wallEntities = new List<WallEntity>();
+        private List<WallEntity> wallEntities = new List<WallEntity>();
+        public ReadOnlyCollection<WallEntity> WallEntities => this.wallEntities.AsReadOnly();
 
         public List<EnclosedProgram> Programs { get; private set; } = new List<EnclosedProgram>();
 
