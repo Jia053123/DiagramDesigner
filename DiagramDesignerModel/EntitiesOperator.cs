@@ -13,7 +13,7 @@ namespace DiagramDesignerModel
         /// <param name="wallEntities"> the WallEntities list to modify </param>
         /// <param name="point"> the new point to add </param>
         /// <param name="index"> the index of the WallEntity for the new point </param>
-        static public void AddPointToWallEntityAtIndex(ref List<WallEntity> wallEntities, MyPoint point, int index)
+        static internal void AddPointToWallEntityAtIndex(ref List<WallEntity> wallEntities, MyPoint point, int index)
         {
             // TODO: check for overlapping lines and throw exception when found
             wallEntities[index].AddPointToGeometry(point);
@@ -26,7 +26,7 @@ namespace DiagramDesignerModel
         /// <param name="segmentsToDelete"> The segments to be deleted; 
         /// each Tuple represents a single segment with the index of the containing WallEntity within all WallEntities 
         /// and the two ascending consecutive indexes indicating the line segment within the WallEntity. </param>
-        static public void DeleteSegmentsFromWallEntitiesAtIndexes(ref List<WallEntity> wallEntities, List<Tuple<int, int, int>> segmentsToDelete)
+        static internal void DeleteSegmentsFromWallEntitiesAtIndexes(ref List<WallEntity> wallEntities, List<Tuple<int, int, int>> segmentsToDelete)
         {
             // sort the segments so that deleting one does not change the subsequent indexes
             var wallsToHighlightAsContextInDescendingOrder = new List<Tuple<int, int, int>>(segmentsToDelete);
