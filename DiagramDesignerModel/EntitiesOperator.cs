@@ -1,8 +1,11 @@
 ﻿using ShapeGrammarEngine;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using MyPoint = BasicGeometries.Point;
+
+[assembly: InternalsVisibleToAttribute("DiagramDesignerModel.UnitTests")]
 
 namespace DiagramDesignerModel
 {

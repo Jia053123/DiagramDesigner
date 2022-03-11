@@ -13,19 +13,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiagramDesignerEngine.UnitT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiagramDesignerModel", "DiagramDesignerModel\DiagramDesignerModel.csproj", "{13ED3C59-DA21-4032-975D-9733D6A6CD8F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiagramDesignerModelTests.UnitTests", "DiagramDesignerModelTests\DiagramDesignerModelTests.UnitTests.csproj", "{2A7FD8F3-8973-4A62-A208-7286FE69E089}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiagramDesignerModel.UnitTests", "DiagramDesignerModelTests\DiagramDesignerModel.UnitTests.csproj", "{2A7FD8F3-8973-4A62-A208-7286FE69E089}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeGrammarEngine", "ShapeGrammarEngine\ShapeGrammarEngine.csproj", "{85C51CD5-1540-4E40-AD10-8F51741196AE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeGrammarEngine.UnitTests", "ShapeGrammarEngineUnitTests\ShapeGrammarEngine.UnitTests.csproj", "{42D959E0-6213-4C72-8C7D-F3D478C56F69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicGeometries", "BasicGeometries\BasicGeometries.csproj", "{A5D37E9A-D6D8-40E2-9C0E-3F0F3279DF1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicGeometries", "BasicGeometries\BasicGeometries.csproj", "{A5D37E9A-D6D8-40E2-9C0E-3F0F3279DF1D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicGeometries.UnitTests", "BasicGeometries.UnitTests\BasicGeometries.UnitTests.csproj", "{D0A5554B-79AF-4317-B6BD-4751A657EEA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicGeometries.UnitTests", "BasicGeometries.UnitTests\BasicGeometries.UnitTests.csproj", "{D0A5554B-79AF-4317-B6BD-4751A657EEA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ListOperations", "ListOperations\ListOperations.csproj", "{3DFE25C7-C060-4330-AE2B-60DA005EB267}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ListOperations", "ListOperations\ListOperations.csproj", "{3DFE25C7-C060-4330-AE2B-60DA005EB267}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ListOperations.UnitTests", "ListOperations.UnitTests\ListOperations.UnitTests.csproj", "{95EB32F5-9B67-4E9F-9B5C-CBFD7EC97BAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ListOperations.UnitTests", "ListOperations.UnitTests\ListOperations.UnitTests.csproj", "{95EB32F5-9B67-4E9F-9B5C-CBFD7EC97BAF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
