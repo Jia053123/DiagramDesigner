@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShapeGrammarEngine;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using MyPoint = BasicGeometries.Point;
@@ -89,5 +90,10 @@ namespace DiagramDesignerModel
                 wallEntities.Insert(wallEntityIndex, newWe1);
             }
         }
+
+        static internal void ApplyRuleGivenLeftHandGeometry(ref List<WallEntity> wallEntities, List<Tuple<int, int, int>> leftHandGeometry, GrammarRule ruleToApply)
+		{
+            // TODO: stub
+		}
     }
 }
