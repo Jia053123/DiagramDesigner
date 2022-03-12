@@ -1,6 +1,7 @@
 ﻿using ShapeGrammarEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using MyPoint = BasicGeometries.Point;
@@ -33,7 +34,7 @@ namespace DiagramDesignerModel
         static internal void DeleteSegmentsFromWallEntitiesAtIndexes(ref List<WallEntity> wallEntities, List<Tuple<int, int, int>> segmentsToDelete)
         {
             // sort the segments so that deleting one does not change the subsequent indexes
-            var wallsToHighlightAsContextInDescendingOrder = new List<Tuple<int, int, int>>(segmentsToDelete);
+            var wallsToHighlightAsContextInDescendingOrder = new List<Tuple<int, int, int>>(segmentsToDelete).Distinct().ToList();
             wallsToHighlightAsContextInDescendingOrder.Sort(delegate (Tuple<int, int, int> w1, Tuple<int, int, int> w2)
             {
                 if (w1.Item1 != w2.Item1) { return -1 * (w1.Item1 - w2.Item1); }
@@ -82,11 +83,12 @@ namespace DiagramDesignerModel
             }
             else
             {
-                // the WallEntity is to be split into two
+                // the WallEntity is to be split into two 0 1 2 3
                 var newWe1 = new WallEntity(we.WallThickness);
                 var newWe2 = new WallEntity(we.WallThickness);
                 newWe1.Geometry.PathsDefinedByPoints = we.Geometry.PathsDefinedByPoints.GetRange(0, firstEndPointIndex + 1);
-                newWe2.Geometry.PathsDefinedByPoints = we.Geometry.PathsDefinedByPoints.GetRange(firstEndPointIndex + 1, secondEndPointIndex - firstEndPointIndex);
+                int lastIndex = we.Geometry.PathsDefinedByPoints.Count - 1;
+                newWe2.Geometry.PathsDefinedByPoints = we.Geometry.PathsDefinedByPoints.GetRange(secondEndPointIndex, lastIndex - secondEndPointIndex + 1);
 
                 wallEntities.RemoveAt(wallEntityIndex);
                 wallEntities.Insert(wallEntityIndex, newWe2);

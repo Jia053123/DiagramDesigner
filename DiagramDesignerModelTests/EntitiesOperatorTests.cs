@@ -11,6 +11,7 @@ namespace DiagramDesignerModel.UnitTests
 	{
 		List<WallEntity> wallEntities1;
 		List<WallEntity> wallEntities2;
+		List<WallEntity> wallEntities3;
 
 		[SetUp] 
 		public void SetUp()
@@ -81,6 +82,185 @@ namespace DiagramDesignerModel.UnitTests
 			Assert.AreEqual(2, this.wallEntities2[2].Geometry.PathsDefinedByPoints.Count);
 			Assert.AreEqual(new MyPoint(1, 0), this.wallEntities2[2].Geometry.PathsDefinedByPoints[0]);
 			Assert.AreEqual(new MyPoint(2, 0), this.wallEntities2[2].Geometry.PathsDefinedByPoints[1]);
+		}
+
+		[Test]
+		public void TestDeleteSegmentsFromWallEntitiesAtIndexes_EntityIndexesOutOfRange_ThrowArgumentOutOfRangeException()
+		{
+			var segmentsToDelete = new List<Tuple<int, int, int>>();
+			segmentsToDelete.Add(new Tuple<int, int, int>(2, 0, 1));
+			Assert.Throws<ArgumentOutOfRangeException>(() => EntitiesOperator.DeleteSegmentsFromWallEntitiesAtIndexes(ref this.wallEntities1, segmentsToDelete));
+		}
+
+		[Test]
+		public void TestDeleteSegmentsFromWallEntitiesAtIndexes_SegmentIndexesOutOfRange_ThrowArgumentException()
+		{
+			var segmentsToDelete = new List<Tuple<int, int, int>>();
+			segmentsToDelete.Add(new Tuple<int, int, int>(1, 1, 2));
+			Assert.Throws<ArgumentException>(() => EntitiesOperator.DeleteSegmentsFromWallEntitiesAtIndexes(ref this.wallEntities1, segmentsToDelete));
+		}
+
+		[Test]
+		public void TestDeleteSegmentsFromWallEntitiesAtIndexes_SegmentIndexesNotConsecutive_ThrowArgumentException()
+		{
+			var segmentsToDelete = new List<Tuple<int, int, int>>();
+			segmentsToDelete.Add(new Tuple<int, int, int>(0, 0, 2));
+			Assert.Throws<ArgumentException>(() => EntitiesOperator.DeleteSegmentsFromWallEntitiesAtIndexes(ref this.wallEntities2, segmentsToDelete));
+		}
+
+		[Test]
+		public void TestDeleteSegmentsFromWallEntitiesAtIndexes_SegmentIndexesNotAscending_ThrowArgumentException()
+		{
+			var segmentsToDelete = new List<Tuple<int, int, int>>();
+			segmentsToDelete.Add(new Tuple<int, int, int>(0, 1, 0));
+			Assert.Throws<ArgumentException>(() => EntitiesOperator.DeleteSegmentsFromWallEntitiesAtIndexes(ref this.wallEntities2, segmentsToDelete));
+		}
+
+		[Test]
+		public void TestDeleteSegmentsFromWallEntitiesAtIndexes_RemoveOneSegmentAtEndWithSegmentsRemaining_RemoveSpecifiedSegment() 
+		{
+			var segmentsToDelete = new List<Tuple<int, int, int>>();
+			segmentsToDelete.Add(new Tuple<int, int, int>(0, 1, 2));
+			EntitiesOperator.DeleteSegmentsFromWallEntitiesAtIndexes(ref this.wallEntities2, segmentsToDelete);
+
+			Assert.AreEqual(3, this.wallEntities2.Count);
+
+			Assert.AreEqual(2, this.wallEntities2[0].Geometry.PathsDefinedByPoints.Count);
+			Assert.AreEqual(new MyPoint(1, 1), this.wallEntities2[0].Geometry.PathsDefinedByPoints[0]);
+			Assert.AreEqual(new MyPoint(2, 2), this.wallEntities2[0].Geometry.PathsDefinedByPoints[1]);
+
+			Assert.AreEqual(4, this.wallEntities2[1].Geometry.PathsDefinedByPoints.Count);
+			Assert.AreEqual(new MyPoint(2, 2), this.wallEntities2[1].Geometry.PathsDefinedByPoints[0]);
+			Assert.AreEqual(new MyPoint(2, 3), this.wallEntities2[1].Geometry.PathsDefinedByPoints[1]);
+			Assert.AreEqual(new MyPoint(2, 4), this.wallEntities2[1].Geometry.PathsDefinedByPoints[2]);
+			Assert.AreEqual(new MyPoint(2, 5), this.wallEntities2[1].Geometry.PathsDefinedByPoints[3]);
+
+			Assert.AreEqual(2, this.wallEntities2[2].Geometry.PathsDefinedByPoints.Count);
+			Assert.AreEqual(new MyPoint(1, 0), this.wallEntities2[2].Geometry.PathsDefinedByPoints[0]);
+			Assert.AreEqual(new MyPoint(2, 0), this.wallEntities2[2].Geometry.PathsDefinedByPoints[1]);
+		}
+
+		[Test]
+		public void TestDeleteSegmentsFromWallEntitiesAtIndexes_RemoveOneSegmentAtBeginningWithSegmentsRemaining_RemoveSpecifiedSegment()
+		{
+			var segmentsToDelete = new List<Tuple<int, int, int>>();
+			segmentsToDelete.Add(new Tuple<int, int, int>(0, 0, 1));
+			EntitiesOperator.DeleteSegmentsFromWallEntitiesAtIndexes(ref this.wallEntities2, segmentsToDelete);
+
+			Assert.AreEqual(3, this.wallEntities2.Count);
+
+			Assert.AreEqual(2, this.wallEntities2[0].Geometry.PathsDefinedByPoints.Count);
+			Assert.AreEqual(new MyPoint(2, 2), this.wallEntities2[0].Geometry.PathsDefinedByPoints[0]);
+			Assert.AreEqual(new MyPoint(3, 3), this.wallEntities2[0].Geometry.PathsDefinedByPoints[1]);
+
+			Assert.AreEqual(4, this.wallEntities2[1].Geometry.PathsDefinedByPoints.Count);
+			Assert.AreEqual(new MyPoint(2, 2), this.wallEntities2[1].Geometry.PathsDefinedByPoints[0]);
+			Assert.AreEqual(new MyPoint(2, 3), this.wallEntities2[1].Geometry.PathsDefinedByPoints[1]);
+			Assert.AreEqual(new MyPoint(2, 4), this.wallEntities2[1].Geometry.PathsDefinedByPoints[2]);
+			Assert.AreEqual(new MyPoint(2, 5), this.wallEntities2[1].Geometry.PathsDefinedByPoints[3]);
+
+			Assert.AreEqual(2, this.wallEntities2[2].Geometry.PathsDefinedByPoints.Count);
+			Assert.AreEqual(new MyPoint(1, 0), this.wallEntities2[2].Geometry.PathsDefinedByPoints[0]);
+			Assert.AreEqual(new MyPoint(2, 0), this.wallEntities2[2].Geometry.PathsDefinedByPoints[1]);
+		}
+
+		[Test]
+		public void TestDeleteSegmentsFromWallEntitiesAtIndexes_RemoveTheLastSegment_RemoveTheEntity()
+		{
+			var segmentsToDelete = new List<Tuple<int, int, int>>();
+			segmentsToDelete.Add(new Tuple<int, int, int>(2, 0, 1));
+			EntitiesOperator.DeleteSegmentsFromWallEntitiesAtIndexes(ref this.wallEntities2, segmentsToDelete);
+
+			Assert.AreEqual(2, this.wallEntities2.Count);
+
+			Assert.AreEqual(3, this.wallEntities2[0].Geometry.PathsDefinedByPoints.Count);
+			Assert.AreEqual(new MyPoint(1, 1), this.wallEntities2[0].Geometry.PathsDefinedByPoints[0]);
+			Assert.AreEqual(new MyPoint(2, 2), this.wallEntities2[0].Geometry.PathsDefinedByPoints[1]);
+			Assert.AreEqual(new MyPoint(3, 3), this.wallEntities2[0].Geometry.PathsDefinedByPoints[2]);
+
+			Assert.AreEqual(4, this.wallEntities2[1].Geometry.PathsDefinedByPoints.Count);
+			Assert.AreEqual(new MyPoint(2, 2), this.wallEntities2[1].Geometry.PathsDefinedByPoints[0]);
+			Assert.AreEqual(new MyPoint(2, 3), this.wallEntities2[1].Geometry.PathsDefinedByPoints[1]);
+			Assert.AreEqual(new MyPoint(2, 4), this.wallEntities2[1].Geometry.PathsDefinedByPoints[2]);
+			Assert.AreEqual(new MyPoint(2, 5), this.wallEntities2[1].Geometry.PathsDefinedByPoints[3]);
+		}
+
+		[Test]
+		public void TestDeleteSegmentsFromWallEntitiesAtIndexes_RemoveOneSegmentInTheMiddle_RemoveTheSegmentAndSplitTheEntityIntoTwo()
+		{
+			var segmentsToDelete = new List<Tuple<int, int, int>>();
+			segmentsToDelete.Add(new Tuple<int, int, int>(1, 1, 2));
+			EntitiesOperator.DeleteSegmentsFromWallEntitiesAtIndexes(ref this.wallEntities2, segmentsToDelete);
+
+			Assert.AreEqual(4, this.wallEntities2.Count);
+
+			Assert.AreEqual(3, this.wallEntities2[0].Geometry.PathsDefinedByPoints.Count);
+			Assert.AreEqual(new MyPoint(1, 1), this.wallEntities2[0].Geometry.PathsDefinedByPoints[0]);
+			Assert.AreEqual(new MyPoint(2, 2), this.wallEntities2[0].Geometry.PathsDefinedByPoints[1]);
+			Assert.AreEqual(new MyPoint(3, 3), this.wallEntities2[0].Geometry.PathsDefinedByPoints[2]);
+
+			Assert.AreEqual(2, this.wallEntities2[1].Geometry.PathsDefinedByPoints.Count);
+			Assert.AreEqual(new MyPoint(2, 2), this.wallEntities2[1].Geometry.PathsDefinedByPoints[0]);
+			Assert.AreEqual(new MyPoint(2, 3), this.wallEntities2[1].Geometry.PathsDefinedByPoints[1]);
+
+			Assert.AreEqual(2, this.wallEntities2[2].Geometry.PathsDefinedByPoints.Count);
+			Assert.AreEqual(new MyPoint(2, 4), this.wallEntities2[2].Geometry.PathsDefinedByPoints[0]);
+			Assert.AreEqual(new MyPoint(2, 5), this.wallEntities2[2].Geometry.PathsDefinedByPoints[1]);
+
+			Assert.AreEqual(2, this.wallEntities2[3].Geometry.PathsDefinedByPoints.Count);
+			Assert.AreEqual(new MyPoint(1, 0), this.wallEntities2[3].Geometry.PathsDefinedByPoints[0]);
+			Assert.AreEqual(new MyPoint(2, 0), this.wallEntities2[3].Geometry.PathsDefinedByPoints[1]);
+		}
+
+		[Test]
+		public void TestDeleteSegmentsFromWallEntitiesAtIndexes_RemoveRepeatedSegments_DeleteOnlyOnce()
+		{
+			var segmentsToDelete = new List<Tuple<int, int, int>>();
+			segmentsToDelete.Add(new Tuple<int, int, int>(1, 0, 1));
+			segmentsToDelete.Add(new Tuple<int, int, int>(1, 0, 1));
+			segmentsToDelete.Add(new Tuple<int, int, int>(1, 0, 1));
+			EntitiesOperator.DeleteSegmentsFromWallEntitiesAtIndexes(ref this.wallEntities2, segmentsToDelete);
+
+			Assert.AreEqual(3, this.wallEntities2.Count);
+
+			Assert.AreEqual(3, this.wallEntities2[0].Geometry.PathsDefinedByPoints.Count);
+			Assert.AreEqual(new MyPoint(1, 1), this.wallEntities2[0].Geometry.PathsDefinedByPoints[0]);
+			Assert.AreEqual(new MyPoint(2, 2), this.wallEntities2[0].Geometry.PathsDefinedByPoints[1]);
+			Assert.AreEqual(new MyPoint(3, 3), this.wallEntities2[0].Geometry.PathsDefinedByPoints[2]);
+
+			Assert.AreEqual(3, this.wallEntities2[1].Geometry.PathsDefinedByPoints.Count);
+			Assert.AreEqual(new MyPoint(2, 3), this.wallEntities2[1].Geometry.PathsDefinedByPoints[0]);
+			Assert.AreEqual(new MyPoint(2, 4), this.wallEntities2[1].Geometry.PathsDefinedByPoints[1]);
+			Assert.AreEqual(new MyPoint(2, 5), this.wallEntities2[1].Geometry.PathsDefinedByPoints[2]);
+
+			Assert.AreEqual(2, this.wallEntities2[2].Geometry.PathsDefinedByPoints.Count);
+			Assert.AreEqual(new MyPoint(1, 0), this.wallEntities2[2].Geometry.PathsDefinedByPoints[0]);
+			Assert.AreEqual(new MyPoint(2, 0), this.wallEntities2[2].Geometry.PathsDefinedByPoints[1]);
+		}
+
+		[Test]
+		public void TestDeleteSegmentsFromWallEntitiesAtIndexes_RemoveMultipleSegments()
+		{
+			var segmentsToDelete = new List<Tuple<int, int, int>>();
+			segmentsToDelete.Add(new Tuple<int, int, int>(2, 0, 1));
+			segmentsToDelete.Add(new Tuple<int, int, int>(0, 1, 2));
+			segmentsToDelete.Add(new Tuple<int, int, int>(1, 1, 2));
+			segmentsToDelete.Add(new Tuple<int, int, int>(0, 1, 2));
+			EntitiesOperator.DeleteSegmentsFromWallEntitiesAtIndexes(ref this.wallEntities2, segmentsToDelete);
+
+			Assert.AreEqual(3, this.wallEntities2.Count);
+
+			Assert.AreEqual(2, this.wallEntities2[0].Geometry.PathsDefinedByPoints.Count);
+			Assert.AreEqual(new MyPoint(1, 1), this.wallEntities2[0].Geometry.PathsDefinedByPoints[0]);
+			Assert.AreEqual(new MyPoint(2, 2), this.wallEntities2[0].Geometry.PathsDefinedByPoints[1]);
+
+			Assert.AreEqual(2, this.wallEntities2[1].Geometry.PathsDefinedByPoints.Count);
+			Assert.AreEqual(new MyPoint(2, 2), this.wallEntities2[1].Geometry.PathsDefinedByPoints[0]);
+			Assert.AreEqual(new MyPoint(2, 3), this.wallEntities2[1].Geometry.PathsDefinedByPoints[1]);
+
+			Assert.AreEqual(2, this.wallEntities2[2].Geometry.PathsDefinedByPoints.Count);
+			Assert.AreEqual(new MyPoint(2, 4), this.wallEntities2[2].Geometry.PathsDefinedByPoints[0]);
+			Assert.AreEqual(new MyPoint(2, 5), this.wallEntities2[2].Geometry.PathsDefinedByPoints[1]);
 		}
 	}
 }
