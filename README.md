@@ -1,6 +1,6 @@
 # DiagramDesigner
 
-update 2022March11 - UI for rule creation, learning and application: https://vimeo.com/689110233
+Update 2022 March 11 - UI for rule creation, learning and application: https://vimeo.com/689110233
 
 Screen Recording (alpha): https://vimeo.com/591414378 
 
