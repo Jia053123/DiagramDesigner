@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using BasicGeometries;
 
-namespace DiagramDesignerEngine.UnitTests
+namespace DiagramDesignerGeometryParser.UnitTests
 {
 	class LineSegmentTests
 	{

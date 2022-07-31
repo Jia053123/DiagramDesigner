@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DiagramDesignerEngine
+namespace DiagramDesignerGeometryParser
 {
 	public class LineSegmentsExploder
 	{

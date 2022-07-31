@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DiagramDesignerEngine
+namespace DiagramDesignerGeometryParser
 {
 	public class UndividableDiagramFragment: DiagramFragment
 	{

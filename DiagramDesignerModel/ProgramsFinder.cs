@@ -1,5 +1,5 @@
 ﻿using BasicGeometries;
-using DiagramDesignerEngine;
+using DiagramDesignerGeometryParser;
 using System;
 using System.Collections.Generic;
 

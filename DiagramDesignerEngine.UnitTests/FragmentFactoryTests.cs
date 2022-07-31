@@ -3,7 +3,7 @@ using ListOperations;
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace DiagramDesignerEngine.UnitTests
+namespace DiagramDesignerGeometryParser.UnitTests
 {
 	class FragmentFactoryTests
 	{

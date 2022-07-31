@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace DiagramDesignerEngine
+namespace DiagramDesignerGeometryParser
 {
 	class DividableDiagramFragment : DiagramFragment
 	{

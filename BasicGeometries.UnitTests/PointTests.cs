@@ -2,7 +2,7 @@ using NUnit.Framework;
 using System;
 using BasicGeometries;
 
-namespace DiagramDesignerEngine.UnitTests
+namespace DiagramDesignerGeometryParser.UnitTests
 {
 	public class PointTests
 	{
