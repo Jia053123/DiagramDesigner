@@ -5,11 +5,11 @@ VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiagramDesigner", "DiagramDesigner\DiagramDesigner.csproj", "{AB09A8C0-8B58-4730-B3F2-09F4267AFDED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiagramDesignerEngine", "DiagramDesignerEngine\DiagramDesignerEngine.csproj", "{0AB1A17B-4274-4026-A521-E6C481789B00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiagramDesignerEngine", "DiagramDesignerGeometryParser\DiagramDesignerEngine.csproj", "{0AB1A17B-4274-4026-A521-E6C481789B00}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiagramDesigner.UnitTests", "DiagramDesigner.UnitTests\DiagramDesigner.UnitTests.csproj", "{5DA65613-686B-4703-BEA8-1B7E5AB533EF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiagramDesignerEngine.UnitTests", "DiagramDesignerEngine.UnitTests\DiagramDesignerEngine.UnitTests.csproj", "{5EF8A75B-D578-4725-B3D0-D795B8793385}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiagramDesignerEngine.UnitTests", "DiagramDesignerGeometryParser.UnitTests\DiagramDesignerEngine.UnitTests.csproj", "{5EF8A75B-D578-4725-B3D0-D795B8793385}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiagramDesignerModel", "DiagramDesignerModel\DiagramDesignerModel.csproj", "{13ED3C59-DA21-4032-975D-9733D6A6CD8F}"
 EndProject

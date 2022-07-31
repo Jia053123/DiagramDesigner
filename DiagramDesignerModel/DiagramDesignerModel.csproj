@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DiagramDesignerEngine\DiagramDesignerEngine.csproj" />
+    <ProjectReference Include="..\DiagramDesignerGeometryParser\DiagramDesignerEngine.csproj" />
     <ProjectReference Include="..\ShapeGrammarEngine\ShapeGrammarEngine.csproj" />
   </ItemGroup>
 
