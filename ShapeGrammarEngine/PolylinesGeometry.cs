@@ -9,7 +9,7 @@ namespace ShapeGrammarEngine
 	{
 		private List<List<Point>> polylines = new List<List<Point>>();
 		/// <summary>
-		/// The polylines forming the geometry; They may intersect or overlap with itself or each other. 
+		/// The polylines forming the geometry; They must not intersect or overlap with itself or each other. 
 		/// Each polyline consists of at least 2 points
 		/// </summary>
 		public List<List<Point>> PolylinesCopy { get { return new List<List<Point>>(this.polylines); } }
@@ -22,6 +22,10 @@ namespace ShapeGrammarEngine
 			}
 			this.polylines = polylines;
 			this.CleanUpPolylines();
+			if (this.DoesIntersectOrOverlapWithItself())
+			{
+				throw new ArgumentException("The polylines intersect or overlap with itself");
+			}
 		}
 
 		public static PolylinesGeometry CreateEmptyPolylineGeometry() {
