@@ -9,6 +9,52 @@ namespace ShapeGrammarEngine.UnitTests
 	class PolylineGeometryTests
 	{
 		[Test]
+		public void TestConstructor_NonIntersectingOrOverlappingInput_polylineNotModified()
+		{
+			//  1      |\
+			//  0      | >
+			// -1      |/   
+			//
+			//         0  1       
+
+			var testPolyline = new List<List<Point>> {
+				new List<Point> { new Point(0, -1), new Point(0, 1), new Point(1, 0), new Point(0, -1) } };
+			var geo = new PolylinesGeometry(testPolyline);
+			Assert.AreEqual(1, geo.PolylinesCopy.Count);
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(testPolyline, geo.PolylinesCopy));
+		}
+
+		[Test]
+		public void TestConstructor_IntersectingInput_polylineExploded()
+		{
+			//  1      |\
+			//  0    --|--
+			// -1      |   
+			//
+			//         0  1       
+
+			var testPolyline = new List<List<Point>> 
+			{
+				new List<Point> { new Point(0, -1), new Point(0, 1), new Point(1, 0), new Point(-1, 0) } 
+			};
+			var geo = new PolylinesGeometry(testPolyline);
+
+			Assert.AreEqual(5, geo.PolylinesCopy.Count);
+		}
+
+		[Test]
+		public void TestConstructor_OverlappingInput_polylineExploded()
+		{
+			var testPolyline = new List<List<Point>>
+			{
+				new List<Point> { new Point(0, -1), new Point(0, 1), new Point(0, 0) }
+			};
+			var geo = new PolylinesGeometry(testPolyline);
+
+			Assert.AreEqual(2, geo.PolylinesCopy.Count);
+		}
+
+		[Test]
 		public void TestCreateEmptyPolylineGeometry()
 		{
 			var emptyGeo = PolylinesGeometry.CreateEmptyPolylineGeometry();

@@ -64,7 +64,7 @@ namespace ListOperations
 		}
 
 		/// <summary>
-		/// whether the two lists and their contain exaclty identical sublists, in the same order
+		/// whether the two lists contain exaclty identical sublists, in the same order
 		/// </summary>
 		public static bool AreContentsEqualInOrder<T>(List<List<T>> list1, List<List<T>> list2) where T : IEquatable<T>
 		{
