@@ -22,7 +22,7 @@ namespace DiagramDesignerModel
             try
             {
                 var newRow = this.CurrentRulesInfoDataTable.NewRow();
-                newRow["Name"] = "Unnamed Rule";
+                newRow["Name"] = "Unnamed Rule (" + newRule.id.ToString() + ")";
                 newRow["ID"] = newRule.id;
                 newRow["Sample Count"] = newRule.SampleCount;
                 this.CurrentRulesInfoDataTable.Rows.Add(newRow);
