@@ -9,14 +9,14 @@ namespace DiagramDesigner.UnitTests
 {
 	class ModelScreenGeometriesConvertorTests
 	{
-		ModelScreenGeometriesConverter mgg;
+		ModelScreenGeometriesConverter msgc;
 		List<List<WinPoint>> allGeo1;
 
 		[SetUp]
 		public void SetUp()
 		{
 			var displayUnitOverRealUnit = 0.5;
-			mgg = new ModelScreenGeometriesConverter(displayUnitOverRealUnit);
+			msgc = new ModelScreenGeometriesConverter(displayUnitOverRealUnit);
 
 			allGeo1 = new List<List<WinPoint>>();
 			allGeo1.Add(new List<WinPoint> { new WinPoint(1, 1), new WinPoint(2, 2), new WinPoint(3, 3) });
@@ -27,7 +27,7 @@ namespace DiagramDesigner.UnitTests
 		[Test]
 		public void TestConvertPolylinesInPointsToGeometriesOnScreen_NullInput_ThrowArgumentNullException()
 		{
-			Assert.Throws<ArgumentNullException>(() => mgg.ConvertPolylinesInPointsToGeometriesOnScreen(null));
+			Assert.Throws<ArgumentNullException>(() => msgc.ConvertPolylinesInPointsToGeometriesOnScreen(null));
 		}
 
 		[Test]
@@ -38,7 +38,7 @@ namespace DiagramDesigner.UnitTests
 			pip.Add(new List<MyPoint>());
 			pip.Add(new List<MyPoint> { new MyPoint(6, 4) });
 
-			var piwp = mgg.ConvertPolylinesInPointsToGeometriesOnScreen(pip);
+			var piwp = msgc.ConvertPolylinesInPointsToGeometriesOnScreen(pip);
 			Assert.AreEqual(2, piwp[0].Count);
 			Assert.AreEqual(0, piwp[1].Count);
 			Assert.AreEqual(1, piwp[2].Count);
@@ -54,7 +54,7 @@ namespace DiagramDesigner.UnitTests
 			var contextGeoIndex = new List<Tuple<int, int, int>>();
 			contextGeoIndex.Add(new Tuple<int, int, int>(3, 1, 2));
 
-			Assert.Throws<ArgumentOutOfRangeException>(() => mgg.GenerateLeftHandGeometryFromContext(allGeo1,contextGeoIndex));
+			Assert.Throws<ArgumentOutOfRangeException>(() => msgc.GenerateLeftHandGeometryFromContext(allGeo1,contextGeoIndex));
 		}
 
 		[Test]
@@ -63,7 +63,7 @@ namespace DiagramDesigner.UnitTests
 			var contextGeoIndex = new List<Tuple<int, int, int>>();
 			contextGeoIndex.Add(new Tuple<int, int, int>(2, 2, 3));
 
-			Assert.Throws<ArgumentOutOfRangeException>(() => mgg.GenerateLeftHandGeometryFromContext(allGeo1, contextGeoIndex));
+			Assert.Throws<ArgumentOutOfRangeException>(() => msgc.GenerateLeftHandGeometryFromContext(allGeo1, contextGeoIndex));
 		}
 
 		[Test]
@@ -72,7 +72,7 @@ namespace DiagramDesigner.UnitTests
 			var contextGeoIndex = new List<Tuple<int, int, int>>();
 			contextGeoIndex.Add(new Tuple<int, int, int>(2, 1, 2));
 
-			Assert.Throws<ArgumentOutOfRangeException>(() => mgg.GenerateLeftHandGeometryFromContext(allGeo1, contextGeoIndex));
+			Assert.Throws<ArgumentOutOfRangeException>(() => msgc.GenerateLeftHandGeometryFromContext(allGeo1, contextGeoIndex));
 		}
 
 		[Test]
@@ -81,7 +81,7 @@ namespace DiagramDesigner.UnitTests
 			var contextGeoIndex = new List<Tuple<int, int, int>>();
 			contextGeoIndex.Add(new Tuple<int, int, int>(0, 0, 2));
 
-			Assert.Throws<ArgumentException>(() => mgg.GenerateLeftHandGeometryFromContext(allGeo1, contextGeoIndex));
+			Assert.Throws<ArgumentException>(() => msgc.GenerateLeftHandGeometryFromContext(allGeo1, contextGeoIndex));
 		}
 
 		[Test]
@@ -91,11 +91,11 @@ namespace DiagramDesigner.UnitTests
 			contextGeoIndex.Add(new Tuple<int, int, int>(0, 1, 2));
 			contextGeoIndex.Add(new Tuple<int, int, int>(0, 1, 0));
 
-			Assert.Throws<ArgumentException>(() => mgg.GenerateLeftHandGeometryFromContext(allGeo1, contextGeoIndex));
+			Assert.Throws<ArgumentException>(() => msgc.GenerateLeftHandGeometryFromContext(allGeo1, contextGeoIndex));
 		}
 
 		[Test]
-		public void TestGenerateLeftHandGeometryFromContext_ValidArguments_PolylineGeometryWithCorrectLineSegmentsInSameOrder()
+		public void TestGenerateLeftHandGeometryFromContext_ValidArguments_NoIntersectionOrOverlap_PolylineGeometryWithCorrectLineSegmentsInSameOrder()
 		{
 			var allGeo = new List<List<WinPoint>>();
 			allGeo.Add(new List<WinPoint> { new WinPoint(1, 1), new WinPoint(2, 2), new WinPoint(3, 3), new WinPoint(4, 4) });
@@ -107,9 +107,9 @@ namespace DiagramDesigner.UnitTests
 			contextGeoIndex.Add(new Tuple<int, int, int>(0, 2, 3));
 			contextGeoIndex.Add(new Tuple<int, int, int>(2, 0, 1));
 
-			Assert.DoesNotThrow(() => mgg.GenerateLeftHandGeometryFromContext(allGeo, contextGeoIndex));
+			Assert.DoesNotThrow(() => msgc.GenerateLeftHandGeometryFromContext(allGeo, contextGeoIndex));
 
-			var pg = mgg.GenerateLeftHandGeometryFromContext(allGeo, contextGeoIndex);
+			var pg = msgc.GenerateLeftHandGeometryFromContext(allGeo, contextGeoIndex);
 			var lines = pg.PolylinesCopy;
 			Assert.AreEqual(lines.Count, 3);
 			foreach(List<MyPoint> line in lines)
@@ -128,6 +128,38 @@ namespace DiagramDesigner.UnitTests
 		}
 
 		[Test]
+		public void TestGenerateLeftHandGeometryFromContext_ValidArguments_WithIntersectionsNoOverlap_PolylineGeometryWithCorrectLineSegmentsInSameOrder()
+		{
+			var allGeo = new List<List<WinPoint>>();
+			allGeo.Add(new List<WinPoint> { new WinPoint(-1, 0), new WinPoint(1, 0) });
+			allGeo.Add(new List<WinPoint>());
+			allGeo.Add(new List<WinPoint> { new WinPoint(0, -1), new WinPoint(0, 1) });
+
+			var contextGeoIndex = new List<Tuple<int, int, int>>();
+			contextGeoIndex.Add(new Tuple<int, int, int>(0, 0, 1));
+			contextGeoIndex.Add(new Tuple<int, int, int>(2, 0, 1));
+
+			Assert.DoesNotThrow(() => msgc.GenerateLeftHandGeometryFromContext(allGeo, contextGeoIndex));
+
+			//var pg = msgc.GenerateLeftHandGeometryFromContext(allGeo, contextGeoIndex);
+			//var lines = pg.PolylinesCopy;
+			//Assert.AreEqual(lines.Count, 4);
+			//foreach (List<MyPoint> line in lines)
+			//{
+			//	Assert.AreEqual(line.Count, 2);
+			//}
+
+			//Assert.AreEqual(lines[0][0], new MyPoint(2, 2));
+			//Assert.AreEqual(lines[0][1], new MyPoint(4, 4));
+
+			//Assert.AreEqual(lines[1][0], new MyPoint(6, 6));
+			//Assert.AreEqual(lines[1][1], new MyPoint(8, 8));
+
+			//Assert.AreEqual(lines[2][0], new MyPoint(2, 4));
+			//Assert.AreEqual(lines[2][1], new MyPoint(4, 6));
+		}
+
+		[Test]
 		public void TestGenerateGeometriesFromContextAndAdditions_IndexOutOfRange1_ThrowArgumentOutOfRangeException()
 		{
 			var contextGeoIndex = new List<Tuple<int, int, int>>();
@@ -136,7 +168,7 @@ namespace DiagramDesigner.UnitTests
 			var additionGeoIndex = new List<Tuple<int, int, int>>();
 			additionGeoIndex.Add(new Tuple<int, int, int>(3, 1, 2));
 
-			Assert.Throws<ArgumentOutOfRangeException>(() => mgg.GenerateGeometriesFromContextAndAdditions(allGeo1, contextGeoIndex, additionGeoIndex));
+			Assert.Throws<ArgumentOutOfRangeException>(() => msgc.GenerateGeometriesFromContextAndAdditions(allGeo1, contextGeoIndex, additionGeoIndex));
 		}
 
 		[Test]
@@ -148,7 +180,7 @@ namespace DiagramDesigner.UnitTests
 			var additionGeoIndex = new List<Tuple<int, int, int>>();
 			additionGeoIndex.Add(new Tuple<int, int, int>(1, 0, 1));
 
-			Assert.Throws<ArgumentOutOfRangeException>(() => mgg.GenerateGeometriesFromContextAndAdditions(allGeo1, contextGeoIndex, additionGeoIndex));
+			Assert.Throws<ArgumentOutOfRangeException>(() => msgc.GenerateGeometriesFromContextAndAdditions(allGeo1, contextGeoIndex, additionGeoIndex));
 		}
 
 		[Test]
@@ -160,7 +192,7 @@ namespace DiagramDesigner.UnitTests
 			var additionGeoIndex = new List<Tuple<int, int, int>>();
 			additionGeoIndex.Add(new Tuple<int, int, int>(2, 1, 0));
 
-			Assert.Throws<ArgumentException>(() => mgg.GenerateGeometriesFromContextAndAdditions(allGeo1, contextGeoIndex, additionGeoIndex));
+			Assert.Throws<ArgumentException>(() => msgc.GenerateGeometriesFromContextAndAdditions(allGeo1, contextGeoIndex, additionGeoIndex));
 		}
 
 		[Test]
@@ -174,7 +206,7 @@ namespace DiagramDesigner.UnitTests
 			additionGeoIndex.Add(new Tuple<int, int, int>(0, 0, 1));
 			additionGeoIndex.Add(new Tuple<int, int, int>(2, 0, 1));
 
-			Assert.Throws<ArgumentException>(() => mgg.GenerateGeometriesFromContextAndAdditions(allGeo1, contextGeoIndex, additionGeoIndex));
+			Assert.Throws<ArgumentException>(() => msgc.GenerateGeometriesFromContextAndAdditions(allGeo1, contextGeoIndex, additionGeoIndex));
 		}
 
 		[Test]
@@ -194,9 +226,9 @@ namespace DiagramDesigner.UnitTests
 			additionGeoIndex.Add(new Tuple<int, int, int>(2, 0, 1));
 			additionGeoIndex.Add(new Tuple<int, int, int>(2, 1, 2));
 
-			Assert.DoesNotThrow(() => mgg.GenerateGeometriesFromContextAndAdditions(allGeo, contextGeoIndex, additionGeoIndex));
+			Assert.DoesNotThrow(() => msgc.GenerateGeometriesFromContextAndAdditions(allGeo, contextGeoIndex, additionGeoIndex));
 
-			var result = mgg.GenerateGeometriesFromContextAndAdditions(allGeo, contextGeoIndex, additionGeoIndex);
+			var result = msgc.GenerateGeometriesFromContextAndAdditions(allGeo, contextGeoIndex, additionGeoIndex);
 			var leftHandPg = result.Item1;
 			var rightHandPg = result.Item2;
 
