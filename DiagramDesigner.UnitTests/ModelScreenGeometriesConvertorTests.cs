@@ -164,20 +164,6 @@ namespace DiagramDesigner.UnitTests
 		}
 
 		[Test]
-		public void TestGenerateGeometriesFromContextAndAdditions_ValidInputsWithOverlappingContextAndAddition_ThrowArgumentException()
-		{
-			var contextGeoIndex = new List<Tuple<int, int, int>>();
-			contextGeoIndex.Add(new Tuple<int, int, int>(0, 1, 2));
-			contextGeoIndex.Add(new Tuple<int, int, int>(0, 0, 1));
-
-			var additionGeoIndex = new List<Tuple<int, int, int>>();
-			additionGeoIndex.Add(new Tuple<int, int, int>(0, 0, 1));
-			additionGeoIndex.Add(new Tuple<int, int, int>(2, 0, 1));
-
-			Assert.Throws<ArgumentException>(() => mgg.GenerateGeometriesFromContextAndAdditions(allGeo1, contextGeoIndex, additionGeoIndex));
-		}
-
-		[Test]
 		public void TestGenerateGeometriesFromContextAndAdditions_ValidInputsWithMutuallyExclusiveContextAndAddition_LeftHandGeometryIsConvertedFromContextAndRightHandGeometryIsConvertedFromTheUnionOfContextAndAddition()
 		{
 			var allGeo = new List<List<WinPoint>>();

@@ -205,22 +205,6 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestCreateShapeFromPolylines_InputGeometryIntersectsWithItself_ThrowArgumentException()
-		{
-			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new PolylinesGeometry( new List<List<Point>> { 
-				new List<Point> { new Point(0, -1), new Point(0, 1), new Point(1, 0), new Point(-1, 0) } }), null, out _));
-			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new PolylinesGeometry( new List<List<Point>> { 
-				new List<Point> { new Point(1, 0), new Point(1, 2) }, new List<Point> { new Point(0, 1), new Point(2, 1) } }), null, out _));
-		}
-
-		[Test]
-		public void TestCreateShapeFromPolylines_InputGeometryOverlapWithItself_ThrowArgumentException()
-		{
-			Assert.Throws<ArgumentException>(() => Shape.CreateShapeFromPolylines(new PolylinesGeometry( new List<List<Point>> { 
-				new List<Point> { new Point(0, -1), new Point(0, 1), new Point(0, 0), new Point(0, 0.5) } }), null, out _));
-		}
-
-		[Test]
 		public void TestConformsWithGeometry_EdgeCases()
 		{
 			var emptyShape = Shape.CreateEmptyShape();
