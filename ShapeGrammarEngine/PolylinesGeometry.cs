@@ -2,6 +2,7 @@
 using ListOperations;
 using System;
 using System.Collections.Generic;
+using DiagramDesignerGeometryParser;
 
 namespace ShapeGrammarEngine
 {
@@ -21,14 +22,21 @@ namespace ShapeGrammarEngine
 			{
 				throw new ArgumentNullException();
 			}
-
 			this.polylines = polylines;
-			var segments = this.ConvertToLineSegments();
 
 			this.CleanUpPolylines();
 			if (this.DoesIntersectOrOverlapWithItself())
 			{
-				throw new ArgumentException("The polylines intersect or overlap with itself");
+				// TODO: remove intersections and overlaps without flattening the polyline structure
+				var segments = this.ConvertToLineSegments();
+				var exploder = new LineSegmentsExploder(segments);
+				var explodedSegments = exploder.MergeAndExplodeSegments();
+				var explodedLines = new List<List<Point>>();
+				foreach (LineSegment ls in explodedSegments)
+				{
+					explodedLines.Add(new List<Point>{ ls.FirstPoint, ls.SecondPoint });
+				}
+				this.polylines = explodedLines;
 			}
 		}
 

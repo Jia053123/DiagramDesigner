@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BasicGeometries\BasicGeometries.csproj" />
+    <ProjectReference Include="..\DiagramDesignerGeometryParser\DiagramDesignerGeometryParser.csproj" />
     <ProjectReference Include="..\ListOperations\ListOperations.csproj" />
   </ItemGroup>
 
