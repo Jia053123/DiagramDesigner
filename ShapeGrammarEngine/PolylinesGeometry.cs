@@ -10,6 +10,7 @@ namespace ShapeGrammarEngine
 		private List<List<Point>> polylines = new List<List<Point>>();
 		/// <summary>
 		/// The polylines forming the geometry; They must not intersect or overlap with itself or each other. 
+		/// (while removing this requriement does not break anything, it violates the basic premise of the definition of shape in this project) 
 		/// Each polyline consists of at least 2 points
 		/// </summary>
 		public List<List<Point>> PolylinesCopy { get { return new List<List<Point>>(this.polylines); } }
@@ -20,7 +21,10 @@ namespace ShapeGrammarEngine
 			{
 				throw new ArgumentNullException();
 			}
+
 			this.polylines = polylines;
+			var segments = this.ConvertToLineSegments();
+
 			this.CleanUpPolylines();
 			if (this.DoesIntersectOrOverlapWithItself())
 			{

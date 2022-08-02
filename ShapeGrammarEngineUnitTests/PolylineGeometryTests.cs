@@ -31,22 +31,22 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
-		public void TestDoesIntersectOrOverlapWithItself_Intersect()
+		public void TestDoesIntersectOrOverlapWithItself_Intersect_NoExceptionThrown()
 		{
-			Assert.Throws<ArgumentException>(() => new PolylinesGeometry(new List<List<Point>> { 
+			Assert.DoesNotThrow(() => new PolylinesGeometry(new List<List<Point>> { 
 				new List<Point> { new Point(0, -1), new Point(0, 1), new Point(1, 0), new Point(-1, 0) } }));
-			Assert.Throws<ArgumentException>(() => new PolylinesGeometry(new List<List<Point>> { 
+			Assert.DoesNotThrow(() => new PolylinesGeometry(new List<List<Point>> { 
 				new List<Point> { new Point(1, 0), new Point(1, 2) }, 
 				new List<Point> { new Point(0, 1), new Point(2, 1) } }));
-			Assert.Throws<ArgumentException>(() => new PolylinesGeometry(new List<List<Point>>{
+			Assert.DoesNotThrow(() => new PolylinesGeometry(new List<List<Point>>{
 				new List<Point> { new Point(0,0), new Point(1,1) },
 				new List<Point> { new Point(0,0), new Point(1,1) } }));
 		}
 
 		[Test]
-		public void TestDoesIntersectOrOverlapWithItself_Overlap()
+		public void TestDoesIntersectOrOverlapWithItself_Overlap_NoExceptionThrown()
 		{
-			Assert.Throws<ArgumentException>(() => new PolylinesGeometry(new List<List<Point>> { 
+			Assert.DoesNotThrow(() => new PolylinesGeometry(new List<List<Point>> { 
 				new List<Point> { new Point(0, -1), new Point(0, 1), new Point(0, 0), new Point(0, 0.5) } }));
 		}
 
