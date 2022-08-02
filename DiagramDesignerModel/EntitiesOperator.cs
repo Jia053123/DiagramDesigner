@@ -57,11 +57,15 @@ namespace DiagramDesignerModel
         /// <param name="wallEntityIndex"> index of the WallEntity to operate upon </param>
         static private void DeleteSegmentFromWallEntityAtIndex(ref List<WallEntity> wallEntities, int firstEndPointIndex, int secondEndPointIndex, int wallEntityIndex)
         {
+            var we = wallEntities[wallEntityIndex];
             if (firstEndPointIndex != secondEndPointIndex - 1)
             {
                 throw new ArgumentException("firstEndPointIndex is not 1 less than secondEndPointIndex");
             }
-            var we = wallEntities[wallEntityIndex];
+            if (firstEndPointIndex < 0 || we.Geometry.PathsDefinedByPoints.Count < (secondEndPointIndex + 1))
+			{
+                throw new ArgumentException("firstEndPointIndex or secondEndPointIndex out of bound");
+			}
 
             if (firstEndPointIndex == 0)
             {
