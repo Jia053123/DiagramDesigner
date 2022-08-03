@@ -84,13 +84,11 @@ namespace ShapeGrammarEngine
 		{
 			if (!this.LeftHandShape.ConformsWithGeometry(geometryBefore, out _))
 			{
-				//throw new ArgumentException("geometryBefore does not conform with ShapeBefore");
 				labeling = null;
 				return false;
 			}
 			if (!this.RightHandShape.ConformsWithGeometry(geometryAfter, out _))
 			{
-				//throw new ArgumentException("geometryAfter does not conform with ShapeAfter");
 				labeling = null;
 				return false;
 			}
