@@ -130,7 +130,6 @@ namespace ShapeGrammarEngine
 			{
 				throw new ArgumentNullException();
 			}
-
 			if (polylineGeometry.PolylinesCopy.Count == 0)
 			{
 				if (this.DefiningConnections.Count == 0)

@@ -165,6 +165,48 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
+		public void TestDoesConformWithRule_GeometriesConformButInDifferentOrder_ReturnTrue()
+		{
+			//                   ______
+			// \  /    =>    \  /
+			//  \/            \/
+			//
+			var geo1L = new PolylinesGeometry(new List<List<Point>> 
+			{
+				new List<Point>{new Point(0,0), new Point(1,-1)},
+				new List<Point>{new Point(1,-1), new Point(2,0) }
+			});
+			var geo1R = new PolylinesGeometry(new List<List<Point>> 
+			{
+				new List<Point>{new Point(0,0), new Point(1,-1)},
+				new List<Point>{new Point(1,-1), new Point(2,0)},
+				new List<Point>{new Point(2,0), new Point(3,0)}
+			});
+			var rule = GrammarRule.CreateGrammarRuleFromOneExample(geo1L, geo1R, out _);
+
+			//             _____      
+			// \  /    =>       \  /
+			//  \/               \/
+			//
+			var geo2L = new PolylinesGeometry(new List<List<Point>>
+			{
+				new List<Point>{new Point(0,0), new Point(1,-1)},
+				new List<Point>{new Point(1,-1), new Point(2,0) }
+			});
+			var geo2R = new PolylinesGeometry(new List<List<Point>>
+			{
+				new List<Point>{new Point(0,0), new Point(1,-1)},
+				new List<Point>{new Point(1,-1), new Point(2,0)},
+				new List<Point>{new Point(0,0), new Point(-1,0)}
+			});
+			Assert.IsTrue(rule.DoesConformWithRule(geo2L, geo2R, out var labeling));
+			var resultL = rule.LeftHandShape.SolveLabeling(geo2L, labeling);
+			var resultR = rule.RightHandShape.SolveLabeling(geo2R, labeling);
+			Assert.IsTrue(resultL.GetAllLabels().SetEquals(labeling.GetAllLabels()));
+			Assert.IsTrue(resultR.GetAllLabels().SetEquals(labeling.GetAllLabels()));
+		}
+
+		[Test]
 		public void TestDoesConformWithRule_RightHandShapeDoesNotConform_ReturnFalse()
 		{
 			//  _________            _________     _________

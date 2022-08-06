@@ -93,7 +93,7 @@ namespace ShapeGrammarEngine
 				return false;
 			}
 
-			LabelingDictionary lDic = this.LeftHandShape.SolveLabeling(geometryBefore, null);
+			LabelingDictionary lDic = this.LeftHandShape.SolveLabeling(geometryBefore, null); // this may not be unique!!
 			LabelingDictionary sharedDic;
 			try
 			{
