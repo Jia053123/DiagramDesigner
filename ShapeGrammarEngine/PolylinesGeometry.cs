@@ -84,7 +84,7 @@ namespace ShapeGrammarEngine
 				this.polylines.RemoveAt(index);
 			}
 
-			// TODO: merge connected polylines
+			// TODO: merge connected polylines?
 		}
 
 		private bool DoesIntersectOrOverlapWithItself()

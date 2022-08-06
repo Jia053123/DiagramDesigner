@@ -154,7 +154,7 @@ namespace ShapeGrammarEngine
 				throw new ShapeMatchFailureException("input geometry has more unique points than there are labels in this shape");
 			}
 
-			// step2: generate all potential ways each unique point can be labeled
+			// step2: generate the remaining coordinates and labels to match aside from the partial solution
 			var coordinatesToWorkOn = new HashSet<Point>(uniqueCoordinates);
 			if (partialLabelingSolution is object)
 			{
@@ -178,9 +178,11 @@ namespace ShapeGrammarEngine
 				return partialLabelingSolution.Copy();
 			}
 
-			// step3: check if there is one potential labeling with which the input would match the definition of this shape
+			// step3: generate all potential ways each unique point can be labeled
 			var coordinatesToWorkOnList = new List<Point>(coordinatesToWorkOn);
 			var allPotentialLabelingForWhatsLeft = Utilities.GenerateAllPermutations(new List<int>(labelsLeftToWorkOn));
+
+			// step4: check if there is one potential labeling with which the input would match the definition of this shape
 			foreach (List<int> labelingInstanceForWhatsLeft in allPotentialLabelingForWhatsLeft)
 			{
 				Debug.Assert(coordinatesToWorkOn.Count == labelingInstanceForWhatsLeft.Count);
@@ -194,7 +196,8 @@ namespace ShapeGrammarEngine
 				{
 					labelDictionaryForAllPointsAndLabels = partialLabelingSolution.Copy();
 				}
-				for (int i = 0; i < coordinatesToWorkOn.Count; i++)
+
+				for (int i = 0; i < coordinatesToWorkOnList.Count; i++)
 				{
 					var s = labelDictionaryForAllPointsAndLabels.Add(coordinatesToWorkOnList[i], labelingInstanceForWhatsLeft[i]);
 					Debug.Assert(s);

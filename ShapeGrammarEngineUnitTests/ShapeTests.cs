@@ -313,18 +313,18 @@ namespace ShapeGrammarEngineUnitTests
 			LabelingDictionary output;
 
 			var shape1 = new Shape(new HashSet<Connection> { new Connection(0, 1), new Connection(1, 2), new Connection(1, 3), new Connection(2, 4) });
-			var geometry1 = new PolylinesGeometry(new List<List<Point>> 
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
 			{
 				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
-				new List<Point> { new Point(5, 10), new Point(20, 20) },
-				new List<Point> { new Point(5, 10), new Point(-5, -10) },
+				new List<Point> { new Point(5, 8), new Point(20, 20) },
+				new List<Point> { new Point(5, 8), new Point(-5, -10) },
 				new List<Point> { new Point(10.5, -10), new Point(20, 20) }
 			});
 			Assert.IsTrue(shape1.ConformsWithGeometry(geometry1, out output));
 			Assert.AreEqual(5, output.Count);
 			Assert.IsTrue(output.GetAllPoints().Contains(new Point(-5, 2.1)));
 			Assert.IsTrue(output.GetAllPoints().Contains(new Point(20, 20)));
-			Assert.IsTrue(output.GetAllPoints().Contains(new Point(5, 10)));
+			Assert.IsTrue(output.GetAllPoints().Contains(new Point(5, 8)));
 			Assert.IsTrue(output.GetAllPoints().Contains(new Point(10.5, -10)));
 			Assert.IsTrue(output.GetAllPoints().Contains(new Point(-5, -10)));
 		}
