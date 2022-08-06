@@ -109,7 +109,7 @@ namespace ShapeGrammarEngine
 		{
 			try
 			{
-				labeling = this.SolveLabeling(polylineGeometry, null);
+				labeling = this.SolveLabelingForOneSolution(polylineGeometry, null);
 				return true;
 			}
 			catch (ShapeMatchFailureException)
@@ -124,7 +124,18 @@ namespace ShapeGrammarEngine
 		/// </summary>
 		/// <returns> union of the solution with the input partial solution </returns>
 		/// <exception cref="ShapeMatchFailureException"> throws when the input geometry is not of this shape </exception>
-		public LabelingDictionary SolveLabeling(PolylinesGeometry polylineGeometry, LabelingDictionary partialLabelingSolution)
+		public LabelingDictionary SolveLabelingForOneSolution(PolylinesGeometry polylineGeometry, LabelingDictionary partialLabelingSolution)
+		{
+			var allSolutions = this.SolveLabeling(polylineGeometry, partialLabelingSolution);
+			return allSolutions.First();
+		}
+
+		/// <summary>
+		/// Find all potential ways the geometry can conform with this shape, given a partial solution
+		/// </summary>
+		/// <returns> unions of each solution with the input partial solution. Guaranteed to have at least one item </returns>
+		/// <exception cref="ShapeMatchFailureException"> throws when the input geometry is not of this shape </exception>
+		private List<LabelingDictionary> SolveLabeling(PolylinesGeometry polylineGeometry, LabelingDictionary partialLabelingSolution)
 		{
 			if (polylineGeometry is null)
 			{
@@ -134,7 +145,7 @@ namespace ShapeGrammarEngine
 			{
 				if (this.DefiningConnections.Count == 0)
 				{
-					return new LabelingDictionary();
+					return new List<LabelingDictionary> { new LabelingDictionary() };
 				}
 				else
 				{
@@ -173,15 +184,16 @@ namespace ShapeGrammarEngine
 
 			if (labelsLeftToWorkOn.Count == 0)
 			{
-				// the input is in fact a complete solution
-				return partialLabelingSolution.Copy();
+				// the input is in fact a complete solution and therefore the only solution
+				return new List<LabelingDictionary> { partialLabelingSolution.Copy() };
 			}
 
 			// step3: generate all potential ways each unique point can be labeled
 			var coordinatesToWorkOnList = new List<Point>(coordinatesToWorkOn);
 			var allPotentialLabelingForWhatsLeft = Utilities.GenerateAllPermutations(new List<int>(labelsLeftToWorkOn));
 
-			// step4: check if there is one potential labeling with which the input would match the definition of this shape
+			// step4: find all potential labelings with which the input would match the definition of this shape
+			var allValidLabelings = new List<LabelingDictionary>();
 			foreach (List<int> labelingInstanceForWhatsLeft in allPotentialLabelingForWhatsLeft)
 			{
 				Debug.Assert(coordinatesToWorkOn.Count == labelingInstanceForWhatsLeft.Count);
@@ -206,10 +218,18 @@ namespace ShapeGrammarEngine
 
 				if (this.DefiningConnections.SetEquals(connections))
 				{
-					return labelDictionaryForAllPointsAndLabels;
+					//return labelDictionaryForAllPointsAndLabels;
+					allValidLabelings.Add(labelDictionaryForAllPointsAndLabels);
 				}
 			}
-			throw new ShapeMatchFailureException("Failed to find a labeling that works");
+			if (allValidLabelings.Count > 0)
+			{
+				return allValidLabelings;
+			}
+			else
+			{
+				throw new ShapeMatchFailureException("Failed to find a labeling that works");
+			}
 		}
 
 		public static bool operator ==(Shape lhs, Shape rhs)
