@@ -68,9 +68,9 @@ namespace DiagramDesignerModel
 			{
                 rule.LearnFromExample(leftHandGeometry, rightHandGeometry, out _);
 			}
-            catch (GeometryParsingFailureException)
+            catch (GeometryParsingFailureException e)
 			{
-                throw new ArgumentException("the geometires do not match the rule");
+                throw new ArgumentException("The geometires do not match the rule: " + e.Message);
 			}
             this.rulesStore.RuleUpdated(ruleId);
         }

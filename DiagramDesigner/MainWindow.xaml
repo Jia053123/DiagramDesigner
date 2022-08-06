@@ -31,7 +31,7 @@
                 <TextBlock Text="Done Picking Context and Apply Rule" TextWrapping="Wrap" TextAlignment="Center"/>
             </Button>
 
-            <Button Content="Clear All" Width="100" HorizontalAlignment="Center" Margin="10,20,10,10" Command="{Binding ClearGeometryCommand}"/>
+            <Button Content="Clear Drawing" Width="100" HorizontalAlignment="Center" Margin="10,20,10,10" Command="{Binding ClearGeometryCommand}"/>
 
             <CheckBox x:Name="OrthogonalityCheckBox" Content="Draw Orthogonally" IsThreeState="False" Command="{Binding ToggleOrthogonalDrawingCommand}" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}" HorizontalAlignment="Center" Margin="10,10,10,10"></CheckBox>
         </StackPanel>
