@@ -126,7 +126,7 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
-		public void TestConformWithRule_ReturnTrue()
+		public void TestDoesConformWithRule_ReturnTrue()
 		{
 			//  _________            _________     _________
 			// |        /           |             |        /     
@@ -165,7 +165,7 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
-		public void TestConformWithRule_RightHandShapeDoesNotConform_ReturnFalse()
+		public void TestDoesConformWithRule_RightHandShapeDoesNotConform_ReturnFalse()
 		{
 			//  _________            _________     _________
 			// |        /           |             |        /     
@@ -201,7 +201,7 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
-		public void TestConformWithRule_LeftHandShapeDoesNotConform_ReturnFalse()
+		public void TestDoesConformWithRule_LeftHandShapeDoesNotConform_ReturnFalse()
 		{
 			//  _________            _________     _________
 			// |        /           |             |        /     
@@ -236,7 +236,7 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
-		public void TestConformWithRule_BothGeometryMatchBothShapesButDoNotConform_ReturnFalse()
+		public void TestDoesConformWithRule_BothGeometryMatchBothShapesButDoNotConform_ReturnFalse()
 		{
 			//  _________            _________     _________
 			// |        /           |             |        /     
