@@ -329,7 +329,6 @@ namespace ShapeGrammarEngineUnitTests
 			Assert.IsTrue(output.GetAllPoints().Contains(new Point(-5, -10)));
 		}
 
-
 		[Test]
 		public void TestConformsWithGeometry_MultiplePolylinesInDifferentOrders2()
 		{

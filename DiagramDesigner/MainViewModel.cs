@@ -339,7 +339,6 @@ namespace DiagramDesigner
 
         private void ExecuteClearGeometry(object obj)
 		{
-            this.ExecuteDoneAddingRule(obj);
             this.Model.RemoveAllWallsAndPrograms();
 		}
 
