@@ -339,6 +339,8 @@ namespace DiagramDesigner
 
         private void ExecuteClearGeometry(object obj)
 		{
+            this.State = MainViewModelState.ViewingState;
+            this.CleanUpTempDataForDrawing();
             this.Model.RemoveAllWallsAndPrograms();
 		}
 
