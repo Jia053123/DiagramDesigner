@@ -3,6 +3,8 @@ using NUnit.Framework;
 using ShapeGrammarEngine;
 using System;
 using System.Collections.Generic;
+using ListOperations;
+using System.Linq;
 
 namespace ShapeGrammarEngineUnitTests
 {
@@ -407,10 +409,18 @@ namespace ShapeGrammarEngineUnitTests
 
 			var labeling1 = new LabelingDictionary();
 			var result1 = shape1.SolveLabeling(geometry1, labeling1);
-			Assert.AreEqual(6, result1.Count);
+			Assert.AreEqual(6, result1.Count); // 024, 042, 204, 240, 420, 402
+			for (int i = 0; i < 6; i++)
+			{
+				Assert.AreEqual(3, result1[i].Count); // there are 3 points to label
+			}
 
 			var result2 = shape1.SolveLabeling(geometry1, null);
 			Assert.AreEqual(6, result2.Count);
+			for (int i = 0; i < 6; i++)
+			{
+				Assert.AreEqual(3, result2[i].Count);
+			}
 		}
 
 		[Test]
@@ -443,6 +453,32 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
+		public void TestSolveLabeling_PerfectPartialSolution_OutputThePartialSolution()
+		{
+			var shape1 = new Shape(new HashSet<Connection>
+			{
+				new Connection(0, 4),
+				new Connection(4, 2),
+				new Connection(2, 0)
+			});
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
+				new List<Point> { new Point(5, 10), new Point(20, 20) },
+				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) }
+			});
+			var labeling1 = new LabelingDictionary();
+
+			labeling1.Add(new Point(-5, 2.1), 0);
+			labeling1.Add(new Point(5, 10), 2);
+			labeling1.Add(new Point(20, 20), 4);
+
+			var result1 = shape1.SolveLabeling(geometry1, labeling1);
+			Assert.AreEqual(1, result1.Count); // only one solution
+			Assert.AreEqual(3, result1.First().Count); // there are three points
+		}
+
+		[Test]
 		public void TestSolveLabelingForOneSolution_PartialSolutionInput_OutputCompleteSolutionWithUnusedEntries()
 		{
 			var shape1 = new Shape(new HashSet<Connection> 
@@ -472,6 +508,31 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
+		public void TestSolveLabeling_PartialSolutionInput_OutputCompleteSolutionWithUnusedEntries()
+		{
+			var shape1 = new Shape(new HashSet<Connection>
+			{
+				new Connection(0, 4),
+				new Connection(4, 2),
+				new Connection(2, 0)
+			});
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
+				new List<Point> { new Point(5, 10), new Point(20, 20) },
+				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) }
+			});
+			var labeling1 = new LabelingDictionary();
+			labeling1.Add(new Point(-5, 2.1), 0);
+			labeling1.Add(new Point(5, 10), 2);
+			labeling1.Add(new Point(10, 10), 5);
+
+			var result1 = shape1.SolveLabeling(geometry1, labeling1);
+			Assert.AreEqual(1, result1.Count); // only one point left to assign
+			Assert.AreEqual(4, result1.First().Count); // the unused extra point is also added to the solution
+		}
+
+		[Test]
 		public void TestSolveLabelingForOneSolution_PartialSolutionLabelExistingPointWithWrongLabelInShape_ThrowShapeMatchFailureException()
 		{
 			var shape1 = new Shape(new HashSet<Connection>
@@ -498,6 +559,32 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
+		public void TestSolveLabeling_PartialSolutionLabelExistingPointWithWrongLabelInShape_ThrowShapeMatchFailureException()
+		{
+			var shape1 = new Shape(new HashSet<Connection>
+			{
+				new Connection(0, 4),
+				new Connection(4, 2),
+				new Connection(2, 5),
+				new Connection(5, 0)
+			});
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
+				new List<Point> { new Point(5, 10), new Point(20, 20) },
+				new List<Point>{ new Point(5, 10), new Point(0, 10) },
+				new List<Point>{ new Point(-5, 2.1), new Point(0, 10) }
+			});
+
+			// This labeling is supposed to fail because 0 must be connected to 4
+			var labeling1 = new LabelingDictionary();
+			labeling1.Add(new Point(-5, 2.1), 0);
+			labeling1.Add(new Point(5, 10), 4);
+
+			Assert.Throws<ShapeMatchFailureException>(() => shape1.SolveLabeling(geometry1, labeling1));
+		}
+
+		[Test]
 		public void TestSolveLabelingForOneSolution_PartialSolutionLabelsExistingPointWithWrongLabel_ThrowShapeMatchFailureException()
 		{
 			var shape1 = new Shape(new HashSet<Connection>
@@ -521,6 +608,29 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
+		public void TestSolveLabeling_PartialSolutionLabelsExistingPointWithWrongLabel_ThrowShapeMatchFailureException()
+		{
+			var shape1 = new Shape(new HashSet<Connection>
+			{
+				new Connection(0, 4),
+				new Connection(4, 2),
+				new Connection(2, 0)
+			});
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
+				new List<Point> { new Point(5, 10), new Point(20, 20) },
+				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) }
+			});
+			var labeling1 = new LabelingDictionary();
+			labeling1.Add(new Point(-5, 2.1), 0);
+			labeling1.Add(new Point(5, 10), 1);
+			labeling1.Add(new Point(10, 10), 5);
+
+			Assert.Throws<ShapeMatchFailureException>(() => shape1.SolveLabeling(geometry1, labeling1));
+		}
+
+		[Test]
 		public void TestSolveLabelingForOneSolution_PartialSolutionLabelsNonExistantPointWithLabelInShape_ThrowShapeMatchFailureException()
 		{
 			var shape1 = new Shape(new HashSet<Connection>
@@ -541,6 +651,29 @@ namespace ShapeGrammarEngineUnitTests
 			labeling1.Add(new Point(10, 10), 5);
 
 			Assert.Throws<ShapeMatchFailureException>(() => shape1.SolveLabelingForOneSolution(geometry1, labeling1));
+		}
+
+		[Test]
+		public void TestSolveLabeling_PartialSolutionLabelsNonExistantPointWithLabelInShape_ThrowShapeMatchFailureException()
+		{
+			var shape1 = new Shape(new HashSet<Connection>
+			{
+				new Connection(0, 4),
+				new Connection(4, 2),
+				new Connection(2, 0)
+			});
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
+				new List<Point> { new Point(5, 10), new Point(20, 20) },
+				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) }
+			});
+			var labeling1 = new LabelingDictionary();
+			labeling1.Add(new Point(-5, 2.1), 0);
+			labeling1.Add(new Point(5, 10), 1);
+			labeling1.Add(new Point(10, 10), 5);
+
+			Assert.Throws<ShapeMatchFailureException>(() => shape1.SolveLabeling(geometry1, labeling1));
 		}
 	}
 }

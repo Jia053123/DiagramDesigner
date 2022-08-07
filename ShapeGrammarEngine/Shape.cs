@@ -218,7 +218,6 @@ namespace ShapeGrammarEngine
 
 				if (this.DefiningConnections.SetEquals(connections))
 				{
-					//return labelDictionaryForAllPointsAndLabels;
 					allValidLabelings.Add(labelDictionaryForAllPointsAndLabels);
 				}
 			}
