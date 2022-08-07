@@ -361,7 +361,7 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestSolveLabeling_NullOrEmptyPartialSolution_OutputCorrectLabeling()
+		public void TestSolveLabelingForOneSolution_NullOrEmptyPartialSolution_OutputCorrectLabeling()
 		{
 			var shape1 = new Shape(new HashSet<Connection>
 			{
@@ -390,7 +390,31 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestSolveLabeling_PerfectPartialSolution_OutputThePartialSolution()
+		public void TestSolveLabeling_NullOrEmptyPartialSolution_OutputCorrectLabeling()
+		{
+			var shape1 = new Shape(new HashSet<Connection>
+			{
+				new Connection(0, 4),
+				new Connection(4, 2),
+				new Connection(2, 0)
+			});
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
+				new List<Point> { new Point(5, 10), new Point(20, 20) },
+				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) }
+			});
+
+			var labeling1 = new LabelingDictionary();
+			var result1 = shape1.SolveLabeling(geometry1, labeling1);
+			Assert.AreEqual(6, result1.Count);
+
+			var result2 = shape1.SolveLabeling(geometry1, null);
+			Assert.AreEqual(6, result2.Count);
+		}
+
+		[Test]
+		public void TestSolveLabelingForOneSolution_PerfectPartialSolution_OutputThePartialSolution()
 		{
 			var shape1 = new Shape(new HashSet<Connection>
 			{
@@ -419,7 +443,7 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestSolveLabeling_PartialSolutionInput_OutputCompleteSolutionWithUnusedEntries()
+		public void TestSolveLabelingForOneSolution_PartialSolutionInput_OutputCompleteSolutionWithUnusedEntries()
 		{
 			var shape1 = new Shape(new HashSet<Connection> 
 			{ 
@@ -448,7 +472,7 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestSolveLabeling_PartialSolutionLabelExistingPointWithWrongLabelInShape_ThrowShapeMatchFailureException()
+		public void TestSolveLabelingForOneSolution_PartialSolutionLabelExistingPointWithWrongLabelInShape_ThrowShapeMatchFailureException()
 		{
 			var shape1 = new Shape(new HashSet<Connection>
 			{
@@ -474,7 +498,7 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestSolveLabeling_PartialSolutionLabelsExistingPointWithWrongLabel_ThrowShapeMatchFailureException()
+		public void TestSolveLabelingForOneSolution_PartialSolutionLabelsExistingPointWithWrongLabel_ThrowShapeMatchFailureException()
 		{
 			var shape1 = new Shape(new HashSet<Connection>
 			{
@@ -497,7 +521,7 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestSolveLabeling_PartialSolutionLabelsNonExistantPointWithLabelInShape_ThrowShapeMatchFailureException()
+		public void TestSolveLabelingForOneSolution_PartialSolutionLabelsNonExistantPointWithLabelInShape_ThrowShapeMatchFailureException()
 		{
 			var shape1 = new Shape(new HashSet<Connection>
 			{

@@ -135,7 +135,7 @@ namespace ShapeGrammarEngine
 		/// </summary>
 		/// <returns> unions of each solution with the input partial solution. Guaranteed to have at least one item </returns>
 		/// <exception cref="ShapeMatchFailureException"> throws when the input geometry is not of this shape </exception>
-		private List<LabelingDictionary> SolveLabeling(PolylinesGeometry polylineGeometry, LabelingDictionary partialLabelingSolution)
+		public List<LabelingDictionary> SolveLabeling(PolylinesGeometry polylineGeometry, LabelingDictionary partialLabelingSolution)
 		{
 			if (polylineGeometry is null)
 			{
