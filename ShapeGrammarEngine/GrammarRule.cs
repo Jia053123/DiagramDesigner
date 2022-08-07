@@ -93,20 +93,28 @@ namespace ShapeGrammarEngine
 				return false;
 			}
 
-			LabelingDictionary lDic = this.LeftHandShape.SolveLabelingForOneSolution(geometryBefore, null); // this may not be unique!!
-			LabelingDictionary sharedDic;
-			try
+			List<LabelingDictionary> lDics = this.LeftHandShape.SolveLabeling(geometryBefore, null);
+			foreach (LabelingDictionary lDic in lDics)
 			{
-				sharedDic = this.RightHandShape.SolveLabelingForOneSolution(geometryAfter, lDic);
-			}
-			catch (ShapeMatchFailureException)
-			{
-				labeling = null;
-				return false;
-			}
+				LabelingDictionary sharedDic;
+				try
+				{
+					sharedDic = this.RightHandShape.SolveLabelingForOneSolution(geometryAfter, lDic); // just one solution existing is enough
+				}
+				catch (ShapeMatchFailureException)
+				{
+					sharedDic = null;
+				}
 
-			labeling = sharedDic;
-			return true;
+				if (!(sharedDic is null))
+				{
+					// a solution is found
+					labeling = sharedDic;
+					return true;
+				}
+			}
+			labeling = null;
+			return false;
 		}
 
 		/// <summary>

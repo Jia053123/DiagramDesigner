@@ -110,13 +110,13 @@ namespace ShapeGrammarEngine
 			try
 			{
 				labeling = this.SolveLabelingForOneSolution(polylineGeometry, null);
-				return true;
 			}
 			catch (ShapeMatchFailureException)
 			{
 				labeling = null;
 				return false;
 			}
+			return true;
 		}
 
 		/// <summary>
