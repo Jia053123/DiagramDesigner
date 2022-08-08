@@ -78,7 +78,7 @@ namespace ShapeGrammarEngine
 		/// <param name="geometryBefore"> the geometry before the rule is applied </param>
 		/// <param name="geometryAfter"> the geometry after the rule is applied </param>
 		/// <param name="labeling"> if the input geometries are consistent with the rule, 
-		/// how their line segments map onto connections of the shapes in the rule; otherwise output null </param>
+		/// how their line segments may map onto connections of the shapes in the rule; otherwise output null </param>
 		/// <returns> whether the input geometries are consistent with the rule </returns>
 		public bool DoesConformWithRule(PolylinesGeometry geometryBefore, PolylinesGeometry geometryAfter, out LabelingDictionary labeling)
 		{
