@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DiagramDesignerDesignSpaceSearchEngine\DiagramDesignerDesignSpaceSearcher.csproj" />
     <ProjectReference Include="..\DiagramDesignerGeometryParser\DiagramDesignerGeometryParser.csproj" />
     <ProjectReference Include="..\ShapeGrammarEngine\ShapeGrammarEngine.csproj" />
   </ItemGroup>
