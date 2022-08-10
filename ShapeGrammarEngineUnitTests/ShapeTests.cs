@@ -363,7 +363,7 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestSolveLabeling_NullOrEmptyPartialSolution_OutputCorrectLabeling()
+		public void TestSolveLabeling_NullOrEmptyPartialSolution_Loop_OutputCorrectLabeling()
 		{
 			var shape1 = new Shape(new HashSet<Connection>
 			{
@@ -414,6 +414,61 @@ namespace ShapeGrammarEngineUnitTests
 				}
 				Assert.IsTrue(doesSolutionExist2);
 			}
+		}
+
+		[Test]
+		public void TestSolveLabeling_NoPartialSolution_NotLoop_OutputCorrectLabeling()
+		{
+			//  5 (0,50)   2/3 (100,50)
+			//    |       | 
+			//  0 |_______| 4  (100,0)     
+			// (0,0)      |
+			//            | 3/2 (100,-50)
+			//
+			var shape1 = new Shape(new HashSet<Connection>
+			{
+				new Connection(0, 4),
+				new Connection(4, 2),
+				new Connection(3, 4),
+				new Connection(0, 5)
+			});
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(100, -50), new Point(100, 0) },
+				new List<Point> { new Point(100, 50), new Point(100, 0), new Point(0, 0) },
+				new List<Point>{ new Point(0, 0), new Point(0, 50) }
+			});
+
+			var labeling1 = new LabelingDictionary();
+			var result1 = shape1.SolveLabeling(geometry1, labeling1);
+
+			int expectedCount1 = 2; 
+			Assert.AreEqual(expectedCount1, result1.Count);
+			var doesSolutionExist1 = false;
+			var doesSolutionExist2 = false;
+			for (int i = 0; i < expectedCount1; i++)
+			{
+				Assert.AreEqual(5, result1[i].Count);
+
+				if ((0 == result1[i].GetLabelByPoint(new Point(0, 0))) &&
+					(5 == result1[i].GetLabelByPoint(new Point(0, 50))) &&
+					(4 == result1[i].GetLabelByPoint(new Point(100, 0))) &&
+					(2 == result1[i].GetLabelByPoint(new Point(100, 50))) &&
+					(3 == result1[i].GetLabelByPoint(new Point(100, -50)))) 
+				{
+					doesSolutionExist1 = true;
+				}
+				if ((0 == result1[i].GetLabelByPoint(new Point(0, 0))) &&
+					(5 == result1[i].GetLabelByPoint(new Point(0, 50))) &&
+					(4 == result1[i].GetLabelByPoint(new Point(100, 0))) &&
+					(2 == result1[i].GetLabelByPoint(new Point(100, -50))) &&
+					(3 == result1[i].GetLabelByPoint(new Point(100, 50))))
+				{
+					doesSolutionExist2 = true;
+				}
+			}
+			Assert.IsTrue(doesSolutionExist1);
+			Assert.IsTrue(doesSolutionExist2);
 		}
 
 		[Test]
