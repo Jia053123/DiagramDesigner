@@ -109,7 +109,7 @@ namespace ShapeGrammarEngine
 		{
 			try
 			{
-				labeling = this.SolveLabelingForOneSolution(polylineGeometry, null);
+				labeling = this.SolveLabeling(polylineGeometry, null).First();
 			}
 			catch (ShapeMatchFailureException)
 			{
@@ -137,6 +137,8 @@ namespace ShapeGrammarEngine
 		/// <exception cref="ShapeMatchFailureException"> throws when the input geometry is not of this shape </exception>
 		public List<LabelingDictionary> SolveLabeling(PolylinesGeometry polylineGeometry, LabelingDictionary partialLabelingSolution)
 		{
+			// TODO: this algorithm has extremely high computational complexity
+
 			if (polylineGeometry is null)
 			{
 				throw new ArgumentNullException();

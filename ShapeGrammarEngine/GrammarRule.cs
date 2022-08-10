@@ -99,7 +99,7 @@ namespace ShapeGrammarEngine
 				LabelingDictionary sharedDic;
 				try
 				{
-					sharedDic = this.RightHandShape.SolveLabelingForOneSolution(geometryAfter, lDic); // just one solution existing is enough
+					sharedDic = this.RightHandShape.SolveLabeling(geometryAfter, lDic).First();
 				}
 				catch (ShapeMatchFailureException)
 				{
