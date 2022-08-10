@@ -120,17 +120,6 @@ namespace ShapeGrammarEngine
 		}
 
 		/// <summary>
-		/// Find one way the geometry can conform with this shape, given a partial solution
-		/// </summary>
-		/// <returns> union of the solution with the input partial solution </returns>
-		/// <exception cref="ShapeMatchFailureException"> throws when the input geometry is not of this shape </exception>
-		public LabelingDictionary SolveLabelingForOneSolution(PolylinesGeometry polylineGeometry, LabelingDictionary partialLabelingSolution)
-		{
-			var allSolutions = this.SolveLabeling(polylineGeometry, partialLabelingSolution);
-			return allSolutions.First();
-		}
-
-		/// <summary>
 		/// Find all potential ways the geometry can conform with this shape, given a partial solution
 		/// </summary>
 		/// <returns> unions of each solution with the input partial solution. Guaranteed to have at least one item </returns>

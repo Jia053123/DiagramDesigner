@@ -158,8 +158,8 @@ namespace ShapeGrammarEngine.UnitTests
 				new List<Point>{new Point(5.5, 0),new Point(5,-1) },
 				new List<Point>{new Point(5, 0), new Point(5.5, 0) }});
 			Assert.IsTrue(rule.DoesConformWithRule(geo2L, geo2R, out var labeling));
-			var resultL = rule.LeftHandShape.SolveLabelingForOneSolution(geo2L, labeling);
-			var resultR = rule.RightHandShape.SolveLabelingForOneSolution(geo2R, labeling);
+			var resultL = rule.LeftHandShape.SolveLabeling(geo2L, labeling).First();
+			var resultR = rule.RightHandShape.SolveLabeling(geo2R, labeling).First();
 			Assert.IsTrue(resultL.GetAllLabels().SetEquals(labeling.GetAllLabels()));
 			Assert.IsTrue(resultR.GetAllLabels().SetEquals(labeling.GetAllLabels()));
 		}
@@ -200,8 +200,8 @@ namespace ShapeGrammarEngine.UnitTests
 				new List<Point>{new Point(0,0), new Point(-1,0)}
 			});
 			Assert.IsTrue(rule.DoesConformWithRule(geo2L, geo2R, out var labeling));
-			var resultL = rule.LeftHandShape.SolveLabelingForOneSolution(geo2L, labeling);
-			var resultR = rule.RightHandShape.SolveLabelingForOneSolution(geo2R, labeling);
+			var resultL = rule.LeftHandShape.SolveLabeling(geo2L, labeling).First();
+			var resultR = rule.RightHandShape.SolveLabeling(geo2R, labeling).First();
 			Assert.IsTrue(resultL.GetAllLabels().SetEquals(labeling.GetAllLabels()));
 			Assert.IsTrue(resultR.GetAllLabels().SetEquals(labeling.GetAllLabels()));
 		}
