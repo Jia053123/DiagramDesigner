@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-
+using DiagramDesignerGeometryParser;
 
 namespace ShapeGrammarEngine
 {
@@ -235,9 +235,9 @@ namespace ShapeGrammarEngine
 		/// </summary>
 		/// <param name="coordinatesToWorkOn"></param>
 		/// <param name="labelsToWorkOn"></param>
-		/// <param name="partialSolutions"> cannot be null; if there is no partial solution this should be empty </param>
+		/// <param name="partialSolution"> cannot be null; if there is no partial solution this should be empty </param>
 		/// <returns></returns>
-		private List<LabelingDictionary> SolveLabeling(List<Point> coordinatesToWorkOn, HashSet<int> labelsToWorkOn, List<LabelingDictionary> partialSolutions)
+		private List<LabelingDictionary> SolveLabeling(List<Point> coordinatesToWorkOn, HashSet<int> labelsToWorkOn, LabelingDictionary partialSolution, LineSegmentsTraverser traverser)
 		{
 			if (coordinatesToWorkOn.Count != labelsToWorkOn.Count)
 			{
@@ -247,7 +247,7 @@ namespace ShapeGrammarEngine
 			// Base Case
 			if (labelsToWorkOn.Count == 0)
 			{
-				return partialSolutions;    // the input is in fact a complete solution and therefore the only solution
+				return new List<LabelingDictionary>{partialSolution};    // the input is in fact a complete solution and therefore the only solution
 			}
 
 			// Work toward Base Case

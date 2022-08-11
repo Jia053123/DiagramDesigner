@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace DiagramDesignerGeometryParser
 {
-	class LineSegmentsTraverser
+	public class LineSegmentsTraverser
 	{
 		private List<LineSegment> SegmentsToTraverse;
 		private List<TraversalRecord> TraversalRecords = null;
@@ -16,11 +16,11 @@ namespace DiagramDesignerGeometryParser
 		private bool StartWithFirstPoint;
 		private bool TurnLargerAnglesFirst;
 
-		internal List<LineSegment> GetLastPath()
+		public List<LineSegment> GetLastPath()
 		{
 			return new List<LineSegment>(this.TraversalRecords.Last().Path); // make a copy
 		}
-		internal List<Point> GetLastPointsAlongPath()
+		public List<Point> GetLastPointsAlongPath()
 		{
 			var tr = this.TraversalRecords.Last();
 			Debug.Assert(tr.PointsAlongPath.Count == tr.Path.Count + 1);
@@ -31,7 +31,7 @@ namespace DiagramDesignerGeometryParser
 		/// Constructor
 		/// </summary>
 		/// <param name="segmentsToTraverse"> The pool of segments to traverse without duplicate segments </param>
-		internal LineSegmentsTraverser(List<LineSegment> segmentsToTraverse)
+		public LineSegmentsTraverser(List<LineSegment> segmentsToTraverse)
 		{
 			this.SegmentsToTraverse = segmentsToTraverse;
 			this.TraversalRecords = new List<TraversalRecord>();
@@ -108,7 +108,7 @@ namespace DiagramDesignerGeometryParser
 		/// <param name="turnLargerAngleFirst"> when the potential path branches, turn the largest angle first or not (and turn the smallest angle first) </param>
 		/// <returns> If the traversal ended in a loop, return the index where the loop begins; 
 		/// returning 0 means the path is a perfect loop; if the traversal ended at a deadend, return -1 </returns>
-		internal Tuple<int, List<LineSegment>> TraverseSegments(LineSegment startSegment, bool startWithFirstPoint, bool turnLargerAngleFirst)
+		public Tuple<int, List<LineSegment>> TraverseSegments(LineSegment startSegment, bool startWithFirstPoint, bool turnLargerAngleFirst)
 		{
 			// reset and fill all fields
 			this.StartSegment = startSegment;
@@ -138,7 +138,7 @@ namespace DiagramDesignerGeometryParser
 		/// <returns>  If the traversal ended in a loop, return the index where the loop begins; 
 		/// returning 0 means the path is a perfect loop; if the traversal ended at a deadend, return -1.
 		/// If all possible paths are exhausted, return null </returns>
-		internal Tuple<int, List<LineSegment>> TraverseAgain()
+		public Tuple<int, List<LineSegment>> TraverseAgain()
 		{
 			if (this.TraversalRecords.Count == 0)
 			{
