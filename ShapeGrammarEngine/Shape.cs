@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
+
 namespace ShapeGrammarEngine
 {
 	/// <summary>
@@ -126,8 +127,6 @@ namespace ShapeGrammarEngine
 		/// <exception cref="ShapeMatchFailureException"> throws when the input geometry is not of this shape </exception>
 		public List<LabelingDictionary> SolveLabeling(PolylinesGeometry polylineGeometry, LabelingDictionary partialLabelingSolution)
 		{
-			// TODO: this algorithm has extremely high computational complexity
-
 			if (polylineGeometry is null)
 			{
 				throw new ArgumentNullException();
@@ -162,18 +161,27 @@ namespace ShapeGrammarEngine
 				coordinatesToWorkOn.ExceptWith(partialLabelingSolution.GetAllPoints());
 			}
 
-			var labelsLeftToWorkOn = this.GetAllLabels();
+			var labelsToWorkOn = this.GetAllLabels();
 			if (partialLabelingSolution is object)
 			{
-				labelsLeftToWorkOn.ExceptWith(partialLabelingSolution.GetAllLabels());
+				labelsToWorkOn.ExceptWith(partialLabelingSolution.GetAllLabels());
 			}
 
-			if (coordinatesToWorkOn.Count != labelsLeftToWorkOn.Count)
+
+
+
+
+
+
+
+
+
+			if (coordinatesToWorkOn.Count != labelsToWorkOn.Count)
 			{
 				throw new ShapeMatchFailureException("remaining labels cannot map one to one with remaining unique corrdinates");
 			}
 
-			if (labelsLeftToWorkOn.Count == 0)
+			if (labelsToWorkOn.Count == 0)
 			{
 				// the input is in fact a complete solution and therefore the only solution
 				return new List<LabelingDictionary> { partialLabelingSolution.Copy() };
@@ -181,7 +189,7 @@ namespace ShapeGrammarEngine
 
 			// step3: generate all potential ways each unique point can be labeled
 			var coordinatesToWorkOnList = new List<Point>(coordinatesToWorkOn);
-			var allPotentialLabelingForWhatsLeft = Utilities.GenerateAllPermutations(new List<int>(labelsLeftToWorkOn));
+			var allPotentialLabelingForWhatsLeft = Utilities.GenerateAllPermutations(new List<int>(labelsToWorkOn));
 
 			// step4: find all potential labelings with which the input would match the definition of this shape
 			var allValidLabelings = new List<LabelingDictionary>();
@@ -220,6 +228,34 @@ namespace ShapeGrammarEngine
 			{
 				throw new ShapeMatchFailureException("Failed to find a labeling that works");
 			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="coordinatesToWorkOn"></param>
+		/// <param name="labelsToWorkOn"></param>
+		/// <param name="partialSolutions"> cannot be null; if there is no partial solution this should be empty </param>
+		/// <returns></returns>
+		private List<LabelingDictionary> SolveLabeling(List<Point> coordinatesToWorkOn, HashSet<int> labelsToWorkOn, List<LabelingDictionary> partialSolutions)
+		{
+			if (coordinatesToWorkOn.Count != labelsToWorkOn.Count)
+			{
+				throw new ShapeMatchFailureException("remaining labels cannot map one to one with remaining unique corrdinates");
+			}
+
+			// Base Case
+			if (labelsToWorkOn.Count == 0)
+			{
+				return partialSolutions;    // the input is in fact a complete solution and therefore the only solution
+			}
+
+			// Work toward Base Case
+			
+
+
+			// Recursive call
+			return null; // perform a recursive call for each branch and return the union of the return values? 
 		}
 
 		public static bool operator ==(Shape lhs, Shape rhs)
