@@ -9,6 +9,32 @@ namespace DiagramDesignerGeometryParser.UnitTests
 	class LineSegmentsTraverserTests
 	{
 		[Test]
+		public void TestGetLastPath_NeverTraversed_ReturnNull()
+		{
+			var ls1 = new LineSegment(new Point(-1, -1), new Point(-1, 1));
+			var ls2 = new LineSegment(new Point(-1, 1), new Point(1, 1));
+			var ls3 = new LineSegment(new Point(1, 1), new Point(1, -1));
+			var ls4 = new LineSegment(new Point(1, -1), new Point(-1, -1));
+			var segments1 = new List<LineSegment> { ls1, ls3, ls2, ls4 };
+
+			var traverser1 = new LineSegmentsTraverser(segments1);
+			Assert.IsNull(traverser1.GetLastPath());
+		}
+
+		[Test]
+		public void TestGetPointsAlongLastPath_NeverTraversed_ReturnNull()
+		{
+			var ls1 = new LineSegment(new Point(-1, -1), new Point(-1, 1));
+			var ls2 = new LineSegment(new Point(-1, 1), new Point(1, 1));
+			var ls3 = new LineSegment(new Point(1, 1), new Point(1, -1));
+			var ls4 = new LineSegment(new Point(1, -1), new Point(-1, -1));
+			var segments1 = new List<LineSegment> { ls1, ls3, ls2, ls4 };
+
+			var traverser1 = new LineSegmentsTraverser(segments1);
+			Assert.IsNull(traverser1.GetPointsAlongLastPath());
+		}
+
+		[Test]
 		public void TestTraverseSegments_1()
 		{
 			//      __
@@ -25,7 +51,7 @@ namespace DiagramDesignerGeometryParser.UnitTests
 			var result1 = traverser1.TraverseSegments(ls1, true, true);
 			Assert.AreEqual(result1.Item1, 0);
 			Assert.AreEqual(result1.Item2.Count, 4);
-			Assert.AreEqual(result1.Item2.Count+1, traverser1.GetLastPointsAlongPath().Count);
+			Assert.AreEqual(result1.Item2.Count+1, traverser1.GetPointsAlongLastPath().Count);
 			foreach (LineSegment ls in segments1)
 			{
 				Assert.IsTrue(traverser1.GetLastPath().Contains(ls));
@@ -43,7 +69,7 @@ namespace DiagramDesignerGeometryParser.UnitTests
 			var result2 = traverser2.TraverseSegments(ls5, false, false);
 			Assert.AreEqual(result2.Item1, 1);
 			Assert.AreEqual(result2.Item2.Count, 5);
-			Assert.AreEqual(result2.Item2.Count + 1, traverser2.GetLastPointsAlongPath().Count);
+			Assert.AreEqual(result2.Item2.Count + 1, traverser2.GetPointsAlongLastPath().Count);
 			foreach (LineSegment ls in segments2)
 			{
 				Assert.IsTrue(traverser2.GetLastPath().Contains(ls));
@@ -53,7 +79,7 @@ namespace DiagramDesignerGeometryParser.UnitTests
 			var result21 = traverser2.TraverseSegments(ls5, true, false);
 			Assert.AreEqual(result21.Item1, -1);
 			Assert.AreEqual(result21.Item2.Count, 1);
-			Assert.AreEqual(result21.Item2.Count + 1, traverser2.GetLastPointsAlongPath().Count);
+			Assert.AreEqual(result21.Item2.Count + 1, traverser2.GetPointsAlongLastPath().Count);
 			Assert.IsTrue(result21.Item2.Contains(ls5));
 
 			//      __
@@ -67,7 +93,7 @@ namespace DiagramDesignerGeometryParser.UnitTests
 			var result3 = traverser3.TraverseSegments(ls5, false, false);
 			Assert.AreEqual(result3.Item1, -1);
 			Assert.AreEqual(result3.Item2.Count, 3);
-			Assert.AreEqual(result3.Item2.Count + 1, traverser3.GetLastPointsAlongPath().Count);
+			Assert.AreEqual(result3.Item2.Count + 1, traverser3.GetPointsAlongLastPath().Count);
 			Assert.AreEqual(result3.Item2[0], ls5);
 			Assert.AreEqual(result3.Item2[1], ls1);
 			Assert.AreEqual(result3.Item2[2], ls2);
@@ -75,7 +101,7 @@ namespace DiagramDesignerGeometryParser.UnitTests
 			var result31 = traverser3.TraverseSegments(ls5, false, true);
 			Assert.AreEqual(result31.Item1, -1);
 			Assert.AreEqual(result31.Item2.Count, 2);
-			Assert.AreEqual(result31.Item2.Count + 1, traverser3.GetLastPointsAlongPath().Count);
+			Assert.AreEqual(result31.Item2.Count + 1, traverser3.GetPointsAlongLastPath().Count);
 			Assert.AreEqual(result31.Item2[0], ls5);
 			Assert.AreEqual(result31.Item2[1], ls4);
 		}
@@ -112,7 +138,7 @@ namespace DiagramDesignerGeometryParser.UnitTests
 			Assert.AreEqual(-1, result1.Item1);
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(result1.Item2, expectedPath1));
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPath(), expectedPath1));
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPointsAlongPath(), expectedPoints1));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetPointsAlongLastPath(), expectedPoints1));
 
 			var result2 = traverser.TraverseAgain();
 			var expectedPath2 = new List<LineSegment> { ls1, ls4, ls5, ls7 };
@@ -120,7 +146,7 @@ namespace DiagramDesignerGeometryParser.UnitTests
 			Assert.AreEqual(-1, result2.Item1);
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(result2.Item2, expectedPath2));
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPath(), expectedPath2));
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPointsAlongPath(), expectedPoints2));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetPointsAlongLastPath(), expectedPoints2));
 
 			var result3 = traverser.TraverseAgain();
 			var expectedPath3 = new List<LineSegment> { ls1, ls4, ls5, ls6, ls3 };
@@ -128,7 +154,7 @@ namespace DiagramDesignerGeometryParser.UnitTests
 			Assert.AreEqual(1, result3.Item1);
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(result3.Item2, expectedPath3));
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPath(), expectedPath3));
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPointsAlongPath(), expectedPoints3));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetPointsAlongLastPath(), expectedPoints3));
 
 			var result4 = traverser.TraverseAgain();
 			var expectedPath4 = new List<LineSegment> { ls1, ls3, ls6, ls5, ls4 };
@@ -136,7 +162,7 @@ namespace DiagramDesignerGeometryParser.UnitTests
 			Assert.AreEqual(1, result4.Item1);
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(result4.Item2, expectedPath4));
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPath(), expectedPath4));
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPointsAlongPath(), expectedPoints4));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetPointsAlongLastPath(), expectedPoints4));
 
 			var result5 = traverser.TraverseAgain();
 			var expectedPath5 = new List<LineSegment> { ls1, ls3, ls6, ls8 };
@@ -144,7 +170,7 @@ namespace DiagramDesignerGeometryParser.UnitTests
 			Assert.AreEqual(-1, result5.Item1);
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(result5.Item2, expectedPath5));
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPath(), expectedPath5));
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPointsAlongPath(), expectedPoints5));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetPointsAlongLastPath(), expectedPoints5));
 
 			var result6 = traverser.TraverseAgain();
 			var expectedPath6 = new List<LineSegment> { ls1, ls3, ls6, ls7 };
@@ -152,7 +178,7 @@ namespace DiagramDesignerGeometryParser.UnitTests
 			Assert.AreEqual(-1, result6.Item1);
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(result6.Item2, expectedPath6));
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPath(), expectedPath6));
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPointsAlongPath(), expectedPoints6));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetPointsAlongLastPath(), expectedPoints6));
 
 			var result7 = traverser.TraverseAgain();
 			var expectedPath7 = new List<LineSegment> { ls1, ls2 };
@@ -160,17 +186,17 @@ namespace DiagramDesignerGeometryParser.UnitTests
 			Assert.AreEqual(-1, result7.Item1);
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(result7.Item2, expectedPath7));
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPath(), expectedPath7));
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPointsAlongPath(), expectedPoints7));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetPointsAlongLastPath(), expectedPoints7));
 
 			var result8 = traverser.TraverseAgain();
 			Assert.IsNull(result8);
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPath(), expectedPath7));
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPointsAlongPath(), expectedPoints7));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetPointsAlongLastPath(), expectedPoints7));
 
 			var result9 = traverser.TraverseAgain();
 			Assert.IsNull(result9);
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPath(), expectedPath7));
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPointsAlongPath(), expectedPoints7));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetPointsAlongLastPath(), expectedPoints7));
 		}
 
 		[Test]
@@ -205,7 +231,7 @@ namespace DiagramDesignerGeometryParser.UnitTests
 			Assert.AreEqual(-1, result1.Item1);
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(result1.Item2, expectedPath1));
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPath(), expectedPath1));
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPointsAlongPath(), expectedPoints1));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetPointsAlongLastPath(), expectedPoints1));
 
 			var result2 = traverser.TraverseAgain();
 			var expectedPath2 = new List<LineSegment> { ls5, ls4, ls2 };
@@ -213,7 +239,7 @@ namespace DiagramDesignerGeometryParser.UnitTests
 			Assert.AreEqual(-1, result2.Item1);
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(result2.Item2, expectedPath2));
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPath(), expectedPath2));
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPointsAlongPath(), expectedPoints2));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetPointsAlongLastPath(), expectedPoints2));
 
 			var result3 = traverser.TraverseAgain();
 			var expectedPath3 = new List<LineSegment> { ls5, ls4, ls3, ls6 };
@@ -221,7 +247,7 @@ namespace DiagramDesignerGeometryParser.UnitTests
 			Assert.AreEqual(0, result3.Item1);
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(result3.Item2, expectedPath3));
 			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPath(), expectedPath3));
-			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetLastPointsAlongPath(), expectedPoints3));
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(traverser.GetPointsAlongLastPath(), expectedPoints3));
 		}
 	}
 }

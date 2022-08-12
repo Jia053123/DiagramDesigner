@@ -251,8 +251,11 @@ namespace ShapeGrammarEngine
 			}
 
 			// Work toward Base Case
-			
+			// Step1: traverse again
 
+			traverser.TraverseAgain();
+			var newPath = traverser.GetLastPath();
+			// Step2: 
 
 			// Recursive call
 			return null; // perform a recursive call for each branch and return the union of the return values? 

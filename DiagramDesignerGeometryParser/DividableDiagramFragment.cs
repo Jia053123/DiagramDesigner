@@ -113,12 +113,12 @@ namespace DiagramDesignerGeometryParser
 					while (!(traversalResult is null))
 					{
 						// look for the closest second point on the perimeter
-						var pointsAlongPath = traverser.GetLastPointsAlongPath();
+						var pointsAlongPath = traverser.GetPointsAlongLastPath();
 						for (int j = 1; j < pointsAlongPath.Count; j++)
 						{
 							if (this.IsAnEndpointOnPerimeter(pointsAlongPath[j]) && pointsAlongPath[j] != pointsAlongPath[0])
 							{
-								return traverser.GetLastPointsAlongPath().GetRange(0, j + 1);
+								return traverser.GetPointsAlongLastPath().GetRange(0, j + 1);
 							}
 						}
 						// couldn't find a path through... try again from the same startSegment

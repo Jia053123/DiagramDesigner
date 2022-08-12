@@ -16,11 +16,19 @@ namespace DiagramDesignerGeometryParser
 		private bool StartWithFirstPoint;
 		private bool TurnLargerAnglesFirst;
 
+		/// <summary>
+		/// Obtain the path of the last traversal
+		/// </summary>
+		/// <returns> The path, or null if no traversal has been done </returns>
 		public List<LineSegment> GetLastPath()
 		{
 			return new List<LineSegment>(this.TraversalRecords.Last().Path); // make a copy
 		}
-		public List<Point> GetLastPointsAlongPath()
+		/// <summary>
+		/// Obtain the points along the path of the last traversal
+		/// </summary>
+		/// <returns> The points along the path in order, or null if no traversal has been done </returns>
+		public List<Point> GetPointsAlongLastPath()
 		{
 			var tr = this.TraversalRecords.Last();
 			Debug.Assert(tr.PointsAlongPath.Count == tr.Path.Count + 1);
@@ -146,7 +154,7 @@ namespace DiagramDesignerGeometryParser
 			}
 
 			var lastPath = this.GetLastPath();
-			var lastPoints = this.GetLastPointsAlongPath();
+			var lastPoints = this.GetPointsAlongLastPath();
 
 			// start searching from the second last point of lastPoints for an alternative branching
 			int segmentIndex = lastPath.Count - 2;
