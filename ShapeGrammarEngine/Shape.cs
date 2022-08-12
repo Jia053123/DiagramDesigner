@@ -167,15 +167,6 @@ namespace ShapeGrammarEngine
 				labelsToWorkOn.ExceptWith(partialLabelingSolution.GetAllLabels());
 			}
 
-
-
-
-
-
-
-
-
-
 			if (coordinatesToWorkOn.Count != labelsToWorkOn.Count)
 			{
 				throw new ShapeMatchFailureException("remaining labels cannot map one to one with remaining unique corrdinates");
@@ -187,86 +178,29 @@ namespace ShapeGrammarEngine
 				return new List<LabelingDictionary> { partialLabelingSolution.Copy() };
 			}
 
-			// step3: generate all potential ways each unique point can be labeled
-			var coordinatesToWorkOnList = new List<Point>(coordinatesToWorkOn);
-			var allPotentialLabelingForWhatsLeft = Utilities.GenerateAllPermutations(new List<int>(labelsToWorkOn));
 
-			// step4: find all potential labelings with which the input would match the definition of this shape
-			var allValidLabelings = new List<LabelingDictionary>();
-			foreach (List<int> labelingInstanceForWhatsLeft in allPotentialLabelingForWhatsLeft)
+
+
+			List<LabelingDictionary> solutions = new List<LabelingDictionary>();
+			foreach (int label in labelsToWorkOn)
 			{
-				Debug.Assert(coordinatesToWorkOn.Count == labelingInstanceForWhatsLeft.Count);
-
-				LabelingDictionary labelDictionaryForAllPointsAndLabels;
-				if (partialLabelingSolution is null)
-				{
-					labelDictionaryForAllPointsAndLabels = new LabelingDictionary();
-				}
-				else
-				{
-					labelDictionaryForAllPointsAndLabels = partialLabelingSolution.Copy();
-				}
-
-				for (int i = 0; i < coordinatesToWorkOnList.Count; i++)
-				{
-					var s = labelDictionaryForAllPointsAndLabels.Add(coordinatesToWorkOnList[i], labelingInstanceForWhatsLeft[i]);
-					Debug.Assert(s);
-				}
-
-				var connections = polylineGeometry.ConvertToConnections(labelDictionaryForAllPointsAndLabels);
-
-				if (this.DefiningConnections.SetEquals(connections))
-				{
-					allValidLabelings.Add(labelDictionaryForAllPointsAndLabels);
-				}
+				var newLabelingDic = partialLabelingSolution.Copy(); // create a new dic for each possible assignment for the starting Point
+				newLabelingDic.Add(polylineGeometry.PolylinesCopy.First().First(), label);
+				solutions.AddRange(this.SolveLabeling(0, 0, coordinatesToWorkOn, labelsToWorkOn, newLabelingDic));
 			}
-			if (allValidLabelings.Count > 0)
-			{
-				return allValidLabelings;
-			}
-			else
-			{
-				throw new ShapeMatchFailureException("Failed to find a labeling that works");
-			}
+			return solutions;
 		}
 
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="coordinatesToWorkOn"></param>
-		/// <param name="labelsToWorkOn"></param>
+		/// <param name="coordinatesLeftToWorkOn"></param>
+		/// <param name="labelsLeftToWorkOn"></param>
 		/// <param name="partialSolution"> cannot be null; if there is no partial solution this should be empty </param>
 		/// <returns></returns>
-		private List<LabelingDictionary> SolveLabeling(List<Point> coordinatesToWorkOn, HashSet<int> labelsToWorkOn, LabelingDictionary partialSolution, LineSegmentsTraverser traverser)
+		private List<LabelingDictionary> SolveLabeling(int currentPointIndex, int currentPolylineIndex, HashSet<Point> coordinatesLeftToWorkOn, HashSet<int> labelsLeftToWorkOn, LabelingDictionary partialSolution)
 		{
-			if (coordinatesToWorkOn.Count != labelsToWorkOn.Count)
-			{
-				throw new ShapeMatchFailureException("remaining labels cannot map one to one with remaining unique corrdinates");
-			}
-
-			// Base Case
-			if (labelsToWorkOn.Count == 0)
-			{
-				return new List<LabelingDictionary>{partialSolution};    // the input is in fact a complete solution and therefore the only solution
-			}
-
-			// Work toward Base Case
-			// Step1: traverse again
-			if (traverser.GetLastPath() is null)
-			{
-				// TODO: traverse segments
-			}
-			else
-			{
-				traverser.TraverseAgain();
-			}
-			var newPath = traverser.GetLastPath();
-			
-			// Step2: given the partial solution, assign the path
-			
-
-			// Recursive call
-			return null; // perform a recursive call for each branch and return the union of the return values? 
+			return null; // stub
 		}
 
 		public static bool operator ==(Shape lhs, Shape rhs)
