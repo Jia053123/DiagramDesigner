@@ -22,6 +22,10 @@ namespace DiagramDesignerGeometryParser
 		/// <returns> The path, or null if no traversal has been done </returns>
 		public List<LineSegment> GetLastPath()
 		{
+			if (this.TraversalRecords.Count == 0)
+			{
+				return null;
+			}
 			return new List<LineSegment>(this.TraversalRecords.Last().Path); // make a copy
 		}
 		/// <summary>
@@ -30,6 +34,10 @@ namespace DiagramDesignerGeometryParser
 		/// <returns> The points along the path in order, or null if no traversal has been done </returns>
 		public List<Point> GetPointsAlongLastPath()
 		{
+			if (this.TraversalRecords.Count == 0)
+			{
+				return null;
+			}
 			var tr = this.TraversalRecords.Last();
 			Debug.Assert(tr.PointsAlongPath.Count == tr.Path.Count + 1);
 			return new List<Point>(tr.PointsAlongPath); // make a copy
