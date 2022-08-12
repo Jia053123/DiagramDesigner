@@ -184,9 +184,10 @@ namespace ShapeGrammarEngine
 			List<LabelingDictionary> solutions = new List<LabelingDictionary>();
 			foreach (int label in labelsToWorkOn)
 			{
+				var polylines = polylineGeometry.PolylinesCopy;
 				var newLabelingDic = partialLabelingSolution.Copy(); // create a new dic for each possible assignment for the starting Point
-				newLabelingDic.Add(polylineGeometry.PolylinesCopy.First().First(), label);
-				solutions.AddRange(this.SolveLabeling(0, 0, coordinatesToWorkOn, labelsToWorkOn, newLabelingDic));
+				newLabelingDic.Add(polylines.First().First(), label);
+				solutions.AddRange(this.SolveLabelingHelper(polylines, 0, 0, coordinatesToWorkOn, labelsToWorkOn, newLabelingDic));
 			}
 			return solutions;
 		}
@@ -198,8 +199,17 @@ namespace ShapeGrammarEngine
 		/// <param name="labelsLeftToWorkOn"></param>
 		/// <param name="partialSolution"> cannot be null; if there is no partial solution this should be empty </param>
 		/// <returns></returns>
-		private List<LabelingDictionary> SolveLabeling(int currentPointIndex, int currentPolylineIndex, HashSet<Point> coordinatesLeftToWorkOn, HashSet<int> labelsLeftToWorkOn, LabelingDictionary partialSolution)
+		private List<LabelingDictionary> SolveLabelingHelper(List<List<Point>> polylinesGeometryToSolve, int currentPointIndex, int currentPolylineIndex, HashSet<Point> coordinatesLeftToWorkOn, HashSet<int> labelsLeftToWorkOn, LabelingDictionary partialSolution)
 		{
+			Point currentPoint = polylinesGeometryToSolve[currentPolylineIndex][currentPointIndex];
+			Point nextPoint;
+			if (polylinesGeometryToSolve[currentPolylineIndex].Count - 1 > currentPointIndex)
+			{
+				nextPoint = polylinesGeometryToSolve[currentPolylineIndex][currentPointIndex + 1];
+			}
+			
+			
+			
 			return null; // stub
 		}
 
