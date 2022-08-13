@@ -195,31 +195,85 @@ namespace ShapeGrammarEngine
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="coordinatesLeftToWorkOn"></param>
+		/// <param name="pointsLeftToWorkOn"></param>
 		/// <param name="labelsLeftToWorkOn"></param>
 		/// <param name="partialSolution"> cannot be null; if there is no partial solution this should be empty </param>
 		/// <returns></returns>
-		private List<LabelingDictionary> SolveLabelingHelper(List<List<Point>> polylinesGeometryToSolve, int currentPointIndex, int currentPolylineIndex, HashSet<Point> coordinatesLeftToWorkOn, HashSet<int> labelsLeftToWorkOn, LabelingDictionary partialSolution)
+		private List<LabelingDictionary> SolveLabelingHelper(List<List<Point>> polylinesGeometryToSolve, int currentPointIndex, int currentPolylineIndex, HashSet<Point> pointsLeftToWorkOn, HashSet<int> labelsLeftToWorkOn, LabelingDictionary partialSolution)
 		{
+			Debug.Assert(pointsLeftToWorkOn.Count == labelsLeftToWorkOn.Count);
+
 			Point currentPoint = polylinesGeometryToSolve[currentPolylineIndex][currentPointIndex];
+			int currentLabel = partialSolution.GetLabelByPoint(currentPoint);
+
 			if (polylinesGeometryToSolve[currentPolylineIndex].Count - 1 > currentPointIndex)
 			{
 				// still points left in this polyline
 				Point nextPoint = polylinesGeometryToSolve[currentPolylineIndex][currentPointIndex + 1];
+				if (!pointsLeftToWorkOn.Contains(nextPoint))
+				{
+					// but the next point is already assigned
+					return SolveLabelingHelper(polylinesGeometryToSolve, currentPointIndex + 1, currentPolylineIndex, pointsLeftToWorkOn, labelsLeftToWorkOn, partialSolution);
+				}
 
+				var connectedLabels = this.LabelsConnectedTo(currentLabel);
+				List<LabelingDictionary> solutions = new List<LabelingDictionary>();
+				foreach (int l in connectedLabels)
+				{
+					if (!labelsLeftToWorkOn.Contains(l))
+					{
+						// the label is already assigned; skip
+						continue;
+					}
+
+					// both point and label are available; assign
+					var moreCompleteSolution = partialSolution.Copy();
+					moreCompleteSolution.Add(nextPoint, l);
+
+					var newPointsLeftToWorkOn = new HashSet<Point>(pointsLeftToWorkOn);
+					newPointsLeftToWorkOn.Remove(nextPoint);
+
+					var newLabelsLeftToWorkOn = new HashSet<int>(labelsLeftToWorkOn);
+					newLabelsLeftToWorkOn.Remove(l);
+
+					solutions.AddRange(this.SolveLabelingHelper(polylinesGeometryToSolve, currentPointIndex + 1, currentPolylineIndex, newPointsLeftToWorkOn, newLabelsLeftToWorkOn, moreCompleteSolution));
+				}
+				return solutions;
 			}
 			else if (polylinesGeometryToSolve.Count - 1 > currentPolylineIndex)
 			{
 				// end of the polyline, but there are still more polylines
+				Point nextPoint = polylinesGeometryToSolve[currentPolylineIndex + 1][0];
+				if (!pointsLeftToWorkOn.Contains(nextPoint))
+				{
+					// but the next point is already assigned
+					return SolveLabelingHelper(polylinesGeometryToSolve, 0, currentPolylineIndex + 1, pointsLeftToWorkOn, labelsLeftToWorkOn, partialSolution);
+				}
+				// assign random remaining labels to the next point
+				List<LabelingDictionary> solutions = new List<LabelingDictionary>();
+				foreach (int l in labelsLeftToWorkOn)
+				{
+					// both point and label are available; assign
+					var moreCompleteSolution = partialSolution.Copy();
+					moreCompleteSolution.Add(nextPoint, l);
 
+					var newPointsLeftToWorkOn = new HashSet<Point>(pointsLeftToWorkOn);
+					newPointsLeftToWorkOn.Remove(nextPoint);
+
+					var newLabelsLeftToWorkOn = new HashSet<int>(labelsLeftToWorkOn);
+					newLabelsLeftToWorkOn.Remove(l);
+
+					solutions.AddRange(this.SolveLabelingHelper(polylinesGeometryToSolve, 0, currentPolylineIndex + 1, newPointsLeftToWorkOn, newLabelsLeftToWorkOn, moreCompleteSolution));
+				}
+				return solutions;
 			}
 			else
 			{
 				// done with the polylinesGeometry
-
+				Debug.Assert(pointsLeftToWorkOn.Count == 0);
+				Debug.Assert(labelsLeftToWorkOn.Count == 0);
+				return new List<LabelingDictionary>{partialSolution};
 			}
-
-			throw new NotImplementedException();
 		}
 
 		/// <summary>
