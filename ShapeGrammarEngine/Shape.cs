@@ -222,6 +222,35 @@ namespace ShapeGrammarEngine
 			throw new NotImplementedException();
 		}
 
+		/// <summary>
+		/// find the labels connected to the input in this shape definition
+		/// </summary>
+		/// <param name="label"> the label to search for </param>
+		/// <returns> the list of labels connected to the input according to the shape definition. If no labels are found, return an empty list </returns>
+		/// <exception cref="ArgumentException"> throws if the input label is not part of the shape definition </exception>
+		private List<int> LabelsConnectedTo(int label)
+		{
+			if (!this.GetAllLabels().Contains(label))
+			{
+				throw new ArgumentException();
+			}
+
+			var labelsConnectedTo = new List<int>();
+			foreach (Connection connection in this.DefiningConnections)
+			{
+				if (connection.LabelOfFirstNode == label)
+				{
+					labelsConnectedTo.Add(connection.LabelOfFirstNode);
+				}
+				else if (connection.LabelOfSecondNode == label)
+				{
+					labelsConnectedTo.Add(connection.LabelOfSecondNode);
+				}
+			}
+
+			return labelsConnectedTo;
+		}
+
 		public static bool operator ==(Shape lhs, Shape rhs)
 		{
 			return lhs.Equals(rhs);
