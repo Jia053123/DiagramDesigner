@@ -202,15 +202,24 @@ namespace ShapeGrammarEngine
 		private List<LabelingDictionary> SolveLabelingHelper(List<List<Point>> polylinesGeometryToSolve, int currentPointIndex, int currentPolylineIndex, HashSet<Point> coordinatesLeftToWorkOn, HashSet<int> labelsLeftToWorkOn, LabelingDictionary partialSolution)
 		{
 			Point currentPoint = polylinesGeometryToSolve[currentPolylineIndex][currentPointIndex];
-			Point nextPoint;
 			if (polylinesGeometryToSolve[currentPolylineIndex].Count - 1 > currentPointIndex)
 			{
-				nextPoint = polylinesGeometryToSolve[currentPolylineIndex][currentPointIndex + 1];
+				// still points left in this polyline
+				Point nextPoint = polylinesGeometryToSolve[currentPolylineIndex][currentPointIndex + 1];
+
 			}
-			
-			
-			
-			return null; // stub
+			else if (polylinesGeometryToSolve.Count - 1 > currentPolylineIndex)
+			{
+				// end of the polyline, but there are still more polylines
+
+			}
+			else
+			{
+				// done with the polylinesGeometry
+
+			}
+
+			throw new NotImplementedException();
 		}
 
 		public static bool operator ==(Shape lhs, Shape rhs)

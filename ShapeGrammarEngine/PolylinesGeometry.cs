@@ -63,8 +63,18 @@ namespace ShapeGrammarEngine
 		}
 
 		/// <summary>
+		/// Try to merge fragmented line segments into long, continuous polylines. 
+		/// After this is called, no two polylines in this geometry will share a common endpoint. 
+		/// Note that the result may not be the only valid solution
+		/// </summary>
+		public void MergePolylines()
+		{
+			throw new NotImplementedException();
+		}
+
+
+		/// <summary>
 		/// Remove any polyline with less than 2 points and thereby doesn't form a line
-		/// Currently does not merge connected polylines
 		/// </summary>
 		private void CleanUpPolylines()
 		{
@@ -83,8 +93,6 @@ namespace ShapeGrammarEngine
 			{
 				this.polylines.RemoveAt(index);
 			}
-
-			// TODO: merge connected polylines?
 		}
 
 		private bool DoesIntersectOrOverlapWithItself()
