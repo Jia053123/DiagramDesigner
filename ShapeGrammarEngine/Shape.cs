@@ -131,7 +131,7 @@ namespace ShapeGrammarEngine
 			{
 				throw new ArgumentNullException();
 			}
-			if (polylineGeometry.PolylinesCopy.Count == 0)
+			if (polylineGeometry.IsEmpty())
 			{
 				if (this.DefiningConnections.Count == 0)
 				{
@@ -167,12 +167,16 @@ namespace ShapeGrammarEngine
 			}
 
 			List<LabelingDictionary> solutions = new List<LabelingDictionary>();
-			foreach (int label in labelsToWorkOn)
+			foreach (int l in labelsToWorkOn)
 			{
-				var polylines = polylineGeometry.PolylinesCopy; // TODO: refactor
-				var newLabelingDic = partialLabelingSolution.Copy(); // create a new dic for each possible assignment for the starting Point
-				newLabelingDic.Add(polylines.First().First(), label);
-				solutions.AddRange(this.SolveLabelingHelper(polylineGeometry, 0, 0, labelsToWorkOn, newLabelingDic));
+				var startingLabelingDic = partialLabelingSolution.Copy(); // create a new dic for each possible assignment for the starting Point
+				Debug.Assert(!polylineGeometry.IsEmpty());
+				startingLabelingDic.Add(polylineGeometry.GetPointByIndex(0,0), l);
+
+				var startingLabelsToWorkOn = new HashSet<int>(labelsToWorkOn);
+				startingLabelsToWorkOn.Remove(l);
+
+				solutions.AddRange(this.SolveLabelingHelper(polylineGeometry, 0, 0, startingLabelsToWorkOn, startingLabelingDic));
 			}
 			return solutions;
 		}
@@ -183,7 +187,6 @@ namespace ShapeGrammarEngine
 		/// <param name="polylinesGeometryToSolve"></param>
 		/// <param name="currentPointIndex"></param>
 		/// <param name="currentPolylineIndex"></param>
-		/// <param name="pointsLeftToWorkOn"></param>
 		/// <param name="labelsLeftToWorkOn"></param>
 		/// <param name="partialSolution"> cannot be null; if there is no partial solution this should be empty </param>
 		/// <returns></returns>
@@ -193,7 +196,7 @@ namespace ShapeGrammarEngine
 			if (nextIndexes.nextPointIndex != -1 && nextIndexes.nextPolylineIndex != -1)
 			{
 				// not done going through the whole geometry yet
-				Point nextPoint = polylinesGeometryToSolve.PolylinesCopy[nextIndexes.nextPolylineIndex][nextIndexes.nextPointIndex]; // TODO: refactor
+				Point nextPoint = polylinesGeometryToSolve.GetPointByIndex(nextIndexes.nextPolylineIndex, nextIndexes.nextPointIndex);
 				if (partialSolution.GetAllPoints().Contains(nextPoint))
 				{
 					// but the next point is already assigned
@@ -203,7 +206,7 @@ namespace ShapeGrammarEngine
 				if (currentPolylineIndex == nextIndexes.nextPolylineIndex)
 				{
 					// still in the same polyline, so the current point and next point are connected
-					Point currentPoint = polylinesGeometryToSolve.PolylinesCopy[currentPolylineIndex][currentPointIndex]; // TODO: refactor
+					Point currentPoint = polylinesGeometryToSolve.GetPointByIndex(currentPolylineIndex, currentPointIndex);
 					int currentLabel = partialSolution.GetLabelByPoint(currentPoint);
 					var connectedLabels = this.LabelsConnectedTo(currentLabel);
 					List<LabelingDictionary> solutions = new List<LabelingDictionary>();
@@ -213,14 +216,11 @@ namespace ShapeGrammarEngine
 						{
 							continue; // this label is already assigned; skip
 						}
-
-						// both point and label are available; assign
+						// perform assignment of nextPoint to l
 						var moreCompleteSolution = partialSolution.Copy();
 						moreCompleteSolution.Add(nextPoint, l);
-
 						var updatedLabelsLeftToWorkOn = new HashSet<int>(labelsLeftToWorkOn);
 						updatedLabelsLeftToWorkOn.Remove(l);
-
 						solutions.AddRange(this.SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, updatedLabelsLeftToWorkOn, moreCompleteSolution));
 					}
 					return solutions;
@@ -232,13 +232,12 @@ namespace ShapeGrammarEngine
 					List<LabelingDictionary> solutions = new List<LabelingDictionary>();
 					foreach (int l in labelsLeftToWorkOn)
 					{
+						// perform assignment of nextPoint to l
 						var moreCompleteSolution = partialSolution.Copy();
 						moreCompleteSolution.Add(nextPoint, l);
-
-						var newLabelsLeftToWorkOn = new HashSet<int>(labelsLeftToWorkOn);
-						newLabelsLeftToWorkOn.Remove(l);
-
-						solutions.AddRange(this.SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, newLabelsLeftToWorkOn, moreCompleteSolution));
+						var updatedLabelsLeftToWorkOn = new HashSet<int>(labelsLeftToWorkOn);
+						updatedLabelsLeftToWorkOn.Remove(l);
+						solutions.AddRange(this.SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, updatedLabelsLeftToWorkOn, moreCompleteSolution));
 					}
 					return solutions;
 				}
