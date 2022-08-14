@@ -297,11 +297,11 @@ namespace ShapeGrammarEngine
 			{
 				if (connection.LabelOfFirstNode == label)
 				{
-					labelsConnectedTo.Add(connection.LabelOfFirstNode);
+					labelsConnectedTo.Add(connection.LabelOfSecondNode);
 				}
 				else if (connection.LabelOfSecondNode == label)
 				{
-					labelsConnectedTo.Add(connection.LabelOfSecondNode);
+					labelsConnectedTo.Add(connection.LabelOfFirstNode);
 				}
 			}
 
