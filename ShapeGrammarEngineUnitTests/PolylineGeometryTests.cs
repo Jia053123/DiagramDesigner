@@ -281,6 +281,19 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
+		public void TestGetPointByIndex_InputOutOfRange_ThrowArgumentOutOfRangeException()
+		{
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
+				new List<Point> { new Point(5, 10), new Point(20, 20) },
+				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) }
+			});
+			
+			Assert.Throws<ArgumentOutOfRangeException>(() => geometry1.GetPointByIndex(0, 3));
+		}
+
+		[Test]
 		public void TestFindIndexForNextPoint_InputIsAPointInGeometry_OutputTheNextPointInPolylineOrder_1()
 		{
 			var geometry1 = new PolylinesGeometry(new List<List<Point>>

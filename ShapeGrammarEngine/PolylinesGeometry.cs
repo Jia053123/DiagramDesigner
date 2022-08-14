@@ -252,7 +252,8 @@ namespace ShapeGrammarEngine
 		/// </summary>
 		/// <param name="pointIndex"> index of the point on the polyline </param>
 		/// <param name="polylineIndex"> index of the polyline in the geometry </param>
-		/// <returns> the point specified by index;  </returns>
+		/// <returns> the point specified by index  </returns>
+		/// <exception cref="ArgumentOutOfRangeException"> throws when an index is out of range </exception>
 		public Point GetPointByIndex(int pointIndex, int polylineIndex)
 		{
 			return this.polylines[polylineIndex][pointIndex];
