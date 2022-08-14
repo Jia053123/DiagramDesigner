@@ -277,7 +277,7 @@ namespace ShapeGrammarEngine
 				throw new ArgumentException("point index out of range");
 			}
 
-			var currentPolyline = this.polylines[currentPointIndex];
+			var currentPolyline = this.polylines[currentPolylineIndex];
 			if (currentPolyline.Count - 1 > currentPointIndex)
 			{
 				// haven't reached the end of the current line

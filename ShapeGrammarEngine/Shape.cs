@@ -178,6 +178,7 @@ namespace ShapeGrammarEngine
 
 				solutions.AddRange(this.SolveLabelingHelper(polylineGeometry, 0, 0, startingLabelsToWorkOn, startingLabelingDic));
 			}
+			// TODO: if solutions is empty, fail
 			return solutions;
 		}
 
@@ -223,7 +224,7 @@ namespace ShapeGrammarEngine
 						updatedLabelsLeftToWorkOn.Remove(l);
 						solutions.AddRange(this.SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, updatedLabelsLeftToWorkOn, moreCompleteSolution));
 					}
-					return solutions;
+					return solutions; // this may be empty, signaling a faliure for this particular partial solution
 				}
 				else
 				{
@@ -239,7 +240,7 @@ namespace ShapeGrammarEngine
 						updatedLabelsLeftToWorkOn.Remove(l);
 						solutions.AddRange(this.SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, updatedLabelsLeftToWorkOn, moreCompleteSolution));
 					}
-					return solutions;
+					return solutions;  // this may be empty, signaling a faliure for this particular partial solution
 				}
 			}
 			else
