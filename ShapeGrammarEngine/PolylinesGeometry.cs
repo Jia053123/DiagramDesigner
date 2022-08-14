@@ -247,7 +247,16 @@ namespace ShapeGrammarEngine
 			return false;
 		}
 
-		
+		/// <summary>
+		/// get a point in the polylines geometry by index
+		/// </summary>
+		/// <param name="pointIndex"> index of the point on the polyline </param>
+		/// <param name="polylineIndex"> index of the polyline in the geometry </param>
+		/// <returns> the point specified by index;  </returns>
+		public Point GetPointByIndex(int pointIndex, int polylineIndex)
+		{
+			return this.polylines[polylineIndex][pointIndex];
+		}
 
 		/// <summary>
 		/// Find the next point index and polyline index for the next point in the polylines
