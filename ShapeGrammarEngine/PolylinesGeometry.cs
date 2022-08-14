@@ -247,6 +247,8 @@ namespace ShapeGrammarEngine
 			return false;
 		}
 
+		
+
 		/// <summary>
 		/// Find the next point index and polyline index for the next point in the polylines
 		/// </summary>
