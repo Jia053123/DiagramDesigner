@@ -324,6 +324,20 @@ namespace ShapeGrammarEngine.UnitTests
 		}
 
 		[Test]
+		public void TestFindIndexForNextPoint_InputIsAPointInGeometry_OutputTheNextPointInPolylineOrder_3()
+		{
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20), new Point(5, 10) },
+				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) }
+			});
+
+			var result = geometry1.FindIndexForNextPoint(2, 0);
+			Assert.AreEqual(0, result.nextPointIndex);
+			Assert.AreEqual(1, result.nextPolylineIndex);
+		}
+
+		[Test]
 		public void TestFindIndexForNextPoint_InputIsAtTheEndOfGeometry_SpecialOutput()
 		{
 			var geometry1 = new PolylinesGeometry(new List<List<Point>>

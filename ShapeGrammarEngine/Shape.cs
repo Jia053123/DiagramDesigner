@@ -144,12 +144,12 @@ namespace ShapeGrammarEngine
 			}
 
 			// step1: find all unique points in the polylines and check if the count is the same as the count of labels in shape
-			var uniqueCoordinates = new HashSet<Point>();
+			var uniqueCoordinatesInGeo = new HashSet<Point>();
 			foreach (List<Point> pl in polylineGeometry.PolylinesCopy)
 			{
-				uniqueCoordinates.UnionWith(pl);
+				uniqueCoordinatesInGeo.UnionWith(pl);
 			}
-			if (uniqueCoordinates.Count != this.GetAllLabels().Count)
+			if (uniqueCoordinatesInGeo.Count != this.GetAllLabels().Count)
 			{
 				throw new ShapeMatchFailureException("input geometry has more unique points than there are labels in this shape");
 			}
@@ -196,7 +196,7 @@ namespace ShapeGrammarEngine
 			if (nextIndexes.nextPointIndex != -1 && nextIndexes.nextPolylineIndex != -1)
 			{
 				// not done going through the whole geometry yet
-				Point nextPoint = polylinesGeometryToSolve.GetPointByIndex(nextIndexes.nextPolylineIndex, nextIndexes.nextPointIndex);
+				Point nextPoint = polylinesGeometryToSolve.GetPointByIndex(nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex);
 				if (partialSolution.GetAllPoints().Contains(nextPoint))
 				{
 					// but the next point is already assigned
