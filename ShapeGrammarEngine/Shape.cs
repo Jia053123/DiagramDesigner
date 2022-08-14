@@ -191,7 +191,12 @@ namespace ShapeGrammarEngine
 		/// <param name="labelsLeftToWorkOn"></param>
 		/// <param name="partialSolution"> cannot be null; if there is no partial solution this should be empty </param>
 		/// <returns></returns>
-		private List<LabelingDictionary> SolveLabelingHelper(PolylinesGeometry polylinesGeometryToSolve, int currentPointIndex, int currentPolylineIndex, HashSet<int> labelsLeftToWorkOn, LabelingDictionary partialSolution)
+		private List<LabelingDictionary> SolveLabelingHelper(
+			PolylinesGeometry polylinesGeometryToSolve, 
+			int currentPointIndex, 
+			int currentPolylineIndex, 
+			HashSet<int> labelsLeftToWorkOn, 
+			LabelingDictionary partialSolution)
 		{
 			var nextIndexes = polylinesGeometryToSolve.FindIndexForNextPoint(currentPointIndex, currentPolylineIndex);
 			if (nextIndexes.nextPointIndex != -1 && nextIndexes.nextPolylineIndex != -1)

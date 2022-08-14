@@ -363,7 +363,43 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestSolveLabeling_NullOrEmptyPartialSolution_ContinuousLoop_OutputCorrectLabeling_1()
+		public void TestSolveLabeling_NullPartialSolution_ContinuousLoop_OutputCorrectLabeling()
+		{
+			var shape1 = new Shape(new HashSet<Connection>
+			{
+				new Connection(0, 4)
+			});
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
+			{
+				new List<Point> {new Point(-5, 2), new Point(20, 20)}
+			});
+
+			var result = shape1.SolveLabeling(geometry1, null);
+			Assert.AreEqual(2, result.Count);
+
+			var doesSolutionExist1 = false;
+			var doesSolutionExist2 = false;
+			for (int i = 0; i < 2; i++)
+			{
+				Assert.AreEqual(2, result[i].Count);
+
+				if ((0 == result[i].GetLabelByPoint(new Point(-5, 2))) &&
+					(4 == result[i].GetLabelByPoint(new Point(20, 20)))) 
+				{
+					doesSolutionExist1 = true;
+				}
+				if ((4 == result[i].GetLabelByPoint(new Point(-5, 2))) &&
+					(0 == result[i].GetLabelByPoint(new Point(20, 20))))
+				{
+					doesSolutionExist2 = true;
+				}
+			}
+			Assert.IsTrue(doesSolutionExist1);
+			Assert.IsTrue(doesSolutionExist2);
+		}
+
+		[Test]
+		public void TestSolveLabeling_NullOrEmptyPartialSolution_ContinuousLoop_OutputCorrectLabeling()
 		{
 			var shape1 = new Shape(new HashSet<Connection>
 			{
@@ -415,7 +451,7 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestSolveLabeling_NoPartialSolution_BrokenDownLoop_OutputCorrectLabeling_2()
+		public void TestSolveLabeling_NoPartialSolution_BrokenDownLoop_OutputCorrectLabeling()
 		{
 			var shape1 = new Shape(new HashSet<Connection>
 			{
