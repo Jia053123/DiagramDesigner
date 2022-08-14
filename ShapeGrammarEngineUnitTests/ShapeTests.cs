@@ -602,5 +602,32 @@ namespace ShapeGrammarEngineUnitTests
 
 			Assert.Throws<ShapeMatchFailureException>(() => shape1.SolveLabeling(geometry1, labeling1));
 		}
+
+		[Test]
+		public void TestLabelsConnectedTo_LabelNotPartOfDefinition_ThrowsArgumentException()
+		{
+			var shape1 = new Shape(new HashSet<Connection>
+			{
+				new Connection(0, 4),
+				new Connection(4, 2),
+				new Connection(2, 0)
+			});
+			Assert.Throws<ArgumentException>(() => shape1.LabelsConnectedTo(100));
+		}
+
+		[Test]
+		public void TestLabelsConnectedTo_LabelPartOfDefinition_CorrectOutput()
+		{
+			var shape1 = new Shape(new HashSet<Connection>
+			{
+				new Connection(0, 4),
+				new Connection(4, 2),
+				new Connection(2, 0)
+			});
+			var result = shape1.LabelsConnectedTo(0);
+			Assert.AreEqual(2, result.Count);
+			Assert.IsTrue(result.Contains(4));
+			Assert.IsTrue(result.Contains(2));
+		}
 	}
 }

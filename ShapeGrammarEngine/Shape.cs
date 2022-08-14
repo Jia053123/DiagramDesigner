@@ -193,8 +193,11 @@ namespace ShapeGrammarEngine
 		}
 
 		/// <summary>
-		/// 
+		/// Find all potential ways the geometry can conform with this shape, given a partial solution
 		/// </summary>
+		/// <param name="polylinesGeometryToSolve"></param>
+		/// <param name="currentPointIndex"></param>
+		/// <param name="currentPolylineIndex"></param>
 		/// <param name="pointsLeftToWorkOn"></param>
 		/// <param name="labelsLeftToWorkOn"></param>
 		/// <param name="partialSolution"> cannot be null; if there is no partial solution this should be empty </param>
@@ -282,7 +285,7 @@ namespace ShapeGrammarEngine
 		/// <param name="label"> the label to search for </param>
 		/// <returns> the list of labels connected to the input according to the shape definition. If no labels are found, return an empty list </returns>
 		/// <exception cref="ArgumentException"> throws if the input label is not part of the shape definition </exception>
-		private List<int> LabelsConnectedTo(int label)
+		internal List<int> LabelsConnectedTo(int label)
 		{
 			if (!this.GetAllLabels().Contains(label))
 			{
