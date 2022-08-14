@@ -264,20 +264,77 @@ namespace ShapeGrammarEngine.UnitTests
 			Assert.IsTrue(cs.Contains(new Connection(3, 1)));
 			Assert.IsTrue(cs.Contains(new Connection(1, 4)));
 		}
-	}
 
-	[Test]
-	public void TestFindIndexForNextPoint_InputIsAPointInGeometry_OutputTheNextPointInPolylineOrder()
-	{
-		var geometry1 = new PolylinesGeometry(new List<List<Point>>
+		[Test]
+		public void TestFindIndexForNextPoint_InputIsAPointInGeometry_OutputTheNextPointInPolylineOrder_1()
+		{
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
 			{
 				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
 				new List<Point> { new Point(5, 10), new Point(20, 20) },
 				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) }
 			});
 
-		var result = geometry1.FindIndexForNextPoint(0, 2);
-		Assert.AreEqual(1, result.nextPointIndex);
-		Assert.AreEqual(2, result.nextPolylineIndex);
+			var result = geometry1.FindIndexForNextPoint(0, 2);
+			Assert.AreEqual(1, result.nextPointIndex);
+			Assert.AreEqual(2, result.nextPolylineIndex);
+		}
+
+		[Test]
+		public void TestFindIndexForNextPoint_InputIsAPointInGeometry_OutputTheNextPointInPolylineOrder_2()
+		{
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
+				new List<Point> { new Point(5, 10), new Point(20, 20) },
+				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) }
+			});
+
+			var result = geometry1.FindIndexForNextPoint(1, 1);
+			Assert.AreEqual(0, result.nextPointIndex);
+			Assert.AreEqual(2, result.nextPolylineIndex);
+		}
+
+		[Test]
+		public void TestFindIndexForNextPoint_InputIsAtTheEndOfGeometry_SpecialOutput()
+		{
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
+				new List<Point> { new Point(5, 10), new Point(20, 20) },
+				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) }
+			});
+
+			var result = geometry1.FindIndexForNextPoint(1, 2);
+			Assert.AreEqual(-1, result.nextPointIndex);
+			Assert.AreEqual(-1, result.nextPolylineIndex);
+		}
+
+		[Test]
+		public void TestFindIndexForNextPoint_InputIsNotAPointInGeometry_Throws_1()
+		{
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
+				new List<Point> { new Point(5, 10), new Point(20, 20) },
+				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) }
+			});
+
+			Assert.Throws<ArgumentException>(() => geometry1.FindIndexForNextPoint(0, 3));
+		}
+
+
+		[Test]
+		public void TestFindIndexForNextPoint_InputIsNotAPointInGeometry_Throws_2()
+		{
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
+				new List<Point> { new Point(5, 10), new Point(20, 20) },
+				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) }
+			});
+
+			Assert.Throws<ArgumentException>(() => geometry1.FindIndexForNextPoint(2, 1));
+		}
 	}
 }

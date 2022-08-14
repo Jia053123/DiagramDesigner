@@ -246,5 +246,41 @@ namespace ShapeGrammarEngine
 		{
 			return false;
 		}
+
+		/// <summary>
+		/// Find the next point index and polyline index for the next point in the polylines
+		/// </summary>
+		/// <param name="currentPointIndex"> the index of the point on its polyline </param>
+		/// <param name="currentPolylineIndex"> the index of the polyline where the point belongs to in this geometry </param>
+		/// <returns> the two indexes for the next point; if at the end of the geometry, output (-1, -1) </returns>
+		/// <exception cref="ArgumentException"> throws when the input is not an existing point in this geometry </exception>
+		internal (int nextPointIndex, int nextPolylineIndex) FindIndexForNextPoint(int currentPointIndex, int currentPolylineIndex)
+		{
+			if (currentPolylineIndex < 0 || this.polylines.Count - 1 < currentPolylineIndex)
+			{
+				throw new ArgumentException("polyline index out of range");
+			}
+			if (currentPointIndex < 0 || this.polylines[currentPolylineIndex].Count - 1 < currentPointIndex)
+			{
+				throw new ArgumentException("point index out of range");
+			}
+
+			var currentPolyline = this.polylines[currentPointIndex];
+			if (currentPolyline.Count - 1 > currentPointIndex)
+			{
+				// haven't reached the end of the current line
+				return (currentPointIndex + 1, currentPolylineIndex);
+			}
+			else if (this.polylines.Count - 1 > currentPolylineIndex)
+			{
+				// end of the current polyline, but there are more lines
+				return (0, currentPolylineIndex + 1);
+			}
+			else
+			{
+				// end of the geometry
+				return (-1, -1);
+			}
+		}
 	}
 }
