@@ -265,4 +265,19 @@ namespace ShapeGrammarEngine.UnitTests
 			Assert.IsTrue(cs.Contains(new Connection(1, 4)));
 		}
 	}
+
+	[Test]
+	public void TestFindIndexForNextPoint_InputIsAPointInGeometry_OutputTheNextPointInPolylineOrder()
+	{
+		var geometry1 = new PolylinesGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
+				new List<Point> { new Point(5, 10), new Point(20, 20) },
+				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) }
+			});
+
+		var result = geometry1.FindIndexForNextPoint(0, 2);
+		Assert.AreEqual(1, result.nextPointIndex);
+		Assert.AreEqual(2, result.nextPolylineIndex);
+	}
 }
