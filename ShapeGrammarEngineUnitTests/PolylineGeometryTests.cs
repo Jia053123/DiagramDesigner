@@ -323,7 +323,6 @@ namespace ShapeGrammarEngine.UnitTests
 			Assert.Throws<ArgumentException>(() => geometry1.FindIndexForNextPoint(0, 3));
 		}
 
-
 		[Test]
 		public void TestFindIndexForNextPoint_InputIsNotAPointInGeometry_Throws_2()
 		{

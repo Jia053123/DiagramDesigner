@@ -254,7 +254,7 @@ namespace ShapeGrammarEngine
 		/// <param name="currentPolylineIndex"> the index of the polyline where the point belongs to in this geometry </param>
 		/// <returns> the two indexes for the next point; if at the end of the geometry, output (-1, -1) </returns>
 		/// <exception cref="ArgumentException"> throws when the input is not an existing point in this geometry </exception>
-		internal (int nextPointIndex, int nextPolylineIndex) FindIndexForNextPoint(int currentPointIndex, int currentPolylineIndex)
+		public (int nextPointIndex, int nextPolylineIndex) FindIndexForNextPoint(int currentPointIndex, int currentPolylineIndex)
 		{
 			if (currentPolylineIndex < 0 || this.polylines.Count - 1 < currentPolylineIndex)
 			{
