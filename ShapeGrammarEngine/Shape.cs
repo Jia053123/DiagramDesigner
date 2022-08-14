@@ -179,7 +179,10 @@ namespace ShapeGrammarEngine
 
 				solutions.AddRange(this.SolveLabelingHelper(polylineGeometry, 0, 0, startingLabelsToWorkOn, startingLabelingDic));
 			}
-			// TODO: if solutions is empty, fail
+			if (solutions.Count == 0)
+			{
+				throw new ShapeMatchFailureException("unable to find a labeling solution");
+			}
 			return solutions;
 		}
 
