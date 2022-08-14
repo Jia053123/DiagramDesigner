@@ -363,7 +363,7 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestSolveLabeling_NullPartialSolution_ContinuousLoop_OutputCorrectLabeling()
+		public void TestSolveLabeling_NullPartialSolution_ContinuousLoop_OutputCorrectLabeling_1()
 		{
 			var shape1 = new Shape(new HashSet<Connection>
 			{
@@ -399,7 +399,7 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestSolveLabeling_NullOrEmptyPartialSolution_ContinuousLoop_OutputCorrectLabeling()
+		public void TestSolveLabeling_NullPartialSolution_ContinuousLoop_OutputCorrectLabeling_2()
 		{
 			var shape1 = new Shape(new HashSet<Connection>
 			{
@@ -411,26 +411,6 @@ namespace ShapeGrammarEngineUnitTests
 			{
 				new List<Point> {new Point(-5, 2.1), new Point(20, 20), new Point(5, 10), new Point(-5, 2.1)}
 			});
-
-			var labeling1 = new LabelingDictionary();
-			var result1 = shape1.SolveLabeling(geometry1, labeling1);
-
-			int expectedCount1 = 6; // 024, 042, 204, 240, 420, 402
-			Assert.AreEqual(expectedCount1, result1.Count);
-
-			var doesSolutionExist1 = false;
-			for (int i = 0; i < expectedCount1; i++)
-			{
-				Assert.AreEqual(3, result1[i].Count); // for each valid solution, there are exactly 3 points to label
-
-				if ((0 == result1[i].GetLabelByPoint(new Point(-5, 2.1))) &&
-					(2 == result1[i].GetLabelByPoint(new Point(5, 10))) &&
-					(4 == result1[i].GetLabelByPoint(new Point(20, 20))))
-				{
-					doesSolutionExist1 = true;
-				}
-			}
-			Assert.IsTrue(doesSolutionExist1);
 
 			var result2 = shape1.SolveLabeling(geometry1, null);
 			Assert.AreEqual(6, result2.Count);
@@ -451,7 +431,7 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestSolveLabeling_NoPartialSolution_BrokenDownLoop_OutputCorrectLabeling()
+		public void TestSolveLabeling_EmptyPartialSolution_BrokenDownLoop_OutputCorrectLabeling()
 		{
 			var shape1 = new Shape(new HashSet<Connection>
 			{
@@ -488,7 +468,7 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestSolveLabeling_NoPartialSolution_NotLoop_OutputCorrectLabeling()
+		public void TestSolveLabeling_EmptyPartialSolution_NotLoop_OutputCorrectLabeling()
 		{
 			//  5 (0,50)   2/3 (100,50)
 			//    |       | 

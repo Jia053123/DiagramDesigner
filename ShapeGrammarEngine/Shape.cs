@@ -169,7 +169,8 @@ namespace ShapeGrammarEngine
 			List<LabelingDictionary> solutions = new List<LabelingDictionary>();
 			foreach (int l in labelsToWorkOn)
 			{
-				var startingLabelingDic = partialLabelingSolution.Copy(); // create a new dic for each possible assignment for the starting Point
+				// create a new dic for each possible assignment for the starting Point
+				LabelingDictionary startingLabelingDic = partialLabelingSolution is null ? new LabelingDictionary() : partialLabelingSolution.Copy();
 				Debug.Assert(!polylineGeometry.IsEmpty());
 				startingLabelingDic.Add(polylineGeometry.GetPointByIndex(0,0), l);
 
