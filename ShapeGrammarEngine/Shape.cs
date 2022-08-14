@@ -207,7 +207,7 @@ namespace ShapeGrammarEngine
 				if (currentPolylineIndex == nextIndexes.nextPolylineIndex)
 				{
 					// still in the same polyline, so the current point and next point are connected
-					Point currentPoint = polylinesGeometryToSolve.GetPointByIndex(currentPolylineIndex, currentPointIndex);
+					Point currentPoint = polylinesGeometryToSolve.GetPointByIndex(currentPointIndex, currentPolylineIndex);
 					int currentLabel = partialSolution.GetLabelByPoint(currentPoint);
 					var connectedLabels = this.LabelsConnectedTo(currentLabel);
 					List<LabelingDictionary> solutions = new List<LabelingDictionary>();
@@ -240,7 +240,7 @@ namespace ShapeGrammarEngine
 						updatedLabelsLeftToWorkOn.Remove(l);
 						solutions.AddRange(this.SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, updatedLabelsLeftToWorkOn, moreCompleteSolution));
 					}
-					return solutions;  // this may be empty, signaling a faliure for this particular partial solution
+					return solutions;
 				}
 			}
 			else
