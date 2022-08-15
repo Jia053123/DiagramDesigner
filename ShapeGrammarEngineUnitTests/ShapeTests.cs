@@ -523,6 +523,42 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
+		public void TestSolveLabeling_EmptyPartialSolution_GometryCannotMatchWithShape_ThrowShapeMatchFailureException()
+		{
+			var shape1 = new Shape(new HashSet<Connection>
+			{
+				new Connection(0, 4),
+				new Connection(4, 2),
+				new Connection(2, 0)
+			});
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 21) },
+				new List<Point> { new Point(5, 10), new Point(20, 20) },
+				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) },
+			});
+			Assert.Throws<ShapeMatchFailureException>(() => shape1.SolveLabeling(geometry1, null));
+		}
+
+		[Test]
+		public void TestSolveLabeling_EmptyPartialSolution_DifferentConnectionsWithTheSameNumberOfPoints_ThrowShapeMatchFailureException()
+		{
+			var shape1 = new Shape(new HashSet<Connection>
+			{
+				new Connection(0, 4),
+				new Connection(4, 2),
+				new Connection(2, 0)
+			});
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
+				new List<Point> { new Point(5, 10), new Point(20, 20) },
+			});
+
+			Assert.Throws<ShapeMatchFailureException>(() => shape1.SolveLabeling(geometry1, null));
+		}
+
+		[Test]
 		public void TestSolveLabeling_PerfectPartialSolution_OutputThePartialSolution()
 		{
 			var shape1 = new Shape(new HashSet<Connection>
