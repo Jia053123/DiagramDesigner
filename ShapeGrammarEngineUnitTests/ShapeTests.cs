@@ -558,7 +558,6 @@ namespace ShapeGrammarEngineUnitTests
 			Assert.Throws<ShapeMatchFailureException>(() => shape1.SolveLabeling(geometry1, null));
 		}
 
-
 		[Test]
 		public void TestSolveLabeling_EmptyPartialSolution_DifferentConnectionsWithTheSameNumberOfPoints_MoreConnectionsThanDef_ThrowShapeMatchFailureException()
 		{

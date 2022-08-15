@@ -158,14 +158,24 @@ namespace ShapeGrammarEngine
 				}
 			}
 
-			var uniqueCoordinatesInGeo = new HashSet<Point>();
-			foreach (List<Point> pl in polylineGeometry.PolylinesCopy)
-			{
-				uniqueCoordinatesInGeo.UnionWith(pl);
-			}
+			var uniqueCoordinatesInGeo = polylineGeometry.GetAllPoints();
 			if (uniqueCoordinatesInGeo.Count != this.GetAllLabels().Count)
 			{
 				throw new ShapeMatchFailureException("input geometry has more unique points than there are labels in this shape");
+			}
+
+			var uniqueSegmentsInGeo = new HashSet<LineSegment>();
+			foreach (List<Point> polyline in polylineGeometry.PolylinesCopy)
+			{
+				for (int i = 1; i < polyline.Count; i++)
+				{
+					uniqueSegmentsInGeo.Add(new LineSegment(polyline[i - 1], polyline[i]));
+				}
+			}
+			if (uniqueSegmentsInGeo.Count != this.DefiningConnections.Count)
+			{
+				throw new ShapeMatchFailureException("the shape has different number of defining connections than there are segments in the geometry");
+				// it is important to check if the shape has more connections, because if the shape has less or euqal but different ones that can be detected by the current algorithm
 			}
 
 			var labelsLeftToWorkOn = this.GetAllLabels();
@@ -219,7 +229,7 @@ namespace ShapeGrammarEngine
 			Point nextPoint = polylinesGeometryToSolve.GetPointByIndex(nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex);
 			if (currentPolylineIndex == nextIndexes.nextPolylineIndex)
 			{
-				// still in the same polyline, so the current point and next point are connected
+				// still in the same polyline, so the current point and next point must be connected
 				Point currentPoint = polylinesGeometryToSolve.GetPointByIndex(currentPointIndex, currentPolylineIndex);
 				int currentLabel = partialSolution.GetLabelByPoint(currentPoint);
 				var connectedLabels = this.LabelsConnectedTo(currentLabel);

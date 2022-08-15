@@ -3,6 +3,7 @@ using ListOperations;
 using System;
 using System.Collections.Generic;
 using DiagramDesignerGeometryParser;
+using System.Linq;
 
 namespace ShapeGrammarEngine
 {
@@ -69,10 +70,52 @@ namespace ShapeGrammarEngine
 		/// </summary>
 		public void MergePolylines()
 		{
+			// TODO: implement this to potentially speed up shape matching
 			throw new NotImplementedException();
 		}
 
-
+		/// <summary>
+		/// Merge two polylines if possible
+		/// </summary>
+		/// <param name="polyline1"></param>
+		/// <param name="polyline2"></param>
+		/// <returns>  </returns>
+		static private List<Point> MergeTwoPolylines(List<Point> polyline1, List<Point> polyline2)
+		{
+			List<Point> mergedPolyline = new List<Point>();
+			if (polyline1.Last() == polyline2.First())
+			{
+				mergedPolyline.AddRange(polyline1);
+				mergedPolyline.AddRange(polyline2);
+				return mergedPolyline;
+			}
+			else if (polyline2.Last() == polyline1.First())
+			{
+				mergedPolyline.AddRange(polyline2);
+				mergedPolyline.AddRange(polyline1);
+				return mergedPolyline;
+			}
+			else if (polyline1.First() == polyline2.First())
+			{
+				mergedPolyline.AddRange(polyline1);
+				mergedPolyline.Reverse();
+				mergedPolyline.AddRange(polyline2);
+				return mergedPolyline;
+			}
+			else if (polyline1.Last() == polyline2.Last())
+			{
+				mergedPolyline.AddRange(polyline1);
+				var temp = new List<Point>(polyline2);
+				temp.Reverse();
+				mergedPolyline.AddRange(temp);
+				return mergedPolyline;
+			}
+			else
+			{
+				throw new ArgumentException("the two polylines cannot be merged");
+			}
+		}
+		
 		/// <summary>
 		/// Remove any polyline with less than 2 points and thereby doesn't form a line
 		/// </summary>
