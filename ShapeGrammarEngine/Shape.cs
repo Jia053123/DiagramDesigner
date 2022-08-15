@@ -158,7 +158,6 @@ namespace ShapeGrammarEngine
 				}
 			}
 
-			// step1: find all unique points in the polylines and check if the count is the same as the count of labels in shape
 			var uniqueCoordinatesInGeo = new HashSet<Point>();
 			foreach (List<Point> pl in polylineGeometry.PolylinesCopy)
 			{
@@ -169,24 +168,22 @@ namespace ShapeGrammarEngine
 				throw new ShapeMatchFailureException("input geometry has more unique points than there are labels in this shape");
 			}
 
-			// step2: generate the remaining labels to work on aside from the partial solution
-			var labelsToWorkOn = this.GetAllLabels();
+			var labelsLeftToWorkOn = this.GetAllLabels();
 			if (partialLabelingSolution is object)
 			{
-				labelsToWorkOn.ExceptWith(partialLabelingSolution.GetAllLabels());
+				labelsLeftToWorkOn.ExceptWith(partialLabelingSolution.GetAllLabels());
 			}
-			if (labelsToWorkOn.Count == 0)
+			if (labelsLeftToWorkOn.Count == 0)
 			{
 				// the input is in fact a complete solution and therefore the only solution
 				return new List<LabelingDictionary> { partialLabelingSolution.Copy() };
 			}
 
-			// step3: create a new dic for each possible assignment for the starting Point and call helper
 			if (partialLabelingSolution is null) 
 			{ 
 				partialLabelingSolution = new LabelingDictionary(); 
 			}
-			var solutions = this.SolveLabelingHelper(polylineGeometry, 0, -1, labelsToWorkOn, partialLabelingSolution); 
+			var solutions = this.SolveLabelingHelper(polylineGeometry, 0, -1, labelsLeftToWorkOn, partialLabelingSolution); // 0, -1 is a special pattern of input whose return value from FindIndexForNextPoint() is 0, 0 
 			if (solutions.Count == 0)
 			{
 				throw new ShapeMatchFailureException("unable to find a labeling solution");
@@ -258,7 +255,7 @@ namespace ShapeGrammarEngine
 			}
 			else
 			{
-				// end of the polyline, but there are still more polylines
+				// end of the polyline but there are still more polylines, or this is the very beginning of the geometry
 				// assign random remaining labels to the next point
 				if (partialSolution.GetAllPoints().Contains(nextPoint))
 				{

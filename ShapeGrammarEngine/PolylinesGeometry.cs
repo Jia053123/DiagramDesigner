@@ -277,13 +277,13 @@ namespace ShapeGrammarEngine
 			{
 				throw new ArgumentException("polyline index is -1 but point index not 0");
 			}
-			if (currentPointIndex < 0 || this.polylines[currentPolylineIndex].Count - 1 < currentPointIndex)
-			{
-				throw new ArgumentException("point index out of range");
-			}
 			if (currentPolylineIndex < -1 || this.polylines.Count - 1 < currentPolylineIndex)
 			{
 				throw new ArgumentException("polyline index out of range");
+			}
+			if (currentPointIndex < 0 || this.polylines[currentPolylineIndex].Count - 1 < currentPointIndex)
+			{
+				throw new ArgumentException("point index out of range");
 			}
 
 			var currentPolyline = this.polylines[currentPolylineIndex];
