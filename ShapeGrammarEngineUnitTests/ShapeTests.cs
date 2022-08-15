@@ -457,9 +457,9 @@ namespace ShapeGrammarEngineUnitTests
 			{
 				Assert.AreEqual(3, result1[i].Count); // for each valid solution, there are exactly 3 points to label
 
-				if ((0 == result1[i].GetLabelByPoint(new Point(-5, 2.1))) && 
-					(2 == result1[i].GetLabelByPoint(new Point(5, 10))) && 
-					(4 == result1[i].GetLabelByPoint(new Point(20, 20))))
+				if ((4 == result1[i].GetLabelByPoint(new Point(-5, 2.1))) && 
+					(0 == result1[i].GetLabelByPoint(new Point(5, 10))) && 
+					(2 == result1[i].GetLabelByPoint(new Point(20, 20))))
 				{
 					doesSolutionExist1 = true;
 				}
@@ -553,7 +553,46 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestSolveLabeling_PartialSolutionInput_OutputCompleteSolutionWithUnusedEntries()
+		public void TestSolveLabeling_PartialSolution_OutputCorrectLabeling()
+		{
+			//  5 (0,50)   2/3 (100,50)
+			//    |       | 
+			//  0 |_______| 4  (100,0)     
+			// (0,0)      |
+			//            | 3/2 (100,-50)
+			//
+			var shape1 = new Shape(new HashSet<Connection>
+			{
+				new Connection(0, 4),
+				new Connection(4, 2),
+				new Connection(3, 4),
+				new Connection(0, 5)
+			});
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(100, -50), new Point(100, 0) },
+				new List<Point> { new Point(100, 50), new Point(100, 0), new Point(0, 0) },
+				new List<Point>{ new Point(0, 0), new Point(0, 50) }
+			});
+
+			var labeling1 = new LabelingDictionary();
+			labeling1.Add(new Point(0, 0), 0);
+			labeling1.Add(new Point(100, 50), 2);
+
+			var result1 = shape1.SolveLabeling(geometry1, labeling1);
+
+			Assert.AreEqual(1, result1.Count);
+			Assert.AreEqual(5, result1[0].Count);
+
+			Assert.AreEqual(0, result1[0].GetLabelByPoint(new Point(0, 0)));
+			Assert.AreEqual(5, result1[0].GetLabelByPoint(new Point(0, 50)));
+			Assert.AreEqual(4, result1[0].GetLabelByPoint(new Point(100, 0)));
+			Assert.AreEqual(2, result1[0].GetLabelByPoint(new Point(100, 50)));
+			Assert.AreEqual(3, result1[0].GetLabelByPoint(new Point(100, -50)));
+		}
+
+		[Test]
+		public void TestSolveLabeling_PartialSolutionInputWithUnusedEntries_OutputCompleteSolutionIncludingUnusedEntries()
 		{
 			var shape1 = new Shape(new HashSet<Connection>
 			{
