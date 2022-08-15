@@ -207,11 +207,6 @@ namespace ShapeGrammarEngine
 			{
 				// not done going through the whole geometry yet
 				Point nextPoint = polylinesGeometryToSolve.GetPointByIndex(nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex);
-				if (partialSolution.GetAllPoints().Contains(nextPoint))
-				{
-					// but the next point is already assigned
-					return SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, labelsLeftToWorkOn, partialSolution); 
-				}
 
 				if (currentPolylineIndex == nextIndexes.nextPolylineIndex)
 				{
@@ -219,6 +214,21 @@ namespace ShapeGrammarEngine
 					Point currentPoint = polylinesGeometryToSolve.GetPointByIndex(currentPointIndex, currentPolylineIndex);
 					int currentLabel = partialSolution.GetLabelByPoint(currentPoint);
 					var connectedLabels = this.LabelsConnectedTo(currentLabel);
+					if (partialSolution.GetAllPoints().Contains(nextPoint))
+					{
+						// but the next point is already assigned
+						var alreadyAssignedNextLabel = partialSolution.GetLabelByPoint(nextPoint);
+						if (connectedLabels.Contains(alreadyAssignedNextLabel))
+						{
+							return SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, labelsLeftToWorkOn, partialSolution);
+						}
+						else
+						{
+							// the two labels are supposed to be connected but not. Invalid solution
+							return new List<LabelingDictionary>();
+						}
+					}
+				
 					List<LabelingDictionary> solutions = new List<LabelingDictionary>();
 					foreach (int l in connectedLabels)
 					{
@@ -228,7 +238,8 @@ namespace ShapeGrammarEngine
 						}
 						// perform assignment of nextPoint to l
 						var moreCompleteSolution = partialSolution.Copy();
-						moreCompleteSolution.Add(nextPoint, l);
+						var success = moreCompleteSolution.Add(nextPoint, l);
+						Debug.Assert(success);
 						var updatedLabelsLeftToWorkOn = new HashSet<int>(labelsLeftToWorkOn);
 						updatedLabelsLeftToWorkOn.Remove(l);
 						solutions.AddRange(this.SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, updatedLabelsLeftToWorkOn, moreCompleteSolution));
@@ -239,12 +250,18 @@ namespace ShapeGrammarEngine
 				{
 					// end of the polyline, but there are still more polylines
 					// assign random remaining labels to the next point
+					if (partialSolution.GetAllPoints().Contains(nextPoint))
+					{
+						// but the next point is already assigned
+						return SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, labelsLeftToWorkOn, partialSolution);
+					}
 					List<LabelingDictionary> solutions = new List<LabelingDictionary>();
 					foreach (int l in labelsLeftToWorkOn)
 					{
 						// perform assignment of nextPoint to l
 						var moreCompleteSolution = partialSolution.Copy();
-						moreCompleteSolution.Add(nextPoint, l);
+						var success = moreCompleteSolution.Add(nextPoint, l);
+						Debug.Assert(success);
 						var updatedLabelsLeftToWorkOn = new HashSet<int>(labelsLeftToWorkOn);
 						updatedLabelsLeftToWorkOn.Remove(l);
 						solutions.AddRange(this.SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, updatedLabelsLeftToWorkOn, moreCompleteSolution));

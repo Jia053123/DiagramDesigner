@@ -7,6 +7,7 @@ namespace ShapeGrammarEngine
 {
 	/// <summary>
 	/// Stores the one to one mapping between the points in a geometry and their corresponding shape labels. 
+	/// The labels and points are guaranteed to be unique
 	/// </summary>
 	public class LabelingDictionary
 	{
