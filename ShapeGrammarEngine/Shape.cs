@@ -169,7 +169,7 @@ namespace ShapeGrammarEngine
 				throw new ShapeMatchFailureException("input geometry has more unique points than there are labels in this shape");
 			}
 
-			// step2: generate the remaining coordinates and labels to match aside from the partial solution
+			// step2: generate the remaining labels to work on aside from the partial solution
 			var labelsToWorkOn = this.GetAllLabels();
 			if (partialLabelingSolution is object)
 			{
@@ -181,10 +181,10 @@ namespace ShapeGrammarEngine
 				return new List<LabelingDictionary> { partialLabelingSolution.Copy() };
 			}
 
+			// step3: create a new dic for each possible assignment for the starting Point and call helper
 			List<LabelingDictionary> solutions = new List<LabelingDictionary>();
 			foreach (int l in labelsToWorkOn)
 			{
-				// create a new dic for each possible assignment for the starting Point
 				LabelingDictionary startingLabelingDic = partialLabelingSolution is null ? new LabelingDictionary() : partialLabelingSolution.Copy();
 				Debug.Assert(!polylineGeometry.IsEmpty());
 				startingLabelingDic.Add(polylineGeometry.GetPointByIndex(0, 0), l);
