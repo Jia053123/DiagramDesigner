@@ -202,24 +202,44 @@ namespace ShapeGrammarEngine
 
 		private List<Connection> SortConnectionsToAddByCertainty(HashSet<Connection> connectionsToAdd, PolylinesGeometry geometryToModify, LabelingDictionary labelingForGeometryToModify)
 		{
+			// notice most scores are negative
 			var connectionScorePairs = new List<Tuple<Connection, double>>();
 			foreach (Connection connectionToAdd in connectionsToAdd)
 			{
-				connectionScorePairs.Add(new Tuple<Connection, double>(connectionToAdd, double.NegativeInfinity));
-			}
-
-			foreach (Connection connectionToAdd in connectionsToAdd)
-			{
-
 				if (labelingForGeometryToModify.GetAllLabels().Contains(connectionToAdd.LabelOfFirstNode) &&
 					labelingForGeometryToModify.GetAllLabels().Contains(connectionToAdd.LabelOfSecondNode))
 				{
 					// both endpoints already exist: simply connect the existing points
-
+					connectionScorePairs.Add(new Tuple<Connection, double>(connectionToAdd, double.PositiveInfinity)); // give the highest possible score
 				}
-
+				else if (labelingForGeometryToModify.GetAllLabels().Contains(connectionToAdd.LabelOfFirstNode) &&
+					!labelingForGeometryToModify.GetAllLabels().Contains(connectionToAdd.LabelOfSecondNode))
+				{
+					// only endpoint of the first label exists
+					var labelForExistingPoint = connectionToAdd.LabelOfFirstNode;
+					var labelForPointToAssign = connectionToAdd.LabelOfSecondNode;
+					var score = this.CalculateDifferenceConsistancyScoreForEachConnectionInApplicationRecord(labelForExistingPoint, labelForPointToAssign, out _).Max();
+					connectionScorePairs.Add(new Tuple<Connection, double>(connectionToAdd, score));
+				}
+				else if (!labelingForGeometryToModify.GetAllLabels().Contains(connectionToAdd.LabelOfFirstNode) &&
+					labelingForGeometryToModify.GetAllLabels().Contains(connectionToAdd.LabelOfSecondNode))
+				{
+					// only endpoint of the second label exists
+					var labelForExistingPoint = connectionToAdd.LabelOfSecondNode;
+					var labelForPointToAssign = connectionToAdd.LabelOfFirstNode;
+					var score = this.CalculateDifferenceConsistancyScoreForEachConnectionInApplicationRecord(labelForExistingPoint, labelForPointToAssign, out _).Max();
+					connectionScorePairs.Add(new Tuple<Connection, double>(connectionToAdd, score));
+				}
+				else
+				{
+					// neither endpoints exist yet
+					connectionScorePairs.Add(new Tuple<Connection, double>(connectionToAdd, double.NegativeInfinity)); // give the lowest possible score
+				}
 			}
-			throw new NotImplementedException();
+
+			// sort by score
+			List<Connection> sortedConnections = connectionScorePairs.OrderByDescending(p => p.Item2).Select(p => p.Item1).ToList();
+			return sortedConnections;
 		}
 
 		/// <summary>
@@ -235,14 +255,9 @@ namespace ShapeGrammarEngine
 				throw new ArgumentException("labelingForGeometryToModify does not cover every point in geometryToModify");
 			}
 
+			List<Connection> sortedConnectionsToAdd = this.SortConnectionsToAddByCertainty(connectionsToAdd, geometryToModify, labelingForGeometryToModify);
 
-
-			//List<Connection> sortedConnectionsToAdd = this.SortConnectionsToAddByCertainty(connectionsToAdd, geometryToModify, labelingForGeometryToModify);
-
-
-
-
-			var connectionsToAddQueue = new Queue<Connection>(connectionsToAdd);
+			var connectionsToAddQueue = new Queue<Connection>(sortedConnectionsToAdd); // used to be just connectionsToAdd
 
 			while (connectionsToAddQueue.Count > 0)
 			{
