@@ -77,9 +77,6 @@ namespace ShapeGrammarEngine
 		/// <summary>
 		/// Merge two polylines if possible
 		/// </summary>
-		/// <param name="polyline1"></param>
-		/// <param name="polyline2"></param>
-		/// <returns>  </returns>
 		static private List<Point> MergeTwoPolylines(List<Point> polyline1, List<Point> polyline2)
 		{
 			List<Point> mergedPolyline = new List<Point>();

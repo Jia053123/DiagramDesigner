@@ -193,7 +193,7 @@ namespace ShapeGrammarEngine
 			{ 
 				partialLabelingSolution = new LabelingDictionary(); 
 			}
-			var solutions = this.SolveLabelingHelper(polylineGeometry, 0, -1, labelsLeftToWorkOn, partialLabelingSolution); // 0, -1 is a special pattern of input whose return value from FindIndexForNextPoint() is 0, 0 
+			var solutions = this.RunSolveLabelingHelperFromBeginning(polylineGeometry, labelsLeftToWorkOn, partialLabelingSolution);
 			if (solutions.Count == 0)
 			{
 				throw new ShapeMatchFailureException("unable to find a labeling solution");
@@ -201,15 +201,15 @@ namespace ShapeGrammarEngine
 			return solutions;
 		}
 
+		private List<LabelingDictionary> RunSolveLabelingHelperFromBeginning(PolylinesGeometry polylinesGeometryToSolve, HashSet<int> labelsLeftToWorkOn, LabelingDictionary partialSolution)
+		{
+			return this.SolveLabelingHelper(polylinesGeometryToSolve, 0, -1, labelsLeftToWorkOn, partialSolution);  // 0, -1 is a special pattern of input whose return value from FindIndexForNextPoint() is 0, 0 
+		}
+
 		/// <summary>
 		/// Find all potential ways the geometry can conform with this shape, given a partial solution
 		/// </summary>
-		/// <param name="polylinesGeometryToSolve"></param>
-		/// <param name="currentPointIndex"></param>
-		/// <param name="currentPolylineIndex"></param>
-		/// <param name="labelsLeftToWorkOn"></param>
 		/// <param name="partialSolution"> cannot be null; if there is no partial solution this should be empty </param>
-		/// <returns></returns>
 		private List<LabelingDictionary> SolveLabelingHelper(
 			PolylinesGeometry polylinesGeometryToSolve,
 			int currentPointIndex,
