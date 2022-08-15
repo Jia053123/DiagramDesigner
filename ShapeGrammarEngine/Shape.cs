@@ -153,7 +153,7 @@ namespace ShapeGrammarEngine
 					if ((allLabels.Contains(label) && !allPoints.Contains(point)) ||
 					 (!allLabels.Contains(label) && allPoints.Contains(point)))
 					{
-						throw new ShapeMatchFailureException("partialLabelingSolution does not conform with shape and polylineGeometry");
+						throw new ShapeMatchFailureException("partialLabelingSolution does not conform with both shape and polylineGeometry");
 					}
 				}
 			}
@@ -230,7 +230,7 @@ namespace ShapeGrammarEngine
 					var connectedLabels = this.LabelsConnectedTo(currentLabel);
 					if (partialSolution.GetAllPoints().Contains(nextPoint))
 					{
-						// but the next point is already assigned
+						// the next point is already assigned
 						var alreadyAssignedNextLabel = partialSolution.GetLabelByPoint(nextPoint);
 						if (connectedLabels.Contains(alreadyAssignedNextLabel))
 						{
@@ -242,19 +242,21 @@ namespace ShapeGrammarEngine
 							return new List<LabelingDictionary>();
 						}
 					}
-				
-					List<LabelingDictionary> solutions = new List<LabelingDictionary>();
-					foreach (int l in connectedLabels)
+					else
 					{
-						if (!labelsLeftToWorkOn.Contains(l))
+						// the next point is yet to be assigned
+						List<LabelingDictionary> solutions = new List<LabelingDictionary>();
+						foreach (int l in connectedLabels)
 						{
-							continue; // this label is already assigned; skip
+							if (!labelsLeftToWorkOn.Contains(l))
+							{
+								continue; // this label is not available; skip
+							}
+							var r = AssignPointToLabel(nextPoint, l);
+							solutions.AddRange(this.SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, r.updatedLabelsLeftToWorkOn, r.moreCompleteSolution));
 						}
-						// perform assignment of nextPoint to l
-						var r = AssignPointToLabel(nextPoint, l);
-						solutions.AddRange(this.SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, r.updatedLabelsLeftToWorkOn, r.moreCompleteSolution));
+						return solutions; // this may be empty, signaling a faliure for this particular partial solution
 					}
-					return solutions; // this may be empty, signaling a faliure for this particular partial solution
 				}
 				else
 				{
@@ -262,13 +264,12 @@ namespace ShapeGrammarEngine
 					// assign random remaining labels to the next point
 					if (partialSolution.GetAllPoints().Contains(nextPoint))
 					{
-						// but the next point is already assigned
+						// the next point is already assigned
 						return SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, labelsLeftToWorkOn, partialSolution);
 					}
 					List<LabelingDictionary> solutions = new List<LabelingDictionary>();
 					foreach (int l in labelsLeftToWorkOn)
 					{
-						// perform assignment of nextPoint to l
 						var r = AssignPointToLabel(nextPoint, l);
 						solutions.AddRange(this.SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, r.updatedLabelsLeftToWorkOn, r.moreCompleteSolution));
 					}
