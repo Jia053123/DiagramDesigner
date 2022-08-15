@@ -12,7 +12,7 @@ namespace ShapeGrammarEngine
 	/// potentially be applied to it. 
 	/// In this project, a shape is defined as a graph that specifies the connections among the points
 	/// </summary>
-	public readonly struct Shape: IEquatable<Shape>
+	public readonly struct Shape : IEquatable<Shape>
 	{
 		/// <summary>
 		/// A shape is defined as a graph: each tuple in the set represents a connection in the graph between two nodes. 
@@ -78,7 +78,7 @@ namespace ShapeGrammarEngine
 				allLabels.Sort();
 				nextNewLabel = allLabels.Last() + 1;
 			}
-			
+
 			foreach (List<Point> polyline in polylineGeometry.PolylinesCopy)
 			{
 				foreach (Point p in polyline)
@@ -92,7 +92,7 @@ namespace ShapeGrammarEngine
 			}
 
 			var connections = polylineGeometry.ConvertToConnections(labelDictionary);
-		
+
 			var newShape = new Shape(connections);
 			Debug.Assert(newShape.ConformsWithGeometry(polylineGeometry, out _));
 			newShapeLabeling = labelDictionary;
@@ -187,7 +187,7 @@ namespace ShapeGrammarEngine
 				// create a new dic for each possible assignment for the starting Point
 				LabelingDictionary startingLabelingDic = partialLabelingSolution is null ? new LabelingDictionary() : partialLabelingSolution.Copy();
 				Debug.Assert(!polylineGeometry.IsEmpty());
-				startingLabelingDic.Add(polylineGeometry.GetPointByIndex(0,0), l);
+				startingLabelingDic.Add(polylineGeometry.GetPointByIndex(0, 0), l);
 
 				var startingLabelsToWorkOn = new HashSet<int>(labelsToWorkOn);
 				startingLabelsToWorkOn.Remove(l);
@@ -211,76 +211,74 @@ namespace ShapeGrammarEngine
 		/// <param name="partialSolution"> cannot be null; if there is no partial solution this should be empty </param>
 		/// <returns></returns>
 		private List<LabelingDictionary> SolveLabelingHelper(
-			PolylinesGeometry polylinesGeometryToSolve, 
-			int currentPointIndex, 
-			int currentPolylineIndex, 
-			HashSet<int> labelsLeftToWorkOn, 
+			PolylinesGeometry polylinesGeometryToSolve,
+			int currentPointIndex,
+			int currentPolylineIndex,
+			HashSet<int> labelsLeftToWorkOn,
 			LabelingDictionary partialSolution)
 		{
 			var nextIndexes = polylinesGeometryToSolve.FindIndexForNextPoint(currentPointIndex, currentPolylineIndex);
-			if (nextIndexes.nextPointIndex != -1 && nextIndexes.nextPolylineIndex != -1)
+			if (nextIndexes.nextPointIndex == -1 && nextIndexes.nextPolylineIndex == -1)
 			{
-				// not done going through the whole geometry yet
-				Point currentPoint = polylinesGeometryToSolve.GetPointByIndex(currentPointIndex, currentPolylineIndex);
-				int currentLabel = partialSolution.GetLabelByPoint(currentPoint);
-				Point nextPoint = polylinesGeometryToSolve.GetPointByIndex(nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex);
-				if (currentPolylineIndex == nextIndexes.nextPolylineIndex)
+				// done with the polylinesGeometry
+				Debug.Assert(labelsLeftToWorkOn.Count == 0);
+				return new List<LabelingDictionary> { partialSolution };
+			}
+
+			// not done going through the whole geometry yet
+			Point currentPoint = polylinesGeometryToSolve.GetPointByIndex(currentPointIndex, currentPolylineIndex);
+			int currentLabel = partialSolution.GetLabelByPoint(currentPoint);
+			Point nextPoint = polylinesGeometryToSolve.GetPointByIndex(nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex);
+			if (currentPolylineIndex == nextIndexes.nextPolylineIndex)
+			{
+				// still in the same polyline, so the current point and next point are connected
+				var connectedLabels = this.LabelsConnectedTo(currentLabel);
+				if (partialSolution.GetAllPoints().Contains(nextPoint))
 				{
-					// still in the same polyline, so the current point and next point are connected
-					var connectedLabels = this.LabelsConnectedTo(currentLabel);
-					if (partialSolution.GetAllPoints().Contains(nextPoint))
+					// the next point is already assigned
+					var alreadyAssignedNextLabel = partialSolution.GetLabelByPoint(nextPoint);
+					if (connectedLabels.Contains(alreadyAssignedNextLabel))
 					{
-						// the next point is already assigned
-						var alreadyAssignedNextLabel = partialSolution.GetLabelByPoint(nextPoint);
-						if (connectedLabels.Contains(alreadyAssignedNextLabel))
-						{
-							return SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, labelsLeftToWorkOn, partialSolution);
-						}
-						else
-						{
-							// the two labels are supposed to be connected but not. Invalid solution
-							return new List<LabelingDictionary>();
-						}
+						return SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, labelsLeftToWorkOn, partialSolution);
 					}
 					else
 					{
-						// the next point is yet to be assigned
-						List<LabelingDictionary> solutions = new List<LabelingDictionary>();
-						foreach (int l in connectedLabels)
-						{
-							if (!labelsLeftToWorkOn.Contains(l))
-							{
-								continue; // this label is not available; skip
-							}
-							var r = AssignPointToLabel(nextPoint, l);
-							solutions.AddRange(this.SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, r.updatedLabelsLeftToWorkOn, r.moreCompleteSolution));
-						}
-						return solutions; // this may be empty, signaling a faliure for this particular partial solution
+						// the two labels are supposed to be connected but not. Invalid solution
+						return new List<LabelingDictionary>();
 					}
 				}
 				else
 				{
-					// end of the polyline, but there are still more polylines
-					// assign random remaining labels to the next point
-					if (partialSolution.GetAllPoints().Contains(nextPoint))
-					{
-						// the next point is already assigned
-						return SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, labelsLeftToWorkOn, partialSolution);
-					}
+					// the next point is yet to be assigned
 					List<LabelingDictionary> solutions = new List<LabelingDictionary>();
-					foreach (int l in labelsLeftToWorkOn)
+					foreach (int l in connectedLabels)
 					{
+						if (!labelsLeftToWorkOn.Contains(l))
+						{
+							continue; // this label is not available; skip
+						}
 						var r = AssignPointToLabel(nextPoint, l);
 						solutions.AddRange(this.SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, r.updatedLabelsLeftToWorkOn, r.moreCompleteSolution));
 					}
-					return solutions;
+					return solutions; // this may be empty, signaling a faliure for this particular partial solution
 				}
 			}
 			else
 			{
-				// done with the polylinesGeometry
-				Debug.Assert(labelsLeftToWorkOn.Count == 0);
-				return new List<LabelingDictionary>{partialSolution};
+				// end of the polyline, but there are still more polylines
+				// assign random remaining labels to the next point
+				if (partialSolution.GetAllPoints().Contains(nextPoint))
+				{
+					// the next point is already assigned
+					return SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, labelsLeftToWorkOn, partialSolution);
+				}
+				List<LabelingDictionary> solutions = new List<LabelingDictionary>();
+				foreach (int l in labelsLeftToWorkOn)
+				{
+					var r = AssignPointToLabel(nextPoint, l);
+					solutions.AddRange(this.SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, r.updatedLabelsLeftToWorkOn, r.moreCompleteSolution));
+				}
+				return solutions;
 			}
 
 			(LabelingDictionary moreCompleteSolution, HashSet<int> updatedLabelsLeftToWorkOn) AssignPointToLabel(Point point, int label)
@@ -294,6 +292,7 @@ namespace ShapeGrammarEngine
 				return (moreCompleteSolution, updatedLabelsLeftToWorkOn);
 			}
 		}
+	
 
 		/// <summary>
 		/// find the labels connected to the input in this shape definition
