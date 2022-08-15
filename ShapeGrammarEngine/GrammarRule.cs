@@ -197,9 +197,29 @@ namespace ShapeGrammarEngine
 				resultPolylines.EraseSegmentByPoints(endPoint1, endPoint2);
 			}
 
-			// TODO: check for intersections and overlaps?
-
 			return resultPolylines;
+		}
+
+		private List<Connection> SortConnectionsToAddByCertainty(HashSet<Connection> connectionsToAdd, PolylinesGeometry geometryToModify, LabelingDictionary labelingForGeometryToModify)
+		{
+			var connectionScorePairs = new List<Tuple<Connection, double>>();
+			foreach (Connection connectionToAdd in connectionsToAdd)
+			{
+				connectionScorePairs.Add(new Tuple<Connection, double>(connectionToAdd, double.NegativeInfinity));
+			}
+
+			foreach (Connection connectionToAdd in connectionsToAdd)
+			{
+
+				if (labelingForGeometryToModify.GetAllLabels().Contains(connectionToAdd.LabelOfFirstNode) &&
+					labelingForGeometryToModify.GetAllLabels().Contains(connectionToAdd.LabelOfSecondNode))
+				{
+					// both endpoints already exist: simply connect the existing points
+
+				}
+
+			}
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -214,6 +234,14 @@ namespace ShapeGrammarEngine
 			{
 				throw new ArgumentException("labelingForGeometryToModify does not cover every point in geometryToModify");
 			}
+
+
+
+			//List<Connection> sortedConnectionsToAdd = this.SortConnectionsToAddByCertainty(connectionsToAdd, geometryToModify, labelingForGeometryToModify);
+
+
+
+
 			var connectionsToAddQueue = new Queue<Connection>(connectionsToAdd);
 
 			while (connectionsToAddQueue.Count > 0)
@@ -277,7 +305,6 @@ namespace ShapeGrammarEngine
 					var labelForAExistingPoint = labelingForGeometryToModify.GetAllLabels().First(); // just pick a random existing point
 					var labelForThePointOfFirstNode = connectionToAdd.LabelOfFirstNode;
 
-					//Point existingPoint = labelingForGeometryToModify.GetPointByLabel(labelForAExistingPoint);
 					Point assignedPointOfFirstNode = this.AssignNewPointByLearning(labelingForGeometryToModify, labelForAExistingPoint, labelForThePointOfFirstNode);
 
 					// Step2: Add the assignedPointOfFirstNode and its label into the labelForExistingPoint in advance
@@ -330,6 +357,36 @@ namespace ShapeGrammarEngine
 				throw new ArgumentException("labelForPointToAssign not in right hand shape");
 			}
 
+			List<List<(double referenceValue, double assignedValue)>> referenceAndAssignedValueSummaryForEachConnectionForEachRecord;
+			var scoreForEachConnection = this.CalculateDifferenceConsistancyScoreForEachConnectionInApplicationRecord(labelForPointFrom, labelForPointTowards, out referenceAndAssignedValueSummaryForEachConnectionForEachRecord);
+
+			// Step3: use the connection with the highest score as reference to assign this angle
+			var connections = new List<Connection>(this.LeftHandShape.DefiningConnections);
+
+			var chosenConnectionIndex = scoreForEachConnection.IndexOf(scoreForEachConnection.Max());
+			var chosenConnection = connections[chosenConnectionIndex];
+			var referencePointFrom = newGeometryLabeling.GetPointByLabel(chosenConnection.LabelOfFirstNode);
+			var referencePointTo = newGeometryLabeling.GetPointByLabel(chosenConnection.LabelOfSecondNode);
+			var referenceAngle = referencePointFrom.AngleTowardsPoint(referencePointTo);
+			var referenceAndAssignedValueSummaryForChosenConnectionForEachRecord = referenceAndAssignedValueSummaryForEachConnectionForEachRecord[chosenConnectionIndex];
+
+			var assignedAngle = GrammarRule.AssignValueBasedOnPastOccurancesByDifference(referenceAngle, referenceAndAssignedValueSummaryForChosenConnectionForEachRecord);
+			while (assignedAngle > Math.PI)
+			{
+				assignedAngle -= Math.PI * 2;
+			}
+			while (assignedAngle < -1 * Math.PI)
+			{
+				assignedAngle += Math.PI * 2;
+			}
+			return assignedAngle;
+		}
+
+		private List<double> CalculateDifferenceConsistancyScoreForEachConnectionInApplicationRecord(
+			int labelForPointFrom, 
+			int labelForPointTowards, 
+			out List<List<(double referenceValue, double assignedValue)>> referenceAndAssignedValueSummaryForEachConnectionForEachRecord)
+		{
 			// Step1: make a list of scores for each connection 
 			var connections = new List<Connection>(this.LeftHandShape.DefiningConnections);
 			var scoreForEachConnection = new List<double>();
@@ -339,7 +396,7 @@ namespace ShapeGrammarEngine
 			}
 
 			// Step2: go through application history to assign a score for each connection
-			var referenceAndAssignedValueSummaryForEachConnectionForEachRecord = new List<List<(double referenceValue, double assignedValue)>>();
+			referenceAndAssignedValueSummaryForEachConnectionForEachRecord = new List<List<(double referenceValue, double assignedValue)>>();
 			for (int i = 0; i < connections.Count; i++)
 			{
 				var connection = connections[i];
@@ -360,25 +417,7 @@ namespace ShapeGrammarEngine
 				}
 				scoreForEachConnection[i] = GrammarRule.CalculateScoreForOneConnectionByDifference(referenceAndAssignedValueSummaryForEachConnectionForEachRecord[i]);
 			}
-
-			// Step3: use the connection with the highest score as reference to assign this angle
-			var chosenConnectionIndex = scoreForEachConnection.IndexOf(scoreForEachConnection.Max());
-			var chosenConnection = connections[chosenConnectionIndex];
-			var referencePointFrom = newGeometryLabeling.GetPointByLabel(chosenConnection.LabelOfFirstNode);
-			var referencePointTo = newGeometryLabeling.GetPointByLabel(chosenConnection.LabelOfSecondNode);
-			var referenceAngle = referencePointFrom.AngleTowardsPoint(referencePointTo);
-			var referenceAndAssignedValueSummaryForChosenConnectionForEachRecord = referenceAndAssignedValueSummaryForEachConnectionForEachRecord[chosenConnectionIndex];
-
-			var assignedAngle = GrammarRule.AssignValueBasedOnPastOccurancesByDifference(referenceAngle, referenceAndAssignedValueSummaryForChosenConnectionForEachRecord);
-			while (assignedAngle > Math.PI)
-			{
-				assignedAngle -= Math.PI * 2;
-			}
-			while (assignedAngle < -1 * Math.PI)
-			{
-				assignedAngle += Math.PI * 2;
-			}
-			return assignedAngle;
+			return scoreForEachConnection;
 		}
 
 		/// <summary>
