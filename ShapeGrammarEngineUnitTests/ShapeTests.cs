@@ -541,7 +541,7 @@ namespace ShapeGrammarEngineUnitTests
 		}
 
 		[Test]
-		public void TestSolveLabeling_EmptyPartialSolution_DifferentConnectionsWithTheSameNumberOfPoints_ThrowShapeMatchFailureException()
+		public void TestSolveLabeling_EmptyPartialSolution_DifferentConnectionsWithTheSameNumberOfPoints_LessConnectionsThanDef_ThrowShapeMatchFailureException()
 		{
 			var shape1 = new Shape(new HashSet<Connection>
 			{
@@ -552,7 +552,29 @@ namespace ShapeGrammarEngineUnitTests
 			var geometry1 = new PolylinesGeometry(new List<List<Point>>
 			{
 				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
+				new List<Point> { new Point(5, 10), new Point(20, 20) }
+			});
+
+			Assert.Throws<ShapeMatchFailureException>(() => shape1.SolveLabeling(geometry1, null));
+		}
+
+
+		[Test]
+		public void TestSolveLabeling_EmptyPartialSolution_DifferentConnectionsWithTheSameNumberOfPoints_MoreConnectionsThanDef_ThrowShapeMatchFailureException()
+		{
+			var shape1 = new Shape(new HashSet<Connection>
+			{
+				new Connection(0, 4),
+				new Connection(4, 2),
+				new Connection(1, 2),
+				new Connection(1, 0)
+			});
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
 				new List<Point> { new Point(5, 10), new Point(20, 20) },
+				new List<Point> { new Point(5, 10), new Point(4, 10), new Point(-5, 2.1) },
+				new List<Point> { new Point(20, 20), new Point(4, 10)}
 			});
 
 			Assert.Throws<ShapeMatchFailureException>(() => shape1.SolveLabeling(geometry1, null));
