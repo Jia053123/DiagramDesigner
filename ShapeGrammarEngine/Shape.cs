@@ -202,6 +202,14 @@ namespace ShapeGrammarEngine
 			HashSet<int> labelsLeftToWorkOn, 
 			LabelingDictionary partialSolution)
 		{
+			foreach (int l in partialSolution.GetAllLabels())
+			{
+				if (!this.GetAllLabels().Contains(l))
+				{
+					return new List<LabelingDictionary>();
+				}
+			}
+
 			var nextIndexes = polylinesGeometryToSolve.FindIndexForNextPoint(currentPointIndex, currentPolylineIndex);
 			if (nextIndexes.nextPointIndex != -1 && nextIndexes.nextPolylineIndex != -1)
 			{
@@ -287,7 +295,7 @@ namespace ShapeGrammarEngine
 		{
 			if (!this.GetAllLabels().Contains(label))
 			{
-				throw new ArgumentException();
+				throw new ArgumentException("the input label is not found in definition");
 			}
 
 			var labelsConnectedTo = new List<int>();
