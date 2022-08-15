@@ -260,21 +260,30 @@ namespace ShapeGrammarEngine
 		}
 
 		/// <summary>
-		/// Find the next point index and polyline index for the next point in the polylines
+		/// Find the next point index and polyline index for the next point in the polylines; 
+		/// If the input is 0, -1, output (0, 0)
 		/// </summary>
 		/// <param name="currentPointIndex"> the index of the point on its polyline </param>
 		/// <param name="currentPolylineIndex"> the index of the polyline where the point belongs to in this geometry </param>
-		/// <returns> the two indexes for the next point; if at the end of the geometry, output (-1, -1) </returns>
-		/// <exception cref="ArgumentException"> throws when the input is not an existing point in this geometry </exception>
+		/// <returns> the two indexes for the next point on the geometry; if at the end of the geometry, output (-1, -1) </returns>
+		/// <exception cref="ArgumentException"> throws when the input is not an existing point in this geometry and not 0, -1 </exception>
 		public (int nextPointIndex, int nextPolylineIndex) FindIndexForNextPoint(int currentPointIndex, int currentPolylineIndex)
 		{
-			if (currentPolylineIndex < 0 || this.polylines.Count - 1 < currentPolylineIndex)
+			if (currentPointIndex == 0 && currentPolylineIndex == -1)
 			{
-				throw new ArgumentException("polyline index out of range");
+				return (0, 0);
+			}
+			if (currentPointIndex != 0 && currentPolylineIndex == -1)
+			{
+				throw new ArgumentException("polyline index is -1 but point index not 0");
 			}
 			if (currentPointIndex < 0 || this.polylines[currentPolylineIndex].Count - 1 < currentPointIndex)
 			{
 				throw new ArgumentException("point index out of range");
+			}
+			if (currentPolylineIndex < -1 || this.polylines.Count - 1 < currentPolylineIndex)
+			{
+				throw new ArgumentException("polyline index out of range");
 			}
 
 			var currentPolyline = this.polylines[currentPolylineIndex];

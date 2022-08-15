@@ -182,18 +182,11 @@ namespace ShapeGrammarEngine
 			}
 
 			// step3: create a new dic for each possible assignment for the starting Point and call helper
-			List<LabelingDictionary> solutions = new List<LabelingDictionary>();
-			foreach (int l in labelsToWorkOn)
-			{
-				LabelingDictionary startingLabelingDic = partialLabelingSolution is null ? new LabelingDictionary() : partialLabelingSolution.Copy();
-				Debug.Assert(!polylineGeometry.IsEmpty());
-				startingLabelingDic.Add(polylineGeometry.GetPointByIndex(0, 0), l);
-
-				var startingLabelsToWorkOn = new HashSet<int>(labelsToWorkOn);
-				startingLabelsToWorkOn.Remove(l);
-
-				solutions.AddRange(this.SolveLabelingHelper(polylineGeometry, 0, 0, startingLabelsToWorkOn, startingLabelingDic));
+			if (partialLabelingSolution is null) 
+			{ 
+				partialLabelingSolution = new LabelingDictionary(); 
 			}
+			var solutions = this.SolveLabelingHelper(polylineGeometry, 0, -1, labelsToWorkOn, partialLabelingSolution); 
 			if (solutions.Count == 0)
 			{
 				throw new ShapeMatchFailureException("unable to find a labeling solution");
@@ -226,12 +219,12 @@ namespace ShapeGrammarEngine
 			}
 
 			// not done going through the whole geometry yet
-			Point currentPoint = polylinesGeometryToSolve.GetPointByIndex(currentPointIndex, currentPolylineIndex);
-			int currentLabel = partialSolution.GetLabelByPoint(currentPoint);
 			Point nextPoint = polylinesGeometryToSolve.GetPointByIndex(nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex);
 			if (currentPolylineIndex == nextIndexes.nextPolylineIndex)
 			{
 				// still in the same polyline, so the current point and next point are connected
+				Point currentPoint = polylinesGeometryToSolve.GetPointByIndex(currentPointIndex, currentPolylineIndex);
+				int currentLabel = partialSolution.GetLabelByPoint(currentPoint);
 				var connectedLabels = this.LabelsConnectedTo(currentLabel);
 				if (partialSolution.GetAllPoints().Contains(nextPoint))
 				{

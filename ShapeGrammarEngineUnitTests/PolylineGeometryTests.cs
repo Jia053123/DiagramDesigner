@@ -403,5 +403,20 @@ namespace ShapeGrammarEngine.UnitTests
 
 			Assert.Throws<ArgumentException>(() => geometry1.FindIndexForNextPoint(2, 1));
 		}
+
+		[Test]
+		public void TestFindIndexForNextPoint_SpecialInput_OutputFirstPoint()
+		{
+			var geometry1 = new PolylinesGeometry(new List<List<Point>>
+			{
+				new List<Point> { new Point(-5, 2.1), new Point(20, 20) },
+				new List<Point> { new Point(5, 10), new Point(20, 20) },
+				new List<Point>{ new Point(5, 10), new Point(-5, 2.1) }
+			});
+
+			var result = geometry1.FindIndexForNextPoint(0, -1);
+			Assert.AreEqual(0, result.nextPointIndex);
+			Assert.AreEqual(0, result.nextPolylineIndex);
+		}
 	}
 }
