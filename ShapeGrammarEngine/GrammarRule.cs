@@ -386,14 +386,6 @@ namespace ShapeGrammarEngine
 			var referenceAndAssignedValueSummaryForChosenConnectionForEachRecord = referenceAndAssignedValueSummaryForEachConnectionForEachRecord[chosenConnectionIndex];
 
 			var assignedAngle = GrammarRule.AssignValueBasedOnPastOccurancesByDifference(referenceAngle, referenceAndAssignedValueSummaryForChosenConnectionForEachRecord);
-			while (assignedAngle > Math.PI)
-			{
-				assignedAngle -= Math.PI * 2;
-			}
-			while (assignedAngle < -1 * Math.PI)
-			{
-				assignedAngle += Math.PI * 2;
-			}
 			return assignedAngle;
 		}
 

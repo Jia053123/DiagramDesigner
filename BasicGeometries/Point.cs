@@ -32,6 +32,20 @@ namespace BasicGeometries
 			return result;
 		}
 
+		public double SharpAngleTowardsPoint(Point point)
+		{
+			var angle = this.AngleTowardsPoint(point);
+			while (angle > Math.PI)
+			{
+				angle -= Math.PI * 2;
+			}
+			while (angle < -1 * Math.PI)
+			{
+				angle += Math.PI * 2;
+			}
+			return angle;
+		}
+
 		public override int GetHashCode() => (this.coordinateX, this.coordinateY).GetHashCode();
 
 		public static bool operator == (Point lhs, Point rhs)
