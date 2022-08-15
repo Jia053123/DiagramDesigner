@@ -237,7 +237,7 @@ namespace ShapeGrammarEngine
 							continue; // this label is already assigned; skip
 						}
 						// perform assignment of nextPoint to l
-						var r = AssignPointToLabel(nextPoint, l, labelsLeftToWorkOn, partialSolution);
+						var r = AssignPointToLabel(nextPoint, l);
 						solutions.AddRange(this.SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, r.updatedLabelsLeftToWorkOn, r.moreCompleteSolution));
 					}
 					return solutions; // this may be empty, signaling a faliure for this particular partial solution
@@ -255,7 +255,7 @@ namespace ShapeGrammarEngine
 					foreach (int l in labelsLeftToWorkOn)
 					{
 						// perform assignment of nextPoint to l
-						var r = AssignPointToLabel(nextPoint, l, labelsLeftToWorkOn, partialSolution);
+						var r = AssignPointToLabel(nextPoint, l);
 						solutions.AddRange(this.SolveLabelingHelper(polylinesGeometryToSolve, nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex, r.updatedLabelsLeftToWorkOn, r.moreCompleteSolution));
 					}
 					return solutions;
@@ -267,17 +267,17 @@ namespace ShapeGrammarEngine
 				Debug.Assert(labelsLeftToWorkOn.Count == 0);
 				return new List<LabelingDictionary>{partialSolution};
 			}
-		}
 
-		private (LabelingDictionary moreCompleteSolution, HashSet<int> updatedLabelsLeftToWorkOn) AssignPointToLabel(Point point, int label, HashSet<int> labelsLeftToWorkOn, LabelingDictionary partialSolution)
-		{
-			var moreCompleteSolution = partialSolution.Copy();
-			var success = moreCompleteSolution.Add(point, label);
-			Debug.Assert(success);
-			var updatedLabelsLeftToWorkOn = new HashSet<int>(labelsLeftToWorkOn);
-			var success2 = updatedLabelsLeftToWorkOn.Remove(label);
-			Debug.Assert(success2);
-			return (moreCompleteSolution, updatedLabelsLeftToWorkOn);
+			(LabelingDictionary moreCompleteSolution, HashSet<int> updatedLabelsLeftToWorkOn) AssignPointToLabel(Point point, int label)
+			{
+				var moreCompleteSolution = partialSolution.Copy();
+				var success = moreCompleteSolution.Add(point, label);
+				Debug.Assert(success);
+				var updatedLabelsLeftToWorkOn = new HashSet<int>(labelsLeftToWorkOn);
+				var success2 = updatedLabelsLeftToWorkOn.Remove(label);
+				Debug.Assert(success2);
+				return (moreCompleteSolution, updatedLabelsLeftToWorkOn);
+			}
 		}
 
 		/// <summary>
