@@ -143,6 +143,21 @@ namespace ShapeGrammarEngine
 				}
 			}
 
+			var allLabels = this.GetAllLabels();
+			var allPoints = polylineGeometry.GetAllPoints();
+			if (partialLabelingSolution is object)
+			{
+				foreach (int label in partialLabelingSolution.GetAllLabels())
+				{
+					var point = partialLabelingSolution.GetPointByLabel(label);
+					if ((allLabels.Contains(label) && !allPoints.Contains(point)) ||
+					 (!allLabels.Contains(label) && allPoints.Contains(point)))
+					{
+						throw new ShapeMatchFailureException("partialLabelingSolution does not conform with shape and polylineGeometry");
+					}
+				}
+			}
+
 			// step1: find all unique points in the polylines and check if the count is the same as the count of labels in shape
 			var uniqueCoordinatesInGeo = new HashSet<Point>();
 			foreach (List<Point> pl in polylineGeometry.PolylinesCopy)
@@ -206,13 +221,12 @@ namespace ShapeGrammarEngine
 			if (nextIndexes.nextPointIndex != -1 && nextIndexes.nextPolylineIndex != -1)
 			{
 				// not done going through the whole geometry yet
+				Point currentPoint = polylinesGeometryToSolve.GetPointByIndex(currentPointIndex, currentPolylineIndex);
+				int currentLabel = partialSolution.GetLabelByPoint(currentPoint);
 				Point nextPoint = polylinesGeometryToSolve.GetPointByIndex(nextIndexes.nextPointIndex, nextIndexes.nextPolylineIndex);
-
 				if (currentPolylineIndex == nextIndexes.nextPolylineIndex)
 				{
 					// still in the same polyline, so the current point and next point are connected
-					Point currentPoint = polylinesGeometryToSolve.GetPointByIndex(currentPointIndex, currentPolylineIndex);
-					int currentLabel = partialSolution.GetLabelByPoint(currentPoint);
 					var connectedLabels = this.LabelsConnectedTo(currentLabel);
 					if (partialSolution.GetAllPoints().Contains(nextPoint))
 					{
