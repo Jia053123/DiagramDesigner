@@ -1,5 +1,7 @@
 # DiagramDesigner
 
+Update 2022 August: Improved the original shape-matching algoirthm which relies on brute force with a traversal-based algorithm with dramatically lower computational complexity (refer to SolveLabeling method in Shape.cs): https://vimeo.com/741248245 
+
 Update 2022 March 11 - UI for rule creation, learning and application: https://vimeo.com/689110233
 
 Screen Recording (alpha): https://vimeo.com/591414378 
