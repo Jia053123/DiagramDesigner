@@ -322,6 +322,8 @@ namespace DiagramDesigner
 			catch (Exception e)
 			{
 				MessageBox.Show(e.Message, "Apply Rule Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                this.State = MainViewModelState.ViewingState;
+                this.CleanUpTempDataForDrawing();
                 return;
 			}
 
