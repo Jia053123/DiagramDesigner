@@ -87,6 +87,7 @@ namespace DiagramDesigner
         public ICommand AddNewLayerCommand { set; get; }
         public ICommand StartDrawingCommand { set; get; }
         public ICommand EndDrawingCommand { set; get; }
+        public ICommand ExplodeDrawingCommand { set; get; }
         public ICommand CreateNewRuleCommand { set; get; }
         public ICommand DonePickingContextForRuleCreationCommand { set; get; }
         public ICommand DoneCreatingRuleCommand { set; get; }
@@ -110,6 +111,7 @@ namespace DiagramDesigner
 
             this.StartDrawingCommand = new DelegateCommand(ExecuteStartDrawing);
             this.EndDrawingCommand = new DelegateCommand(ExecuteEndDrawing);
+            this.ExplodeDrawingCommand = new DelegateCommand(ExecuteExplodeDrawing);
 
             this.CreateNewRuleCommand = new DelegateCommand(ExecuteCreateNewRule);
             this.DonePickingContextForRuleCreationCommand = new DelegateCommand(ExecuteDonePickingContextForRuleCreation);
@@ -231,6 +233,11 @@ namespace DiagramDesigner
             this.State = MainViewModelState.ViewingState;
             this.CleanUpTempDataForDrawing();
         }
+
+        private void ExecuteExplodeDrawing(object obj)
+		{
+            throw new NotImplementedException();
+		}
 
         private void ExecuteCreateNewRule(object obj)
         {
