@@ -124,11 +124,12 @@ namespace DiagramDesignerModel
         public void RemoveAllWalls()
 		{
             this.wallEntities.Clear();
+            this.OnModelChanged();
 		}
 
         public void RemoveAllWallsAndPrograms()
 		{
-            this.RemoveAllWalls();
+            this.wallEntities.Clear();
             this.Programs.Clear();
             this.OnModelChanged();
 		}
