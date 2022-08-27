@@ -236,10 +236,10 @@ namespace DiagramDesigner
 
         private void ExecuteExplodeDrawing(object obj)
 		{
-            throw new NotImplementedException();
+            this.Model.ExplodeAllWalls();
 		}
 
-        private void ExecuteCreateNewRule(object obj)
+		private void ExecuteCreateNewRule(object obj)
         {
             this.Model.CreateNewWallEntity();
             this.State = MainViewModelState.RuleCreationContextPickingState;

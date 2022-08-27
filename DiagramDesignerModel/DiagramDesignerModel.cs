@@ -3,6 +3,8 @@ using ShapeGrammarEngine;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using DiagramDesignerGeometryParser;
+using System.Linq;
 
 namespace DiagramDesignerModel
 {
@@ -55,7 +57,33 @@ namespace DiagramDesignerModel
             this.OnModelChanged();
         }
 
-    
+        /// <summary>
+        /// Explode all walls from all wall entities and put them into new wall entities, each with only two points
+        /// </summary>
+        public void ExplodeAllWalls()
+		{
+            Logger.Debug("////////////////// Explode All Walls //////////////////");
+
+            var allSegments = new List<LineSegment>();
+            foreach (WallEntity we in this.wallEntities)
+            {
+                var lineSegments = we.Geometry.ConvertToLineSegments();
+                allSegments.AddRange(lineSegments);
+            }
+            var exploder = new LineSegmentsExploder(allSegments);
+            var allSegmentsExploded = exploder.MergeAndExplodeSegments();
+
+            this.RemoveAllWalls();
+            foreach (LineSegment ls in allSegmentsExploded)
+			{
+                this.CreateNewWallEntity();
+                this.wallEntities.Last().AddPointToGeometry(ls.FirstPoint);
+                this.wallEntities.Last().AddPointToGeometry(ls.SecondPoint);
+			}
+
+			this.OnModelChanged();
+        }
+
 		public void CreateNewRuleFromExample(PolylinesGeometry leftHandGeometry, PolylinesGeometry rightHandGeometry)
 		{
             this.rulesStore.CreateNewRuleFromExample(leftHandGeometry, rightHandGeometry);
@@ -93,9 +121,14 @@ namespace DiagramDesignerModel
 			}
         }
 
-        public void RemoveAllWallsAndPrograms()
+        public void RemoveAllWalls()
 		{
             this.wallEntities.Clear();
+		}
+
+        public void RemoveAllWallsAndPrograms()
+		{
+            this.RemoveAllWalls();
             this.Programs.Clear();
             this.OnModelChanged();
 		}
