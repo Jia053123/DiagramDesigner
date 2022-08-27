@@ -79,6 +79,7 @@ namespace DiagramDesigner
                     
                     this.StartDrawingButton.IsEnabled = true;
                     this.DoneDrawingButton.IsEnabled = false;
+                    this.ExplodeDrawingButton.IsEnabled = true;
                     
                     this.CreateNewRuleButton.IsEnabled = true;
                     this.DonePickingContextForRuleCreationButton.IsEnabled = false;
@@ -98,6 +99,7 @@ namespace DiagramDesigner
 
                     this.StartDrawingButton.IsEnabled = false;
                     this.DoneDrawingButton.IsEnabled = true;
+                    this.ExplodeDrawingButton.IsEnabled = false;
                     
                     this.CreateNewRuleButton.IsEnabled = false;
                     this.DonePickingContextForRuleCreationButton.IsEnabled = false;
@@ -117,6 +119,7 @@ namespace DiagramDesigner
 
                     this.StartDrawingButton.IsEnabled = false;
                     this.DoneDrawingButton.IsEnabled = false;
+                    this.ExplodeDrawingButton.IsEnabled = false;
 
                     this.CreateNewRuleButton.IsEnabled = false;
                     this.DonePickingContextForRuleCreationButton.IsEnabled = true;
@@ -136,6 +139,7 @@ namespace DiagramDesigner
 
                     this.StartDrawingButton.IsEnabled = false;
                     this.DoneDrawingButton.IsEnabled = false;
+                    this.ExplodeDrawingButton.IsEnabled = false;
 
                     this.CreateNewRuleButton.IsEnabled = false;
                     this.DonePickingContextForRuleCreationButton.IsEnabled = false;
@@ -155,6 +159,7 @@ namespace DiagramDesigner
 
                     this.StartDrawingButton.IsEnabled = false;
                     this.DoneDrawingButton.IsEnabled = false;
+                    this.ExplodeDrawingButton.IsEnabled = false;
 
                     this.CreateNewRuleButton.IsEnabled = false;
                     this.DonePickingContextForRuleCreationButton.IsEnabled = false;
@@ -174,6 +179,7 @@ namespace DiagramDesigner
 
                     this.StartDrawingButton.IsEnabled = false;
                     this.DoneDrawingButton.IsEnabled = false;
+                    this.ExplodeDrawingButton.IsEnabled = false;
 
                     this.CreateNewRuleButton.IsEnabled = false;
                     this.DonePickingContextForRuleCreationButton.IsEnabled = false;
@@ -193,6 +199,7 @@ namespace DiagramDesigner
 
                     this.StartDrawingButton.IsEnabled = false;
                     this.DoneDrawingButton.IsEnabled = false;
+                    this.ExplodeDrawingButton.IsEnabled = false;
 
                     this.CreateNewRuleButton.IsEnabled = false;
                     this.DonePickingContextForRuleCreationButton.IsEnabled = false;
