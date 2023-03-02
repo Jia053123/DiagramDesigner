@@ -1,7 +1,8 @@
 # DiagramDesigner
 
 Update 2022 August: 
-- Bug fixes and release: https://vimeo.com/741248245  
+- Latest screen recording: https://vimeo.com/741248245  
+- Bug fixes and release 
 - Improved the original shape-matching algoirthm which relies on permutation with a traversal-based algorithm that has dramatically lower computational complexity (refer to SolveLabeling method in Shape.cs): https://github.com/ErnestX/DiagramDesigner/blob/main/ShapeGrammarEngine/Shape.cs
 
 Update 2022 March 11 - UI for rule creation, learning and application: https://vimeo.com/689110233
