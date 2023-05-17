@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Svg;
+using System.Drawing;
 
 namespace ShapeGrammarEngine
 {
@@ -87,10 +88,12 @@ namespace ShapeGrammarEngine
 			shapeDoc.ViewBox = new SvgViewBox(0, 0, 128, 128);
 
 			SvgLine l = new SvgLine();
-			l.StartX = 0;
-			l.StartY = -10;
-			l.EndX = 10;
-			l.EndY = 20;
+			l.StartX = 10;
+			l.StartY = 20;
+			l.EndX = 100;
+			l.EndY = 60;
+			l.StrokeWidth = 2;
+			l.Stroke = new SvgColourServer(Color.Black);
 
 			shapeDoc.Children.Add(l);
 			return shapeDoc;
