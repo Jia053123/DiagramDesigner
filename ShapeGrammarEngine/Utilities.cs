@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Svg;
+using Svg.Pathing;
 using System.Drawing;
 
 namespace ShapeGrammarEngine
@@ -87,15 +88,20 @@ namespace ShapeGrammarEngine
 			shapeDoc.Height = 128;
 			shapeDoc.ViewBox = new SvgViewBox(0, 0, 128, 128);
 
-			SvgLine l = new SvgLine();
-			l.StartX = 10;
-			l.StartY = 20;
-			l.EndX = 100;
-			l.EndY = 60;
-			l.StrokeWidth = 2;
-			l.Stroke = new SvgColourServer(Color.Black);
+			var p = new SvgPath();
+			var spsl = new SvgPathSegmentList();
+			
+			var sps1 = new SvgMoveToSegment(false, new PointF(10, 20));
+			var sps2 = new SvgLineSegment(false, new PointF(100, 60));
+			spsl.Add(sps1);
+			spsl.Add(sps2);
+	
+			p.PathData = spsl;
+			p.StrokeWidth = 2;
+			p.Stroke = new SvgColourServer(Color.Black);
 
-			shapeDoc.Children.Add(l);
+			shapeDoc.Children.Add(p);
+
 			return shapeDoc;
         }
 	}
