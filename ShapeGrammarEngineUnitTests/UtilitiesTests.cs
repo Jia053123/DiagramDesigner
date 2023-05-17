@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using ShapeGrammarEngine;
 using ListOperations;
 using System.Linq;
+using Svg;
+using System.Drawing;
 
 namespace ShapeGrammarEngineUnitTests
 {
@@ -63,6 +65,20 @@ namespace ShapeGrammarEngineUnitTests
 
 			var data2 = new List<double> { 1, 2, 3, 4, 5 };
 			Assert.AreEqual(2, Utilities.CalculateVariance(data2));
+		}
+
+		[Test]
+		public void TestPolylinesGeometryToSvg()
+        {
+			SvgDocument shapeDoc = Utilities.PolylinesGeometryToSvg(null);
+			Bitmap bm = shapeDoc.Draw();
+            string testResultsDir = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "GraphicsTestResults\\");
+			_ = System.IO.Directory.CreateDirectory(testResultsDir);
+
+			string fileName = nameof(this.TestPolylinesGeometryToSvg) + ".bmp";
+			string testResultPath = System.IO.Path.Combine(testResultsDir, fileName);
+			bm.Save(testResultPath);
+			Console.WriteLine("Test result saved to: " + testResultPath);
 		}
 	}
 }

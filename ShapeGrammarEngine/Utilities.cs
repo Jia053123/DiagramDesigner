@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Svg;
 
 namespace ShapeGrammarEngine
 {
@@ -65,7 +66,7 @@ namespace ShapeGrammarEngine
 			return permutations;
 		}
 
-		internal static double CalculateVariance(List<double> data)
+		static internal double CalculateVariance(List<double> data)
 		{
 			// calculate average
 			var average = data.Sum() / data.Count;
@@ -77,5 +78,22 @@ namespace ShapeGrammarEngine
 			}
 			return sumOfSquaredDiff / data.Count;
 		}
+
+		static internal SvgDocument PolylinesGeometryToSvg(PolylinesGeometry polyGeo)
+        {
+			SvgDocument shapeDoc = new SvgDocument();
+			shapeDoc.Width = 128;
+			shapeDoc.Height = 128;
+			shapeDoc.ViewBox = new SvgViewBox(0, 0, 128, 128);
+
+			SvgLine l = new SvgLine();
+			l.StartX = 0;
+			l.StartY = -10;
+			l.EndX = 10;
+			l.EndY = 20;
+
+			shapeDoc.Children.Add(l);
+			return shapeDoc;
+        }
 	}
 }
