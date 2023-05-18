@@ -5,6 +5,7 @@ using ShapeGrammarEngine;
 using ListOperations;
 using System.Linq;
 using Svg;
+using Svg.Pathing;
 using System.Drawing;
 using MyPoint = BasicGeometries.Point;
 
@@ -81,8 +82,10 @@ namespace ShapeGrammarEngineUnitTests
 				new List<MyPoint> { new MyPoint(0, -1), new MyPoint(0, 1), new MyPoint(1, 0), new MyPoint(0, -1) } };
 			var geo = new PolylinesGeometry(testPolyline);
 
-			SvgDocument shapeDoc = Utilities.PolylinesGeometryToSvg(geo, 128, 128);
-			Bitmap bm = shapeDoc.Draw();
+			SvgDocument polyGeoDoc = Utilities.PolylinesGeometryToSvg(geo, 128, 128, 2);
+			Assert.AreEqual("M1 127 L1 1 L127 64 L1 127", ((SvgPath)polyGeoDoc.Children[0]).PathData.ToString());
+
+            Bitmap bm = polyGeoDoc.Draw();
             string testResultsDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "GraphicsTestResults\\");
 			_ = System.IO.Directory.CreateDirectory(testResultsDir);
 
