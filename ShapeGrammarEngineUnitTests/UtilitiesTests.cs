@@ -86,9 +86,11 @@ namespace ShapeGrammarEngineUnitTests
 			Assert.AreEqual("M0 128 L128 0 L128 64 L0 128", ((SvgPath)polyGeoDoc.Children[0]).PathData.ToString());
 
 			Bitmap bm = polyGeoDoc.Draw();
+			Assert.AreEqual(128, bm.Width);
+			Assert.AreEqual(128, bm.Height);
+
 			string testResultsDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "GraphicsTestResults\\");
 			_ = System.IO.Directory.CreateDirectory(testResultsDir);
-
 			string fileName = nameof(this.TestPolylinesGeometryToSvg) + ".bmp";
 			string testResultPath = System.IO.Path.Combine(testResultsDir, fileName);
 			bm.Save(testResultPath);
@@ -112,7 +114,10 @@ namespace ShapeGrammarEngineUnitTests
 			Assert.AreEqual("M1 127 L127 1 L127 64 L1 127", ((SvgPath)polyGeoDoc.Children[0]).PathData.ToString());
 
             Bitmap bm = polyGeoDoc.Draw();
-            string testResultsDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "GraphicsTestResults\\");
+			Assert.AreEqual(128, bm.Width);
+			Assert.AreEqual(128, bm.Height);
+
+			string testResultsDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "GraphicsTestResults\\");
 			_ = System.IO.Directory.CreateDirectory(testResultsDir);
 
 			string fileName = nameof(this.TestPolylinesGeometryToSvgPadded) + ".bmp";
