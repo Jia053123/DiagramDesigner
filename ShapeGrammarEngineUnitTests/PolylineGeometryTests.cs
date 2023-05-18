@@ -418,5 +418,25 @@ namespace ShapeGrammarEngine.UnitTests
 			Assert.AreEqual(0, result.nextPointIndex);
 			Assert.AreEqual(0, result.nextPolylineIndex);
 		}
+
+		[Test]
+		public void TestGetBoundingBox()
+        {
+			//  1      |\
+			//  0      | >
+			// -1      |/   
+			//
+			//         0  1       
+
+			var testPolyline = new List<List<Point>> {
+				new List<Point> { new Point(0, -1), new Point(0, 1), new Point(1, 0), new Point(0, -1) } };
+			var geo = new PolylinesGeometry(testPolyline);
+
+			var r = geo.GetBoundingBox();
+			Assert.AreEqual(0, r.xMin);
+			Assert.AreEqual(1, r.xMax);
+			Assert.AreEqual(-1, r.yMin);
+			Assert.AreEqual(1, r.yMax);
+        }
 	}
 }

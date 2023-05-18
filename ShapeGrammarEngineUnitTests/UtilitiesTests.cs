@@ -6,6 +6,7 @@ using ListOperations;
 using System.Linq;
 using Svg;
 using System.Drawing;
+using MyPoint = BasicGeometries.Point;
 
 namespace ShapeGrammarEngineUnitTests
 {
@@ -70,9 +71,19 @@ namespace ShapeGrammarEngineUnitTests
 		[Test]
 		public void TestPolylinesGeometryToSvg()
         {
-			SvgDocument shapeDoc = Utilities.PolylinesGeometryToSvg(null);
+			//  1      |\
+			//  0      | >
+			// -1      |/   
+			//
+			//         0  1       
+
+			var testPolyline = new List<List<MyPoint>> {
+				new List<MyPoint> { new MyPoint(0, -1), new MyPoint(0, 1), new MyPoint(1, 0), new MyPoint(0, -1) } };
+			var geo = new PolylinesGeometry(testPolyline);
+
+			SvgDocument shapeDoc = Utilities.PolylinesGeometryToSvg(geo, 128, 128);
 			Bitmap bm = shapeDoc.Draw();
-            string testResultsDir = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "GraphicsTestResults\\");
+            string testResultsDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "GraphicsTestResults\\");
 			_ = System.IO.Directory.CreateDirectory(testResultsDir);
 
 			string fileName = nameof(this.TestPolylinesGeometryToSvg) + ".bmp";

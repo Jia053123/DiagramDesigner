@@ -5,6 +5,7 @@ using System.Linq;
 using Svg;
 using Svg.Pathing;
 using System.Drawing;
+using MyPoint = BasicGeometries.Point;
 
 namespace ShapeGrammarEngine
 {
@@ -81,16 +82,16 @@ namespace ShapeGrammarEngine
 			return sumOfSquaredDiff / data.Count;
 		}
 
-		static internal SvgDocument PolylinesGeometryToSvg(PolylinesGeometry polyGeo)
+		static internal SvgDocument PolylinesGeometryToSvg(PolylinesGeometry polyGeo, int width, int height)
         {
 			SvgDocument shapeDoc = new SvgDocument();
-			shapeDoc.Width = 128;
-			shapeDoc.Height = 128;
-			shapeDoc.ViewBox = new SvgViewBox(0, 0, 128, 128);
+			shapeDoc.Width = width;
+			shapeDoc.Height = height;
+			shapeDoc.ViewBox = new SvgViewBox(0, 0, width, height);
 
 			var p = new SvgPath();
 			var spsl = new SvgPathSegmentList();
-			
+
 			var sps1 = new SvgMoveToSegment(false, new PointF(10, 20));
 			var sps2 = new SvgLineSegment(false, new PointF(100, 60));
 			spsl.Add(sps1);

@@ -343,5 +343,48 @@ namespace ShapeGrammarEngine
 				return (-1, -1);
 			}
 		}
+
+		/// <summary>
+		/// Calculate the bonding box that tightly contains the geometry
+		/// </summary>
+		/// <returns> the boundaries of the bounding box </returns>
+		public (double xMin, double xMax, double yMin, double yMax) GetBoundingBox()
+        {
+			var plc = this.PolylinesCopy;
+			if (plc.Count == 0)
+            {
+				throw new ArgumentException("geometry is empty");
+            }
+
+			var xMin = double.PositiveInfinity;
+			var xMax = double.NegativeInfinity;
+			var yMin = double.PositiveInfinity;
+			var yMax = double.NegativeInfinity;
+            foreach (List<Point> polyline in plc)
+            {
+                foreach (Point point in polyline)
+                {
+					if (point.coordinateX > xMax)
+                    {
+						xMax = point.coordinateX;
+                    }
+					else if (point.coordinateX < xMin)
+                    {
+						xMin = point.coordinateX;
+                    }
+
+					if (point.coordinateY > yMax)
+                    {
+						yMax = point.coordinateY;
+                    }
+					else if (point.coordinateY < yMin)
+                    {
+						yMin = point.coordinateY;
+                    }
+                }
+            }
+
+			return (xMin, xMax, yMin, yMax);
+        }
 	}
 }
