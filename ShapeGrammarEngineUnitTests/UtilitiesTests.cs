@@ -72,18 +72,18 @@ namespace ShapeGrammarEngineUnitTests
 		[Test]
 		public void TestPolylinesGeometryToSvg()
         {
-			//  1      |\
-			//  0      | >
-			// -1      |/   
+			//  1        /|
+			//  0       / /
+			// -1       v    
 			//
-			//         0  1       
+			//         0   1       
 
 			var testPolyline = new List<List<MyPoint>> {
-				new List<MyPoint> { new MyPoint(0, -1), new MyPoint(0, 1), new MyPoint(1, 0), new MyPoint(0, -1) } };
+				new List<MyPoint> { new MyPoint(0, -1), new MyPoint(1, 1), new MyPoint(1, 0), new MyPoint(0, -1) } };
 			var geo = new PolylinesGeometry(testPolyline);
 
 			SvgDocument polyGeoDoc = Utilities.PolylinesGeometryToSvg(geo, 128, 128, 2);
-			Assert.AreEqual("M1 127 L1 1 L127 64 L1 127", ((SvgPath)polyGeoDoc.Children[0]).PathData.ToString());
+			Assert.AreEqual("M1 127 L127 1 L127 64 L1 127", ((SvgPath)polyGeoDoc.Children[0]).PathData.ToString());
 
             Bitmap bm = polyGeoDoc.Draw();
             string testResultsDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "GraphicsTestResults\\");
