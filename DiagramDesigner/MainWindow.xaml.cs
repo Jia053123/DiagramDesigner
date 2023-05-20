@@ -66,6 +66,7 @@ namespace DiagramDesigner
                 case "CurrentlySelectedRule":
                     this.RepeatSelectedRuleButton.IsEnabled = this.MainViewModel.CurrentlySelectedRule != null;
                     this.ApplySelectedRuleButton.IsEnabled = this.MainViewModel.CurrentlySelectedRule != null;
+                    this.TrainSelectedRuleButton.IsEnabled = this.MainViewModel.CurrentlySelectedRule != null;
                     break;
             }
         }
@@ -92,6 +93,8 @@ namespace DiagramDesigner
                     this.ApplySelectedRuleButton.IsEnabled = this.MainViewModel.CurrentlySelectedRule != null;
                     this.DonePickingContextAndApplyRuleButton.IsEnabled = false;
 
+                    this.TrainSelectedRuleButton.IsEnabled = this.MainViewModel.CurrentlySelectedRule != null;
+
                     break;
 
                 case MainViewModelState.NormalEditingState:
@@ -111,6 +114,8 @@ namespace DiagramDesigner
 
                     this.ApplySelectedRuleButton.IsEnabled = false;
                     this.DonePickingContextAndApplyRuleButton.IsEnabled = false;
+
+                    this.TrainSelectedRuleButton.IsEnabled = false;
 
                     break;
 
@@ -132,6 +137,8 @@ namespace DiagramDesigner
                     this.ApplySelectedRuleButton.IsEnabled = false;
                     this.DonePickingContextAndApplyRuleButton.IsEnabled = false;
 
+                    this.TrainSelectedRuleButton.IsEnabled = false;
+
                     break;
 
                 case MainViewModelState.RuleCreationEditingState:
@@ -151,6 +158,8 @@ namespace DiagramDesigner
 
                     this.ApplySelectedRuleButton.IsEnabled = false;
                     this.DonePickingContextAndApplyRuleButton.IsEnabled = false;
+
+                    this.TrainSelectedRuleButton.IsEnabled = false;
 
                     break;
 
@@ -172,6 +181,8 @@ namespace DiagramDesigner
                     this.ApplySelectedRuleButton.IsEnabled = false;
                     this.DonePickingContextAndApplyRuleButton.IsEnabled = false;
 
+                    this.TrainSelectedRuleButton.IsEnabled = false;
+
                     break;
 
                 case MainViewModelState.RuleRepetitionEditingState:
@@ -192,6 +203,8 @@ namespace DiagramDesigner
                     this.ApplySelectedRuleButton.IsEnabled = false;
                     this.DonePickingContextAndApplyRuleButton.IsEnabled = false;
 
+                    this.TrainSelectedRuleButton.IsEnabled = false;
+
                     break;
 
                 case MainViewModelState.RuleApplicationContextPickingState:
@@ -211,6 +224,8 @@ namespace DiagramDesigner
 
                     this.ApplySelectedRuleButton.IsEnabled = false;
                     this.DonePickingContextAndApplyRuleButton.IsEnabled = true;
+
+                    this.TrainSelectedRuleButton.IsEnabled = false;
 
                     break;
             }

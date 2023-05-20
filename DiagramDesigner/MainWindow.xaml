@@ -32,6 +32,7 @@
                 <TextBlock Text="Done Picking Context and Apply Rule" TextWrapping="Wrap" TextAlignment="Center"/>
             </Button>
 
+            <Button x:Name="TrainSelectedRuleButton" Content="Train Selected Rule" Width="130" HorizontalAlignment="Center" Margin="10,20,10,10" Command="{Binding TrainSelectedRuleCommand}"/>
             <Button Content="Clear Drawing" Width="100" HorizontalAlignment="Center" Margin="10,20,10,10" Command="{Binding ClearGeometryCommand}"/>
 
             <CheckBox x:Name="OrthogonalityCheckBox" Content="Draw Orthogonally" IsThreeState="False" Command="{Binding ToggleOrthogonalDrawingCommand}" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}" HorizontalAlignment="Center" Margin="10,10,10,10"></CheckBox>

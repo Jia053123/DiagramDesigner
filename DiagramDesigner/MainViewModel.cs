@@ -96,6 +96,7 @@ namespace DiagramDesigner
         public ICommand DoneRepeatingRuleCommand { set; get; }
         public ICommand ApplySelectedRuleCommand { set; get; }
         public ICommand DonePickingContextAndApplyRuleCommand { set; get; }
+        public ICommand TrainSelectedRuleCommand { set; get; }
         public ICommand ClearGeometryCommand { set; get; }
         public ICommand ResolveProgramsCommand { get; set; }
         public ICommand AddNewProgramRequirementCommand { set; get; }
@@ -123,6 +124,8 @@ namespace DiagramDesigner
 
             this.ApplySelectedRuleCommand = new DelegateCommand(ExecuteApplySelectedRule);
             this.DonePickingContextAndApplyRuleCommand = new DelegateCommand(ExecuteDonePickingContextAndApplySelectedRule);
+
+            this.TrainSelectedRuleCommand = new DelegateCommand(ExecuteTrainSelectedRule);
 
             this.ClearGeometryCommand = new DelegateCommand(ExecuteClearGeometry);
             this.ResolveProgramsCommand = new DelegateCommand(ExecuteResolvePrograms);
@@ -344,6 +347,16 @@ namespace DiagramDesigner
 
 			this.State = MainViewModelState.ViewingState;
             this.CleanUpTempDataForDrawing();
+        }
+
+        private void ExecuteTrainSelectedRule(object obj)
+        {
+            if (this.CurrentlySelectedRule == null)
+            {
+                throw new NoRuleSelectedException();
+            }
+
+            this.Model.TrainModelForRule((Guid)this.CurrentlySelectedRule);
         }
 
         private void ExecuteClearGeometry(object obj)

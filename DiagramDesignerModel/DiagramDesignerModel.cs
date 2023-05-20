@@ -121,6 +121,11 @@ namespace DiagramDesignerModel
 			}
         }
 
+        public void TrainModelForRule(Guid ruleId)
+        {
+            throw new NotImplementedException();
+        }
+
         public void RemoveAllWalls()
 		{
             this.wallEntities.Clear();
