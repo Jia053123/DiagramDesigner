@@ -126,7 +126,11 @@ namespace DiagramDesignerModel
             var rule = this.rulesStore.GetRuleById(ruleId);
             var records = rule.ApplicationRecords;
 
-
+            foreach (RuleApplicationRecord rar in records)
+            {
+                var lhsImg = MachineLearningUtilities.PolylinesGeometryToSvgPadded(rar.GeometryBefore, 64, 64, 2);
+                var rhsImg = MachineLearningUtilities.PolylinesGeometryToSvgPadded(rar.GeometryAfter, 64, 64, 2);
+            }
         }
 
         public void RemoveAllWalls()
