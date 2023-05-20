@@ -126,10 +126,19 @@ namespace DiagramDesignerModel
             var rule = this.rulesStore.GetRuleById(ruleId);
             var records = rule.ApplicationRecords;
 
+            var GeometryBeforeTrainingSet = new List<PolylinesGeometry>();
+            var GeometryAfterTrainingSet = new List<PolylinesGeometry>();
             foreach (RuleApplicationRecord rar in records)
             {
-                var lhsImg = MachineLearningUtilities.PolylinesGeometryToSvgPadded(rar.GeometryBefore, 64, 64, 2);
-                var rhsImg = MachineLearningUtilities.PolylinesGeometryToSvgPadded(rar.GeometryAfter, 64, 64, 2);
+                
+
+
+
+
+
+
+                var lhsSvg = MachineLearningUtilities.PolylinesGeometryToSvgPadded(rar.GeometryBefore, 64, 64, 2);
+                var rhsSvg = MachineLearningUtilities.PolylinesGeometryToSvgPadded(rar.GeometryAfter, 64, 64, 2);
             }
         }
 

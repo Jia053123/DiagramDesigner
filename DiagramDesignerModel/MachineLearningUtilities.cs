@@ -10,6 +10,45 @@ namespace ShapeGrammarEngine
 {
     class MachineLearningUtilities
     {
+		static internal SvgDocument PolylinesGeometryToSvgOnCanvas(PolylinesGeometry polyGeo, int canvasWidth, int canvasHeight, int outWidth, int outHeight, int strokeWidth)
+        {
+			SvgDocument renderedDoc = new SvgDocument();
+			renderedDoc.Width = outWidth;
+			renderedDoc.Height = outHeight;
+			renderedDoc.ViewBox = new SvgViewBox(0, 0, outWidth, outHeight);
+
+			var sp = new SvgPath();
+			var spsl = new SvgPathSegmentList();
+
+			double xFactor = outWidth / (double)canvasWidth;
+			double yFactor = outHeight / (double)canvasHeight;
+
+			foreach (List<MyPoint> polyline in polyGeo.PolylinesCopy)
+			{
+				for (int i = 0; i < polyline.Count; i++)
+				{
+					MyPoint p = polyline[i];
+					int mappedX = Convert.ToInt32(p.coordinateX * xFactor);
+					int mappedY = Convert.ToInt32(p.coordinateY * yFactor);
+					if (i == 0)
+					{
+						spsl.Add(new SvgMoveToSegment(false, new PointF(mappedX, mappedY)));
+					}
+					else
+					{
+						spsl.Add(new SvgLineSegment(false, new PointF(mappedX, mappedY)));
+					}
+				}
+			}
+
+			sp.PathData = spsl;
+			sp.StrokeWidth = strokeWidth;
+			sp.Stroke = new SvgColourServer(Color.Black);
+			sp.Fill = null;
+
+			renderedDoc.Children.Add(sp);
+			return renderedDoc;
+		}
 
 		/// <summary>
 		/// Render a PolylinesGeometry object as svg. The polylines will be squeezed within the specified dimension

@@ -12,6 +12,33 @@ namespace ShapeGrammarEngine.UnitTests
     class MachineLearningUtilitiesTests
     {
 		[Test]
+		public void TestPolylinesGeometryToSvgOnCanvas()
+		{
+			//  10       /|
+			//  100     / /
+			//  200     v    
+			//
+			//         10   100       
+
+			var testPolyline = new List<List<MyPoint>> {
+				new List<MyPoint> { new MyPoint(10, 200), new MyPoint(100, 10), new MyPoint(100, 100), new MyPoint(10, 200) } };
+			var geo = new PolylinesGeometry(testPolyline);
+
+			SvgDocument polyGeoDoc = MachineLearningUtilities.PolylinesGeometryToSvgOnCanvas(geo, 500, 600, 128, 128, 2);
+			Assert.AreEqual("M3 43 L26 2 L26 21 L3 43", ((SvgPath)polyGeoDoc.Children[0]).PathData.ToString());
+
+			Bitmap bm = polyGeoDoc.Draw();
+			Assert.AreEqual(128, bm.Width);
+			Assert.AreEqual(128, bm.Height);
+
+			string testResultsDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "GraphicsTestResults\\");
+			_ = System.IO.Directory.CreateDirectory(testResultsDir);
+			string fileName = nameof(this.TestPolylinesGeometryToSvgOnCanvas) + ".bmp";
+			string testResultPath = System.IO.Path.Combine(testResultsDir, fileName);
+			bm.Save(testResultPath);
+			Console.WriteLine("Test result saved to: " + testResultPath);
+		}
+		[Test]
 		public void TestPolylinesGeometryToSvg()
 		{
 			//  1        /|
