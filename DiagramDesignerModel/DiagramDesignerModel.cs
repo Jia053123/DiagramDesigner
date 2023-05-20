@@ -123,7 +123,10 @@ namespace DiagramDesignerModel
 
         public void TrainModelForRule(Guid ruleId)
         {
-            throw new NotImplementedException();
+            var rule = this.rulesStore.GetRuleById(ruleId);
+            var records = rule.ApplicationRecords;
+
+
         }
 
         public void RemoveAllWalls()

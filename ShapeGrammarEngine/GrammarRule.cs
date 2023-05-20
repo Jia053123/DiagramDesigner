@@ -39,8 +39,9 @@ namespace ShapeGrammarEngine
 
 		private static Random RandomGenerator = new Random(Environment.TickCount);
 
-		internal List<RuleApplicationRecord> ApplicationRecords = new List<RuleApplicationRecord>();
-		public int SampleCount => this.ApplicationRecords.Count;
+		private List<RuleApplicationRecord> _applicationRecords = new List<RuleApplicationRecord>();
+		public List<RuleApplicationRecord> ApplicationRecords { get => this._applicationRecords; }
+		public int SampleCount => this._applicationRecords.Count;
 
 		/// <summary>
 		/// Create a shape grammar rule given its both sides
@@ -68,7 +69,7 @@ namespace ShapeGrammarEngine
 
 			labeling = sharedLabeling;
 			var newRule = new GrammarRule(lhs, rhs);
-			newRule.ApplicationRecords.Add(new RuleApplicationRecord(geometryBefore, geometryAfter, labeling));
+			newRule._applicationRecords.Add(new RuleApplicationRecord(geometryBefore, geometryAfter, labeling));
 			return newRule;
 		}
 
@@ -142,7 +143,7 @@ namespace ShapeGrammarEngine
 				throw new GeometryParsingFailureException("geometries does not conform with this rule");
 			}
 
-			this.ApplicationRecords.Add(new RuleApplicationRecord(geometryBefore, geometryAfter, l));
+			this._applicationRecords.Add(new RuleApplicationRecord(geometryBefore, geometryAfter, l));
 			labeling = l;
 		}
 
@@ -167,7 +168,7 @@ namespace ShapeGrammarEngine
 		/// <returns> the geometry after the rule is applied. It will confrom with RightHandShape </returns>
 		public PolylinesGeometry ApplyToGeometry(PolylinesGeometry polyGeo)
 		{
-			if (this.ApplicationRecords.Count == 0)
+			if (this._applicationRecords.Count == 0)
 			{
 				throw new RuleApplicationFailureException("Cannot apply without history to learn from");
 			}
@@ -408,7 +409,7 @@ namespace ShapeGrammarEngine
 			{
 				var connection = connections[i];
 				referenceAndAssignedValueSummaryForEachConnectionForEachRecord.Add(new List<(double, double)>());
-				foreach (RuleApplicationRecord record in this.ApplicationRecords)
+				foreach (RuleApplicationRecord record in this._applicationRecords)
 				{
 					// get angle of assigned connection in this record
 					Point pastExistingPoint = record.Labeling.GetPointByLabel(labelForPointFrom);
@@ -466,7 +467,7 @@ namespace ShapeGrammarEngine
 			{
 				var connection = connections[i];
 				referenceAndAssignedValueSummaryForEachConnectionForEachRecord.Add(new List<(double, double)>());
-				foreach (RuleApplicationRecord record in this.ApplicationRecords)
+				foreach (RuleApplicationRecord record in this._applicationRecords)
 				{
 					// get length of assigned connection in this record
 					Point pastExistingPoint = record.Labeling.GetPointByLabel(labelForPoint1);

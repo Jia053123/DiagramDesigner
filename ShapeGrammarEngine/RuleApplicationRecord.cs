@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ShapeGrammarEngine
 {
-	internal readonly struct RuleApplicationRecord
+	public readonly struct RuleApplicationRecord
 	{
 		public readonly PolylinesGeometry GeometryBefore;
 		public readonly PolylinesGeometry GeometryAfter;
