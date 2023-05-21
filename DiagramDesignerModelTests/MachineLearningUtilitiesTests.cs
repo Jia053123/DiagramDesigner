@@ -12,6 +12,28 @@ namespace ShapeGrammarEngine.UnitTests
     class MachineLearningUtilitiesTests
     {
 		[Test]
+		public void TestGenerateVariations_RunWithoutError()
+        {
+			//  10        100        10         100
+			//    _________            __________
+			//10 |                    |          
+			//   |              =>    |          
+			//   |                    |__________
+			//100
+			//
+			var geo1L = new PolylinesGeometry(new List<List<MyPoint>> {
+				new List<MyPoint>{new MyPoint(10,10), new MyPoint(100,10)},
+				new List<MyPoint>{new MyPoint(10,10), new MyPoint(10,100) }});
+			var geo1R = new PolylinesGeometry(new List<List<MyPoint>> {
+				new List<MyPoint>{new MyPoint(10,10), new MyPoint(100,10)},
+				new List<MyPoint>{new MyPoint(10,10), new MyPoint(10,100)},
+				new List<MyPoint>{new MyPoint(10,100), new MyPoint(100,100) } });
+			var variations = MachineLearningUtilities.GenerateVariations(geo1L, geo1R, 300, 250, 20);
+			Assert.IsTrue(variations.variationsForGeometryBefore.Count > 0);
+			Assert.IsTrue(variations.variationsForGeometryAfter.Count > 0);
+			// TODO: better tests? 
+		}
+		[Test]
 		public void TestPolylinesGeometryToSvgOnCanvas()
 		{
 			//  10       /|

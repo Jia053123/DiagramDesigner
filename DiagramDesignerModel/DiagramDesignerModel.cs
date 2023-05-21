@@ -40,7 +40,7 @@ namespace DiagramDesignerModel
         /// </summary>
         /// <param name="point"> the new point to add </param>
         /// <param name="index"> the index of the WallEntity for the new point </param>
-        public void AddPointToWallEntityAtIndex(Point point, int index)
+        public void AddPointToWallEntityAtIndex(BasicGeometries.Point point, int index)
 		{
             EntitiesOperator.AddPointToWallEntityAtIndex(ref this.wallEntities, point, index);
             this.OnModelChanged();

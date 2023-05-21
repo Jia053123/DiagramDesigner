@@ -44,7 +44,7 @@ namespace ShapeGrammarEngine
                 {
 					foreach (List<MyPoint> polyline in polylines)
 					{
-						for (int j = 0; i < polyline.Count; j++)
+						for (int j = 0; j < polyline.Count; j++)
 						{
 							MyPoint mp = polyline[j];
 							PointF p = new PointF((float)mp.coordinateX, (float)mp.coordinateY);
