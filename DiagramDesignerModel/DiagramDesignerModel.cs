@@ -126,19 +126,38 @@ namespace DiagramDesignerModel
             var rule = this.rulesStore.GetRuleById(ruleId);
             var records = rule.ApplicationRecords;
 
-            var GeometryBeforeTrainingSet = new List<PolylinesGeometry>();
-            var GeometryAfterTrainingSet = new List<PolylinesGeometry>();
+            var geometryBeforeTrainingSet = new List<PolylinesGeometry>();
+            var geometryAfterTrainingSet = new List<PolylinesGeometry>();
             foreach (RuleApplicationRecord rar in records)
             {
+                var geoBefore = rar.GeometryBefore;
+
+
+
+
+
+
+
+
+                var geoAfter = rar.GeometryAfter;
+
+
+
+
+
                 
+                
+            }
 
-
-
-
-
-
-                var lhsSvg = MachineLearningUtilities.PolylinesGeometryToSvgPadded(rar.GeometryBefore, 64, 64, 2);
-                var rhsSvg = MachineLearningUtilities.PolylinesGeometryToSvgPadded(rar.GeometryAfter, 64, 64, 2);
+            foreach (PolylinesGeometry geo in geometryBeforeTrainingSet)
+            {
+                /// TODO: Get actual canvas size!!! 
+                var lhsSvg = MachineLearningUtilities.PolylinesGeometryToSvgOnCanvas(geo, 500, 600, 64, 64, 2);
+            }
+            foreach (PolylinesGeometry geo in geometryAfterTrainingSet)
+            {
+                /// TODO: Get actual canvas size!!! 
+                var rhsSvg = MachineLearningUtilities.PolylinesGeometryToSvgOnCanvas(geo, 500, 600, 64, 64, 2);
             }
         }
 
