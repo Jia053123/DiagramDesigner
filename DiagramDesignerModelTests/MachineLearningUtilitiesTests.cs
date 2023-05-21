@@ -30,20 +30,21 @@ namespace ShapeGrammarEngine.UnitTests
 				new List<MyPoint>{new MyPoint(10,10), new MyPoint(100,10)},
 				new List<MyPoint>{new MyPoint(10,10), new MyPoint(10,100)},
 				new List<MyPoint>{new MyPoint(10,100), new MyPoint(100,100) } });
-			var variations = MachineLearningUtilities.GenerateVariations(geo1L, geo1R, 300, 250, 20);
+
+			const int canvasWidth = 300;
+			const int canvasHeight = 250;
+			var variations = MachineLearningUtilities.GenerateVariations(geo1L, geo1R, canvasWidth, canvasHeight, 20);
 			Assert.IsTrue(variations.variationsForGeometryBefore.Count > 0);
 			Assert.IsTrue(variations.variationsForGeometryAfter.Count > 0);
 
 			string testResultsDir1 = System.IO.Path.Combine(testResultsBaseDir, "TestGenerateVariations_Before\\");
-			_ = System.IO.Directory.CreateDirectory(testResultsDir1);
-			MachineLearningUtilities.BatchRenderToSvgAndWriteToPath(variations.variationsForGeometryBefore, 300, 250, 100, 100, 2, testResultsDir1);
+			MachineLearningUtilities.BatchRenderToSvgAndWriteToDirectory(variations.variationsForGeometryBefore, canvasWidth, canvasHeight, 100, 100, 2, testResultsDir1);
 			string testResultsDir2 = System.IO.Path.Combine(testResultsBaseDir, "TestGenerateVariations_After\\");
-			_ = System.IO.Directory.CreateDirectory(testResultsDir2);
-			MachineLearningUtilities.BatchRenderToSvgAndWriteToPath(variations.variationsForGeometryAfter, 300, 250, 100, 100, 2, testResultsDir2);
+			MachineLearningUtilities.BatchRenderToSvgAndWriteToDirectory(variations.variationsForGeometryAfter, canvasWidth, canvasHeight, 100, 100, 2, testResultsDir2);
 		}
 
 		[Test]
-		public void TestBatchRenderToSvgAndWriteToPath()
+		public void TestBatchRenderToSvgAndWriteToDirectory()
         {
 			//  10        100        10         100
 			//    _________            __________
@@ -60,9 +61,9 @@ namespace ShapeGrammarEngine.UnitTests
 				new List<MyPoint>{new MyPoint(10,10), new MyPoint(10,100)},
 				new List<MyPoint>{new MyPoint(10,100), new MyPoint(100,100) } });
 
-			string testResultsDir = System.IO.Path.Combine(testResultsBaseDir, nameof(this.TestBatchRenderToSvgAndWriteToPath) + "\\");
-			_ = System.IO.Directory.CreateDirectory(testResultsDir);
-			MachineLearningUtilities.BatchRenderToSvgAndWriteToPath(new List<PolylinesGeometry> { geo1, geo2 }, 300, 250, 100, 100, 2, testResultsDir);
+			string testResultsDir = System.IO.Path.Combine(testResultsBaseDir, nameof(this.TestBatchRenderToSvgAndWriteToDirectory) + "\\");
+			MachineLearningUtilities.BatchRenderToSvgAndWriteToDirectory(new List<PolylinesGeometry> { geo1, geo2 }, 300, 250, 100, 100, 2, testResultsDir);
+			Console.WriteLine("Test result saved to: " + testResultsDir);
 		}
 		
 

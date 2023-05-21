@@ -81,9 +81,12 @@ namespace ShapeGrammarEngine
 			return (variationsGeoBefore, variationsGeoAfter);
         }
 
+		/// <summary> Batch render a list of PolylineGeometry; the files will be named by their index </summary>
 		/// <param name="saveDir"> The directory to save all the image files </param>
-		static internal void BatchRenderToSvgAndWriteToPath(List<PolylinesGeometry> geometriesToRender, int canvasWidth, int canvasHeight, int outWidth, int outHeight, int strokeWidth, string saveDir)
+		static internal void BatchRenderToSvgAndWriteToDirectory(List<PolylinesGeometry> geometriesToRender, int canvasWidth, int canvasHeight, int outWidth, int outHeight, int strokeWidth, string saveDir)
 		{
+			_ = System.IO.Directory.CreateDirectory(saveDir);
+
 			for (int i = 0; i < geometriesToRender.Count; i++)
 			{
 				var geo = geometriesToRender[i];

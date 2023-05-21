@@ -147,27 +147,9 @@ namespace DiagramDesignerModel
             string trainingSamplesDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TrainingSamples\\" + ruleId.ToString() + "\\");
             string trainingSamplesBeforeDir = System.IO.Path.Combine(trainingSamplesDir, "SamplesBefore\\");
             string trainingSamplesAfterDir = System.IO.Path.Combine(trainingSamplesDir, "SamplesAfter\\");
-            _ = System.IO.Directory.CreateDirectory(trainingSamplesBeforeDir);
-            _ = System.IO.Directory.CreateDirectory(trainingSamplesAfterDir);
 
-            for (int i = 0; i < geometryBeforeTrainingSet.Count; i++)
-            {
-                var geo = geometryBeforeTrainingSet[i];
-                var lhsSvg = MachineLearningUtilities.PolylinesGeometryToSvgOnCanvas(geo, canvasWidth, canvasHeight, outWidth, outHeight, strokeWidth);
-                Bitmap bm = lhsSvg.Draw();
-                string fileName = i.ToString() + ".bmp";
-                string path = System.IO.Path.Combine(trainingSamplesBeforeDir, fileName);
-                bm.Save(path);
-            }
-            for (int i = 0; i < geometryAfterTrainingSet.Count; i++)
-            {
-                var geo = geometryAfterTrainingSet[i];
-                var rhsSvg = MachineLearningUtilities.PolylinesGeometryToSvgOnCanvas(geo, canvasWidth, canvasHeight, outWidth, outHeight, strokeWidth);
-                Bitmap bm = rhsSvg.Draw();
-                string fileName = i.ToString() + ".bmp";
-                string path = System.IO.Path.Combine(trainingSamplesAfterDir, fileName);
-                bm.Save(path);
-            }
+            MachineLearningUtilities.BatchRenderToSvgAndWriteToDirectory(geometryBeforeTrainingSet, canvasWidth, canvasHeight, outWidth, outHeight, strokeWidth, trainingSamplesBeforeDir);
+            MachineLearningUtilities.BatchRenderToSvgAndWriteToDirectory(geometryAfterTrainingSet, canvasWidth, canvasHeight, outWidth, outHeight, strokeWidth, trainingSamplesAfterDir);
         }
 
         public void RemoveAllWalls()
