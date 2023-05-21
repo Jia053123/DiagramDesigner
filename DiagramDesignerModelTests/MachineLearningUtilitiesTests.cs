@@ -11,6 +11,8 @@ namespace ShapeGrammarEngine.UnitTests
 {
     class MachineLearningUtilitiesTests
     {
+		string testResultsBaseDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "GraphicsTestResults");
+
 		[Test]
 		public void TestGenerateVariations_RunWithoutError()
         {
@@ -31,8 +33,39 @@ namespace ShapeGrammarEngine.UnitTests
 			var variations = MachineLearningUtilities.GenerateVariations(geo1L, geo1R, 300, 250, 20);
 			Assert.IsTrue(variations.variationsForGeometryBefore.Count > 0);
 			Assert.IsTrue(variations.variationsForGeometryAfter.Count > 0);
-			// TODO: better tests? 
+
+			string testResultsDir1 = System.IO.Path.Combine(testResultsBaseDir, "TestGenerateVariations_Before\\");
+			_ = System.IO.Directory.CreateDirectory(testResultsDir1);
+			MachineLearningUtilities.BatchRenderToSvgAndWriteToPath(variations.variationsForGeometryBefore, 300, 250, 100, 100, 2, testResultsDir1);
+			string testResultsDir2 = System.IO.Path.Combine(testResultsBaseDir, "TestGenerateVariations_After\\");
+			_ = System.IO.Directory.CreateDirectory(testResultsDir2);
+			MachineLearningUtilities.BatchRenderToSvgAndWriteToPath(variations.variationsForGeometryAfter, 300, 250, 100, 100, 2, testResultsDir2);
 		}
+
+		[Test]
+		public void TestBatchRenderToSvgAndWriteToPath()
+        {
+			//  10        100        10         100
+			//    _________            __________
+			//10 |                    |          
+			//   |                    |          
+			//   |                    |__________
+			//100
+			//
+			var geo1 = new PolylinesGeometry(new List<List<MyPoint>> {
+				new List<MyPoint>{new MyPoint(10,10), new MyPoint(100,10)},
+				new List<MyPoint>{new MyPoint(10,10), new MyPoint(10,100) }});
+			var geo2 = new PolylinesGeometry(new List<List<MyPoint>> {
+				new List<MyPoint>{new MyPoint(10,10), new MyPoint(100,10)},
+				new List<MyPoint>{new MyPoint(10,10), new MyPoint(10,100)},
+				new List<MyPoint>{new MyPoint(10,100), new MyPoint(100,100) } });
+
+			string testResultsDir = System.IO.Path.Combine(testResultsBaseDir, nameof(this.TestBatchRenderToSvgAndWriteToPath) + "\\");
+			_ = System.IO.Directory.CreateDirectory(testResultsDir);
+			MachineLearningUtilities.BatchRenderToSvgAndWriteToPath(new List<PolylinesGeometry> { geo1, geo2 }, 300, 250, 100, 100, 2, testResultsDir);
+		}
+		
+
 		[Test]
 		public void TestPolylinesGeometryToSvgOnCanvas()
 		{
@@ -53,7 +86,7 @@ namespace ShapeGrammarEngine.UnitTests
 			Assert.AreEqual(128, bm.Width);
 			Assert.AreEqual(128, bm.Height);
 
-			string testResultsDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "GraphicsTestResults\\");
+			string testResultsDir = testResultsBaseDir;
 			_ = System.IO.Directory.CreateDirectory(testResultsDir);
 			string fileName = nameof(this.TestPolylinesGeometryToSvgOnCanvas) + ".bmp";
 			string testResultPath = System.IO.Path.Combine(testResultsDir, fileName);
@@ -80,7 +113,7 @@ namespace ShapeGrammarEngine.UnitTests
 			Assert.AreEqual(128, bm.Width);
 			Assert.AreEqual(128, bm.Height);
 
-			string testResultsDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "GraphicsTestResults\\");
+			string testResultsDir = testResultsBaseDir;
 			_ = System.IO.Directory.CreateDirectory(testResultsDir);
 			string fileName = nameof(this.TestPolylinesGeometryToSvg) + ".bmp";
 			string testResultPath = System.IO.Path.Combine(testResultsDir, fileName);
@@ -108,7 +141,7 @@ namespace ShapeGrammarEngine.UnitTests
 			Assert.AreEqual(128, bm.Width);
 			Assert.AreEqual(128, bm.Height);
 
-			string testResultsDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "GraphicsTestResults\\");
+			string testResultsDir = testResultsBaseDir;
 			_ = System.IO.Directory.CreateDirectory(testResultsDir);
 
 			string fileName = nameof(this.TestPolylinesGeometryToSvgPadded) + ".bmp";

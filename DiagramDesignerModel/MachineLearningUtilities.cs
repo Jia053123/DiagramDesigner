@@ -81,7 +81,19 @@ namespace ShapeGrammarEngine
 			return (variationsGeoBefore, variationsGeoAfter);
         }
 
-		
+		/// <param name="saveDir"> The directory to save all the image files </param>
+		static internal void BatchRenderToSvgAndWriteToPath(List<PolylinesGeometry> geometriesToRender, int canvasWidth, int canvasHeight, int outWidth, int outHeight, int strokeWidth, string saveDir)
+		{
+			for (int i = 0; i < geometriesToRender.Count; i++)
+			{
+				var geo = geometriesToRender[i];
+				var svgDoc = MachineLearningUtilities.PolylinesGeometryToSvgOnCanvas(geo, canvasWidth, canvasHeight, outWidth, outHeight, strokeWidth);
+				Bitmap bm = svgDoc.Draw();
+				string fileName = i.ToString() + ".bmp";
+				string path = System.IO.Path.Combine(saveDir, fileName);
+				bm.Save(path);
+			}
+		}
 
 		static internal SvgDocument PolylinesGeometryToSvgOnCanvas(PolylinesGeometry polyGeo, int canvasWidth, int canvasHeight, int outWidth, int outHeight, int strokeWidth)
         {
