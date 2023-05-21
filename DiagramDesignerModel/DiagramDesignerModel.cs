@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using DiagramDesignerGeometryParser;
 using System.Linq;
+using System.Drawing;
 
 namespace DiagramDesignerModel
 {
@@ -123,6 +124,14 @@ namespace DiagramDesignerModel
 
         public void TrainModelForRule(Guid ruleId)
         {
+            const int numOfVariationsPerRecord = 50;
+            /// TODO: Get actual canvas size!!! 
+            const int canvasWidth = 500;
+            const int canvasHeight = 600;
+            const int outWidth = 64;
+            const int outHeight = 64;
+            const int strokeWidth = 2;
+
             var rule = this.rulesStore.GetRuleById(ruleId);
             var records = rule.ApplicationRecords;
 
@@ -130,34 +139,34 @@ namespace DiagramDesignerModel
             var geometryAfterTrainingSet = new List<PolylinesGeometry>();
             foreach (RuleApplicationRecord rar in records)
             {
-                var geoBefore = rar.GeometryBefore;
-
-
-
-
-
-
-
-
-                var geoAfter = rar.GeometryAfter;
-
-
-
-
-
-                
-                
+                var variations = MachineLearningUtilities.GenerateVariations(rar.GeometryBefore, rar.GeometryAfter, canvasWidth, canvasHeight, numOfVariationsPerRecord);
+                geometryBeforeTrainingSet.AddRange(variations.variationsForGeometryBefore);
+                geometryAfterTrainingSet.AddRange(variations.variationsForGeometryAfter);
             }
 
-            foreach (PolylinesGeometry geo in geometryBeforeTrainingSet)
+            string trainingSamplesDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TrainingSamples\\" + ruleId.ToString() + "\\");
+            string trainingSamplesBeforeDir = System.IO.Path.Combine(trainingSamplesDir, "SamplesBefore\\");
+            string trainingSamplesAfterDir = System.IO.Path.Combine(trainingSamplesDir, "SamplesAfter\\");
+            _ = System.IO.Directory.CreateDirectory(trainingSamplesBeforeDir);
+            _ = System.IO.Directory.CreateDirectory(trainingSamplesAfterDir);
+
+            for (int i = 0; i < geometryBeforeTrainingSet.Count; i++)
             {
-                /// TODO: Get actual canvas size!!! 
-                var lhsSvg = MachineLearningUtilities.PolylinesGeometryToSvgOnCanvas(geo, 500, 600, 64, 64, 2);
+                var geo = geometryBeforeTrainingSet[i];
+                var lhsSvg = MachineLearningUtilities.PolylinesGeometryToSvgOnCanvas(geo, canvasWidth, canvasHeight, outWidth, outHeight, strokeWidth);
+                Bitmap bm = lhsSvg.Draw();
+                string fileName = i.ToString() + ".bmp";
+                string path = System.IO.Path.Combine(trainingSamplesBeforeDir, fileName);
+                bm.Save(path);
             }
-            foreach (PolylinesGeometry geo in geometryAfterTrainingSet)
+            for (int i = 0; i < geometryAfterTrainingSet.Count; i++)
             {
-                /// TODO: Get actual canvas size!!! 
-                var rhsSvg = MachineLearningUtilities.PolylinesGeometryToSvgOnCanvas(geo, 500, 600, 64, 64, 2);
+                var geo = geometryAfterTrainingSet[i];
+                var rhsSvg = MachineLearningUtilities.PolylinesGeometryToSvgOnCanvas(geo, canvasWidth, canvasHeight, outWidth, outHeight, strokeWidth);
+                Bitmap bm = rhsSvg.Draw();
+                string fileName = i.ToString() + ".bmp";
+                string path = System.IO.Path.Combine(trainingSamplesAfterDir, fileName);
+                bm.Save(path);
             }
         }
 

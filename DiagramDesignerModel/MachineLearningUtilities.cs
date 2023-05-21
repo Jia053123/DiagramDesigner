@@ -40,7 +40,7 @@ namespace ShapeGrammarEngine
 				transformation.RotateAt(rotation, new PointF(0,0));
 				transformation.Translate(translationX, translationY);
 
-				void ApplyTransformations(ref List<List<MyPoint>> polylines)
+				bool ApplyTransformations(ref List<List<MyPoint>> polylines)
                 {
 					foreach (List<MyPoint> polyline in polylines)
 					{
@@ -55,19 +55,28 @@ namespace ShapeGrammarEngine
 							noiseTranslation.Translate(rand.Next(-1 * noiseAbs, noiseAbs), rand.Next(-1 * noiseAbs, noiseAbs));
 							noiseTranslation.TransformPoints(new PointF[] { p });
 
+							if (p.X < 0 || p.X > canvasWidth || p.Y < 0 || p.Y > canvasHeight)
+                            {
+								return false;
+                            }
 							polyline[j] = new MyPoint(p.X, p.Y);
 						}
 					}
+					return true;
 				}
-				var newVariationPolylinesBefore = polylinesGeometryBefore.PolylinesCopy;
-				ApplyTransformations(ref newVariationPolylinesBefore);
-				PolylinesGeometry newVariationBefore = new PolylinesGeometry(newVariationPolylinesBefore);
-				variationsGeoBefore.Add(newVariationBefore);
 
+				var newVariationPolylinesBefore = polylinesGeometryBefore.PolylinesCopy;
+				bool success1 = ApplyTransformations(ref newVariationPolylinesBefore);
 				var newVariationPolylinesAfter = polylinesGeometryAfter.PolylinesCopy;
-				ApplyTransformations(ref newVariationPolylinesAfter);
-                PolylinesGeometry newVariationAfter = new PolylinesGeometry(newVariationPolylinesAfter);
-				variationsGeoAfter.Add(newVariationAfter);
+				bool success2 = ApplyTransformations(ref newVariationPolylinesAfter);
+
+				if (success1 && success2)
+                {
+					PolylinesGeometry newVariationBefore = new PolylinesGeometry(newVariationPolylinesBefore);
+					variationsGeoBefore.Add(newVariationBefore);
+					PolylinesGeometry newVariationAfter = new PolylinesGeometry(newVariationPolylinesAfter);
+					variationsGeoAfter.Add(newVariationAfter);
+				}
             }
 			return (variationsGeoBefore, variationsGeoAfter);
         }
