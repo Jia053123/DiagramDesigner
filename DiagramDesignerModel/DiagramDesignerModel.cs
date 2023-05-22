@@ -124,10 +124,10 @@ namespace DiagramDesignerModel
 
         public void TrainModelForRule(Guid ruleId)
         {
-            const int numOfVariationsPerRecord = 50;
+            const int numOfVariationsPerRecord = 100;
             /// TODO: Get actual canvas size!!! 
-            const int canvasWidth = 500;
-            const int canvasHeight = 600;
+            const int canvasWidth = 100;
+            const int canvasHeight = 150;
             const int outWidth = 64;
             const int outHeight = 64;
             const int strokeWidth = 2;
