@@ -18,36 +18,36 @@ namespace ShapeGrammarEngine
 			int canvasHeight, 
 			int numOfVariations)
         {
-			const double scaleFactorMin = 0.8;
-			const double scaleFactorMax = 0.12;
+			const double scaleFactorMin = 0.7;
+			const double scaleFactorMax = 1.1;
 			//const int noiseAbs = 5;
 
 			var variationsGeoBefore = new List<PolylinesGeometry>();
 			var variationsGeoAfter = new List<PolylinesGeometry>();
 
 			var bbAfter = polylinesGeometryAfter.GetBoundingBox();
+			float bbCenterX = (float)((bbAfter.xMax + bbAfter.xMin) / 2.0);
+			float bbCenterY = (float)((bbAfter.yMax + bbAfter.yMin) / 2.0);
 
-			//var rand = new Random();
-			for (int i = 0; i < numOfVariations; i++)
+            var rand = new Random();
+            for (int i = 0; i < numOfVariations; i++)
             {
-				int translationX = 20;
-				int translationY = 30;
-				//int translationX = rand.Next((int)(0 - bbAfter.xMin), (int)(canvasWidth - bbAfter.xMax));
-				//int translationY = rand.Next((int)(0 - bbAfter.yMin), (int)(canvasHeight - bbAfter.yMax));
-				//float scaleFactor = (float)(rand.NextDouble() * (scaleFactorMax - scaleFactorMin) + scaleFactorMin);
-				//float rotation = (float)(rand.NextDouble() * 360);
+                int translationX = rand.Next((int)(0 - bbAfter.xMin), (int)(canvasWidth - bbAfter.xMax));
+                int translationY = rand.Next((int)(0 - bbAfter.yMin), (int)(canvasHeight - bbAfter.yMax));
+                float scaleFactor = (float)(rand.NextDouble() * (scaleFactorMax - scaleFactorMin) + scaleFactorMin);
+                float rotation = (float)(rand.NextDouble() * 360);
 
-				var transformation = new Matrix(); // identity matrix
-                //transformation.Scale(scaleFactor, scaleFactor);
-                //transformation.RotateAt(rotation, new PointF(0,0));
+                var transformation = new Matrix(); // identity matrix
+                transformation.Scale(scaleFactor, scaleFactor);
                 transformation.Translate(translationX, translationY);
+				transformation.RotateAt(rotation, new PointF(bbCenterX, bbCenterY)); // first operation last
 
 				var newVariationPolylinesBefore = polylinesGeometryBefore.PolylinesCopy;
 				bool success1 = ApplyTransformations(ref newVariationPolylinesBefore, transformation, canvasWidth, canvasHeight);
 				var newVariationPolylinesAfter = polylinesGeometryAfter.PolylinesCopy;
 				bool success2 = ApplyTransformations(ref newVariationPolylinesAfter, transformation, canvasWidth, canvasHeight);
 
-				if (success1 && success2)
+                if (success1 && success2)
                 {
 					PolylinesGeometry newVariationBefore = new PolylinesGeometry(newVariationPolylinesBefore);
 					variationsGeoBefore.Add(newVariationBefore);
