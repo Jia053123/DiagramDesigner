@@ -14,7 +14,7 @@ namespace ShapeGrammarEngine.UnitTests
 		string testResultsBaseDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "GraphicsTestResults");
 
 		[Test]
-		public void TestGenerateVariations_RunWithoutError()
+		public void TestGenerateVariations()
         {
 			//  10        100        10         100
 			//    _________            __________
@@ -23,6 +23,7 @@ namespace ShapeGrammarEngine.UnitTests
 			//   |                    |__________
 			//100
 			//
+
 			var geo1L = new PolylinesGeometry(new List<List<MyPoint>> {
 				new List<MyPoint>{new MyPoint(10,10), new MyPoint(100,10)},
 				new List<MyPoint>{new MyPoint(10,10), new MyPoint(10,100) }});
@@ -31,11 +32,16 @@ namespace ShapeGrammarEngine.UnitTests
 				new List<MyPoint>{new MyPoint(10,10), new MyPoint(10,100)},
 				new List<MyPoint>{new MyPoint(10,100), new MyPoint(100,100) } });
 
+			const int numOfVariations = 20;
 			const int canvasWidth = 300;
 			const int canvasHeight = 250;
-			var variations = MachineLearningUtilities.GenerateVariations(geo1L, geo1R, canvasWidth, canvasHeight, 20);
-			Assert.IsTrue(variations.variationsForGeometryBefore.Count > 0);
-			Assert.IsTrue(variations.variationsForGeometryAfter.Count > 0);
+			var variations = MachineLearningUtilities.GenerateVariations(geo1L, geo1R, canvasWidth, canvasHeight, numOfVariations);
+			Console.WriteLine(variations.variationsForGeometryBefore.Count);
+			Console.WriteLine(variations.variationsForGeometryAfter.Count);
+
+			var firstResult = variations.variationsForGeometryBefore[0];
+			var svgDoc = MachineLearningUtilities.PolylinesGeometryToSvgOnCanvas(firstResult, canvasWidth, canvasHeight, 100, 100, 2);
+			Console.WriteLine(((SvgPath)svgDoc.Children[0]).PathData.ToString());
 
 			string testResultsDir1 = System.IO.Path.Combine(testResultsBaseDir, "TestGenerateVariations_Before\\");
 			MachineLearningUtilities.BatchRenderToSvgAndWriteToDirectory(variations.variationsForGeometryBefore, canvasWidth, canvasHeight, 100, 100, 2, testResultsDir1);

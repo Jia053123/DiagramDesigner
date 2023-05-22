@@ -438,5 +438,17 @@ namespace ShapeGrammarEngine.UnitTests
 			Assert.AreEqual(-1, r.yMin);
 			Assert.AreEqual(1, r.yMax);
         }
+
+		[Test]
+		public void TestPolylinesCopy()
+        {
+			var geo1L = new PolylinesGeometry(new List<List<Point>> {
+				new List<Point>{new Point(10,10), new Point(100,10)},
+				new List<Point>{new Point(10,10), new Point(10,100) }});
+
+			var pls = geo1L.PolylinesCopy;
+			pls[0][0] = new Point(20, 20);
+			Assert.AreNotEqual(new Point(20, 20), geo1L.PolylinesCopy[0][0]);
+		}
 	}
 }

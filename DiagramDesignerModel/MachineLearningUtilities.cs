@@ -20,55 +20,32 @@ namespace ShapeGrammarEngine
         {
 			const double scaleFactorMin = 0.8;
 			const double scaleFactorMax = 0.12;
-			const int noiseAbs = 5;
+			//const int noiseAbs = 5;
 
 			var variationsGeoBefore = new List<PolylinesGeometry>();
 			var variationsGeoAfter = new List<PolylinesGeometry>();
 
 			var bbAfter = polylinesGeometryAfter.GetBoundingBox();
 
-			var rand = new Random();
+			//var rand = new Random();
 			for (int i = 0; i < numOfVariations; i++)
             {
-				int translationX = rand.Next((int)(0 - bbAfter.xMin), (int)(canvasWidth - bbAfter.xMax));
-				int translationY = rand.Next((int)(0 - bbAfter.yMin), (int)(canvasHeight - bbAfter.yMax));
-				float scaleFactor = (float)(rand.NextDouble() * (scaleFactorMax - scaleFactorMin) + scaleFactorMin);
-				float rotation = (float)(rand.NextDouble() * 2 * Math.PI);
+				int translationX = 20;
+				int translationY = 30;
+				//int translationX = rand.Next((int)(0 - bbAfter.xMin), (int)(canvasWidth - bbAfter.xMax));
+				//int translationY = rand.Next((int)(0 - bbAfter.yMin), (int)(canvasHeight - bbAfter.yMax));
+				//float scaleFactor = (float)(rand.NextDouble() * (scaleFactorMax - scaleFactorMin) + scaleFactorMin);
+				//float rotation = (float)(rand.NextDouble() * 360);
 
 				var transformation = new Matrix(); // identity matrix
-				transformation.Scale(scaleFactor, scaleFactor);
-				transformation.RotateAt(rotation, new PointF(0,0));
-				transformation.Translate(translationX, translationY);
-
-				bool ApplyTransformations(ref List<List<MyPoint>> polylines)
-                {
-					foreach (List<MyPoint> polyline in polylines)
-					{
-						for (int j = 0; j < polyline.Count; j++)
-						{
-							MyPoint mp = polyline[j];
-							PointF p = new PointF((float)mp.coordinateX, (float)mp.coordinateY);
-							transformation.TransformPoints(new PointF[] { p });
-
-							// add noise to each point to take "sketchiness" into account
-							var noiseTranslation = new Matrix();
-							noiseTranslation.Translate(rand.Next(-1 * noiseAbs, noiseAbs), rand.Next(-1 * noiseAbs, noiseAbs));
-							noiseTranslation.TransformPoints(new PointF[] { p });
-
-							if (p.X < 0 || p.X > canvasWidth || p.Y < 0 || p.Y > canvasHeight)
-                            {
-								return false;
-                            }
-							polyline[j] = new MyPoint(p.X, p.Y);
-						}
-					}
-					return true;
-				}
+                //transformation.Scale(scaleFactor, scaleFactor);
+                //transformation.RotateAt(rotation, new PointF(0,0));
+                transformation.Translate(translationX, translationY);
 
 				var newVariationPolylinesBefore = polylinesGeometryBefore.PolylinesCopy;
-				bool success1 = ApplyTransformations(ref newVariationPolylinesBefore);
+				bool success1 = ApplyTransformations(ref newVariationPolylinesBefore, transformation, canvasWidth, canvasHeight);
 				var newVariationPolylinesAfter = polylinesGeometryAfter.PolylinesCopy;
-				bool success2 = ApplyTransformations(ref newVariationPolylinesAfter);
+				bool success2 = ApplyTransformations(ref newVariationPolylinesAfter, transformation, canvasWidth, canvasHeight);
 
 				if (success1 && success2)
                 {
@@ -80,6 +57,34 @@ namespace ShapeGrammarEngine
             }
 			return (variationsGeoBefore, variationsGeoAfter);
         }
+
+		static private bool ApplyTransformations(ref List<List<MyPoint>> polylines, Matrix transformation, int canvasWidth, int canvasHeight)
+		{
+			bool success = true;
+			foreach (List<MyPoint> polyline in polylines)
+			{
+				for (int j = 0; j < polyline.Count; j++)
+				{
+					MyPoint mp = polyline[j];
+					PointF p = new PointF((float)mp.coordinateX, (float)mp.coordinateY);
+					var pInList = new PointF[] { p };
+					transformation.TransformPoints(pInList);
+
+					//// add noise to each point to take "sketchiness" into account
+					//var noiseTranslation = new Matrix();
+					//noiseTranslation.Translate(rand.Next(-1 * noiseAbs, noiseAbs), rand.Next(-1 * noiseAbs, noiseAbs));
+					//noiseTranslation.TransformPoints(new PointF[] { p });
+
+					PointF transformedP = pInList[0];
+					if (transformedP.X < 0 || transformedP.X > canvasWidth || transformedP.Y < 0 || transformedP.Y > canvasHeight)
+					{
+						success = false;
+					}
+					polyline[j] = new MyPoint(transformedP.X, transformedP.Y);
+				}
+			}
+			return success;
+		}
 
 		/// <summary> Batch render a list of PolylineGeometry; the files will be named by their index </summary>
 		/// <param name="saveDir"> The directory to save all the image files </param>

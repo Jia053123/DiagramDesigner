@@ -15,7 +15,19 @@ namespace ShapeGrammarEngine
 		/// (while removing this requriement does not break anything, it violates the basic premise of the definition of shape in this project) 
 		/// Each polyline consists of at least 2 points
 		/// </summary>
-		public List<List<Point>> PolylinesCopy { get { return new List<List<Point>>(this.polylines); } }
+		public List<List<Point>> PolylinesCopy 
+		{ 
+			get 
+			{
+				var newPolylines = new List<List<Point>>();
+				foreach (List<Point> pl in this.polylines)
+                {
+					var newPolyline = new List<Point>(pl);
+					newPolylines.Add(newPolyline);
+                }
+				return newPolylines;
+			} 
+		}
 
 		public PolylinesGeometry(List<List<Point>> polylines)
 		{
