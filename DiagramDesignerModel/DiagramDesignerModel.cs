@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using DiagramDesignerGeometryParser;
 using System.Linq;
 using System.Drawing;
+using Svg;
 
 namespace DiagramDesignerModel
 {
@@ -110,7 +111,21 @@ namespace DiagramDesignerModel
             try
 			{
                 var newGeo = rule.ApplyToGeometry(leftHandGeometry);
-				return newGeo;
+
+                /// TODO: Get actual canvas size!!! 
+                const int canvasWidth = 100;
+                const int canvasHeight = 150;
+                const int outWidth = 64;
+                const int outHeight = 64;
+                const int strokeWidth = 1;
+                SvgDocument svgDoc = MachineLearningUtilities.PolylinesGeometryToSvgOnCanvas(newGeo, canvasWidth, canvasHeight, outWidth, outHeight, strokeWidth);
+
+                string ApplicationResultBaseDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ApplicationResults");
+                _ = System.IO.Directory.CreateDirectory(ApplicationResultBaseDir);
+                string filePath = System.IO.Path.Combine(ApplicationResultBaseDir, "result.svg");
+                svgDoc.Write(filePath);
+
+                return newGeo;
 			}
 			catch (GeometryParsingFailureException e)
             {
@@ -124,13 +139,13 @@ namespace DiagramDesignerModel
 
         public void TrainModelForRule(Guid ruleId)
         {
-            const int numOfVariationsPerRecord = 100;
+            const int numOfVariationsPerRecord = 200;
             /// TODO: Get actual canvas size!!! 
             const int canvasWidth = 100;
             const int canvasHeight = 150;
             const int outWidth = 64;
             const int outHeight = 64;
-            const int strokeWidth = 2;
+            const int strokeWidth = 1;
 
             var rule = this.rulesStore.GetRuleById(ruleId);
             var records = rule.ApplicationRecords;
