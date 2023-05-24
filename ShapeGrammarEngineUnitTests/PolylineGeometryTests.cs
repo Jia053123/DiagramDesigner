@@ -450,5 +450,53 @@ namespace ShapeGrammarEngine.UnitTests
 			pls[0][0] = new Point(20, 20);
 			Assert.AreNotEqual(new Point(20, 20), geo1L.PolylinesCopy[0][0]);
 		}
+
+		[Test]
+		public void TestMergeTwoPolylines_TailToHead_SuccessfullyMerge()
+        {
+			var pl1 = new List<Point> { new Point(1, 1), new Point(2, 2), new Point(3, 3) }; 
+			var pl2 = new List<Point> { new Point(3, 3), new Point(4, 4) };
+			var r = PolylinesGeometry.MergeTwoPolylines(pl1, pl2);
+			var expected_r = new List<Point> { new Point(1, 1), new Point(2, 2), new Point(3, 3), new Point(4, 4) };
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(r, expected_r));
+		}
+
+		[Test]
+		public void TestMergeTwoPolylines_HeadToTail_SuccessfullyMerge()
+		{
+			var pl1 = new List<Point> { new Point(3, 3), new Point(4, 4) };
+			var pl2 = new List<Point> { new Point(1, 1), new Point(2, 2), new Point(3, 3) };
+			var r = PolylinesGeometry.MergeTwoPolylines(pl1, pl2);
+			var expected_r = new List<Point> { new Point(1, 1), new Point(2, 2), new Point(3, 3), new Point(4, 4) };
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(r, expected_r));
+		}
+
+		[Test]
+		public void TestMergeTwoPolylines_HeadToHead_SuccessfullyMerge()
+		{
+			var pl1 = new List<Point> { new Point(3, 3), new Point(4, 4) };
+			var pl2 = new List<Point> { new Point(3, 3), new Point(2, 2), new Point(1, 1) };
+			var r = PolylinesGeometry.MergeTwoPolylines(pl1, pl2);
+			var expected_r = new List<Point> { new Point(4, 4), new Point(3, 3), new Point(2, 2), new Point(1, 1) };
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(r, expected_r));
+		}
+
+		[Test]
+		public void TestMergeTwoPolylines_TailToTail_SuccessfullyMerge()
+		{
+			var pl1 = new List<Point> { new Point(4, 4), new Point(3, 3) };
+			var pl2 = new List<Point> { new Point(1, 1), new Point(2, 2), new Point(3, 3) };
+			var r = PolylinesGeometry.MergeTwoPolylines(pl1, pl2);
+			var expected_r = new List<Point> { new Point(4, 4), new Point(3, 3), new Point(2, 2), new Point(1, 1) };
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(r, expected_r));
+		}
+
+		[Test]
+		public void TestMergeTwoPolylines_DifferentHeadsAndTails_ThrowArgumentException()
+		{
+			var pl1 = new List<Point> { new Point(4, 4), new Point(3, 3), new Point(2, 2) };
+			var pl2 = new List<Point> { new Point(1, 1), new Point(2, 2), new Point(3, 3) };
+			Assert.Throws<ArgumentException>(() => PolylinesGeometry.MergeTwoPolylines(pl1, pl2));
+		}
 	}
 }

@@ -112,7 +112,10 @@ namespace DiagramDesignerModel
 			{
                 var newGeo = rule.ApplyToGeometry(leftHandGeometry);
 
-                /// TODO: Get actual canvas size!!! 
+                // Try to connect as many segments as possible
+                
+
+                // TODO: Get actual canvas size!!! 
                 const int canvasWidth = 100;
                 const int canvasHeight = 150;
                 const int outWidth = 64;

@@ -82,31 +82,36 @@ namespace ShapeGrammarEngine
 		/// </summary>
 		public void MergePolylines()
 		{
-			// TODO: implement this to potentially speed up shape matching
-			throw new NotImplementedException();
+			// can be used to potentially speed up shape matching
+
+			//for (int i = 0)
 		}
 
 		/// <summary>
 		/// Merge two polylines if possible
 		/// </summary>
-		static private List<Point> MergeTwoPolylines(List<Point> polyline1, List<Point> polyline2)
+		/// <returns> The merged polyline if possible; ; When reversing a polyline is necessarily for merging, the first polyline is reversed </returns>
+		static public List<Point> MergeTwoPolylines(List<Point> polyline1, List<Point> polyline2)
 		{
 			List<Point> mergedPolyline = new List<Point>();
 			if (polyline1.Last() == polyline2.First())
 			{
+				polyline2.RemoveAt(0);
 				mergedPolyline.AddRange(polyline1);
 				mergedPolyline.AddRange(polyline2);
 				return mergedPolyline;
 			}
 			else if (polyline2.Last() == polyline1.First())
 			{
+				polyline1.RemoveAt(0);
 				mergedPolyline.AddRange(polyline2);
 				mergedPolyline.AddRange(polyline1);
 				return mergedPolyline;
 			}
 			else if (polyline1.First() == polyline2.First())
 			{
-				mergedPolyline.AddRange(polyline1);
+                polyline2.RemoveAt(0);
+                mergedPolyline.AddRange(polyline1);
 				mergedPolyline.Reverse();
 				mergedPolyline.AddRange(polyline2);
 				return mergedPolyline;
@@ -116,6 +121,7 @@ namespace ShapeGrammarEngine
 				mergedPolyline.AddRange(polyline1);
 				var temp = new List<Point>(polyline2);
 				temp.Reverse();
+				temp.RemoveAt(0);
 				mergedPolyline.AddRange(temp);
 				return mergedPolyline;
 			}
