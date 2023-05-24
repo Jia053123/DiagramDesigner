@@ -113,7 +113,7 @@ namespace DiagramDesignerModel
                 var newGeo = rule.ApplyToGeometry(leftHandGeometry);
 
                 // Try to connect as many segments as possible
-                
+                newGeo.MergePolylines();
 
                 // TODO: Get actual canvas size!!! 
                 const int canvasWidth = 100;
@@ -121,12 +121,18 @@ namespace DiagramDesignerModel
                 const int outWidth = 64;
                 const int outHeight = 64;
                 const int strokeWidth = 1;
-                SvgDocument svgDoc = MachineLearningUtilities.PolylinesGeometryToSvgOnCanvas(newGeo, canvasWidth, canvasHeight, outWidth, outHeight, strokeWidth);
-
-                string ApplicationResultBaseDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ApplicationResults");
+                
+                string ApplicationResultBaseDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ApplicationResults/result");
                 _ = System.IO.Directory.CreateDirectory(ApplicationResultBaseDir);
-                string filePath = System.IO.Path.Combine(ApplicationResultBaseDir, "result.svg");
-                svgDoc.Write(filePath);
+
+                string lhsFilePath = System.IO.Path.Combine(ApplicationResultBaseDir, "lhs.bmp");
+                SvgDocument lhsSvgDoc = MachineLearningUtilities.PolylinesGeometryToSvgOnCanvas(leftHandGeometry, canvasWidth, canvasHeight, outWidth, outHeight, strokeWidth);
+                Bitmap bm = lhsSvgDoc.Draw();
+                bm.Save(lhsFilePath);
+
+                SvgDocument rhsSvgDoc = MachineLearningUtilities.PolylinesGeometryToSvgOnCanvas(newGeo, canvasWidth, canvasHeight, outWidth, outHeight, strokeWidth);
+                string rhsFilePath = System.IO.Path.Combine(ApplicationResultBaseDir, "rhs.svg");
+                rhsSvgDoc.Write(rhsFilePath);
 
                 return newGeo;
 			}

@@ -137,7 +137,7 @@ namespace ShapeGrammarEngine
 			sp.PathData = spsl;
 			sp.StrokeWidth = strokeWidth;
 			sp.Stroke = new SvgColourServer(Color.Black);
-			sp.Fill = null;
+			sp.Fill = new SvgColourServer(Color.Transparent);
 
 			renderedDoc.Children.Add(sp);
 			return renderedDoc;
