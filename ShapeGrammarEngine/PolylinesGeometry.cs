@@ -77,20 +77,50 @@ namespace ShapeGrammarEngine
 
 		/// <summary>
 		/// Try to merge fragmented line segments into long, continuous polylines. 
+		/// Could make shape matching more efficient. 
 		/// After this is called, no two polylines in this geometry will share a common endpoint. 
 		/// Note that the result may not be the only valid solution
 		/// </summary>
 		public void MergePolylines()
 		{
-			// can be used to potentially speed up shape matching
+            bool didMerge;
+            do
+            {
+				didMerge = false;
 
-			//for (int i = 0)
-		}
+				for (int i = 0; i < this.polylines.Count - 1; i++)
+				{
+					for (int j = i+1; j < this.polylines.Count; j++)
+					{
+						List<Point> mergedPl;
+						try
+						{
+							mergedPl = MergeTwoPolylines(this.polylines[i], this.polylines[j]);
+						}
+						catch (ArgumentException e)
+						{
+							continue;
+						}
+						this.polylines[i] = mergedPl;
+						this.polylines.RemoveAt(j);
+						didMerge = true;
+						break;
+					}
+					if (didMerge)
+					{
+						break;
+					}
+				}
+			} while (didMerge);
+        }
 
 		/// <summary>
 		/// Merge two polylines if possible
 		/// </summary>
-		/// <returns> The merged polyline if possible; ; When reversing a polyline is necessarily for merging, the first polyline is reversed </returns>
+		/// <returns> 
+		/// A new polyline object that stores the merged polyline if possible; 
+		/// When reversing a polyline is necessarily for merging, the overall order of the two polylines are kept
+		/// </returns>
 		static public List<Point> MergeTwoPolylines(List<Point> polyline1, List<Point> polyline2)
 		{
 			List<Point> mergedPolyline = new List<Point>();

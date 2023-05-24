@@ -498,5 +498,71 @@ namespace ShapeGrammarEngine.UnitTests
 			var pl2 = new List<Point> { new Point(1, 1), new Point(2, 2), new Point(3, 3) };
 			Assert.Throws<ArgumentException>(() => PolylinesGeometry.MergeTwoPolylines(pl1, pl2));
 		}
+
+		[Test]
+		public void TestMergePolylines_NotMergable()
+		{
+			var pl1 = new List<Point> { new Point(0, 0), new Point(-1, -1) };
+			var pl2 = new List<Point> { new Point(1, 1), new Point(2, 2), new Point(3, 3) };
+			var geo = new PolylinesGeometry(new List<List<Point>> { pl1, pl2 });
+			geo.MergePolylines();
+
+			var r = geo.PolylinesCopy;
+			var expected_r = new List<List<Point>> { pl1, pl2 };
+
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(r, expected_r));
+		}
+
+		[Test]
+		public void TestMergePolylines_OnePairMergable()
+        {
+			var pl1 = new List<Point> { new Point(0, 0), new Point(-1, -1) };
+			var pl2 = new List<Point> { new Point(4, 4), new Point(3, 3) };
+			var pl3 = new List<Point> { new Point(6, 6), new Point(5, 5) };
+			var pl4 = new List<Point> { new Point(1, 1), new Point(2, 2), new Point(3, 3) };
+			var geo = new PolylinesGeometry(new List<List<Point>> { pl1, pl2, pl3, pl4 });
+			geo.MergePolylines();
+
+			var r = geo.PolylinesCopy;
+			var merged_pl = new List<Point> { new Point(4, 4), new Point(3, 3), new Point(2, 2), new Point(1, 1) };
+			var expected_r = new List<List<Point>> { pl1, merged_pl, pl3 };
+
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(r, expected_r));
+		}
+
+		[Test]
+		public void TestMergePolylines_MultiplePairsMergable()
+		{
+			var pl1 = new List<Point> { new Point(7, 7), new Point(6, 6) };
+			var pl2 = new List<Point> { new Point(4, 4), new Point(3, 3) };
+			var pl3 = new List<Point> { new Point(6, 6), new Point(5, 5) };
+			var pl4 = new List<Point> { new Point(1, 1), new Point(2, 2), new Point(3, 3) };
+			var geo = new PolylinesGeometry(new List<List<Point>> { pl1, pl2, pl3, pl4 });
+			geo.MergePolylines();
+
+			var r = geo.PolylinesCopy;
+			var merged_pl1 = new List<Point> { new Point(7, 7), new Point(6, 6), new Point(5, 5)};
+			var merged_pl2 = new List<Point> { new Point(4, 4), new Point(3, 3), new Point(2, 2), new Point(1, 1) };
+			var expected_r = new List<List<Point>> { merged_pl1, merged_pl2 };
+
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(r, expected_r));
+		}
+
+		[Test]
+		public void TestMergePolylines_MultiplePairsChainedMergable()
+		{
+			var pl1 = new List<Point> { new Point(7, 7), new Point(6, 6) };
+			var pl2 = new List<Point> { new Point(4, 4), new Point(3, 3) };
+			var pl3 = new List<Point> { new Point(6, 6), new Point(4, 4) };
+			var pl4 = new List<Point> { new Point(1, 1), new Point(2, 2), new Point(3, 3) };
+			var geo = new PolylinesGeometry(new List<List<Point>> { pl1, pl2, pl3, pl4 });
+			geo.MergePolylines();
+
+			var r = geo.PolylinesCopy;
+			var merged_pl1 = new List<Point> { new Point(7, 7), new Point(6, 6), new Point(4, 4), new Point(3, 3), new Point(2, 2), new Point(1, 1) };
+			var expected_r = new List<List<Point>> { merged_pl1 };
+
+			Assert.IsTrue(ListUtilities.AreContentsEqualInOrder(r, expected_r));
+		}
 	}
 }
